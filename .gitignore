@@ -1,0 +1,12 @@
+# Ignore configuration files that may contain sensitive information.
+
+# Ignore paths that contain user-generated content.
+sites/*/private
+sites/default/files/*
+sites/default/files/config_*
+sites/default/files/config_*/active
+sites/default/settings.php
+sites/default/services.yml
+
+#Ignore system files
+**/*.DS_Store
