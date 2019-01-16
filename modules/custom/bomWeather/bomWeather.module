@@ -1,0 +1,17 @@
+<?php
+use Drupal\bomWeather\Controller\bomWeather;
+/**
+ * [Import Weather Data]
+ * @return [boolean] [true]
+ */
+
+function importWeather() {
+    bomWeather::importData();
+}
+/**
+ * Implements hook_cron().
+ */
+function bomWeather_cron() {
+    bomWeather::importData();
+}
+?>

@@ -1,0 +1,7 @@
+bomWeather.content:
+  path: '/bomWeather'
+  defaults:
+    _controller: 'Drupal\bomWeather\Controller\bomWeather::importData'
+    _title: 'BOM Weather'
+  requirements:
+    _permission: 'access content'
