@@ -1,5 +1,5 @@
 bomWeather.content:
-  path: '/bomWeather'
+  path: '/bomweather'
   defaults:
     _controller: 'Drupal\bomWeather\Controller\bomWeather::importData'
     _title: 'BOM Weather'

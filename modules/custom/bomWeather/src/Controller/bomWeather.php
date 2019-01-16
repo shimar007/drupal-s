@@ -26,6 +26,8 @@ class bomWeather extends ControllerBase {
                 }    
             }
         }
+
+        return array('#markup' => $my_module_template);
     }
 }
 ?>
