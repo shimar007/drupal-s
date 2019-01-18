@@ -1,0 +1,20 @@
+uuid: 52ea9feb-4e0a-400e-8c84-c70bb7596925
+langcode: en
+status: true
+dependencies:
+  theme:
+    - developer
+_core:
+  default_config_hash: 7rR9chwXvdM2H8OYMAYx9Zj3GGlPMrZp_M3ZA4thYTk
+id: developer_page_title
+theme: developer
+region: content
+weight: -50
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  provider: core
+  label_display: '0'
+visibility: {  }

@@ -1,9 +1,0 @@
-uuid: f5f21ef2-b29e-4db5-a6f9-86dcb2974ea4
-langcode: en
-status: true
-dependencies: {  }
-name: 'New Test Vocabulary'
-vid: new_test_vocabulary
-description: ''
-hierarchy: 0
-weight: 0

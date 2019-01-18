@@ -5,7 +5,6 @@ dependencies:
   config:
     - field.storage.node.field_tags
     - node.type.article
-    - taxonomy.vocabulary.education_and_learning_
 _core:
   default_config_hash: QdUgf_beeoaPiyKorFv0q1fcJpWH_uZTqe_xoVJacrw
 id: node.article.field_tags
@@ -21,10 +20,9 @@ default_value_callback: ''
 settings:
   handler: 'default:taxonomy_term'
   handler_settings:
-    target_bundles:
-      education_and_learning_: education_and_learning_
+    target_bundles: {  }
     sort:
       field: _none
-    auto_create: true
-    auto_create_bundle: education_and_learning_
+    auto_create: null
+    auto_create_bundle: null
 field_type: entity_reference
