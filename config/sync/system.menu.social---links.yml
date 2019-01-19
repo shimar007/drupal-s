@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: social---links
 label: 'Social - Links'
-description: ''
+description: 'Social links'
 locked: false

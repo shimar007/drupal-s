@@ -811,3 +811,21 @@ properly.
 .header-banner .description {
    color: #000000;
 }
+
+/* header social links */
+.header-banner .social {
+   margin: 24px 0;
+   padding: 0;
+   font-size: 24px;
+   text-align: center;
+}
+
+.header-banner .social li {
+   display: inline-block;
+   margin: 0 15px;
+   padding: 0;
+}
+
+.header-banner .social li a { color: #fff; font-size: 0px;}
+.header-banner .social li a:before { color: #000000; font-size: 24px;}
+.header-banner .social li a:hover:before { color: #F06000; }
