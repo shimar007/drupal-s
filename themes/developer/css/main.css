@@ -788,4 +788,17 @@ properly.
    height: 50px;
 }
 
+.header-banner {
+   width: 100vw;
+   height: 50vh;
+   justify-content: center;
+   align-items: center;
+   display: inline-flex;
+}
+
+.header-banner .banner-text{
+   max-width: 700px;
+   margin: 0 auto;
+   text-align: center;
+}
 
