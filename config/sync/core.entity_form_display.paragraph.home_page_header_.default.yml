@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.paragraph.home_page_header_.field_description
     - field.field.paragraph.home_page_header_.field_main_heading
+    - field.field.paragraph.home_page_header_.field_social_links
     - paragraphs.paragraphs_type.home_page_header_
   module:
     - field_group
@@ -15,6 +16,7 @@ third_party_settings:
       children:
         - field_main_heading
         - field_description
+        - field_social_links
       parent_name: ''
       weight: 0
       format_type: details
@@ -44,6 +46,15 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
+    region: content
+  field_social_links:
+    weight: 3
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
     region: content
 hidden:
   created: true

@@ -40,19 +40,23 @@
 #}
 {%
   set classes = [
-    'paragraph',
+    'paragraph header-banner',
     'paragraph--type--' ~ paragraph.bundle|clean_class,
     view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
     not paragraph.isPublished() ? 'paragraph--unpublished'
   ]
 %}
 {% block paragraph %}
-    <div class="header-banner">
+    <div {{ attributes.addClass(classes) }}>
         <div class="row">
             {% block content %}
                 <div class="banner-text">
                     <h1 class="headline">{{ content.field_main_heading|field_value }}</h1>
                     <div class="description">{{ content.field_description|field_value }}</div>
+                    <hr>
+                </div>
+                <div class="social-links-wrapper">
+                    {{ content.field_social_links }}
                 </div>
             {% endblock %}
         </div>

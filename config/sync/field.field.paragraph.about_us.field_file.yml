@@ -1,0 +1,27 @@
+uuid: e9dbbedc-619d-4fc8-96d2-588ef642f4ce
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_file
+    - paragraphs.paragraphs_type.about_us
+  module:
+    - file
+id: paragraph.about_us.field_file
+field_name: field_file
+entity_type: paragraph
+bundle: about_us
+label: File
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  file_directory: documents
+  file_extensions: 'txt doc docx pdf xls xlsx'
+  max_filesize: ''
+  description_field: false
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file

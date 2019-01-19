@@ -802,3 +802,12 @@ properly.
    text-align: center;
 }
 
+.header-banner .banner-text hr {
+   border-color: #000000;
+   width: 65%;
+   margin: 0 auto;
+}
+
+.header-banner .description {
+   color: #000000;
+}

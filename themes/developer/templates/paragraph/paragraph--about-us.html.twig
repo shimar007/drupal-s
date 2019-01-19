@@ -64,6 +64,11 @@
                         <span>Email to: <a href="mailto:{{ content.field_contact_email|field_value }}">{{ content.field_contact_email|field_value }}</a></span>
                     </p>
                 </div>
+                <div class="columns download">
+                  <p>
+                     <a href="{{ content.field_file|field_value }}" target="_blank" class="button"><i class="fa fa-download"></i>{{ content.field_file_name|field_value }}</a>
+                  </p>
+               </div>
             </div>
         </div>
     </div>

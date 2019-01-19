@@ -1,0 +1,26 @@
+uuid: b13cd06e-b750-4b70-9b3f-8ed14e9f34fd
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_social_links
+    - paragraphs.paragraphs_type.home_page_header_
+    - system.menu.social---links
+id: paragraph.home_page_header_.field_social_links
+field_name: field_social_links
+entity_type: paragraph
+bundle: home_page_header_
+label: 'Social - Links'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    target_uuid: 5440bdda-7021-4d30-b6b7-d06791907fad
+default_value_callback: ''
+settings:
+  handler: 'default:menu'
+  handler_settings:
+    target_bundles: null
+    auto_create: false
+field_type: entity_reference

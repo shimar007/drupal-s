@@ -1,0 +1,20 @@
+uuid: 6d27dd40-38f1-489c-bd36-f466c6a12fcd
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+    - system
+id: paragraph.field_social_links
+field_name: field_social_links
+entity_type: paragraph
+type: entity_reference
+settings:
+  target_type: menu
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -18,7 +18,11 @@
         "drupal/core": "^8.6",
         "drupal/twig_field_value": "^1.1",
         "drupal/webform": "^5.1",
-        "drupal/imce": "^1.7"
+        "drupal/imce": "^1.7",
+        "drupal/entity_reference_display": "^1.2",
+        "drupal/viewsreference": "^1.4",
+        "drupal/menu_item_extras": "^2.4",
+        "drupal/menu_reference_render": "^2.0"
     },
     "replace": {
     },

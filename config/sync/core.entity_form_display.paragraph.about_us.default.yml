@@ -8,12 +8,15 @@ dependencies:
     - field.field.paragraph.about_us.field_contact_name
     - field.field.paragraph.about_us.field_contact_phone
     - field.field.paragraph.about_us.field_description_about
+    - field.field.paragraph.about_us.field_file
+    - field.field.paragraph.about_us.field_file_name
     - field.field.paragraph.about_us.field_heading
     - field.field.paragraph.about_us.field_image
     - image.style.thumbnail
     - paragraphs.paragraphs_type.about_us
   module:
     - field_group
+    - file
     - image
     - imce
     - text
@@ -25,6 +28,7 @@ third_party_settings:
         - field_heading
         - field_description_about
         - group_contact_details
+        - group_resume_fields
       parent_name: ''
       weight: 0
       format_type: details
@@ -49,6 +53,19 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Contact - Details'
+    group_resume_fields:
+      children:
+        - field_file_name
+        - field_file
+      parent_name: group_about_section_fields
+      weight: 5
+      format_type: details
+      format_settings:
+        id: ''
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Resume Fields'
 id: paragraph.about_us.default
 targetEntityType: paragraph
 bundle: about_us
@@ -93,6 +110,23 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
+  field_file:
+    weight: 13
+    settings:
+      progress_indicator: throbber
+    third_party_settings:
+      imce:
+        enabled: true
+    type: file_generic
+    region: content
+  field_file_name:
+    weight: 12
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
     region: content
   field_heading:
     weight: 2
