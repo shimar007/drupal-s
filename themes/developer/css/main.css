@@ -780,6 +780,10 @@ properly.
 	text-align: center !important;
 }
 
+.site-logo {
+   float: left;
+}
+
 .site-logo img {
    height: 50px;
 }
