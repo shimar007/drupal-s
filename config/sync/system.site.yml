@@ -1,11 +1,11 @@
 uuid: bb17720f-1c96-4e4d-bb6f-97ef36ca7823
-name: 'Shivakumar Ramamurthy | Drupal Developer'
+name: 'Shivakumar Ramamurthy'
 mail: shimar007@gmail.com
 slogan: ''
 page:
   403: ''
   404: ''
-  front: /node
+  front: /node/1
 admin_compact_mode: false
 weight_select_max: 100
 langcode: en
