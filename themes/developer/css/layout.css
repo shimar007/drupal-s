@@ -2,14 +2,8 @@ body { background: #0f0f0f; }
 
 header {
    position: relative;
-   height: 800px;
-   min-height: 500px;
    width: 100%;
-   background: #161415 url(../images/header-background.jpg) no-repeat top center;
-   background-size: cover !important;
-	-webkit-background-size: cover !important;
    text-align: center;
-   overflow: hidden;
 }
 
 /* vertically center banner section */
@@ -24,7 +18,7 @@ header .banner {
    vertical-align: middle;
    margin: 0 auto;
    width: 85%;
-   padding-bottom: 30px;s
+   padding-bottom: 30px;
    text-align: center;
 }
 
@@ -108,7 +102,6 @@ header .scrolldown a:hover { color: #11ABB0; }
    letter-spacing: 2.5px;
    margin: 0 auto;
    z-index: 100;
-   position: fixed;
    left: 0;
    top: 0;
 }
@@ -141,7 +134,7 @@ ul#nav li a {
    line-height: 32px;
 	text-decoration: none;
    text-align: left;
-   color: #fff;
+   color: #000000;
 
 	-webkit-transition: color .2s ease-in-out;
 	-moz-transition: color .2s ease-in-out;
