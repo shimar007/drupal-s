@@ -1,0 +1,31 @@
+uuid: f58f43ea-7100-48cc-b60f-6711f189f43f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.home_page_header_.field_description
+    - field.field.paragraph.home_page_header_.field_main_heading
+    - paragraphs.paragraphs_type.home_page_header_
+  module:
+    - text
+id: paragraph.home_page_header_.default
+targetEntityType: paragraph
+bundle: home_page_header_
+mode: default
+content:
+  field_description:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_main_heading:
+    weight: 0
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden: {  }

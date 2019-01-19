@@ -1,0 +1,19 @@
+uuid: 7c24a146-732b-4d76-8b83-5ada95b8a214
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_main_heading
+    - paragraphs.paragraphs_type.home_page_header_
+id: paragraph.home_page_header_.field_main_heading
+field_name: field_main_heading
+entity_type: paragraph
+bundle: home_page_header_
+label: 'Main Heading'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

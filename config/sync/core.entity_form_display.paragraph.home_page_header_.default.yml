@@ -1,0 +1,35 @@
+uuid: 59538c82-19db-4b53-851b-c0b90334539a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.home_page_header_.field_description
+    - field.field.paragraph.home_page_header_.field_main_heading
+    - paragraphs.paragraphs_type.home_page_header_
+  module:
+    - text
+id: paragraph.home_page_header_.default
+targetEntityType: paragraph
+bundle: home_page_header_
+mode: default
+content:
+  field_description:
+    weight: 1
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_main_heading:
+    weight: 0
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+hidden:
+  created: true
+  status: true
+  uid: true
