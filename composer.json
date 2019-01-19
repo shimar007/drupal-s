@@ -17,7 +17,8 @@
         "drupal/link_attributes": "^1.5",
         "drupal/core": "^8.6",
         "drupal/twig_field_value": "^1.1",
-        "drupal/webform": "^5.1"
+        "drupal/webform": "^5.1",
+        "drupal/imce": "^1.7"
     },
     "replace": {
     },

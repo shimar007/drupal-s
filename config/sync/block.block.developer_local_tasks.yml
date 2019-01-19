@@ -8,8 +8,8 @@ _core:
   default_config_hash: X9I1OB0W3WlWtrK-CNcg6hNWwa8wficanpH8pYnDZDE
 id: developer_local_tasks
 theme: developer
-region: content
-weight: -40
+region: secondary_menu
+weight: -6
 provider: null
 plugin: local_tasks_block
 settings:

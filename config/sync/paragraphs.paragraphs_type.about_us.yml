@@ -1,0 +1,9 @@
+uuid: f3a38efa-0b76-4779-9c81-f099a1028e98
+langcode: en
+status: true
+dependencies: {  }
+id: about_us
+label: 'About Us'
+icon_uuid: null
+description: ''
+behavior_plugins: {  }

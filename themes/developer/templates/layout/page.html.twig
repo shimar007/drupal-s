@@ -50,11 +50,18 @@
     </div>
   </header>
   
-  {{ page.secondary_menu }}
-  {{ page.breadcrumb }}
-  {{ page.highlighted }}
-  {{ page.help }}
+  <div class="secondary-section">
+    <div class="row">
+      {{ page.secondary_menu }}
+      {{ page.highlighted }}
+      {{ page.help }}
+    </div>
+  </div>
   
+  <div class="breadcrumbs">
+    {{ page.breadcrumb }}
+  </div>
+
   <main role="main">
     <a id="main-content" tabindex="-1"></a>{# link is in html.html.twig #}
 

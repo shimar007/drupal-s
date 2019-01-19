@@ -8,8 +8,8 @@ _core:
   default_config_hash: 13GQpeITIJsp1kyPniXtWZfyFH87vb1xxJCHifL4UeE
 id: developer_local_actions
 theme: developer
-region: content
-weight: -20
+region: secondary_menu
+weight: -5
 provider: null
 plugin: local_actions_block
 settings:

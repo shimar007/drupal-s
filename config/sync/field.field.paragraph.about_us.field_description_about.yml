@@ -1,0 +1,21 @@
+uuid: 1cabc8af-5fb1-49b8-913d-0a995768a742
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_description_about
+    - paragraphs.paragraphs_type.about_us
+  module:
+    - text
+id: paragraph.about_us.field_description_about
+field_name: field_description_about
+entity_type: paragraph
+bundle: about_us
+label: Description
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

@@ -1,0 +1,19 @@
+uuid: 9893e7d5-f0e2-4536-afe4-0bf86bed5be7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_contact_details_heading
+    - paragraphs.paragraphs_type.about_us
+id: paragraph.about_us.field_contact_details_heading
+field_name: field_contact_details_heading
+entity_type: paragraph
+bundle: about_us
+label: 'Contact Details - Heading'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

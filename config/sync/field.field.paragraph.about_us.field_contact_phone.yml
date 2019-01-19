@@ -1,0 +1,19 @@
+uuid: a1bd2367-6453-4a11-9677-5f5518c3c73d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_contact_phone
+    - paragraphs.paragraphs_type.about_us
+id: paragraph.about_us.field_contact_phone
+field_name: field_contact_phone
+entity_type: paragraph
+bundle: about_us
+label: 'Contact Phone'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

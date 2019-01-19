@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.node.field_body_content
     - node.type.home_page
+    - paragraphs.paragraphs_type.about_us
     - paragraphs.paragraphs_type.home_page_header_
   module:
     - entity_reference_revisions
@@ -24,8 +25,12 @@ settings:
     negate: 0
     target_bundles:
       home_page_header_: home_page_header_
+      about_us: about_us
     target_bundles_drag_drop:
       home_page_header_:
         enabled: true
         weight: 2
+      about_us:
+        enabled: true
+        weight: 3
 field_type: entity_reference_revisions
