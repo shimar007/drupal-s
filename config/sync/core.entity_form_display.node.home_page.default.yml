@@ -3,33 +3,36 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.home_page.body
+    - field.field.node.home_page.field_body_content
     - field.field.node.home_page.field_meta_tags
     - node.type.home_page
   module:
     - metatag
+    - paragraphs
     - path
-    - text
 id: node.home_page.default
 targetEntityType: node
 bundle: home_page
 mode: default
 content:
-  body:
-    type: text_textarea_with_summary
-    weight: 121
-    settings:
-      rows: 9
-      summary_rows: 3
-      placeholder: ''
-    third_party_settings: {  }
-    region: content
   created:
     type: datetime_timestamp
     weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_body_content:
+    type: entity_reference_paragraphs
+    weight: 123
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+    region: content
   field_meta_tags:
     weight: 122
     settings: {  }

@@ -3,28 +3,30 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.home_page.body
+    - field.field.node.home_page.field_body_content
     - field.field.node.home_page.field_meta_tags
     - node.type.home_page
   module:
+    - entity_reference_revisions
     - metatag
-    - text
     - user
 id: node.home_page.default
 targetEntityType: node
 bundle: home_page
 mode: default
 content:
-  body:
+  field_body_content:
+    type: entity_reference_revisions_entity_view
+    weight: 103
     label: hidden
-    type: text_default
-    weight: 101
-    settings: {  }
+    settings:
+      view_mode: default
+      link: ''
     third_party_settings: {  }
     region: content
   field_meta_tags:
     weight: 102
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
     type: metatag_empty_formatter
