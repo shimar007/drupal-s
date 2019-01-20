@@ -7,6 +7,7 @@ dependencies:
     - node.type.home_page
     - paragraphs.paragraphs_type.about_us
     - paragraphs.paragraphs_type.home_page_header_
+    - paragraphs.paragraphs_type.resume
   module:
     - entity_reference_revisions
 id: node.home_page.field_body_content
@@ -26,6 +27,7 @@ settings:
     target_bundles:
       home_page_header_: home_page_header_
       about_us: about_us
+      resume: resume
     target_bundles_drag_drop:
       home_page_header_:
         enabled: true
@@ -33,4 +35,7 @@ settings:
       about_us:
         enabled: true
         weight: 3
+      resume:
+        enabled: true
+        weight: 6
 field_type: entity_reference_revisions

@@ -130,7 +130,7 @@ body {
    font-weight: normal;
    font-size: 15px;
    line-height: 30px;
-	color: #838C95;
+	color: #000000;
 
    -webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
 	-webkit-text-size-adjust: 100%;
@@ -829,3 +829,8 @@ properly.
 .header-banner .social li a { color: #fff; font-size: 0px;}
 .header-banner .social li a:before { color: #000000; font-size: 24px;}
 .header-banner .social li a:hover:before { color: #F06000; }
+
+.resume h2 {
+   border-bottom: 3px solid #F06000;
+   padding-bottom: 6px;
+}

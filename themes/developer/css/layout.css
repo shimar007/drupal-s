@@ -158,7 +158,7 @@ ul#nav li.current a { color: #F06000; }
 }
 
 #about a, #about a:visited  { color: #fff; }
-#about a:hover, #about a:focus { color: #11ABB0; }
+#about a:hover, #about a:focus { color: #F06000; }
 
 #about h2 {
    font: 22px/30px 'opensans-bold', sans-serif;
@@ -167,7 +167,7 @@ ul#nav li.current a { color: #F06000; }
 }
 #about p {
    line-height: 30px;
-   color: #7A7A7A;
+   color: #ede9e9;
 }
 #about .profile-pic {
    position: relative;
@@ -279,7 +279,6 @@ ul#nav li.current a { color: #F06000; }
    position: absolute;
    left: 0;
    top: 0;
-
    margin: 0;
    padding-right: 24px;
   	background: #313131;
@@ -287,7 +286,24 @@ ul#nav li.current a { color: #F06000; }
   	height: 42px;
    line-height: 42px;
    border-radius: 3px 0 0 3px;
+   text-align: center;
+   color: #ffffff;
+   -webkit-transition: width 2s; /* Safari */
+   transition: width 2s;
 }
+
+@-webkit-keyframes slideInLeft {
+   from {
+     -webkit-transform: translate3d(-100%, 0, 0);
+     transform: translate3d(-100%, 0, 0);
+     visibility: visible;
+   }
+ 
+   to {
+     -webkit-transform: translate3d(0, 0, 0);
+     transform: translate3d(0, 0, 0);
+   }
+ }
 
 .php {
   	width: 90%;
@@ -343,71 +359,6 @@ ul#nav li.current a { color: #F06000; }
   	color: #fff;
 }
 
-
-
-@-moz-keyframes php {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-@-moz-keyframes mysql {
-  0%   { width: 0px;  }
-  100% { width: 80%;  }
-}
-@-moz-keyframes wordpress {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-@-moz-keyframes drupal {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-@-moz-keyframes html5 {
-  0%   { width: 0px;  }
-  100% { width: 80%;  }
-}
-@-moz-keyframes jquery {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-@-moz-keyframes nodejs {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-
-
-@-webkit-keyframes php {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-@-webkit-keyframes mysql {
-  0%   { width: 0px;  }
-  100% { width: 80%;  }
-}
-@-webkit-keyframes wordpress {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-@-webkit-keyframes drupal {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-@-webkit-keyframes html5 {
-  0%   { width: 0px;  }
-  100% { width: 80%;  }
-}
-@-webkit-keyframes jquery {
-  0%   { width: 0px;  }
-  100% { width: 90%;  }
-}
-
-@-webkit-keyframes nodejs {
-  0%   { width: 0px;  }
-  100% { width: 80%;  }
-}
-
-/* ------------------------------------------------------------------ */
-/* e. Portfolio Section
-/* ------------------------------------------------------------------ */
 
 #portfolio {
    background: #ebeeee;

@@ -1,0 +1,42 @@
+uuid: a0e1b1f8-da3f-456f-9a5f-495939d36dd8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.resume.field_heading_technical
+    - field.field.paragraph.resume.field_technical_description
+    - field.field.paragraph.resume.field_technical_skills
+    - paragraphs.paragraphs_type.resume
+  module:
+    - entity_reference_revisions
+    - text
+id: paragraph.resume.default
+targetEntityType: paragraph
+bundle: resume
+mode: default
+content:
+  field_heading_technical:
+    weight: 0
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_technical_description:
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_technical_skills:
+    type: entity_reference_revisions_entity_view
+    weight: 2
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+hidden: {  }

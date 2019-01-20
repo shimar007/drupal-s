@@ -1,0 +1,66 @@
+uuid: 123ebfd4-cffb-45df-9e08-6790d935541b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.resume.field_heading_technical
+    - field.field.paragraph.resume.field_technical_description
+    - field.field.paragraph.resume.field_technical_skills
+    - paragraphs.paragraphs_type.resume
+  module:
+    - field_group
+    - paragraphs
+    - text
+third_party_settings:
+  field_group:
+    group_technical_f:
+      children:
+        - field_heading_technical
+        - field_technical_description
+        - field_technical_skills
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        id: ''
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Technical - Fields'
+id: paragraph.resume.default
+targetEntityType: paragraph
+bundle: resume
+mode: default
+content:
+  field_heading_technical:
+    weight: 1
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_technical_description:
+    weight: 2
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_technical_skills:
+    type: entity_reference_paragraphs
+    weight: 3
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+    region: content
+hidden:
+  created: true
+  status: true
+  uid: true

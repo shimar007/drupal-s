@@ -1,0 +1,9 @@
+uuid: 25a0c7ff-6e94-436c-9526-1cc6ff90e01f
+langcode: en
+status: true
+dependencies: {  }
+id: technical_skills
+label: 'Technical - Skills'
+icon_uuid: null
+description: ''
+behavior_plugins: {  }

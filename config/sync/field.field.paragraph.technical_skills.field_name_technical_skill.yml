@@ -1,0 +1,19 @@
+uuid: d76b16f9-a49a-4a58-9d5d-591eb52782f6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_name_technical_skill
+    - paragraphs.paragraphs_type.technical_skills
+id: paragraph.technical_skills.field_name_technical_skill
+field_name: field_name_technical_skill
+entity_type: paragraph
+bundle: technical_skills
+label: Name
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

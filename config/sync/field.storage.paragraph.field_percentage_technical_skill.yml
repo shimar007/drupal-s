@@ -1,0 +1,21 @@
+uuid: 2692f66f-6c54-4ec7-9669-29052652ffd5
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.field_percentage_technical_skill
+field_name: field_percentage_technical_skill
+entity_type: paragraph
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

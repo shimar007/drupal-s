@@ -1,0 +1,19 @@
+uuid: 4892720b-a944-43f9-84e4-524e147d57da
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_percentage_technical_skill
+    - paragraphs.paragraphs_type.technical_skills
+id: paragraph.technical_skills.field_percentage_technical_skill
+field_name: field_percentage_technical_skill
+entity_type: paragraph
+bundle: technical_skills
+label: Percentage
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

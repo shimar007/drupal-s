@@ -1,0 +1,30 @@
+uuid: bee446f9-4098-47cf-a8bf-e189fe4862b6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.technical_skills.field_name_technical_skill
+    - field.field.paragraph.technical_skills.field_percentage_technical_skill
+    - paragraphs.paragraphs_type.technical_skills
+id: paragraph.technical_skills.default
+targetEntityType: paragraph
+bundle: technical_skills
+mode: default
+content:
+  field_name_technical_skill:
+    weight: 0
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_percentage_technical_skill:
+    weight: 1
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden: {  }

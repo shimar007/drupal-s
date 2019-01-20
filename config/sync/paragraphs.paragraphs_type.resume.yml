@@ -1,0 +1,9 @@
+uuid: da48a76e-9f01-4156-be43-b2cc2721ab95
+langcode: en
+status: true
+dependencies: {  }
+id: resume
+label: Resume
+icon_uuid: null
+description: ''
+behavior_plugins: {  }

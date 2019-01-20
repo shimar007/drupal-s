@@ -1,0 +1,19 @@
+uuid: 2aa3ac6b-0a64-456c-9009-3ad09dc69586
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_heading_technical
+    - paragraphs.paragraphs_type.resume
+id: paragraph.resume.field_heading_technical
+field_name: field_heading_technical
+entity_type: paragraph
+bundle: resume
+label: 'Technical Heading'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
