@@ -40,34 +40,22 @@
 #}
 {%
   set classes = [
-    'paragraph resume',
+    'paragraph',
     'paragraph--type--' ~ paragraph.bundle|clean_class,
     view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
     not paragraph.isPublished() ? 'paragraph--unpublished'
   ]
 %}
 {% block paragraph %}
-  <div{{ attributes.addClass(classes) }} id="resume">
-    {% block content %}
-        <div class="row skill">
-            <div class="three columns header-col">
-                <h2>{{ content.field_heading_technical|field_value }}</h2>
-            </div>
-            <div class="nine columns main-col">
-                {{ content.field_technical_description|field_value }}
-                <div class="bars">
-                    {{ content.field_technical_skills }}
-                </div>
+    <div{{ attributes.addClass(classes) }}>
+        {% block content %}
+        <div class="twelve columns">
+            <h3>{{ content.field_company_name|field_value }}</h3>
+            <p class="info">{{ content.field_designation|field_value }}<span>•</span> <em class="date">{{ content.field_start_end_date|field_value }}</em></p>
+            <div class="work-info">
+                {{ content.field_work_info|field_value }}
             </div>
         </div>
-        <div class="row work">
-            <div class="three columns header-col">
-                <h2>{{ content.field_work_experience_heading|field_value }}</h2>
-            </div>
-            <div class="nine columns main-col">
-                {{ content.field_work_experience_details }}
-            </div>
-        </div>
-    {% endblock %}
-  </div>
+        {% endblock %}
+    </div>
 {% endblock paragraph %}

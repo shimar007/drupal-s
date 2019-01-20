@@ -834,3 +834,11 @@ properly.
    border-bottom: 3px solid #F06000;
    padding-bottom: 6px;
 }
+
+.work .work-info ul {
+   padding-left: 15px;
+}
+
+.work .work-info ul li {
+   list-style-type: disc;
+}

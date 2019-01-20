@@ -1,0 +1,21 @@
+uuid: e3a286dd-e030-4899-b869-1f7e3c69e794
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_info
+    - paragraphs.paragraphs_type.work_experience_details
+  module:
+    - text
+id: paragraph.work_experience_details.field_work_info
+field_name: field_work_info
+entity_type: paragraph
+bundle: work_experience_details
+label: 'Work Info'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

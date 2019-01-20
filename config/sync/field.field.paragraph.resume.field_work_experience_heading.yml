@@ -1,0 +1,19 @@
+uuid: afedac40-b945-4d2c-87e0-b81b33d0fa50
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_experience_heading
+    - paragraphs.paragraphs_type.resume
+id: paragraph.resume.field_work_experience_heading
+field_name: field_work_experience_heading
+entity_type: paragraph
+bundle: resume
+label: 'Work Experience - Heading'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

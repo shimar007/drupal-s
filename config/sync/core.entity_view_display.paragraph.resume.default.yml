@@ -6,6 +6,8 @@ dependencies:
     - field.field.paragraph.resume.field_heading_technical
     - field.field.paragraph.resume.field_technical_description
     - field.field.paragraph.resume.field_technical_skills
+    - field.field.paragraph.resume.field_work_experience_details
+    - field.field.paragraph.resume.field_work_experience_heading
     - paragraphs.paragraphs_type.resume
   module:
     - entity_reference_revisions
@@ -38,5 +40,22 @@ content:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    region: content
+  field_work_experience_details:
+    type: entity_reference_revisions_entity_view
+    weight: 4
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+  field_work_experience_heading:
+    weight: 3
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
     region: content
 hidden: {  }

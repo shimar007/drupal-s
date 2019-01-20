@@ -1,0 +1,49 @@
+uuid: 142e2ac3-614c-457d-b9e3-1d6a15365ce2
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.work_experience_details.field_company_name
+    - field.field.paragraph.work_experience_details.field_designation
+    - field.field.paragraph.work_experience_details.field_start_end_date
+    - field.field.paragraph.work_experience_details.field_work_info
+    - paragraphs.paragraphs_type.work_experience_details
+  module:
+    - text
+id: paragraph.work_experience_details.default
+targetEntityType: paragraph
+bundle: work_experience_details
+mode: default
+content:
+  field_company_name:
+    weight: 0
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_designation:
+    weight: 1
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_start_end_date:
+    weight: 2
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_work_info:
+    weight: 3
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden: {  }

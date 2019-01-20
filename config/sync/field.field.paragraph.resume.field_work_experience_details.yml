@@ -1,0 +1,43 @@
+uuid: 2d839581-53a4-4e8e-8ab1-3a0e4b4a7868
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_experience_details
+    - paragraphs.paragraphs_type.resume
+    - paragraphs.paragraphs_type.work_experience_details
+  module:
+    - entity_reference_revisions
+id: paragraph.resume.field_work_experience_details
+field_name: field_work_experience_details
+entity_type: paragraph
+bundle: resume
+label: 'Work Experience - Details'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      work_experience_details: work_experience_details
+    target_bundles_drag_drop:
+      about_us:
+        weight: 6
+        enabled: false
+      home_page_header_:
+        weight: 7
+        enabled: false
+      resume:
+        weight: 8
+        enabled: false
+      technical_skills:
+        weight: 9
+        enabled: false
+      work_experience_details:
+        enabled: true
+        weight: 10
+field_type: entity_reference_revisions

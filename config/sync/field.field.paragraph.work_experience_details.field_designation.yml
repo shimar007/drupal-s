@@ -1,0 +1,19 @@
+uuid: f868fa13-2403-40b7-9c07-139af8be756c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_designation
+    - paragraphs.paragraphs_type.work_experience_details
+id: paragraph.work_experience_details.field_designation
+field_name: field_designation
+entity_type: paragraph
+bundle: work_experience_details
+label: Designation
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
