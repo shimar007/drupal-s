@@ -293,69 +293,42 @@ ul#nav li.current a { color: #F06000; }
    transition: width 2s;
 }
 
-@-webkit-keyframes slideInLeft {
-   from {
-     -webkit-transform: translate3d(-100%, 0, 0);
-     transform: translate3d(-100%, 0, 0);
-     visibility: visible;
-   }
- 
-   to {
-     -webkit-transform: translate3d(0, 0, 0);
-     transform: translate3d(0, 0, 0);
-   }
- }
-
 .php {
   	width: 90%;
-  	-moz-animation: php 2s ease;
-  	-webkit-animation: php 2s ease;
   	text-align: center;
   	color: #fff;
 }
 .mysql {
   	width: 80%;
-  	-moz-animation: illustrator 2s ease;
-  	-webkit-animation: illustrator 2s ease;
   	text-align: center;
   	color: #fff;
 }
 .wordpress {
   	width: 90%;
-  	-moz-animation: wordpress 2s ease;
-  	-webkit-animation: wordpress 2s ease;
   	text-align: center;
   	color: #fff;
 }
 
 .drupal {
   	width: 90%;
-  	-moz-animation: css 2s ease;
-  	-webkit-animation: css 2s ease;
   	text-align: center;
   	color: #fff;
 }
 
 .html5 {
   	width: 80%;
-  	-moz-animation: html5 2s ease;
-  	-webkit-animation: html5 2s ease;
   	text-align: center;
   	color: #fff;
 }
 
 .jquery {
   	width: 90%;
-  	-moz-animation: jquery 2s ease;
-  	-webkit-animation: jquery 2s ease;
   	text-align: center;
   	color: #fff;
 }
 
 .nodejs {
   	width: 80%;
-  	-moz-animation: jquery 2s ease;
-  	-webkit-animation: jquery 2s ease;
   	text-align: center;
   	color: #fff;
 }
@@ -671,7 +644,7 @@ call-to-action .button {
 .flexslider .slides > li { position: relative; }
 
 /* Hide the slides before the JS is loaded. Avoids image jumping */
-.flexslider .slides > li { display: none; -webkit-backface-visibility: hidden; }
+.flexslider .slides > li { display: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 /* Suggested container for slide animation setups. Can replace this with your own */
 .flex-container { zoom: 1; position: relative; }
 
@@ -787,8 +760,7 @@ call-to-action .button {
    margin: 12px 0;
    color: #EBEEEE;
 	display: inline-block;
-	float: left;
-   width: 26%;
+	width: 25%;
 }
 #contact input,
 #contact textarea,
