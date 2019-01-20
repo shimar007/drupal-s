@@ -3,6 +3,8 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.paragraph.resume.field_education_details
+    - field.field.paragraph.resume.field_education_heading
     - field.field.paragraph.resume.field_heading_technical
     - field.field.paragraph.resume.field_technical_description
     - field.field.paragraph.resume.field_technical_skills
@@ -42,11 +44,44 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Work Experience'
+    group_education:
+      children:
+        - field_education_heading
+        - field_education_details
+      parent_name: ''
+      weight: 2
+      format_type: details
+      format_settings:
+        id: ''
+        classes: ''
+        open: false
+        required_fields: true
+      label: Education
 id: paragraph.resume.default
 targetEntityType: paragraph
 bundle: resume
 mode: default
 content:
+  field_education_details:
+    type: entity_reference_paragraphs
+    weight: 4
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+    region: content
+  field_education_heading:
+    weight: 3
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   field_heading_technical:
     weight: 1
     settings:

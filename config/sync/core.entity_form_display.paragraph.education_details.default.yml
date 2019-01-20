@@ -1,0 +1,71 @@
+uuid: 1aa7e996-93b8-453e-8e59-bd191c4a5056
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.education_details.field_course_name
+    - field.field.paragraph.education_details.field_course_year
+    - field.field.paragraph.education_details.field_education_info
+    - field.field.paragraph.education_details.field_education_institute_name
+    - paragraphs.paragraphs_type.education_details
+  module:
+    - field_group
+    - text
+third_party_settings:
+  field_group:
+    group_education_details:
+      children:
+        - field_education_institute_name
+        - field_course_name
+        - field_course_year
+        - field_education_info
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        id: ''
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Education - Details'
+id: paragraph.education_details.default
+targetEntityType: paragraph
+bundle: education_details
+mode: default
+content:
+  field_course_name:
+    weight: 2
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_course_year:
+    weight: 3
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_education_info:
+    weight: 4
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_education_institute_name:
+    weight: 1
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+hidden:
+  created: true
+  status: true
+  uid: true

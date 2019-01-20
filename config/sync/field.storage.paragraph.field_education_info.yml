@@ -1,0 +1,19 @@
+uuid: 484aec91-a1c3-4a11-b00d-9306967e4b61
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+    - text
+id: paragraph.field_education_info
+field_name: field_education_info
+entity_type: paragraph
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

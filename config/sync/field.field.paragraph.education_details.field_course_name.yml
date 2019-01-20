@@ -1,0 +1,19 @@
+uuid: 39ac7da3-18ed-4ede-b8e2-53d0400dcf69
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_course_name
+    - paragraphs.paragraphs_type.education_details
+id: paragraph.education_details.field_course_name
+field_name: field_course_name
+entity_type: paragraph
+bundle: education_details
+label: 'Course Name'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

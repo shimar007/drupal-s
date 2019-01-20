@@ -1,0 +1,46 @@
+uuid: 74e7394a-0a89-4c27-ae7c-49909f65cc9a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_education_details
+    - paragraphs.paragraphs_type.education_details
+    - paragraphs.paragraphs_type.resume
+  module:
+    - entity_reference_revisions
+id: paragraph.resume.field_education_details
+field_name: field_education_details
+entity_type: paragraph
+bundle: resume
+label: 'Education - Details'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      education_details: education_details
+    target_bundles_drag_drop:
+      about_us:
+        weight: 7
+        enabled: false
+      education_details:
+        enabled: true
+        weight: 8
+      home_page_header_:
+        weight: 9
+        enabled: false
+      resume:
+        weight: 10
+        enabled: false
+      technical_skills:
+        weight: 11
+        enabled: false
+      work_experience_details:
+        weight: 12
+        enabled: false
+field_type: entity_reference_revisions

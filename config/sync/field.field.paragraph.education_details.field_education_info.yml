@@ -1,0 +1,21 @@
+uuid: 5b2a809d-708c-442f-809f-961dd29f96c5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_education_info
+    - paragraphs.paragraphs_type.education_details
+  module:
+    - text
+id: paragraph.education_details.field_education_info
+field_name: field_education_info
+entity_type: paragraph
+bundle: education_details
+label: 'Education - Info'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

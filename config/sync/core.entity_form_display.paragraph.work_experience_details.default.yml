@@ -9,21 +9,31 @@ dependencies:
     - field.field.paragraph.work_experience_details.field_work_info
     - paragraphs.paragraphs_type.work_experience_details
   module:
+    - field_group
     - text
+third_party_settings:
+  field_group:
+    group_work_info:
+      children:
+        - field_company_name
+        - field_designation
+        - field_start_end_date
+        - field_work_info
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        id: ''
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Work Info'
 id: paragraph.work_experience_details.default
 targetEntityType: paragraph
 bundle: work_experience_details
 mode: default
 content:
   field_company_name:
-    weight: 0
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_designation:
     weight: 1
     settings:
       size: 60
@@ -31,7 +41,7 @@ content:
     third_party_settings: {  }
     type: string_textfield
     region: content
-  field_start_end_date:
+  field_designation:
     weight: 2
     settings:
       size: 60
@@ -39,8 +49,16 @@ content:
     third_party_settings: {  }
     type: string_textfield
     region: content
-  field_work_info:
+  field_start_end_date:
     weight: 3
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_work_info:
+    weight: 4
     settings:
       rows: 5
       placeholder: ''
