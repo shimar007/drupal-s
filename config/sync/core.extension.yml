@@ -42,6 +42,7 @@ module:
   metatag: 0
   metatag_views: 0
   node: 0
+  noreqnewpass: 0
   options: 0
   page_cache: 0
   path: 0

@@ -780,6 +780,20 @@ properly.
 	text-align: center !important;
 }
 
+
+/*additional css*/
+
+.header {
+   background: #ffffff;
+   z-index: 101;
+}
+
+.header .block-system-branding-block {
+   float: left;
+   margin-top: -5px;
+   margin-bottom: 15px;
+}
+
 .site-logo {
    float: left;
 }

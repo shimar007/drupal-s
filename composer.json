@@ -24,7 +24,8 @@
         "drupal/menu_item_extras": "^2.4",
         "drupal/menu_reference_render": "^2.0",
         "drupal/content_sync": "^2.0",
-        "drupal/editor_advanced_link": "^1.4"
+        "drupal/editor_advanced_link": "^1.4",
+        "drupal/noreqnewpass": "^1.1"
     },
     "replace": {
     },
