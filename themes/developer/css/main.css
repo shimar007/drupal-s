@@ -786,6 +786,8 @@ properly.
 .header {
    background: #ffffff;
    z-index: 101;
+   position: fixed;
+   top: 0;
 }
 
 .header .block-system-branding-block {
@@ -843,6 +845,10 @@ properly.
 .header-banner .social li a { color: #fff; font-size: 0px;}
 .header-banner .social li a:before { color: #000000; font-size: 24px;}
 .header-banner .social li a:hover:before { color: #F06000; }
+
+.content-container {
+   margin-top: 100px;
+}
 
 .resume h2 {
    border-bottom: 3px solid #F06000;

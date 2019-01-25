@@ -4,6 +4,7 @@ global-styling:
     base:
     component:
       css/layout.css: {}
+      css/media-queries.css: {}
       css/main.css: {}
   js:
     js/jquery-migrate-1.2.1.min.js: {} 

@@ -96,6 +96,10 @@
 ---------------------------------------------------------------------- */
 
 @media only screen and (max-width: 767px) {
+   /*site logo*/
+   .site-logo {
+      margin-left: 30px;
+   }
 
    /* mobile navigation
    -------------------------------------------------------------------- */
@@ -116,13 +120,10 @@
 		position: relative;
       border: none;
       float: right;
-
       font: 0/0 a;
       text-shadow: none;
       color: transparent;
-
-      position: relative;
-      top: 0px;
+      top: 25px;
       right: 30px;
    }
 
@@ -160,8 +161,8 @@
 	#nav-wrap:target > ul#nav	{
 	   display: block;
       padding: 30px 20px 48px 20px;
-      background: #1f2024;
-      margin: 0 30px;
+      background: #2B2B2B;
+      margin: 20px 30px;
       clear: both;
    }
 
@@ -182,6 +183,7 @@
       margin: 12px 0; 
       line-height: 16px; /* reset line-height from 48px */
       border: none;
+      color: #ffffff;
    }  
 
 
@@ -345,7 +347,11 @@
 
    /* mobile navigation
    -------------------------------------------------------------------- */
-   #nav-wrap ul#nav { width: auto; float: none; }
+   #nav-wrap ul#nav { 
+      width: 100%; 
+      float: right; 
+      margin-top: 20px;
+   }
 
    /* header styles
    -------------------------------------------------------------------- */
