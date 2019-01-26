@@ -26,7 +26,8 @@
         "drupal/content_sync": "^2.0",
         "drupal/editor_advanced_link": "^1.4",
         "drupal/noreqnewpass": "^1.1",
-        "drupal/captcha": "^1.0"
+        "drupal/captcha": "^1.0",
+        "drupal/google_tag": "^1.1"
     },
     "replace": {
     },
