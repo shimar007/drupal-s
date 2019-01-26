@@ -94,7 +94,7 @@ settings:
   draft_loaded_message: ''
   confirmation_type: inline
   confirmation_title: ''
-  confirmation_message: 'Thank you for contacting me. I will get back to as soon as possible.'
+  confirmation_message: 'Thank you for contacting me. I will get back to you as soon as possible.'
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
@@ -166,4 +166,38 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
-handlers: {  }
+handlers:
+  email:
+    id: email
+    label: 'Send Email To Admin'
+    handler_id: email
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: shimar007@gmail.com
+      to_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      from_mail: no-reply@shivakumarr.com
+      from_options: {  }
+      from_name: _default
+      subject: 'Shivakumar - Web Contact - Form Submission'
+      body: _default
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      html: true
+      attachments: false
+      twig: false
+      debug: false
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      theme_name: ''
