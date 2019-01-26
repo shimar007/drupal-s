@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.paragraph.add_form.field_attach_form
     - field.field.paragraph.add_form.field_form_heading
+    - field.field.paragraph.add_form.field_form_id
     - paragraphs.paragraphs_type.add_form
   module:
     - field_group
@@ -13,6 +14,7 @@ third_party_settings:
   field_group:
     group_add_form_fields:
       children:
+        - field_form_id
         - field_form_heading
         - field_attach_form
       parent_name: ''
@@ -30,14 +32,22 @@ bundle: add_form
 mode: default
 content:
   field_attach_form:
-    weight: 3
+    weight: 6
     settings:
       default_data: true
     third_party_settings: {  }
     type: webform_entity_reference_select
     region: content
   field_form_heading:
-    weight: 2
+    weight: 5
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_form_id:
+    weight: 4
     settings:
       size: 60
       placeholder: ''

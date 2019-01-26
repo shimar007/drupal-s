@@ -81,7 +81,14 @@
 </div>
   {% if page.footer %}
     <footer role="contentinfo">
-      {{ page.footer }}
+      <div class="row">
+        <div class="twelve columns">
+          {{ page.footer }}
+          <div id="go-top">
+            <a class="smoothscroll" title="Back to Top" href="#home"><i class="icon-up-open"></i></a>
+          </div>
+        </div>
+      </div>
     </footer>
   {% endif %}
 </div>{# /.layout-container #}

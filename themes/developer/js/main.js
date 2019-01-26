@@ -26,9 +26,9 @@
 	    $target = $(target);
 
 	    $('html, body').stop().animate({
-	        'scrollTop': $target.offset().top
+	        'scrollTop': $target.offset().top - 100
 	    }, 800, 'swing', function () {
-	        window.location.hash = target;
+	        //$('.nav').hide();
 	    });
 	});
 
@@ -62,6 +62,11 @@
 /*----------------------------------------------------*/
 /*	Fade In/Out Primary Navigation
 ------------------------------------------------------*/
+   /*$(".mobile-btn").on('click',function (e) {
+      e.preventDefault();
+      $(".nav").toggle();
+   });*/
+
 
    $(window).on('scroll', function() {
 
@@ -69,7 +74,7 @@
 		var y = $(window).scrollTop();
       var nav = $('#nav-wrap');
 
-	   if ( (y > h*.20) && (y < h) && ($(window).outerWidth() > 768 ) ) {
+      if ( (y > h*.20) && (y < h) && ($(window).outerWidth() > 768 ) ) {
 	      nav.fadeOut('fast');
 	   }
       else {
@@ -89,14 +94,12 @@
 ------------------------------------------------------*/
 
     $('.item-wrap a').magnificPopup({
-
-       type:'inline',
-       fixedContentPos: false,
-       removalDelay: 200,
-       showCloseBtn: false,
-       mainClass: 'mfp-fade'
-
-    });
+      type:'inline',
+      fixedContentPos: false,
+      removalDelay: 200,
+      showCloseBtn: false,
+      mainClass: 'mfp-fade'
+   });
 
     $(document).on('click', '.popup-modal-dismiss', function (e) {
     		e.preventDefault();
@@ -118,6 +121,8 @@
       animationSpeed: 600,
       randomize: false,
    });
+
+
 });
 
 

@@ -806,6 +806,10 @@ properly.
    height: 50px;
 }
 
+.mobile-btn {
+   cursor: pointer;
+}
+
 .header-banner {
    width: 100vw;
    height: 50vh;
