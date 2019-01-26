@@ -873,3 +873,7 @@ properly.
    border-bottom: 3px solid #F06000;
    padding-bottom: 6px;
 }
+
+.footer {
+   margin: 40px 0px;
+}

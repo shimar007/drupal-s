@@ -43,52 +43,36 @@
  */
 #}
 <div class="layout-container">
-  <header role="banner" class="header">
+    {% include '@developer/components/header.html.twig' %}
+    <div class="content-container">
     <div class="row">
-      {{ page.header }}
-      {{ page.primary_menu }}
-    </div>
-  </header>
-  <div class="content-container">
-  <div class="row">
-    <div class="secondary-section">
-        <div class="row">
-        {{ page.secondary_menu }}
-        {{ page.highlighted }}
-        {{ page.help }}
+        <div class="secondary-section">
+            <div class="row">
+            {{ page.secondary_menu }}
+            {{ page.highlighted }}
+            {{ page.help }}
+            </div>
         </div>
-    </div>
-    <div class="breadcrumbs">
-        {{ page.breadcrumb }}
-    </div>
-    <main role="main">
-        <a id="main-content" tabindex="-1"></a>{# link is in html.html.twig #}
-        <div class="layout-content">
-        {{ page.content }}
-        </div>{# /.layout-content #}
-        {% if page.sidebar_first %}
-        <aside class="layout-sidebar-first" role="complementary">
-            {{ page.sidebar_first }}
-        </aside>
-        {% endif %}
-        {% if page.sidebar_second %}
-        <aside class="layout-sidebar-second" role="complementary">
-            {{ page.sidebar_second }}
-        </aside>
-        {% endif %}
-    </main>
-  </div>
-</div>
-  {% if page.footer %}
-    <footer role="contentinfo">
-      <div class="row">
-        <div class="twelve columns">
-          {{ page.footer }}
-          <div id="go-top">
-            <a class="smoothscroll" title="Back to Top" href="#home"><i class="icon-up-open"></i></a>
-          </div>
+        <div class="breadcrumbs">
+            {{ page.breadcrumb }}
         </div>
-      </div>
-    </footer>
-  {% endif %}
+        <main role="main">
+            <a id="main-content" tabindex="-1"></a>{# link is in html.html.twig #}
+            <div class="layout-content">
+            {{ page.content }}
+            </div>{# /.layout-content #}
+            {% if page.sidebar_first %}
+            <aside class="layout-sidebar-first" role="complementary">
+                {{ page.sidebar_first }}
+            </aside>
+            {% endif %}
+            {% if page.sidebar_second %}
+            <aside class="layout-sidebar-second" role="complementary">
+                {{ page.sidebar_second }}
+            </aside>
+            {% endif %}
+        </main>
+    </div>
+    </div>
+    {% include '@developer/components/footer.html.twig' %}
 </div>{# /.layout-container #}

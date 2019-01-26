@@ -43,12 +43,7 @@
  */
 #}
 <div class="layout-container">
-  <header role="banner" class="header">
-    <div class="row">
-      {{ page.header }}
-      {{ page.primary_menu }}
-    </div>
-  </header>
+  {% include '@developer/components/header.html.twig' %}
   <div class="content-container">
   <div class="secondary-section">
     <div class="row">
@@ -76,17 +71,6 @@
       </aside>
     {% endif %}
   </main>
+  {% include '@developer/components/footer.html.twig' %}
 </div>
-  {% if page.footer %}
-    <footer role="contentinfo">
-      <div class="row">
-        <div class="twelve columns">
-          {{ page.footer }}
-          <div id="go-top">
-            <a class="smoothscroll" title="Back to Top" href="#home"><i class="icon-up-open"></i></a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  {% endif %}
 </div>{# /.layout-container #}
