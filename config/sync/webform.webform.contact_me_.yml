@@ -16,7 +16,7 @@ elements: "full_name:\n  '#type': textfield\n  '#title': 'Full Name'\n  '#requir
 css: ''
 javascript: ''
 settings:
-  ajax: false
+  ajax: true
   ajax_scroll_top: form
   page: true
   page_submit_path: ''

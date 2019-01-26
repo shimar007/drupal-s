@@ -1,0 +1,32 @@
+uuid: 431d527e-f807-4fd7-bd22-f57053565385
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.add_form.field_attach_form
+    - field.field.paragraph.add_form.field_form_heading
+    - paragraphs.paragraphs_type.add_form
+  module:
+    - webform
+id: paragraph.add_form.default
+targetEntityType: paragraph
+bundle: add_form
+mode: default
+content:
+  field_attach_form:
+    weight: 0
+    label: hidden
+    settings:
+      source_entity: true
+    third_party_settings: {  }
+    type: webform_entity_reference_entity_view
+    region: content
+  field_form_heading:
+    weight: 1
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden: {  }

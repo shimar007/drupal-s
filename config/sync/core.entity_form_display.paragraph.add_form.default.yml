@@ -1,0 +1,50 @@
+uuid: 7d07d973-93f9-4058-b11f-b7c6ded6ba47
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.add_form.field_attach_form
+    - field.field.paragraph.add_form.field_form_heading
+    - paragraphs.paragraphs_type.add_form
+  module:
+    - field_group
+    - webform
+third_party_settings:
+  field_group:
+    group_add_form_fields:
+      children:
+        - field_form_heading
+        - field_attach_form
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        id: ''
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Add Form - Fields'
+id: paragraph.add_form.default
+targetEntityType: paragraph
+bundle: add_form
+mode: default
+content:
+  field_attach_form:
+    weight: 3
+    settings:
+      default_data: true
+    third_party_settings: {  }
+    type: webform_entity_reference_select
+    region: content
+  field_form_heading:
+    weight: 2
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+hidden:
+  created: true
+  status: true
+  uid: true

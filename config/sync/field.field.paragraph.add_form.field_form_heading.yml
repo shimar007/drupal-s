@@ -1,0 +1,19 @@
+uuid: ae9b351e-8461-4c97-815f-ae19aaee9cb7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_form_heading
+    - paragraphs.paragraphs_type.add_form
+id: paragraph.add_form.field_form_heading
+field_name: field_form_heading
+entity_type: paragraph
+bundle: add_form
+label: 'Form Heading'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -6,6 +6,7 @@ dependencies:
     - field.storage.node.field_body_content
     - node.type.home_page
     - paragraphs.paragraphs_type.about_us
+    - paragraphs.paragraphs_type.add_form
     - paragraphs.paragraphs_type.home_page_header_
     - paragraphs.paragraphs_type.resume
   module:
@@ -28,6 +29,7 @@ settings:
       home_page_header_: home_page_header_
       about_us: about_us
       resume: resume
+      add_form: add_form
     target_bundles_drag_drop:
       home_page_header_:
         enabled: true
@@ -38,4 +40,16 @@ settings:
       resume:
         enabled: true
         weight: 6
+      add_form:
+        enabled: true
+        weight: 9
+      education_details:
+        weight: 10
+        enabled: false
+      technical_skills:
+        weight: 13
+        enabled: false
+      work_experience_details:
+        weight: 14
+        enabled: false
 field_type: entity_reference_revisions

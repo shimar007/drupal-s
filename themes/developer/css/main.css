@@ -511,6 +511,7 @@ fieldset { margin-bottom: 24px; }
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="tel"],
 textarea,
 select {
    display: block;
@@ -523,8 +524,8 @@ select {
    font-size: 15px;
    line-height: 24px;
 	color: #647373;
-	background: #D3D9D9;
-
+   background: #D3D9D9;
+   width: 100%;
 }
 
 /* select { padding: 0;
@@ -534,6 +535,7 @@ select {
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="email"]:focus,
+input[type="tel"]:focus,
 textarea:focus {
    color: #B3B7BC;
 	background-color: #3d4145;
@@ -861,4 +863,9 @@ properly.
 
 .work .work-info ul li {
    list-style-type: disc;
+}
+
+.add-form h2 {
+   border-bottom: 3px solid #F06000;
+   padding-bottom: 6px;
 }
