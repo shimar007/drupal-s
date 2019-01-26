@@ -50,10 +50,10 @@
   <div{{ attributes.addClass(classes) }}>
     {% block content %}
     <div class="row">
-        <div class="three columns">
+        <div class="three columns header-col">
             <h2>{{ content.field_form_heading|field_value }}</h2>
         </div>
-        <div class="nine columns">
+        <div class="nine columns main-col">
             {{ content.field_attach_form }}
         </div>
     </div>

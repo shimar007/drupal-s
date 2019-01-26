@@ -229,7 +229,7 @@
    /* Resume Section
    --------------------------------------------------------------------- */
    #resume .header-col {
-      padding-top: 0;
+      padding-top: 20px;
       margin-bottom: 48px;
       text-align: center;
    }
@@ -238,6 +238,15 @@
    #resume h3, #resume .info { text-align: center; }
       
    .bars { width: 100%; }
+
+
+   /*Add Form*/
+
+   .add-form .header-col {
+      padding-top: 20px;
+      margin-bottom: 48px;
+      text-align: center;
+   }
 
 
    /* Call To Action Section
