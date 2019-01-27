@@ -28,7 +28,8 @@
         "drupal/noreqnewpass": "^1.1",
         "drupal/captcha": "^1.0",
         "drupal/google_tag": "^1.1",
-        "drupal/minifyhtml": "^1.6"
+        "drupal/minifyhtml": "^1.6",
+        "drupal/robotstxt": "^1.2"
     },
     "replace": {
     },
