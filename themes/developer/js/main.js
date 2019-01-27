@@ -28,8 +28,9 @@
 	    $('html, body').stop().animate({
 	        'scrollTop': $target.offset().top - 100
 	    }, 800, 'swing', function () {
-	        //$('.nav').hide();
-	    });
+         var nav = $('.nav');
+         nav.fadeOut('fast');
+       });
 	});
 
 
@@ -62,10 +63,10 @@
 /*----------------------------------------------------*/
 /*	Fade In/Out Primary Navigation
 ------------------------------------------------------*/
-   /*$(".mobile-btn").on('click',function (e) {
+   $(".mobile-btn").on('click',function (e) {
       e.preventDefault();
-      $(".nav").toggle();
-   });*/
+      $(".nav").show();
+   });
 
 
    $(window).on('scroll', function() {
@@ -73,6 +74,8 @@
 		var h = $('header').height();
 		var y = $(window).scrollTop();
       var nav = $('#nav-wrap');
+
+
 
       if ( (y > h*.20) && (y < h) && ($(window).outerWidth() > 768 ) ) {
 	      nav.fadeOut('fast');
