@@ -141,3 +141,8 @@ MORE INFORMATION
 
 export PATH="$HOME/.composer/vendor/bin:$PATH" - to ensure that drush runs on the latest version of the server
 Adding SSL to domain - https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-16-04
+
+Adding path variable to bash file
+echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
