@@ -28,8 +28,10 @@
 	    $('html, body').stop().animate({
 	        'scrollTop': $target.offset().top - 100
 	    }, 800, 'swing', function () {
-         var nav = $('.nav');
-         nav.fadeOut('fast');
+         if($(window).outerWidth() < 500) {
+            var nav = $('.nav');
+            nav.fadeOut('fast');
+         }
        });
 	});
 
