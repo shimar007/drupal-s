@@ -158,8 +158,8 @@
    }
 
    /* display menu panels */
-	#nav-wrap:target > ul#nav	{
-	   display: block;
+	#nav-wrap:target > ul#nav, #nav-wrap > ul#nav	{
+	   display: none;
       padding: 30px 20px 48px 20px;
       background: #2B2B2B;
       margin: 20px 30px;
