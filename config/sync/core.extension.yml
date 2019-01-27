@@ -44,6 +44,7 @@ module:
   menu_ui: 0
   metatag: 0
   metatag_views: 0
+  minifyhtml: 0
   node: 0
   noreqnewpass: 0
   options: 0
