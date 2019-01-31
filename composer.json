@@ -31,7 +31,8 @@
         "drupal/minifyhtml": "^1.6",
         "drupal/robotstxt": "^1.2",
         "drupal/sitemap": "^1.5",
-        "drupal/simple_sitemap": "^3.0"
+        "drupal/simple_sitemap": "^3.0",
+        "drupal/scheduler": "^1.0"
     },
     "replace": {
     },

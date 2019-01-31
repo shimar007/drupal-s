@@ -56,6 +56,7 @@ module:
   rest_menu_items: 0
   restui: 0
   robotstxt: 0
+  scheduler: 0
   search: 0
   serialization: 0
   shortcut: 0
