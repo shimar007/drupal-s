@@ -104,8 +104,9 @@ class RestMenuItemsResource extends ResourceBase {
    *
    * @return \Drupal\rest\ResourceResponse
    *   The response containing a list of bundle names.
-   *
+
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function get($menu_name = NULL) {
     if ($menu_name) {
@@ -130,7 +131,13 @@ class RestMenuItemsResource extends ResourceBase {
 
       // Return if the menu does not exist or has no entries.
       if (empty($tree)) {
-        return new ResourceResponse($tree);
+        $response = new ResourceResponse($tree);
+
+        if ($response instanceof CacheableResponseInterface) {
+          $response->addCacheableDependency(new RestMenuItemsCacheableDependency($menu_name, $this->minDepth, $this->maxDepth));
+        }
+
+        return $response;
       }
 
       // Transform the tree using the manipulators you want.
@@ -175,6 +182,7 @@ class RestMenuItemsResource extends ResourceBase {
    *   The already created items.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function getMenuItems(array $tree, array &$items = []) {
     $config = $this->configFactory->get('rest_menu_items.config');
@@ -189,6 +197,7 @@ class RestMenuItemsResource extends ResourceBase {
       $url = $item_value['url'];
 
       $newValue = [];
+
       foreach ($outputValues as $valueKey) {
         if (!empty($valueKey)) {
           $this->getElementValue($newValue, $valueKey, $org_link, $url);
@@ -239,12 +248,19 @@ class RestMenuItemsResource extends ResourceBase {
    *   The URL object of the menu item.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  private function getElementValue(array &$returnArray, $key, MenuLinkInterface $link, Url $url) {
+  protected function getElementValue(array &$returnArray, $key, MenuLinkInterface $link, Url $url) {
     $external = $url->isExternal();
     $routed = $url->isRouted();
     $existing = TRUE;
     $value = NULL;
+
+    // Check if the url is a <nolink> and do not do anything for some keys.
+    $itemsToRemoveWhenNoLink = ['uri', 'alias', 'absolute', 'relative'];
+    if (!$url->isExternal() && $url->getRouteName() === '<nolink>' && in_array($key, $itemsToRemoveWhenNoLink)) {
+      return;
+    }
 
     if ($external || !$routed) {
       $uri = $url->getUri();

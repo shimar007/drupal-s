@@ -32,7 +32,8 @@
         "drupal/robotstxt": "^1.2",
         "drupal/sitemap": "^1.5",
         "drupal/simple_sitemap": "^3.0",
-        "drupal/scheduler": "^1.0"
+        "drupal/scheduler": "^1.0",
+        "drupal/events_log_track": "^1.1"
     },
     "replace": {
     },
