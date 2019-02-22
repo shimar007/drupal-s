@@ -9,14 +9,15 @@ label: 'URL - Structure'
 type: 'canonical_entities:node'
 pattern: '[node:title]'
 selection_criteria:
-  c4728583-e6ac-431b-81e5-b6bd7e245ff2:
+  0e4d6406-aeee-43bc-9b35-0d197b152d81:
     id: node_type
     bundles:
       home_page: home_page
+      page: page
     negate: false
     context_mapping:
       node: node
-    uuid: c4728583-e6ac-431b-81e5-b6bd7e245ff2
+    uuid: 0e4d6406-aeee-43bc-9b35-0d197b152d81
 selection_logic: and
 weight: -5
 relationships: {  }
