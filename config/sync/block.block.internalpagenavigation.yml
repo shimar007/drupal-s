@@ -1,0 +1,24 @@
+uuid: 1f40005a-351c-4f1f-9361-1f89f0cafc80
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.internal-page---navigation
+  module:
+    - system
+  theme:
+    - developer
+id: internalpagenavigation
+theme: developer
+region: footer
+weight: -7
+provider: null
+plugin: 'system_menu_block:internal-page---navigation'
+settings:
+  id: 'system_menu_block:internal-page---navigation'
+  label: 'Reference Links'
+  provider: system
+  label_display: visible
+  level: 1
+  depth: 0
+visibility: {  }

@@ -1,0 +1,22 @@
+uuid: 403c9106-e3c3-4dd7-bf48-4c32f5eebf35
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.feeds_drupal
+  module:
+    - text
+id: node.feeds_drupal.body
+field_name: body
+entity_type: node
+bundle: feeds_drupal
+label: Body
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+field_type: text_with_summary

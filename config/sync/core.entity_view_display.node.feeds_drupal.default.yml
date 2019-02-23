@@ -1,0 +1,53 @@
+uuid: 021f9212-97fc-4086-bfd8-bf43547607cd
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.feeds_drupal.body
+    - field.field.node.feeds_drupal.feeds_item
+    - field.field.node.feeds_drupal.field_link_to
+    - field.field.node.feeds_drupal.field_tags_drupal
+    - node.type.feeds_drupal
+  module:
+    - link
+    - text
+    - user
+id: node.feeds_drupal.default
+targetEntityType: node
+bundle: feeds_drupal
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_link_to:
+    weight: 102
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: '0'
+      target: '0'
+    third_party_settings: {  }
+    type: link
+    region: content
+  field_tags_drupal:
+    weight: 103
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  feeds_item: true

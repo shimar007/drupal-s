@@ -1,0 +1,29 @@
+uuid: 3be8d39a-7c39-4571-99eb-b5df55e7ab4e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_tags_drupal
+    - node.type.feeds_drupal
+    - taxonomy.vocabulary.drupal_feeds_tags
+id: node.feeds_drupal.field_tags_drupal
+field_name: field_tags_drupal
+entity_type: node
+bundle: feeds_drupal
+label: Tags
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      drupal_feeds_tags: drupal_feeds_tags
+    sort:
+      field: name
+      direction: asc
+    auto_create: true
+    auto_create_bundle: ''
+field_type: entity_reference

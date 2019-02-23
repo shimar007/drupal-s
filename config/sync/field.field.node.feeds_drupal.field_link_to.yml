@@ -1,0 +1,23 @@
+uuid: cf44707f-8bfc-4692-82ff-2674add5ccb6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_link_to
+    - node.type.feeds_drupal
+  module:
+    - link
+id: node.feeds_drupal.field_link_to
+field_name: field_link_to
+entity_type: node
+bundle: feeds_drupal
+label: 'Link To'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  link_type: 17
+  title: 1
+field_type: link

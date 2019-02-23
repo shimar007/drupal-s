@@ -1,6 +1,8 @@
 module:
+  adsense: 0
   automated_cron: 0
   basic_auth: 0
+  better_exposed_filters: 0
   big_pipe: 0
   block: 0
   block_content: 0
@@ -20,6 +22,7 @@ module:
   datetime: 0
   dblog: 0
   dynamic_page_cache: 0
+  easy_breadcrumb: 0
   editor: 0
   editor_advanced_link: 0
   entity_reference_display: 0
@@ -31,6 +34,7 @@ module:
   event_log_track_node: 0
   event_log_track_taxonomy: 0
   event_log_track_user: 0
+  feeds: 0
   field: 0
   field_group: 0
   field_ui: 0

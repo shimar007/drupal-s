@@ -34,7 +34,11 @@
         "drupal/simple_sitemap": "^3.0",
         "drupal/scheduler": "^1.0",
         "drupal/events_log_track": "^1.1",
-        "drupal/codesnippet": "^1.6"
+        "drupal/codesnippet": "^1.6",
+        "drupal/feeds": "^3.0",
+        "drupal/easy_breadcrumb": "^1.8",
+        "drupal/better_exposed_filters": "^3.0",
+        "drupal/adsense": "^1.0"
     },
     "replace": {
     },

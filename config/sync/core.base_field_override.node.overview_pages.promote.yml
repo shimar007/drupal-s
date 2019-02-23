@@ -1,0 +1,22 @@
+uuid: ecd5b027-0215-40fd-8e29-a5ef39c1e89f
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.overview_pages
+id: node.overview_pages.promote
+field_name: promote
+entity_type: node
+bundle: overview_pages
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

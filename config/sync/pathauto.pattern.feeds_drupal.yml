@@ -1,0 +1,22 @@
+uuid: 39757776-9dc7-46d2-aa18-dadc52dea3dc
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: feeds_drupal
+label: 'Feeds - Drupal'
+type: 'canonical_entities:node'
+pattern: 'drupal/[node:title]'
+selection_criteria:
+  0b332f53-1e93-4c52-800b-a77732c0fdb8:
+    id: node_type
+    bundles:
+      feeds_drupal: feeds_drupal
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 0b332f53-1e93-4c52-800b-a77732c0fdb8
+selection_logic: and
+weight: -5
+relationships: {  }

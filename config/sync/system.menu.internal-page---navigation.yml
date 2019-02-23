@@ -1,0 +1,8 @@
+uuid: 3859e18c-a93e-423c-8fc4-b45057e5a842
+langcode: en
+status: true
+dependencies: {  }
+id: internal-page---navigation
+label: 'Internal Page - Navigation'
+description: ''
+locked: false

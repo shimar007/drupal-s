@@ -11,7 +11,7 @@ dependencies:
 id: footercopyright
 theme: developer
 region: footer
-weight: 0
+weight: -6
 provider: null
 plugin: 'block_content:cf698eac-a2ee-4a49-9f7e-126aff9a2c97'
 settings:

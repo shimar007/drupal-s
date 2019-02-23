@@ -7799,5 +7799,298 @@
             "source": "http://cgit.drupalcode.org/codesnippet",
             "issues": "http://drupal.org/project/issues/codesnippet"
         }
+    },
+    {
+        "name": "drupal/feeds",
+        "version": "3.0.0-alpha4",
+        "version_normalized": "3.0.0.0-alpha4",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupal.org/project/feeds",
+            "reference": "8.x-3.0-alpha4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/feeds-8.x-3.0-alpha4.zip",
+            "reference": "8.x-3.0-alpha4",
+            "shasum": "3d1ff885e2f85bb0da5d5421466ec26a29ee0857"
+        },
+        "require": {
+            "drupal/core": "^8.3.0"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-3.x": "3.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-3.0-alpha4",
+                "datestamp": "1546264264",
+                "security-coverage": {
+                    "status": "not-covered",
+                    "message": "Project has not opted into security advisory coverage!"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "Dave Reid",
+                "homepage": "https://www.drupal.org/user/53892"
+            },
+            {
+                "name": "Ian Ward",
+                "homepage": "https://www.drupal.org/user/4736"
+            },
+            {
+                "name": "MegaChriz",
+                "homepage": "https://www.drupal.org/user/654114"
+            },
+            {
+                "name": "Will White",
+                "homepage": "https://www.drupal.org/user/32237"
+            },
+            {
+                "name": "alex_b",
+                "homepage": "https://www.drupal.org/user/53995"
+            },
+            {
+                "name": "e2thex",
+                "homepage": "https://www.drupal.org/user/189123"
+            },
+            {
+                "name": "febbraro",
+                "homepage": "https://www.drupal.org/user/43670"
+            },
+            {
+                "name": "franz",
+                "homepage": "https://www.drupal.org/user/581844"
+            },
+            {
+                "name": "jmiccolis",
+                "homepage": "https://www.drupal.org/user/31731"
+            },
+            {
+                "name": "kking",
+                "homepage": "https://www.drupal.org/user/24399"
+            },
+            {
+                "name": "tobby",
+                "homepage": "https://www.drupal.org/user/154797"
+            },
+            {
+                "name": "tristanoneil",
+                "homepage": "https://www.drupal.org/user/340659"
+            },
+            {
+                "name": "twistor",
+                "homepage": "https://www.drupal.org/user/473738"
+            },
+            {
+                "name": "yhahn",
+                "homepage": "https://www.drupal.org/user/264833"
+            }
+        ],
+        "description": "Aggregates RSS/Atom/RDF feeds, imports CSV files and more.",
+        "homepage": "https://www.drupal.org/project/feeds",
+        "keywords": [
+            "Drupal"
+        ],
+        "support": {
+            "source": "http://cgit.drupalcode.org/feeds",
+            "issues": "https://www.drupal.org/project/issues/feeds"
+        }
+    },
+    {
+        "name": "drupal/easy_breadcrumb",
+        "version": "1.8.0",
+        "version_normalized": "1.8.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupal.org/project/easy_breadcrumb",
+            "reference": "8.x-1.8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/easy_breadcrumb-8.x-1.8.zip",
+            "reference": "8.x-1.8",
+            "shasum": "75be89f78e9b47daf0bb54429652180a2e6063b5"
+        },
+        "require": {
+            "drupal/core": "~8.0"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-1.x": "1.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-1.8",
+                "datestamp": "1524864180",
+                "security-coverage": {
+                    "status": "covered",
+                    "message": "Covered by Drupal's security advisory policy"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "Greg Boggs",
+                "homepage": "https://www.drupal.org/user/153069"
+            },
+            {
+                "name": "RenatoG",
+                "homepage": "https://www.drupal.org/user/3326031"
+            },
+            {
+                "name": "loopduplicate",
+                "homepage": "https://www.drupal.org/user/717290"
+            },
+            {
+                "name": "sonemonu",
+                "homepage": "https://www.drupal.org/user/1667988"
+            },
+            {
+                "name": "tatarbj",
+                "homepage": "https://www.drupal.org/user/649590"
+            },
+            {
+                "name": "volkswagenchick",
+                "homepage": "https://www.drupal.org/user/3332522"
+            }
+        ],
+        "description": "Adds configuration to the system breadcrumbs.",
+        "homepage": "https://www.drupal.org/project/easy_breadcrumb",
+        "support": {
+            "source": "http://cgit.drupalcode.org/easy_breadcrumb"
+        }
+    },
+    {
+        "name": "drupal/better_exposed_filters",
+        "version": "3.0.0-alpha6",
+        "version_normalized": "3.0.0.0-alpha6",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupal.org/project/better_exposed_filters",
+            "reference": "8.x-3.0-alpha6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/better_exposed_filters-8.x-3.0-alpha6.zip",
+            "reference": "8.x-3.0-alpha6",
+            "shasum": "0cd9849aa28eea822e18555107e4539d755d95ef"
+        },
+        "require": {
+            "drupal/core": "*"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-3.x": "3.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-3.0-alpha6",
+                "datestamp": "1550449381",
+                "security-coverage": {
+                    "status": "not-covered",
+                    "message": "Alpha releases are not covered by Drupal security advisories."
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0-or-later"
+        ],
+        "authors": [
+            {
+                "name": "chr.fritsch",
+                "homepage": "https://www.drupal.org/user/2103716"
+            },
+            {
+                "name": "jkopel",
+                "homepage": "https://www.drupal.org/user/66207"
+            },
+            {
+                "name": "mikeker",
+                "homepage": "https://www.drupal.org/user/192273"
+            },
+            {
+                "name": "mortona2k",
+                "homepage": "https://www.drupal.org/user/1029484"
+            },
+            {
+                "name": "rlhawk",
+                "homepage": "https://www.drupal.org/user/352283"
+            }
+        ],
+        "description": "Provides advanced options (such as links, checkboxes, or jQueryUI widgets) for exposed Views elements.",
+        "homepage": "https://www.drupal.org/project/better_exposed_filters",
+        "support": {
+            "source": "http://cgit.drupalcode.org/better_exposed_filters"
+        }
+    },
+    {
+        "name": "drupal/adsense",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupal.org/project/adsense",
+            "reference": "8.x-1.0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/adsense-8.x-1.0.zip",
+            "reference": "8.x-1.0",
+            "shasum": "a8072dc5cc54f2c333f29fb22ff457cb6a3121d7"
+        },
+        "require": {
+            "drupal/core": "~8.0"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-1.x": "1.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-1.0",
+                "datestamp": "1492959842",
+                "security-coverage": {
+                    "status": "covered",
+                    "message": "Covered by Drupal's security advisory policy"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "João Ventura",
+                "homepage": "https://www.drupal.org/u/jcnventura"
+            },
+            {
+                "name": "kbahey",
+                "homepage": "https://www.drupal.org/user/4063"
+            }
+        ],
+        "description": "Displays Google AdSense ads on your site to earn revenue.",
+        "homepage": "https://drupal.org/project/adsense",
+        "support": {
+            "source": "http://cgit.drupalcode.org/adsense",
+            "issues": "https://www.drupal.org/project/issues/adsense"
+        }
     }
 ]

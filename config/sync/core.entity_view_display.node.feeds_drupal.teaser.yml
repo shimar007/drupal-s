@@ -1,0 +1,30 @@
+uuid: 3207f30c-673c-407d-9874-83c44453f50b
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.feeds_drupal.body
+    - node.type.feeds_drupal
+  module:
+    - text
+    - user
+id: node.feeds_drupal.teaser
+targetEntityType: node
+bundle: feeds_drupal
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }

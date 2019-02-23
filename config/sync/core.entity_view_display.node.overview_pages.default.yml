@@ -1,0 +1,32 @@
+uuid: b4ae891c-3ff8-43a8-a482-61be605639b8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.overview_pages.body
+    - field.field.node.overview_pages.field_view_reference
+    - node.type.overview_pages
+  module:
+    - user
+    - viewsreference
+id: node.overview_pages.default
+targetEntityType: node
+bundle: overview_pages
+mode: default
+content:
+  field_view_reference:
+    type: viewsreference_formatter
+    weight: 1
+    region: content
+    label: hidden
+    settings:
+      plugin_types:
+        - block
+    third_party_settings: {  }
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  body: true
