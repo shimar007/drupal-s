@@ -268,7 +268,7 @@ display:
             trim_length: 80
             url_only: false
             url_plain: true
-            rel: '0'
+            rel: nofollow
             target: _blank
           group_column: ''
           group_columns: {  }
