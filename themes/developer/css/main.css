@@ -881,6 +881,7 @@ properly.
 
 .views-row {
    margin: 20px 0px;
+   word-wrap: break-word;
 }
 
 .menu--internal-page---navigation {
