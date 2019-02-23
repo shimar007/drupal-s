@@ -29,16 +29,16 @@ content:
     label: hidden
     settings:
       trim_length: 80
+      rel: nofollow
+      target: _blank
       url_only: false
       url_plain: false
-      rel: '0'
-      target: '0'
     third_party_settings: {  }
     type: link
     region: content
   field_tags_drupal:
     weight: 103
-    label: above
+    label: hidden
     settings:
       link: true
     third_party_settings: {  }
