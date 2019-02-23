@@ -599,6 +599,7 @@ input[type="checkbox"] { display: inline; }
    padding: 0 20px;
    min-height: 1px;
    float: left;
+   word-break: break-word;
 }
 .column.centered, .columns.centered  {
     float: none;
