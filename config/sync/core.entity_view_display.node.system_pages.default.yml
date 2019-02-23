@@ -1,0 +1,28 @@
+uuid: ecdd991d-bf23-4ee3-b4e5-7ea59caf1104
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.system_pages.body
+    - node.type.system_pages
+  module:
+    - text
+    - user
+id: node.system_pages.default
+targetEntityType: node
+bundle: system_pages
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }
