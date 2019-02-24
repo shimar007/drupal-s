@@ -7,16 +7,16 @@ dependencies:
 id: feeds_drupal
 label: 'Feeds - Drupal'
 type: 'canonical_entities:node'
-pattern: 'drupal/[node:title]'
+pattern: '[node:field_tags_drupal]/[node:title]'
 selection_criteria:
-  0b332f53-1e93-4c52-800b-a77732c0fdb8:
+  df4d6d4b-063b-45fb-8b1a-8e38485bed67:
     id: node_type
     bundles:
       feeds_drupal: feeds_drupal
     negate: false
     context_mapping:
       node: node
-    uuid: 0b332f53-1e93-4c52-800b-a77732c0fdb8
+    uuid: df4d6d4b-063b-45fb-8b1a-8e38485bed67
 selection_logic: and
 weight: -5
 relationships: {  }
