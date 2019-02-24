@@ -1,0 +1,29 @@
+uuid: 69862c0a-7a73-4362-9a19-f348b8fd5469
+langcode: en
+status: true
+dependencies:
+  config:
+    - feeds.feed_type.rss_feed_drupal
+    - field.storage.feeds_feed.field_tags
+    - taxonomy.vocabulary.drupal_feeds_tags
+id: feeds_feed.rss_feed_drupal.field_tags
+field_name: field_tags
+entity_type: feeds_feed
+bundle: rss_feed_drupal
+label: 'Feed Tags'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      drupal_feeds_tags: drupal_feeds_tags
+    sort:
+      field: name
+      direction: asc
+    auto_create: true
+    auto_create_bundle: ''
+field_type: entity_reference

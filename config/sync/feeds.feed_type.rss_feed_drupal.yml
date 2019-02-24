@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.feeds_drupal.body
     - field.field.node.feeds_drupal.field_link_to
+    - field.field.node.feeds_drupal.field_tags_drupal
     - node.type.feeds_drupal
   module:
     - node
@@ -31,7 +32,15 @@ processor_configuration:
   skip_hash_check: false
   values:
     type: feeds_drupal
-custom_sources: {  }
+custom_sources:
+  '':
+    label: ''
+    value: ''
+    machine_name: ''
+  drupal_news:
+    label: 'Drupal News'
+    value: 'Drupal News'
+    machine_name: drupal_news
 mappings:
   -
     target: body
@@ -50,3 +59,10 @@ mappings:
     map:
       uri: url
       title: ''
+  -
+    target: field_tags_drupal
+    map:
+      target_id: 'parent:field_tags'
+    settings:
+      reference_by: tid
+      autocreate: 0

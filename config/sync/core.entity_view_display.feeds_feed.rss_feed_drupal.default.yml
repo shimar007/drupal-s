@@ -1,0 +1,51 @@
+uuid: 45bb935a-dfdd-4a2d-abde-09f218709aa9
+langcode: en
+status: true
+dependencies:
+  config:
+    - feeds.feed_type.rss_feed_drupal
+    - field.field.feeds_feed.rss_feed_drupal.field_tags
+  module:
+    - feeds
+    - user
+id: feeds_feed.rss_feed_drupal.default
+targetEntityType: feeds_feed
+bundle: rss_feed_drupal
+mode: default
+content:
+  field_tags:
+    weight: 2
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  imported:
+    label: inline
+    type: timestamp_ago
+    weight: 1
+    region: content
+    settings:
+      future_format: '@interval hence'
+      past_format: '@interval ago'
+      granularity: 2
+    third_party_settings: {  }
+  next:
+    label: inline
+    type: timestamp
+    weight: 1
+    region: content
+    settings:
+      date_format: medium
+      custom_date_format: ''
+      timezone: ''
+    third_party_settings: {  }
+  source:
+    label: inline
+    type: feeds_uri_link
+    weight: -3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }
