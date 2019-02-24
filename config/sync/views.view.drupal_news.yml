@@ -99,7 +99,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<h2>{{ title }} </h2>'
+            text: '<h2>{{ title }}</h2>'
             make_link: false
             path: ''
             absolute: false
