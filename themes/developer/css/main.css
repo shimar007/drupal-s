@@ -599,7 +599,7 @@ input[type="checkbox"] { display: inline; }
    padding: 0 20px;
    min-height: 1px;
    float: left;
-   word-break: break-word;
+   
 }
 .column.centered, .columns.centered  {
     float: none;
@@ -896,4 +896,9 @@ properly.
 
 .menu--internal-page---navigation a:hover {
    color: #11ABB0;
+}
+
+.menu--internal-page---navigation h2 {
+   border-bottom: 3px solid #F06000;
+   padding-bottom: 6px;
 }

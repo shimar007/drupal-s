@@ -16,7 +16,7 @@ provider: null
 plugin: 'system_menu_block:internal-page---navigation'
 settings:
   id: 'system_menu_block:internal-page---navigation'
-  label: 'Reference Links'
+  label: 'More news from ...'
   provider: system
   label_display: visible
   level: 1
