@@ -1,0 +1,21 @@
+uuid: cf1e66c2-b4cb-46fd-8c17-dfc1c33ad908
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_meta_tags
+    - node.type.feeds_drupal
+  module:
+    - metatag
+id: node.feeds_drupal.field_meta_tags
+field_name: field_meta_tags
+entity_type: node
+bundle: feeds_drupal
+label: 'Meta Tags'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: metatag
