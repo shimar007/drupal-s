@@ -40,7 +40,8 @@
         "drupal/better_exposed_filters": "^3.0",
         "drupal/adsense": "^1.0",
         "drupal/config_ignore": "^2.1",
-        "drupal/mailchimp": "^1.8"
+        "drupal/mailchimp": "^1.8",
+        "drupal/adminimal_theme": "^1.4"
     },
     "replace": {
     },
