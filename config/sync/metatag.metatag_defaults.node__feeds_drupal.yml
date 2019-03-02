@@ -1,0 +1,9 @@
+uuid: 8eff3182-2a82-4e53-9fce-8d1f87cd7037
+langcode: en
+status: true
+dependencies: {  }
+id: node__feeds_drupal
+label: 'Content: Feeds - Drupal'
+tags:
+  title: '[node:title] | [site:name]'
+  canonical_url: '[node:url]'
