@@ -5,6 +5,7 @@ namespace Drupal\content_sync\Form;
 use Drupal\Core\Archiver\ArchiveTar;
 use Drupal\Core\Config\DatabaseStorage;
 use Drupal\Core\Entity\ContentEntityType;
+use Drupal\Core\Serialization\Yaml;
 
 /**
  * Defines the content export form.
@@ -19,30 +20,33 @@ trait ContentExportTrait {
   /**
    * @param $entities
    *
+   * @param $export_type
+   * files => YAML files.
+   * snapshot => cs_db_snapshot table.
+   *
    * @return array
    */
-  public function generateBatch($entities) {
+  public function generateBatch($entities, $export_type = 'files') {
     //Set batch operations by entity type/bundle
     $operations = [];
-    $operations[] = [[$this, 'generateSiteUUIDFile'], [0 => 0]];
+    $operations[] = [[$this, 'generateSiteUUIDFile'], [0 => $export_type]];
     foreach ($entities as $entity) {
       $entity_to_export = [];
+      $entity['export_type'] = $export_type;
       $entity_to_export['values'][] = $entity;
       $operations[] = [[$this, 'processContentExportFiles'], $entity_to_export];
-    }
-    if (empty($operations)) {
-      $operations[] = [[$this, 'processContentExportFiles'], [0 => 0]];
     }
     //Set Batch
     $batch = [
       'operations' => $operations,
-      'finished' => 'finishContentExportBatch',
       'title' => $this->t('Exporting content'),
       'init_message' => $this->t('Starting content export.'),
       'progress_message' => $this->t('Completed @current step of @total.'),
       'error_message' => $this->t('Content export has encountered an error.'),
-      'file' => drupal_get_path('module', 'content_sync') . '/content_sync.batch.inc',
     ];
+    if ($export_type == 'files') {
+      $batch['finished'] = [$this,'finishContentExportBatch'];
+    }
     return $batch;
   }
 
@@ -61,9 +65,11 @@ trait ContentExportTrait {
       $context['sandbox']['current_number'] = 0;
       $context['sandbox']['max'] = count($files);
     }
+
     // Get submitted values
     $entity_type = $files[$context['sandbox']['progress']]['entity_type'];
     $entity_id = $files[$context['sandbox']['progress']]['entity_id'];
+    $export_type = $files[$context['sandbox']['progress']]['export_type'];
 
     //Validate that it is a Content Entity
     $instances = $this->getEntityTypeManager()->getDefinitions();
@@ -79,10 +85,17 @@ trait ContentExportTrait {
                               ->exportEntity($entity, $serializer_context);
       // Create the name
       $name = $entity_type . "." . $entity->bundle() . "." . $entity->uuid();
-      // Create the file.
-      $this->getArchiver()->addString("$name.yml", $exported_entity);
-      $context['message'] = $name;
-      $context['results'][] = $name;
+
+      if ($export_type == 'snapshot') {
+        //Save to cs_db_snapshot table.
+        $activeStorage = new DatabaseStorage(\Drupal::database(), 'cs_db_snapshot');
+        $activeStorage->write($name, Yaml::decode($exported_entity));
+      }else{
+        // Create the file.
+        $this->getArchiver()->addString("$name.yml", $exported_entity);
+        $context['message'] = $name;
+        $context['results'][] = $name;
+      }
     }
     $context['sandbox']['progress']++;
     if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
@@ -99,7 +112,7 @@ trait ContentExportTrait {
    * @param array $context
    *   The batch context.
    */
-  protected function generateSiteUUIDFile($data, &$context) {
+  public function generateSiteUUIDFile($data, &$context) {
 
     //Include Site UUID to YML file
     $site_config = \Drupal::config('system.site');
@@ -108,14 +121,14 @@ trait ContentExportTrait {
 
     // Set the name
     $name = "site.uuid";
-    // Create the file.
-    $this->getArchiver()->addString("$name.yml", Yaml::encode($entity));
 
-    //Save to cs_db_snapshot if being called from installer.
     if ($data == 'snapshot') {
-      // Insert Data
+      //Save to cs_db_snapshot table.
       $activeStorage = new DatabaseStorage(\Drupal::database(), 'cs_db_snapshot');
       $activeStorage->write($name, $entity);
+    }else{
+      // Create the file.
+      $this->getArchiver()->addString("$name.yml", Yaml::encode($entity));
     }
 
     $context['message'] = $name;
@@ -128,38 +141,40 @@ trait ContentExportTrait {
    *
    * Provide information about the Content Batch results.
    */
-  protected function finishContentExportBatch($success, $results, $operations) {
+   public function finishContentExportBatch($success, $results, $operations) {
     if ($success) {
-      $errors = $results['errors'];
-      unset($results['errors']);
+      if (isset($results['errors'])){
+        $errors = $results['errors'];
+        unset($results['errors']);
+      }
       $results = array_unique($results);
       // Log all the items processed
       foreach ($results as $key => $result) {
         if ($key != 'errors') {
           //drupal_set_message(t('Processed UUID @title.', array('@title' => $result)));
-          $this->getLogger()
+          $this->getExportLogger()
                ->info('Processed UUID @title.', [
                  '@title' => $result,
                  'link' => 'Export',
                ]);
         }
       }
-      if (!empty($errors)) {
+      if (isset($errors) && !empty($errors)) {
         // Log the errors
         $errors = array_unique($errors);
         foreach ($errors as $error) {
           //drupal_set_message($error, 'error');
-          $this->getLogger()->error($error);
+          $this->getExportLogger()->error($error);
         }
         // Log the note that the content was exported with errors.
         drupal_set_message($this->t('The content was exported with errors. <a href=":content-overview">Logs</a>', [':content-overview' => \Drupal::url('content.overview')]), 'warning');
-        $this->getLogger()
+        $this->getExportLogger()
              ->warning('The content was exported with errors.', ['link' => 'Export']);
       }
       else {
         // Log the new created export link if applicable.
         drupal_set_message($this->t('The content was exported successfully. <a href=":export-download">Download tar file</a>', [':export-download' => \Drupal::url('content.export_download')]));
-        $this->getLogger()
+        $this->getExportLogger()
              ->info('The content was exported successfully. <a href=":export-download">Download tar file</a>', [
                ':export-download' => \Drupal::url('content.export_download'),
                'link' => 'Export',
@@ -170,14 +185,14 @@ trait ContentExportTrait {
       // Log that there was an error
       $message = $this->t('Finished with an error.<a href=":content-overview">Logs</a>', [':content-overview' => \Drupal::url('content.overview')]);
       drupal_set_message($message);
-      $this->getLogger()
+      $this->getExportLogger()
            ->error('Finished with an error.', ['link' => 'Export']);
     }
   }
 
   protected function getArchiver() {
     if (!isset($this->archiver)) {
-      $this->archiver = new ArchiveTar($this->getTempFile());
+      $this->archiver = new ArchiveTar($this->getTempFile(), 'gz');
     }
     return $this->archiver;
   }
@@ -199,8 +214,7 @@ trait ContentExportTrait {
   /**
    * @return \Psr\Log\LoggerInterface
    */
-  abstract protected function getLogger();
+  abstract protected function getExportLogger();
 
 
 }
-

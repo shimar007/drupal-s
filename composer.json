@@ -41,7 +41,10 @@
         "drupal/adsense": "^1.0",
         "drupal/config_ignore": "^2.1",
         "drupal/mailchimp": "^1.8",
-        "drupal/adminimal_theme": "^1.4"
+        "drupal/adminimal_theme": "^1.4",
+        "drupal/filebrowser": "^2.0",
+        "drupal/datatables": "^1.0",
+        "drupal/views_bulk_operations": "^2.5"
     },
     "replace": {
     },
