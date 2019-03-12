@@ -12,7 +12,7 @@ dependencies:
 label: 'RSS Feed - Drupal'
 id: rss_feed_drupal
 description: 'Drupal News RSS Feed'
-import_period: 3600
+import_period: 10800
 fetcher: http
 fetcher_configuration:
   auto_detect_feeds: false
@@ -27,7 +27,7 @@ processor_configuration:
   update_non_existent: _keep
   expire: -1
   owner_feed_author: false
-  owner_id: 0
+  owner_id: 1
   authorize: true
   skip_hash_check: false
   values:
@@ -53,7 +53,8 @@ mappings:
     target: title
     map:
       value: title
-    unique: {  }
+    unique:
+      value: '1'
   -
     target: field_link_to
     map:
