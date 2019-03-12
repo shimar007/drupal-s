@@ -90,6 +90,10 @@ class ComposerStaticInitDrupal8
             'Mailchimp\\http\\' => 15,
             'Mailchimp\\' => 10,
         ),
+        'L' => 
+        array (
+            'League\\Csv\\' => 11,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -310,6 +314,10 @@ class ComposerStaticInitDrupal8
         'Mailchimp\\' => 
         array (
             0 => __DIR__ . '/..' . '/thinkshout/mailchimp-api-php/src',
+        ),
+        'League\\Csv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/csv/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

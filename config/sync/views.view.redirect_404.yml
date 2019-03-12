@@ -4,7 +4,10 @@ status: true
 dependencies:
   module:
     - redirect_404
+    - rest
+    - serialization
     - user
+    - views_data_export
 _core:
   default_config_hash: kAe9LN5CFd5dvECtV8RZtKnyvURX37zd7nIMOURm-U0
 id: redirect_404
@@ -506,16 +509,41 @@ display:
         - url.query_args
         - user.permissions
       tags: {  }
+  data_export_1:
+    display_plugin: data_export
+    id: data_export_1
+    display_title: 'Data export'
+    position: 2
+    display_options:
+      display_extenders:
+        metatag_display_extender: {  }
+      path: urls-404-export
+      filename: ''
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - request_format
+        - url
+        - user.permissions
+      tags: {  }
   page_1:
     display_plugin: page
     id: page_1
     display_title: Page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender: {  }
       path: admin/config/search/redirect/404
       display_description: 'Lists 404 error paths with no redirect assigned yet.'
       enabled: true
+      pager:
+        type: none
+        options:
+          offset: 0
+      defaults:
+        pager: false
     cache_metadata:
       max-age: -1
       contexts:

@@ -20,6 +20,7 @@ module:
   content_sync: 0
   contextual: 0
   cors: 0
+  csv_serialization: 0
   ctools: 0
   datatables: 0
   datetime: 0
@@ -90,6 +91,7 @@ module:
   update: 0
   user: 0
   views_bulk_operations: 0
+  views_data_export: 0
   views_ui: 0
   viewsreference: 0
   webform: 0
