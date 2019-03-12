@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   module:
+    - csv_serialization
     - redirect_404
     - rest
     - serialization
@@ -519,6 +520,34 @@ display:
         metatag_display_extender: {  }
       path: urls-404-export
       filename: ''
+      style:
+        type: data_export
+        options:
+          formats:
+            csv: csv
+          csv_settings:
+            delimiter: ','
+            enclosure: '"'
+            escape_char: \
+            strip_tags: true
+            trim: true
+            encoding: utf8
+          xls_settings:
+            xls_format: Excel2007
+            metadata:
+              creator: ''
+              last_modified_by: ''
+              title: ''
+              description: ''
+              subject: ''
+              keywords: ''
+              category: ''
+              manager: ''
+              company: ''
+      pager:
+        type: none
+        options:
+          offset: 0
     cache_metadata:
       max-age: -1
       contexts:
@@ -539,9 +568,23 @@ display:
       display_description: 'Lists 404 error paths with no redirect assigned yet.'
       enabled: true
       pager:
-        type: none
+        type: mini
         options:
+          items_per_page: 20
           offset: 0
+          id: 0
+          total_pages: null
+          tags:
+            previous: ‹‹
+            next: ››
+          expose:
+            items_per_page: false
+            items_per_page_label: 'Items per page'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- All -'
+            offset: false
+            offset_label: Offset
       defaults:
         pager: false
     cache_metadata:
