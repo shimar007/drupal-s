@@ -12,6 +12,7 @@ permissions:
   - 'access comments'
   - 'access content'
   - 'access site-wide contact form'
+  - 'display eu cookie compliance popup'
   - 'restful get rest_menu_item'
   - 'search content'
   - 'use text format restricted_html'

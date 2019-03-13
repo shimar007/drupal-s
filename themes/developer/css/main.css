@@ -902,3 +902,11 @@ properly.
    border-bottom: 3px solid #F06000;
    padding-bottom: 6px;
 }
+
+.eu-cookie-compliance-message {
+   margin: 20px 0 0;
+}
+
+.eu-cookie-compliance-buttons {
+   margin: 15px 0 1em;
+}
