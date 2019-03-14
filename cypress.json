@@ -1,5 +1,3 @@
 {
-    "baseUrl": "http://drupal-shiva.local",
-    "viewportWidth": 375,
-    "viewportHeight": 660
+    "baseUrl": "http://drupal-shiva.local"
 }
