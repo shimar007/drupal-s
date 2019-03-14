@@ -12,7 +12,7 @@ id: contact_me_
 title: 'Contact Me !'
 description: ''
 category: ''
-elements: "full_name:\n  '#type': textfield\n  '#title': 'Full Name'\n  '#required': true\nemail_address:\n  '#type': email\n  '#title': 'Email Address'\n  '#required': true\nmobile:\n  '#type': tel\n  '#title': Mobile\nyour_message:\n  '#type': textarea\n  '#title': 'Your Message'\n  '#required': true\ncaptcha:\n  '#type': captcha\n  '#captcha_type': image_captcha/Image"
+elements: "full_name:\n  '#type': textfield\n  '#title': 'Full Name'\n  '#required': true\nemail_address:\n  '#type': email\n  '#title': 'Email Address'\n  '#required': true\nmobile:\n  '#type': tel\n  '#title': Mobile\nyour_message:\n  '#type': textarea\n  '#title': 'Your Message'\n  '#required': true"
 css: ''
 javascript: ''
 settings:
