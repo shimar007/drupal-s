@@ -1,0 +1,22 @@
+{
+  "name": "drupal-s",
+  "version": "1.0.0",
+  "description": "Shivakumar Ramamurthy - Drupal Website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shimar007/drupal-s.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shimar007/drupal-s/issues"
+  },
+  "homepage": "https://github.com/shimar007/drupal-s#readme",
+  "devDependencies": {
+    "cypress": "^3.1.5"
+  }
+}

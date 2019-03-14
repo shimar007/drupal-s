@@ -10,3 +10,4 @@ sites/default/services.yml
 
 #Ignore system files
 **/*.DS_Store
+node_modules
