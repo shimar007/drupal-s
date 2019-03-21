@@ -9144,5 +9144,63 @@
         "support": {
             "source": "http://cgit.drupalcode.org/paragraphs"
         }
+    },
+    {
+        "name": "drupal/webform_views",
+        "version": "5.0.0-alpha6",
+        "version_normalized": "5.0.0.0-alpha6",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupal.org/project/webform_views",
+            "reference": "8.x-5.0-alpha6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/webform_views-8.x-5.0-alpha6.zip",
+            "reference": "8.x-5.0-alpha6",
+            "shasum": "a175d0421c020a7953bacc0c3d93e97efb1b228f"
+        },
+        "require": {
+            "drupal/core": "*",
+            "drupal/webform": "*"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-5.x": "5.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-5.0-alpha6",
+                "datestamp": "1540871280",
+                "security-coverage": {
+                    "status": "not-covered",
+                    "message": "Alpha releases are not covered by Drupal security advisories."
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0-or-later"
+        ],
+        "authors": [
+            {
+                "name": "bucefal91",
+                "homepage": "https://www.drupal.org/user/504128"
+            },
+            {
+                "name": "jrockowitz",
+                "homepage": "https://www.drupal.org/user/371407"
+            },
+            {
+                "name": "ws.agency",
+                "homepage": "https://www.drupal.org/user/2851415"
+            }
+        ],
+        "description": "Webform integration with views.",
+        "homepage": "https://www.drupal.org/project/webform_views",
+        "support": {
+            "source": "http://cgit.drupalcode.org/webform_views"
+        }
     }
 ]

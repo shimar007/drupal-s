@@ -50,7 +50,8 @@
         "drupal/module_filter": "^3.1",
         "drupal/path_redirect_import": "^1.0",
         "drupal/views_data_export": "^1.0",
-        "drupal/eu_cookie_compliance": "^1.5"
+        "drupal/eu_cookie_compliance": "^1.5",
+        "drupal/webform_views": "^5.0"
     },
     "replace": {
     },
