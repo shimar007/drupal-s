@@ -29,14 +29,9 @@ class CustomSearchAd extends SearchAdBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id = NULL, $plugin_definition = NULL) {
-    $this->type = ADSENSE_TYPE_SEARCH;
-    $sl = (!empty($configuration['slot'])) ? $configuration['slot'] : '';
-
-    if (!empty($sl)) {
-      $this->slot = $sl;
-    }
-    return parent::__construct($configuration, $plugin_id, $plugin_definition);
+  public function __construct(array $configuration, $plugin_id = '', $plugin_definition = NULL, $config_factory = NULL, $module_handler = NULL, $current_user = NULL) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $config_factory, $module_handler, $current_user);
+    $this->slot = (!empty($configuration['slot'])) ? $configuration['slot'] : '';
   }
 
   /**
@@ -62,9 +57,9 @@ class CustomSearchAd extends SearchAdBase {
   public function getAdContent() {
     if (!empty($this->slot)) {
       $client = PublisherId::get();
-      \Drupal::moduleHandler()->alter('adsense', $client);
+      $this->moduleHandler->alter('adsense', $client);
 
-      $cse_config = \Drupal::config('adsense.settings');
+      $cse_config = $this->configFactory->get('adsense.settings');
       $branding = $cse_config->get('adsense_cse_logo');
       $results_path = Url::fromRoute('adsense_cse.results')->toString();
 
@@ -103,7 +98,7 @@ class CustomSearchAd extends SearchAdBase {
           '#search' => $this->t('Search'),
           // Since we use as_q, we must use a modified copy of
           // Google's Javascript.
-          '#script' => $base_url . '/' . drupal_get_path('module', 'adsense') . '/js/adsense_cse.js',
+          '#script' => $base_url . '/' . drupal_get_path('module', 'adsense') . '/js/adsense_cse-v1.js',
         ];
       }
       else {

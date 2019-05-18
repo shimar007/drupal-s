@@ -31,7 +31,7 @@ class AdsenseOldSearchSettings extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = \Drupal::config('adsense_oldcode.settings');
+    $config = $this->config('adsense_oldcode.settings');
 
     $form['searchbox'] = [
       '#type' => 'details',
@@ -259,11 +259,11 @@ class AdsenseOldSearchSettings extends ConfigFormBase {
     $box_text_color = $form_state->getValue('adsense_search_color_box_background');
     if (($box_background_color == '#000000') && ($box_text_color == '#000000')) {
       $form_state->setValueForElement($form['searchbox']['adsense_search_color_box_text'], '#FFFFFF');
-      drupal_set_message($this->t('Changing text color due to conflict with background color.'));
+      $this->messenger()->addMessage($this->t('Changing text color due to conflict with background color.'));
     }
     elseif (($box_background_color == '#FFFFFF') && ($box_text_color == '#FFFFFF')) {
       $form_state->setValueForElement($form['searchbox']['adsense_search_color_box_text'], '#000000');
-      drupal_set_message($this->t('Changing text color due to conflict with background color.'));
+      $this->messenger()->addMessage($this->t('Changing text color due to conflict with background color.'));
     }
   }
 

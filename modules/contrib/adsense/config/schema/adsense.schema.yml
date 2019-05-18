@@ -22,7 +22,7 @@ adsense.settings:
       label: 'Language to display ads'
     adsense_managed_page_level_ads_enabled:
       type: boolean
-      label: 'Enable page-level ads'
+      label: 'Enable auto ads'
     adsense_access_pages:
       type: mapping
       label: 'Access pages'

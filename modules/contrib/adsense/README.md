@@ -1,6 +1,3 @@
-Copyright 2005-2008 Khalid Baheyeldin (http://2bits.com)
-Copyright 2008-2016 Joao Ventura      (http://venturas.org)
-
 Description
 -----------
 This module provides web site admins the ability to display Google AdSense
@@ -31,65 +28,11 @@ To configure it, go to Administration > Configuration > Web services > AdSense
 Follow the online instructions on that page on how to display ads and the
 various ways to do so.
 
-
-API
----
-(Not yet avaiable in the Drupal 8 version)
-
-The adsense module provides developers with an API that can be used to control
-the Adsense Client ID used for the particular page view.
-
-You can decide to select a different Adsense Client ID based on the content
-type, the user's role, the level of user points, the taxonomy of content page,
-connecting to Google's API, or anything else imaginable.
-
-To do so, your module must implement a hook called 'adsense', as follows:
-
-Assuming your module is called: your_module.module, you must have the
-following function in it. The function has an $op argument that you
-should check:
-
-function your_module_adsense($op, $args = array()) {
-  static $client_id = NULL;
-
-  switch ($op) {
-    case 'settings':
-        return array(
-          'name' => 'Module name',
-          'desc' => 'Anything about your module',
-        );
-      break;
-    case 'client_id':
-      if (!$client_id) {
-        // We cache the client ID on this page load, to make sure all of the
-        // client IDs on one page are the same
-        // Here you can use whatever logic you want to select a Google
-        // Adsense client ID. 
-        // If the args parameter is not NULL, a format specific slot ID + 
-        // Publisher ID needs to be returned in an array with 'slot' and
-        // 'client' fields.
-        // If the args parameter is NULL, return only the Publisher ID as a
-        // string.
-        $client_id = your_logic($args);
-      }
-
-      return $client_id;
-  }
-}
-
-Your module's settings form must be of type MENU_LOCAL_TASK and located in
-'admin/config/services/adsense/publisher/your_module'.
-
-After you install the module, it should appear on the adsense module settings
-page, along with other modules. You should be able to select it, and configure
-it.
-
-
 Bugs/Features/Patches
 ---------------------
 If you want to report bugs, feature requests, or submit a patch, please do
 so at the project page on the Drupal web site.
-http://drupal.org/project/adsense
+https://www.drupal.org/project/adsense
 
 
 Authors
@@ -102,3 +45,8 @@ you note, then use the Feedback/Contact page at the URLs above.
 
 The authors can also be contacted for paid customizations of this and other
 modules.
+
+Copyright
+---------
+Copyright 2005-2008 Khalid Baheyeldin (http://2bits.com)
+Copyright 2008-2019 Joao Ventura      (http://venturas.org)

@@ -1,26 +1,26 @@
 adsense.main_settings:
-  path: /admin/config/services/adsense
+  path: '/admin/config/services/adsense'
   defaults:
-    _title: AdSense
-    _form: \Drupal\adsense\Form\AdsenseMainSettings
+    _title: 'AdSense'
+    _form: '\Drupal\adsense\Form\AdsenseMainSettings'
   requirements:
     _permission: 'administer adsense'
 adsense_managed.settings:
-  path: /admin/config/services/adsense/managed
+  path: '/admin/config/services/adsense/managed'
   defaults:
     _title: 'Managed Ads'
-    _form: \Drupal\adsense\Form\AdsenseManagedSettings
+    _form: '\Drupal\adsense\Form\AdsenseManagedSettings'
   requirements:
     _permission: 'administer adsense'
 adsense_cse.settings:
-  path: /admin/config/services/adsense/cse
+  path: '/admin/config/services/adsense/cse'
   defaults:
     _title: 'Custom Search'
-    _form: \Drupal\adsense\Form\AdsenseCseSettings
+    _form: '\Drupal\adsense\Form\AdsenseCseSettings'
   requirements:
     _permission: 'administer adsense'
 adsense_cse.results:
-  path: /adsense/cse
+  path: '/adsense/cse'
   defaults:
     _title: 'Search Results'
     _controller: '\Drupal\adsense\Controller\CseResultsController::display'

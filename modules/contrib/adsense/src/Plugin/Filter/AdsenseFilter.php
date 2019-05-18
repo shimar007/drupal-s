@@ -4,8 +4,14 @@ namespace Drupal\adsense\Plugin\Filter;
 
 use Drupal\adsense\AdBlockInterface;
 use Drupal\adsense\AdsenseAdBase;
+use Drupal\Component\Plugin\Exception\PluginException;
+use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a filter for AdSense input tags.
@@ -17,7 +23,65 @@ use Drupal\filter\Plugin\FilterBase;
  *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_REVERSIBLE
  * )
  */
-class AdsenseFilter extends FilterBase {
+class AdsenseFilter extends FilterBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The block storage.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected $blockStorage;
+
+  /**
+   * The renderer.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
+   * Configuration.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
+
+  /**
+   * Creates a new AdsenseAdBase instance.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
+   *   The block storage.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer.
+   * @param \Drupal\Core\Config\ImmutableConfig $config
+   *   The configuration.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityStorageInterface $entity_storage, RendererInterface $renderer, ImmutableConfig $config) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->blockStorage = $entity_storage;
+    $this->renderer = $renderer;
+    $this->config = $config;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.manager')->getStorage('block'),
+      $container->get('renderer'),
+      $container->get('config.factory')->get('adsense.settings')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -33,15 +97,17 @@ class AdsenseFilter extends FilterBase {
     foreach ($patterns as $mode => $pattern) {
       if (preg_match_all($pattern, $text, $matches, PREG_SET_ORDER)) {
         foreach ($matches as $match) {
-          /** @var AdSenseAdBase $ad */
-          $ad = '';
+          $ad = NULL;
           switch ($mode) {
             case 'block':
               // adsense:block:name.
               // Get the block with the same machine name as the tag.
-              $module_blocks = \Drupal::entityTypeManager()
-                ->getStorage('block')
-                ->loadByProperties(['id' => $match[1]]);
+              try {
+                $module_blocks = $this->blockStorage->loadByProperties(['id' => $match[1]]);
+              }
+              catch (\Exception $e) {
+                $module_blocks = [];
+              }
 
               /** @var \Drupal\block\Entity\Block $block */
               foreach ($module_blocks as $block) {
@@ -53,20 +119,30 @@ class AdsenseFilter extends FilterBase {
 
             case 'oldtag':
               // adsense:format:group:channel:slot.
-              $ad = AdsenseAdBase::createAd([
-                'format' => $match[1],
-                'group' => $match[2],
-                'channel' => $match[3],
-                'slot' => $match[4],
-              ]);
+              try {
+                $ad = AdsenseAdBase::createAd([
+                  'format' => $match[1],
+                  'group' => $match[2],
+                  'channel' => $match[3],
+                  'slot' => $match[4],
+                ]);
+              }
+              catch (PluginException $e) {
+                // Do nothing.
+              }
               break;
 
             case 'tag':
               // adsense:format:slot.
-              $ad = AdsenseAdBase::createAd([
-                'format' => $match[1],
-                'slot' => $match[2],
-              ]);
+              try {
+                $ad = AdsenseAdBase::createAd([
+                  'format' => $match[1],
+                  'slot' => $match[2],
+                ]);
+              }
+              catch (PluginException $e) {
+                // Do nothing.
+              }
               break;
           }
           // Replace the first occurrence of the tag, in case we have the same
@@ -74,9 +150,13 @@ class AdsenseFilter extends FilterBase {
           if (isset($ad)) {
             $modified = TRUE;
             $ad_array = $ad->display();
-            $ad_text = \Drupal::service('renderer')->render($ad_array);
-
-            $text = preg_replace('/\\' . $match[0] . '/', $ad_text, $text);
+            try {
+              $ad_text = $this->renderer->render($ad_array);
+              $text = preg_replace('/\\' . $match[0] . '/', $ad_text, $text);
+            }
+            catch (\Exception $e) {
+              // Do nothing.
+            }
           }
         }
       }
@@ -86,8 +166,7 @@ class AdsenseFilter extends FilterBase {
 
     if ($modified) {
       $result->addAttachments(['library' => ['adsense/adsense.css']]);
-      $config = \Drupal::config('adsense.settings');
-      if ($config->get('adsense_unblock_ads')) {
+      if ($this->config->get('adsense_unblock_ads')) {
         $result->addAttachments(['library' => ['adsense/adsense.unblock']]);
       }
     }

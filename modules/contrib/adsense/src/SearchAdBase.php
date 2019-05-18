@@ -13,7 +13,7 @@ abstract class SearchAdBase extends AdsenseAdBase {
    * @return array
    *   encoding options with the key used by Google and its description.
    */
-  static public function adsenseEncodings() {
+  public static function adsenseEncodings() {
     return [
       'windows-1256' => t('Arabic (Windows-1256)'),
       'cp852'        => t('Central European (CP852)'),
@@ -52,7 +52,7 @@ abstract class SearchAdBase extends AdsenseAdBase {
    * @return array
    *   array of countries with the key used by Google and its description.
    */
-  static public function adsenseCountries() {
+  public static function adsenseCountries() {
     return [
       // @codingStandardsIgnoreStart
       'www.google.com.au' => t('Australia'),
@@ -302,9 +302,9 @@ abstract class SearchAdBase extends AdsenseAdBase {
   /**
    * {@inheritdoc}
    */
-  static public function adsenseAdFormats($key = NULL) {
+  public static function adsenseAdFormats($key = NULL) {
     $ads = [
-      'Search Box' => ['type' => ADSENSE_TYPE_SEARCH, 'desc' => t('Search Box')],
+      'Search Box' => ['desc' => t('Search Box')],
     ];
 
     if (!empty($key)) {

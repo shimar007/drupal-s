@@ -2,6 +2,7 @@
 
 namespace Drupal\adsense\Form;
 
+use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Component\Plugin\Factory\FactoryInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class AdsenseManagedSettings extends ConfigFormBase {
 
   /**
-   * Request path condition block.
+   * Request path condition plugin.
    *
    * @var \Drupal\system\Plugin\Condition\RequestPath
    */
@@ -33,8 +34,13 @@ class AdsenseManagedSettings extends ConfigFormBase {
    */
   public function __construct(ConfigFactoryInterface $config_factory, FactoryInterface $plugin_factory) {
     parent::__construct($config_factory);
-    $condition = $plugin_factory->createInstance('request_path');
-    $this->condition = $condition;
+    try {
+      $this->condition = $plugin_factory->createInstance('request_path');
+    }
+    catch (PluginException $e) {
+      // System is badly broken if we can't get the condition plugin.
+      $this->condition = NULL;
+    }
   }
 
   /**
@@ -65,29 +71,29 @@ class AdsenseManagedSettings extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = \Drupal::config('adsense.settings');
+    $config = $this->config('adsense.settings');
 
     $form['adsense_managed_async'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Use asynchronous code?'),
+      '#title' => $this->t('Use asynchronous ad code?'),
       '#default_value' => $config->get('adsense_managed_async'),
-      '#description' => $this->t('This will enable the new Asynchronous code type. [@moreinfo]',
+      '#description' => $this->t('This will enable the asynchronous ad code type. [@moreinfo]',
         ['@moreinfo' => Link::fromTextAndUrl($this->t('More information'), Url::fromUri('https://support.google.com/adsense/answer/3221666'))->toString()]),
     ];
 
     $form['adsense_managed_page_level_ads_enabled'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Enable Page-level ads?'),
+      '#title' => $this->t('Enable auto ads?'),
       '#default_value' => $config->get('adsense_managed_page_level_ads_enabled'),
-      '#description' => $this->t('This will enable the new Page-level ads. [@moreinfo]',
-        ['@moreinfo' => Link::fromTextAndUrl($this->t('More information'), Url::fromUri('https://support.google.com/adsense/answer/6245305'))->toString()]),
+      '#description' => $this->t('This will enable Auto ads. [@moreinfo]',
+        ['@moreinfo' => Link::fromTextAndUrl($this->t('More information'), Url::fromUri('https://support.google.com/adsense/answer/7478040'))->toString()]),
     ];
 
-    // Page-level ads visibility.
+    // Auto ads visibility.
     $form['visibility'] = [
       '#type' => 'details',
       '#open' => TRUE,
-      '#title' => $this->t('Page-level ad visibility'),
+      '#title' => $this->t('Auto ads visibility'),
       '#states' => [
         'invisible' => [
           ":input[name='adsense_managed_page_level_ads_enabled']" => ['checked' => FALSE],

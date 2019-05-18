@@ -27,12 +27,9 @@ class OldSearchAd extends SearchAdBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id = NULL, $plugin_definition = NULL) {
-    $this->type = ADSENSE_TYPE_SEARCH;
-    $ch = (!empty($configuration['channel'])) ? $configuration['channel'] : '';
-
-    $this->channel = $ch;
-    return parent::__construct($configuration, $plugin_id, $plugin_definition);
+  public function __construct(array $configuration, $plugin_id = '', $plugin_definition = NULL, $config_factory = NULL, $module_handler = NULL, $current_user = NULL) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $config_factory, $module_handler, $current_user);
+    $this->channel = (!empty($configuration['channel'])) ? $configuration['channel'] : '';
   }
 
   /**
@@ -54,9 +51,9 @@ class OldSearchAd extends SearchAdBase {
    */
   public function getAdContent() {
     $client = PublisherId::get();
-    \Drupal::moduleHandler()->alter('adsense', $client);
+    $this->moduleHandler->alter('adsense', $client);
 
-    $config = \Drupal::config('adsense_oldcode.settings');
+    $config = $this->configFactory->get('adsense_oldcode.settings');
     $logo = $config->get('adsense_search_logo');
     $box_background_color = $config->get('adsense_search_color_box_background');
 

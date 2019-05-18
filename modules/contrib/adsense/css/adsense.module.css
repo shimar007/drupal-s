@@ -19,3 +19,8 @@
 div.adsense {
   display: inline-block;
 }
+
+div.adsense.responsive {
+  width: 100%;
+  overflow: hidden;
+}

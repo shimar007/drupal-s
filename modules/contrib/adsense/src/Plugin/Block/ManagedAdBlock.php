@@ -26,10 +26,11 @@ class ManagedAdBlock extends BlockBase implements AdBlockInterface {
   public function defaultConfiguration() {
     return [
       'ad_slot' => '',
-      'ad_format' => '250x250',
-      'ad_width' => 250,
-      'ad_height' => 250,
+      'ad_format' => 'responsive',
+      'ad_width' => '',
+      'ad_height' => '',
       'ad_shape' => 'auto',
+      'ad_layout_key' => '',
       'ad_align' => 'center',
     ];
   }
@@ -47,6 +48,7 @@ class ManagedAdBlock extends BlockBase implements AdBlockInterface {
       'format' => $format,
       'slot' => $this->configuration['ad_slot'],
       'shape' => $this->configuration['ad_shape'],
+      'layout_key' => $this->configuration['ad_layout_key'],
     ]);
   }
 
@@ -163,8 +165,30 @@ class ManagedAdBlock extends BlockBase implements AdBlockInterface {
       ],
       '#description' => $this->t("Shape of the responsive ad unit. Google's default is 'auto' for auto-sizing behaviour, but can also be a combination of one or more of the following: 'rectangle', 'vertical' or 'horizontal'."),
       '#states' => [
+        'enabled' => [
+          ':input[name="settings[ad_format]"]' => ['value' => 'responsive'],
+        ],
         'visible' => [
           ':input[name="settings[ad_format]"]' => ['value' => 'responsive'],
+        ],
+      ],
+    ];
+
+    $form['ad_layout_key'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Layout key'),
+      '#default_value' => $this->configuration['ad_layout_key'],
+      '#description' => $this->t("This is the data-ad-layout-key in the ad code from your @adsensepage, such as '-gw-3+1f-3d+2z'.",
+        ['@adsensepage' => $link]),
+      '#states' => [
+        'enabled' => [
+          ':input[name="settings[ad_format]"]' => ['value' => 'in-feed'],
+        ],
+        'visible' => [
+          ':input[name="settings[ad_format]"]' => ['value' => 'in-feed'],
+        ],
+        'required' => [
+          ':input[name="settings[ad_format]"]' => ['value' => 'in-feed'],
         ],
       ],
     ];
@@ -194,6 +218,7 @@ class ManagedAdBlock extends BlockBase implements AdBlockInterface {
     $this->configuration['ad_width'] = $form_state->getValue('ad_width');
     $this->configuration['ad_height'] = $form_state->getValue('ad_height');
     $this->configuration['ad_shape'] = $form_state->getValue('ad_shape');
+    $this->configuration['ad_layout_key'] = $form_state->getValue('ad_layout_key');
     $this->configuration['ad_align'] = $form_state->getValue('ad_align');
   }
 

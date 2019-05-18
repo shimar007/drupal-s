@@ -32,22 +32,28 @@ class ManagedAd extends ContentAdBase {
   private $shape;
 
   /**
+   * Ad Layout key.
+   *
+   * @var string
+   */
+  private $layoutKey;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id = NULL, $plugin_definition = NULL) {
+  public function __construct(array $configuration, $plugin_id = '', $plugin_definition = NULL, $config_factory = NULL, $module_handler = NULL, $current_user = NULL) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $config_factory, $module_handler, $current_user);
     $fo = (!empty($configuration['format'])) ? $configuration['format'] : '';
     $sl = (!empty($configuration['slot'])) ? $configuration['slot'] : '';
     $sh = (!empty($configuration['shape'])) ? $configuration['shape'] : ['auto'];
+    $lk = (!empty($configuration['layout_key'])) ? $configuration['layout_key'] : '';
 
     if (($fo != 'Search Box') && !empty($fo) && !empty($sl)) {
       $this->format = $fo;
       $this->slot = $sl;
       $this->shape = $sh;
-
-      $fmt = $this->adsenseAdFormats($fo);
-      $this->type = $fmt['type'];
+      $this->layoutKey = $lk;
     }
-    return parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
 
   /**
@@ -59,9 +65,15 @@ class ManagedAd extends ContentAdBase {
       // Get width and height from the format.
       list($width, $height) = $this->dimensions($this->format);
 
-      $content = \Drupal::config('adsense.settings')->get('adsense_placeholder_text');
+      $content = $this->configFactory->get('adsense.settings')->get('adsense_placeholder_text');
       $content .= "\nclient = ca-$client\nslot = {$this->slot}";
-      $content .= ($this->format == 'responsive') ? "\nshape = " . implode(',', $this->shape) : "\nwidth = $width\nheight = $height";
+      if (ManagedAd::isResponsive($this->format) || ManagedAd::isFluid($this->format)) {
+        $format = ($this->format == 'responsive') ? implode(',', $this->shape) : $this->format;
+        $content .= "\nformat = $format";
+      }
+      else {
+        $content .= "\nwidth = $width\nheight = $height";
+      }
 
       return [
         '#content' => ['#markup' => nl2br($content)],
@@ -78,11 +90,11 @@ class ManagedAd extends ContentAdBase {
    */
   public function getAdContent() {
     if (!empty($this->format) && !empty($this->slot)) {
-      $config = \Drupal::config('adsense.settings');
+      $config = $this->configFactory->get('adsense.settings');
       $client = PublisherId::get();
-      \Drupal::moduleHandler()->alter('adsense', $client);
+      $this->moduleHandler->alter('adsense', $client);
 
-      if (in_array($this->format, ['responsive', 'link', 'autorelaxed'])) {
+      if (ManagedAd::isResponsive($this->format)) {
         $shape = ($this->format == 'responsive') ? implode(',', $this->shape) : $this->format;
 
         // Responsive smart sizing code.
@@ -92,6 +104,22 @@ class ManagedAd extends ContentAdBase {
           '#client' => $client,
           '#slot' => $this->slot,
           '#shape' => $shape,
+        ];
+      }
+      elseif (ManagedAd::isFluid($this->format)) {
+        $style = 'display:block';
+        if ($this->format == 'in-article') {
+          $style .= '; text-align:center;';
+        }
+
+        // Responsive smart sizing code.
+        $content = [
+          '#theme' => 'adsense_managed_fluid',
+          '#format' => $this->format,
+          '#client' => $client,
+          '#slot' => $this->slot,
+          '#layout_key' => $this->layoutKey,
+          '#style' => $style,
         ];
       }
       else {
@@ -132,41 +160,69 @@ class ManagedAd extends ContentAdBase {
   }
 
   /**
+   * Helper function to determine if an ad format is responsive.
+   *
+   * @param string $format
+   *   Ad format.
+   *
+   * @return bool
+   *   TRUE if the ad is responsive.
+   */
+  private static function isResponsive($format) {
+    return in_array($format, ['responsive', 'link', 'autorelaxed']);
+  }
+
+  /**
+   * Helper function to determine if an ad format is fluid.
+   *
+   * @param string $format
+   *   Ad format.
+   *
+   * @return bool
+   *   TRUE if the ad is fluid.
+   */
+  private static function isFluid($format) {
+    return in_array($format, ['in-article', 'in-feed']);
+  }
+
+  /**
    * {@inheritdoc}
    */
   public static function adsenseAdFormats($key = NULL) {
     $ads = [
-      'responsive' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Responsive ad unit')],
-      'custom' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Custom size ad unit')],
-      'autorelaxed' => ['type' => ADSENSE_TYPE_MATCHED, 'desc' => t('Matched content')],
+      'responsive' => ['desc' => t('Responsive ad unit')],
+      'custom' => ['desc' => t('Custom size ad unit')],
+      'autorelaxed' => ['desc' => t('Matched content')],
+      'in-article' => ['desc' => t('In-article ad')],
+      'in-feed' => ['desc' => t('In-feed ad')],
       // Top performing ad sizes.
-      '300x250' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Medium Rectangle')],
-      '336x280' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Large Rectangle')],
-      '728x90' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Leaderboard')],
-      '300x600' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Large Skyscraper')],
-      '320x100' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Large Mobile Banner')],
+      '300x250' => ['desc' => t('Medium Rectangle')],
+      '336x280' => ['desc' => t('Large Rectangle')],
+      '728x90' => ['desc' => t('Leaderboard')],
+      '300x600' => ['desc' => t('Large Skyscraper')],
+      '320x100' => ['desc' => t('Large Mobile Banner')],
       // Other supported ad sizes.
-      '320x50' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Mobile Banner')],
-      '468x60' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Banner')],
-      '234x60' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Half Banner')],
-      '120x600' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Skyscraper')],
-      '120x240' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Vertical Banner')],
-      '160x600' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Wide Skyscraper')],
-      '300x1050' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Portrait')],
-      '970x90' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Large Leaderboard')],
-      '970x250' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Billboard')],
-      '250x250' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Square')],
-      '200x200' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Small Square')],
-      '180x150' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Small Rectangle')],
-      '125x125' => ['type' => ADSENSE_TYPE_AD, 'desc' => t('Button')],
+      '320x50' => ['desc' => t('Mobile Banner')],
+      '468x60' => ['desc' => t('Banner')],
+      '234x60' => ['desc' => t('Half Banner')],
+      '120x600' => ['desc' => t('Skyscraper')],
+      '120x240' => ['desc' => t('Vertical Banner')],
+      '160x600' => ['desc' => t('Wide Skyscraper')],
+      '300x1050' => ['desc' => t('Portrait')],
+      '970x90' => ['desc' => t('Large Leaderboard')],
+      '970x250' => ['desc' => t('Billboard')],
+      '250x250' => ['desc' => t('Square')],
+      '200x200' => ['desc' => t('Small Square')],
+      '180x150' => ['desc' => t('Small Rectangle')],
+      '125x125' => ['desc' => t('Button')],
       // 4-links.
-      'link' => ['type' => ADSENSE_TYPE_LINK, 'desc' => t('Responsive links')],
-      '120x90' => ['type' => ADSENSE_TYPE_LINK, 'desc' => t('4-links Vertical Small')],
-      '160x90' => ['type' => ADSENSE_TYPE_LINK, 'desc' => t('4-links Vertical Medium')],
-      '180x90' => ['type' => ADSENSE_TYPE_LINK, 'desc' => t('4-links Vertical Large')],
-      '200x90' => ['type' => ADSENSE_TYPE_LINK, 'desc' => t('4-links Vertical X-Large')],
-      '468x15' => ['type' => ADSENSE_TYPE_LINK, 'desc' => t('4-links Horizontal Medium')],
-      '728x15' => ['type' => ADSENSE_TYPE_LINK, 'desc' => t('4-links Horizontal Large')],
+      'link' => ['desc' => t('Responsive links')],
+      '120x90' => ['desc' => t('4-links Vertical Small')],
+      '160x90' => ['desc' => t('4-links Vertical Medium')],
+      '180x90' => ['desc' => t('4-links Vertical Large')],
+      '200x90' => ['desc' => t('4-links Vertical X-Large')],
+      '468x15' => ['desc' => t('4-links Horizontal Medium')],
+      '728x15' => ['desc' => t('4-links Horizontal Large')],
     ];
 
     if (!empty($key)) {

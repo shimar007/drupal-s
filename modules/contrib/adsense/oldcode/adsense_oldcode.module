@@ -13,6 +13,10 @@ define('ADSENSE_OLDCODE_MAX_CHANNELS', 10);
 define('ADSENSE_OLDCODE_MAX_GROUPS', 5);
 define('ADSENSE_OLDCODE_AD_CHANNEL_DEFAULT', '');
 
+// Ad types, link or ad.
+define('ADSENSE_OLDCODE_TYPE_LINK', 1);
+define('ADSENSE_OLDCODE_TYPE_AD', 2);
+
 /**
  * Implements hook_theme().
  */

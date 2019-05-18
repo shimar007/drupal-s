@@ -48,6 +48,8 @@ class RevenueSharingBasicSettings extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     module_load_include('inc', 'revenue_sharing_basic', 'help/revenue_sharing_basic.help');
 
+    $config = $this->config('revenue_sharing_basic.settings');
+
     $form['help'] = [
       '#type' => 'fieldset',
       '#collapsible' => TRUE,
@@ -74,7 +76,7 @@ class RevenueSharingBasicSettings extends ConfigFormBase {
     $form['required']['revenue_sharing_basic_client_id_profile_field'] = [
       '#type' => 'select',
       '#title' => t('Google AdSense client ID profile field'),
-      '#default_value' => \Drupal::config('revenue_sharing_basic.settings')->get('revenue_sharing_basic_client_id_profile_field'),
+      '#default_value' => $config->get('revenue_sharing_basic_client_id_profile_field'),
       '#options' => revenue_sharing_basic_get_profile_fields(),
       '#required' => TRUE,
       '#description' => t('This is the profile field that holds the AdSense Client ID for the site owner as well as (optionally) for site users who participate in revenue sharing. You must enabled the profile module and create a new field for this.'),
@@ -96,7 +98,7 @@ class RevenueSharingBasicSettings extends ConfigFormBase {
     $form['percentage']['revenue_sharing_basic_percentage_author'] = [
       '#type' => 'select',
       '#title' => t('Percentage of node views going to author'),
-      '#default_value' => \Drupal::config('revenue_sharing_basic.settings')->get('revenue_sharing_basic_percentage_author'),
+      '#default_value' => $config->get('revenue_sharing_basic_percentage_author'),
       '#options' => $options,
     ];
 
@@ -131,7 +133,7 @@ class RevenueSharingBasicSettings extends ConfigFormBase {
       $form['percentage']['revenue_sharing_basic_percentage_refer'] = [
         '#type' => 'select',
         '#title' => t('Percentage of node views going to user who referred the author'),
-        '#default_value' => \Drupal::config('revenue_sharing_basic.settings')->get('revenue_sharing_basic_percentage_refer'),
+        '#default_value' => $config->get('revenue_sharing_basic_percentage_refer'),
         '#options' => $options,
       ];
     }
