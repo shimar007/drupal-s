@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   module:
+    - ctools
     - system
   theme:
     - developer
@@ -19,4 +20,11 @@ settings:
   label: Breadcrumbs
   provider: system
   label_display: '0'
-visibility: {  }
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      feeds_drupal: feeds_drupal
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
