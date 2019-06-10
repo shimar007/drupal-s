@@ -112,7 +112,16 @@ class MinifyHTMLExit implements EventSubscriberInterface {
       if (in_array(get_class($response), $allowed_response_classes)) {
         $this->content = $response->getContent();
         $this->minify();
-        $response->setContent($this->content);
+
+        // If, for some reason, the minification failed and some artifacts
+        // still remain in the source this will cause a mostly white unusable
+        // page. The fallback for this scenario is to revert and notify.
+        if (strpos($this->content, '%' . $this->token)) {
+          $this->logger->get('minifyhtml')->warning('Minifyhtml failed.');
+        }
+        else {
+          $response->setContent($this->content);
+        }
       }
     }
   }

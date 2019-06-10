@@ -14,8 +14,6 @@ return array(
     'PEAR' => array($vendorDir . '/pear/pear_exception'),
     'Mailchimp' => array($baseDir . '/modules/contrib/mailchimp/src'),
     'EasyRdf_' => array($vendorDir . '/easyrdf/easyrdf/lib'),
-    'Drupal\\' => array($vendorDir . '/drupal/coder/coder_sniffer/Drupal'),
-    'DrupalPractice\\' => array($vendorDir . '/drupal/coder/coder_sniffer/DrupalPractice'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib'),
     'Console' => array($vendorDir . '/pear/console_getopt'),

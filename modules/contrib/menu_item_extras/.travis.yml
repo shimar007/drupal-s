@@ -6,20 +6,15 @@ language: php
 sudo: false
 
 php:
-  - 5.6
-  - 7.3
+  - '7.1'
+  - '7.3'
 
 env:
   global:
     - MODULE_NAME='menu_item_extras'
-    - DRUPAL_REPO='git://drupalcode.org/project/drupal.git'
-    - DRUPAL_VERSION='8.6.x'
-    - PHPCS_VERSION='3.*'
-    - CODER_VERSION='8.3.x'
-    - DRUSH_VERSION='8.1.*'
-
-notifications:
-  slack: 'xxx'
+    - DRUPAL_REPO='https://git.drupalcode.org/project/drupal.git'
+    - DRUPAL_VERSION='8.7.x'
+    - DRUSH_VERSION='9.7.*'
 
 # Cache Composer & Drush directories.
 cache:
@@ -46,15 +41,6 @@ before_install:
   # Drush.
   - composer global require drush/drush:$DRUSH_VERSION
 
-  # Codesniffer.
-  - composer global require squizlabs/php_codesniffer:$PHPCS_VERSION
-
-  # Coder.
-  - composer global require drupal/coder:$CODER_VERSION
-  - composer global require dealerdirect/phpcodesniffer-composer-installer
-  - phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
-  - phpcs -i
-
   # Ensure the PHP environment is ready.
   - phpenv rehash
 
@@ -62,6 +48,10 @@ install:
   - git clone --branch $DRUPAL_VERSION $DRUPAL_REPO drupal --depth 1
   - cd drupal && composer install && cd -
   - mkdir -p drupal/modules/$MODULE_NAME
+
+  # Coder.
+  - $TRAVIS_BUILD_DIR/drupal/vendor/bin/phpcs --config-set installed_paths ./vendor/drupal/coder/coder_sniffer
+  - $TRAVIS_BUILD_DIR/drupal/vendor/bin/phpcs -i
 
   # switched to doing it this way because it makes local testing a bit easier.
   # create symbolic links to all of the files/folders in the module directory
@@ -102,7 +92,7 @@ script:
 
   # Run code sniffer.
   # Warnings are disabled until the SMS notifier is ported.
-  - phpcs --report=full --standard=Drupal --warning-severity=0 $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME --ignore=bin,*.css,gulpfile.js,libraries,modules/contrib,vendor
+  - $TRAVIS_BUILD_DIR/drupal/vendor/bin/phpcs --report=full --standard=$TRAVIS_BUILD_DIR/drupal/vendor/drupal/coder/coder_sniffer/Drupal/ruleset.xml --warning-severity=0 $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME --ignore=bin,*.css,gulpfile.js,libraries,modules/contrib,vendor
 
   # Drupal "SimpleTests" via run-tests.sh
   - cd $TRAVIS_BUILD_DIR/drupal
@@ -118,3 +108,4 @@ script:
   # - cd $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME
   # - composer install
   # - vendor/bin/behat --config tests/behat/behat.yml
+

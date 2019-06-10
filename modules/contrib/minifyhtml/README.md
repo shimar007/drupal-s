@@ -41,3 +41,14 @@ CONFIGURATION
 
 * Enable the minification of the source HTML in Administration » Configuration
     » Development » Performance.  See the Bandwidth optimization section.
+
+DRUSH
+-----
+
+* Enable the minification of html:
+
+  drush cset system.performance minifyhtml.minify_html 1
+
+* Disable the minification of html:
+
+  drush cset system.performance minifyhtml.minify_html 0
