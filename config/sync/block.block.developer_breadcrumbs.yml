@@ -24,7 +24,7 @@ visibility:
   'entity_bundle:node':
     id: 'entity_bundle:node'
     bundles:
-      feeds_drupal: feeds_drupal
+      article: article
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'

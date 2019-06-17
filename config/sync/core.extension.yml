@@ -9,6 +9,8 @@ module:
   bomWeather: 0
   breakpoint: 0
   captcha: 0
+  cdn: 0
+  cdn_ui: 0
   ckeditor: 0
   codesnippet: 0
   color: 0

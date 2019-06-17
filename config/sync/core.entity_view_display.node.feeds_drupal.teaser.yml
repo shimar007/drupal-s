@@ -27,4 +27,8 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-hidden: {  }
+hidden:
+  feeds_item: true
+  field_link_to: true
+  field_meta_tags: true
+  field_tags_drupal: true

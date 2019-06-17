@@ -1,0 +1,16 @@
+langcode: en
+status: false
+mapping:
+  type: simple
+  domain: null
+  conditions:
+    not:
+      extensions:
+        - css
+        - js
+farfuture:
+  status: true
+stream_wrappers:
+  - public
+_core:
+  default_config_hash: 9PVDdkhm4-5kN2tUq2sdhd6su_JtzIvrEsaWgjnYaM0
