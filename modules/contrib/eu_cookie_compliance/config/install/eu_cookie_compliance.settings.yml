@@ -55,3 +55,10 @@ withdraw_message:
 withdraw_action_button_label: 'Withdraw consent'
 withdraw_tab_button_label: 'Privacy settings'
 withdraw_enabled: false
+cookie_categories: ''
+enable_save_preferences_button: true
+save_preferences_button_label: 'Save preferences'
+accept_all_categories_button_label: 'Accept all cookies'
+fix_first_cookie_category: true
+select_all_categories_by_default: false
+withdraw_button_on_info_popup: false

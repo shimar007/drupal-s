@@ -24,7 +24,7 @@ class MailchimpCampaignController extends ControllerBase {
 
     $content['campaigns_table'] = array(
       '#type' => 'table',
-      '#header' => array(t('Title'), t('Subject'), t('Status'), t('Mailchimp List'), t('Mailchimp Template'), t('Created'), t('Actions')),
+      '#header' => array(t('Title'), t('Subject'), t('Status'), t('Mailchimp Audience'), t('Mailchimp Template'), t('Created'), t('Actions')),
       '#empty' => '',
     );
 
@@ -36,7 +36,7 @@ class MailchimpCampaignController extends ControllerBase {
       if (!$campaign->isInitialized()) {
         continue;
       }
-      // Ensure the associated list still exists.
+      // Ensure the associated list/audience still exists.
       if (!isset($campaign->list) || !$campaign->list) {
         continue;
       }

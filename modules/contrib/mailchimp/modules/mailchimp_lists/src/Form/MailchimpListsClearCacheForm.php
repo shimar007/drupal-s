@@ -30,7 +30,7 @@ class MailchimpListsClearCacheForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return t('Reset Mailchimp List Cache');
+    return t('Reset Mailchimp Audience Cache');
   }
 
   /**
@@ -41,7 +41,7 @@ class MailchimpListsClearCacheForm extends ConfirmFormBase {
   }
 
   public function getDescription() {
-    return t('Confirm clearing of Mailchimp list cache.');
+    return t('Confirm clearing of Mailchimp audience cache.');
   }
 
   /**
@@ -56,7 +56,7 @@ class MailchimpListsClearCacheForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     mailchimp_get_lists(array(), TRUE);
-    drupal_set_message(t('Mailchimp lists cache cleared.'));
+    drupal_set_message(t('Mailchimp audience cache cleared.'));
   }
 
 }

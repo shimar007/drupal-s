@@ -2314,18 +2314,18 @@
     },
     {
         "name": "drupal/eu_cookie_compliance",
-        "version": "1.5.0",
-        "version_normalized": "1.5.0.0",
+        "version": "1.6.0",
+        "version_normalized": "1.6.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/eu-cookie-compliance.git",
-            "reference": "8.x-1.5"
+            "reference": "8.x-1.6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/eu_cookie_compliance-8.x-1.5.zip",
-            "reference": "8.x-1.5",
-            "shasum": "3161d3f15d634c603a065ac5d731131c2be6714a"
+            "url": "https://ftp.drupal.org/files/projects/eu_cookie_compliance-8.x-1.6.zip",
+            "reference": "8.x-1.6",
+            "shasum": "20d5332748e4262fb0059444d605d05533921dd9"
         },
         "require": {
             "drupal/core": "*"
@@ -2336,8 +2336,8 @@
                 "dev-1.x": "1.x-dev"
             },
             "drupal": {
-                "version": "8.x-1.5",
-                "datestamp": "1552173780",
+                "version": "8.x-1.6",
+                "datestamp": "1560954189",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"
@@ -2840,18 +2840,18 @@
     },
     {
         "name": "drupal/mailchimp",
-        "version": "1.8.0",
-        "version_normalized": "1.8.0.0",
+        "version": "1.9.0",
+        "version_normalized": "1.9.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/mailchimp.git",
-            "reference": "8.x-1.8"
+            "reference": "8.x-1.9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/mailchimp-8.x-1.8.zip",
-            "reference": "8.x-1.8",
-            "shasum": "36586deef17200065f87ef83c4c929a26ebe276d"
+            "url": "https://ftp.drupal.org/files/projects/mailchimp-8.x-1.9.zip",
+            "reference": "8.x-1.9",
+            "shasum": "987ccc07020ed6a8ec34f469c4e7eff8a1b51a21"
         },
         "require": {
             "drupal/core": "~8.0",
@@ -2866,8 +2866,8 @@
                 "dev-1.x": "1.x-dev"
             },
             "drupal": {
-                "version": "8.x-1.8",
-                "datestamp": "1543531081",
+                "version": "8.x-1.9",
+                "datestamp": "1561057681",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"
@@ -6750,17 +6750,17 @@
     },
     {
         "name": "twig/twig",
-        "version": "v1.42.1",
-        "version_normalized": "1.42.1.0",
+        "version": "v1.42.2",
+        "version_normalized": "1.42.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "671347603760a88b1e7288aaa9378f33687d7edf"
+            "reference": "21707d6ebd05476854805e4f91b836531941bcd4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/671347603760a88b1e7288aaa9378f33687d7edf",
-            "reference": "671347603760a88b1e7288aaa9378f33687d7edf",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/21707d6ebd05476854805e4f91b836531941bcd4",
+            "reference": "21707d6ebd05476854805e4f91b836531941bcd4",
             "shasum": ""
         },
         "require": {
@@ -6772,7 +6772,7 @@
             "symfony/debug": "^2.7",
             "symfony/phpunit-bridge": "^3.4.19|^4.1.8|^5.0"
         },
-        "time": "2019-06-04T11:31:08+00:00",
+        "time": "2019-06-18T15:35:16+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

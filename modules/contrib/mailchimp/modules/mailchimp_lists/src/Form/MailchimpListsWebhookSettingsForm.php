@@ -39,7 +39,7 @@ class MailchimpListsWebhookSettingsForm extends ConfigFormBase {
 
     $form['webhook_events'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Enabled webhook events for the @name list',
+      '#title' => t('Enabled webhook events for the @name audience',
         array(
           '@name' => $list->name,
         )),
@@ -111,14 +111,14 @@ class MailchimpListsWebhookSettingsForm extends ConfigFormBase {
     }
 
     if ($result) {
-      drupal_set_message(t('Webhooks for list "%name" have been updated.',
+      drupal_set_message(t('Webhooks for audience "%name" have been updated.',
         array(
           '%name' => $list->name,
         )
       ));
     }
     else {
-      drupal_set_message(t('Unable to update webhooks for list "%name".',
+      drupal_set_message(t('Unable to update webhooks for audience "%name".',
         array(
           '%name' => $list->name,
         )

@@ -144,6 +144,18 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('batch_limit'),
     );
 
+    global $base_url;
+    $current_webhook_hash = $config->get('webhook_hash');
+
+    $form['webhook_hash'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Webhook Hash'),
+      '#default_value' => $current_webhook_hash ? $current_webhook_hash : md5(uniqid(mt_rand(), true)),
+      '#description' => t('Hash to validate incoming webhooks. Whatever you put here should be appended to the URL you provide Mailchimp.'),
+      '#suffix' => '<strong>Your webhook URL:</strong> ' . $base_url . '/mailchimp/webhook/[hash]',
+    );
+
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -166,6 +178,7 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
       ->set('connected_paths', $form_state->getValue('connected_paths'))
       ->set('cron', $form_state->getValue('cron'))
       ->set('batch_limit', $form_state->getValue('batch_limit'))
+      ->set('webhook_hash', $form_state->getValue('webhook_hash'))
       ->save();
 
     parent::submitForm($form, $form_state);

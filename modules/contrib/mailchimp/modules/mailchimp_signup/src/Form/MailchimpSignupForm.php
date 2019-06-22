@@ -60,7 +60,7 @@ class MailchimpSignupForm extends EntityForm {
         'source' => array('title'),
         'exists' => 'mailchimp_signup_load',
       ),
-      '#description' => t('A unique machine-readable name for this list. It must only contain lowercase letters, numbers, and underscores.'),
+      '#description' => t('A unique machine-readable name for this audience. It must only contain lowercase letters, numbers, and underscores.'),
       '#disabled' => !$signup->isNew(),
     );
 
@@ -134,7 +134,7 @@ class MailchimpSignupForm extends EntityForm {
 
     $form['mc_lists_config'] = array(
       '#type' => 'details',
-      '#title' => t('Mailchimp List Selection & Configuration'),
+      '#title' => t('Mailchimp Audience Selection & Configuration'),
       '#open' => TRUE,
     );
     $lists = mailchimp_get_lists();
@@ -145,8 +145,8 @@ class MailchimpSignupForm extends EntityForm {
     $mc_admin_url = Link::fromTextAndUrl('Mailchimp', Url::fromUri('https://admin.mailchimp.com', array('attributes' => array('target' => '_blank'))));
     $form['mc_lists_config']['mc_lists'] = array(
       '#type' => 'checkboxes',
-      '#title' => t('Mailchimp Lists'),
-      '#description' => t('Select which lists to show on your signup form. You can create additional lists at @Mailchimp.',
+      '#title' => t('Mailchimp Audiences'),
+      '#description' => t('Select which audiences to show on your signup form. You can create additional audiences at @Mailchimp.',
         array('@Mailchimp' => $mc_admin_url->toString())),
       '#options' => $options,
       '#default_value' => is_array($signup->mc_lists) ? $signup->mc_lists : array(),
@@ -158,7 +158,7 @@ class MailchimpSignupForm extends EntityForm {
         'effect' => 'fade',
         'progress' => array(
           'type' => 'throbber',
-          'message' => t('Retrieving merge fields for this list.'),
+          'message' => t('Retrieving merge fields for this audience.'),
         ),
       ),
     );
@@ -168,7 +168,7 @@ class MailchimpSignupForm extends EntityForm {
       '#suffix' => '</div>',
     );
 
-    // Show merge fields if changing list field or editing existing list.
+    // Show merge fields if changing list/audience field or editing existing list/audience.
     if ($form_state->getValue('mc_lists') || !$signup->isNew()) {
       $form['mc_lists_config']['mergefields'] = array(
         '#type' => 'fieldset',

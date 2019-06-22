@@ -6,8 +6,8 @@ package: Mailchimp
 configure: mailchimp.admin
 
 
-# Information added by Drupal.org packaging script on 2018-11-29
-version: '8.x-1.8'
+# Information added by Drupal.org packaging script on 2019-06-20
+version: '8.x-1.9'
 core: '8.x'
 project: 'mailchimp'
-datestamp: 1543531087
+datestamp: 1561057686

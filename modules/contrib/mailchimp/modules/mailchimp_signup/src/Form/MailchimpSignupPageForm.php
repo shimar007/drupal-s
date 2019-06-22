@@ -8,7 +8,7 @@ use Drupal\Core\Url;
 use Drupal\mailchimp_signup\Entity\MailchimpSignup;
 
 /**
- * Subscribe to a Mailchimp list.
+ * Subscribe to a Mailchimp list/audience.
  */
 class MailchimpSignupPageForm extends FormBase {
 
@@ -147,10 +147,10 @@ class MailchimpSignupPageForm extends FormBase {
     $build_info = $form_state->getBuildInfo();
     $signup = $build_info['callback_object']->signup;
 
-    // For forms that allow subscribing to multiple lists
-    // ensure at least one list has been selected.
+    // For forms that allow subscribing to multiple lists/audiences
+    // ensure at least one list/audience has been selected.
 
-    // Get the enabled lists for this form.
+    // Get the enabled lists/audiences for this form.
     $enabled_lists = array_filter($signup->mc_lists);
     if (count($enabled_lists) > 1) {
 
@@ -166,7 +166,7 @@ class MailchimpSignupPageForm extends FormBase {
         return;
       }
 
-      $form_state->setErrorByName('mailchimp_lists', t("Please select at least one list to subscribe to."));
+      $form_state->setErrorByName('mailchimp_lists', t("Please select at least one audience to subscribe to."));
     }
   }
 

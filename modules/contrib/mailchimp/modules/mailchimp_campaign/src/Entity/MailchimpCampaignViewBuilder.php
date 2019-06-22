@@ -72,11 +72,11 @@ class MailchimpCampaignViewBuilder extends EntityViewBuilder {
         'value' => $entity->mc_data->settings->subject_line,
       ),
       'list' => array(
-        'label' => t('Mailchimp List'),
+        'label' => t('Mailchimp Audience'),
         'value' => Link::fromTextAndUrl($entity->list->name, $list_url)->toString(),
       ),
       'list_segment' => array(
-        'label' => t('List Segment'),
+        'label' => t('Audience Tags'),
         'value' => $list_segment_name,
       ),
       'from_email' => array(
@@ -92,7 +92,7 @@ class MailchimpCampaignViewBuilder extends EntityViewBuilder {
         'value' => $mc_template_name,
       ),
       'type' => array(
-        'label' => t('List type'),
+        'label' => t('Audience type'),
         'value' => $entity->mc_data->type,
       ),
       'status' => array(

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Mailchimp lists module.
+ * Mailchimp lists/audiences module.
  */
 
 use Drupal\Core\Field\FieldItemInterface;
@@ -79,7 +79,7 @@ function mailchimp_lists_form_field_ui_field_edit_form_validate(&$form, FormStat
   if ($field_config->get('field_type') == 'mailchimp_lists_subscription') {
 
     if ($form_state->getValue('cardinality_number') != 1) {
-      $form_state->setErrorByName('cardinality_number', t('Cardinality on mailchimp lists fields must be set to 1.'));
+      $form_state->setErrorByName('cardinality_number', t('Cardinality on mailchimp audiences fields must be set to 1.'));
     }
   }
 }
@@ -94,7 +94,7 @@ function mailchimp_lists_load_email(MailchimpListsSubscription $instance, Entity
 
   if (empty($merge_fields) || !isset($merge_fields['EMAIL'])) {
     if ($log_errors) {
-      \Drupal::logger('mailchimp_lists')->notice('Mailchimp Lists field "{field}" on {entity} -> {bundle} has no EMAIL field configured, subscription actions cannot take place.', array(
+      \Drupal::logger('mailchimp_lists')->notice('Mailchimp Audiences field "{field}" on {entity} -> {bundle} has no EMAIL field configured, subscription actions cannot take place.', array(
         'field' => $instance->getFieldDefinition()->getName(),
         'entity' => $entity->getEntityType()->getLabel(),
         'bundle' => $entity->bundle(),
@@ -292,7 +292,7 @@ function _mailchimp_lists_mergevars_populate($merge_fields, EntityInterface $ent
 
       if ($data instanceof ListInterface) {
         if (!is_numeric($name)) {
-          // Implicitly default to delta 0 for lists when not specified.
+          // Implicitly default to delta 0 for lists/audiences when not specified.
           $data = $data->first();
         }
         else {
@@ -354,7 +354,7 @@ function mailchimp_lists_update_member_merge_values($entity_type, $bundle_name, 
 
   $merge_fields = $field->getSetting('merge_fields');
 
-  // Assemble a list of current subscription statuses so we don't alter them.
+  // Assemble a list/audience of current subscription statuses so we don't alter them.
   // Because of cacheing we don't want to use the standard checks. Expiring the
   // cache would kill the point of doing this as a batch API operation.
   $batch = array(
@@ -382,7 +382,7 @@ function mailchimp_lists_update_member_merge_values($entity_type, $bundle_name, 
 }
 
 /**
- * Batch processor for pulling in subscriber information for a list.
+ * Batch processor for pulling in subscriber information for a list/audience.
  */
 function mailchimp_lists_get_subscribers(FieldConfig $field, &$context) {
   if (!isset($context['sandbox']['progress'])) {
@@ -562,7 +562,7 @@ function mailchimp_lists_default_webhook_events() {
  * Returns an array of enabled webhook events.
  *
  * @param $list_id
- *   The Mailchimp list ID to return webhook actions for.
+ *   The Mailchimp list/audience ID to return webhook actions for.
  *
  * @return array
  *   An array of enabled webhook event names.

@@ -241,7 +241,7 @@ function mailchimp_get_mergevars($list_ids, $reset = FALSE) {
         $mergevars[$list_id] = array(
           (object) array(
             'tag' => 'EMAIL',
-            'name' => 'Email Address',
+            'name' => t('Email Address'),
             'type' => 'email',
             'required' => TRUE,
             'default_value' => '',
@@ -1158,7 +1158,7 @@ function mailchimp_insert_drupal_form_tag($mergevar) {
     '#default_value' => $mergevar->default_value,
   );
 
-  $input['#title'] = t($mergevar->name);
+  $input['#title'] = t((string) $mergevar->name);
 
   switch ($mergevar->type) {
     case 'address':

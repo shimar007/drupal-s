@@ -15,10 +15,10 @@ mailchimp_signup.mailchimp_signup.*:
       label: 'UUID'
     mc_lists:
       type: sequence
-      label: 'Mailchimp List(s)'
+      label: 'Mailchimp Audience(s)'
       sequence:
         type: string
-        label: 'Mailchimp List'
+        label: 'Mailchimp Audience'
     mode:
       type: integer
       label: 'Mode'

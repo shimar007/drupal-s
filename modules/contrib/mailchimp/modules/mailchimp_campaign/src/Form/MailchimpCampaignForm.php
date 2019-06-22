@@ -49,8 +49,8 @@ class MailchimpCampaignForm extends ContentEntityForm {
     $mailchimp_lists = mailchimp_get_lists();
     $form['list_id'] = array(
       '#type' => 'select',
-      '#title' => t('List'),
-      '#description' => t('Select the list this campaign should be sent to.'),
+      '#title' => t('Audience'),
+      '#description' => t('Select the audience this campaign should be sent to.'),
       '#options' => $this->buildOptionList($mailchimp_lists),
       '#default_value' => (!empty($campaign->mc_data)) ? $campaign->mc_data->recipients->list_id : -1,
       '#required' => TRUE,
@@ -76,8 +76,8 @@ class MailchimpCampaignForm extends ContentEntityForm {
 
     $form['list_segment_id'] = array(
       '#type' => 'select',
-      '#title' => t('List Segment'),
-      '#description' => t('Select the list segment this campaign should be sent to.'),
+      '#title' => t('Audience Tags'),
+      '#description' => t('Select the audience tags this campaign should be sent to.'),
     );
     if (!empty($list_segments)) {
       $form['list_segment_id']['#options'] = $this->buildOptionList($list_segments, '-- Entire list --');
@@ -309,7 +309,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
   }
 
   /**
-   * Ajax callback to render list segments when a list is selected.
+   * Ajax callback to render list/audience segments when a list/audience is selected.
    *
    * @param array $form
    *   Form API array structure.
@@ -317,7 +317,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
    *   Form state information.
    *
    * @return AjaxResponse
-   *   Ajax response with the rendered list segments element.
+   *   Ajax response with the rendered list/audience segments element.
    */
   public static function listSegmentCallback(array $form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
@@ -616,7 +616,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
       '#title' => 'Mailchimp merge variables',
       '#markup' => $this->buildMergeVarsHtml($merge_vars),
       '#description' => t(
-        'Insert merge variables from the %list_name list or one of the @standard_link.',
+        'Insert merge variables from the %list_name audience or one of the @standard_link.',
         array(
           '%list_name' => $list_name,
           '@standard_link' => Link::fromTextAndUrl(t('standard Mailchimp merge variables'), $merge_vars_url)->toString(),
@@ -660,7 +660,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
       return render($element);
     }
     else {
-      return t('No custom merge vars exist for the current list.');
+      return t('No custom merge vars exist for the current audience.');
     }
   }
 

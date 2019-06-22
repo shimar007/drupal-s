@@ -84,7 +84,7 @@ class MailchimpListsSubscribeDefaultFormatter extends FormatterBase {
       $mc_list = mailchimp_get_list($field_settings['mc_list_id']);
       $email = mailchimp_lists_load_email($item, $item->getEntity(), FALSE);
 
-      if ($email) {
+      if ($email && !empty($mc_list)) {
         if (mailchimp_is_subscribed($field_settings['mc_list_id'], $email)) {
           $status = t('Subscribed to %list', array('%list' => $mc_list->name));
         }

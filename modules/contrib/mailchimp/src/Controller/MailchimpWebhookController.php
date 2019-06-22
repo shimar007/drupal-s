@@ -3,8 +3,7 @@
 namespace Drupal\mailchimp\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Url;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Mailchimp Webhook controller.
@@ -16,6 +15,17 @@ class MailchimpWebhookController extends ControllerBase {
    */
   public function endpoint($hash) {
     $return = 0;
+
+    // Return early if the hash in the request does not match.
+    $webhook_hash = $this->config('mailchimp.settings')->get('webhook_hash');
+    if (!empty($webhook_hash) && $webhook_hash !== $hash) {
+      $response = new Response(
+        $return,
+        Response::HTTP_FORBIDDEN,
+        ['content-type' => 'text/plain']
+      );
+      return $response;
+    }
 
     if (!empty($_POST)) {
       $data = $_POST['data'];
@@ -48,11 +58,12 @@ class MailchimpWebhookController extends ControllerBase {
       $return = 1;
     }
 
-    // TODO: There should be a better way of doing this.
-    // D8 routing doesn't seem to allow us to return a single character
-    // or string from a controller.
-    echo $return;
-    exit();
+    $response = new Response(
+      $return,
+      Response::HTTP_OK,
+      ['content-type' => 'text/plain']
+    );
+    return $response;
   }
 
 }

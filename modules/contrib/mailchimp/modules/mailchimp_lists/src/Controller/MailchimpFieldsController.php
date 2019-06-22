@@ -30,7 +30,7 @@ class MailchimpFieldsController extends ControllerBase {
         You can manually force updates of all existing Merge Values to existing
         Mailchimp subscribers for each field configuration using the \'Batch Update\'
         option on this table. The Mailchimp Subscription Field is provided by the
-        Mailchimp Lists (mailchimp_lists) module.')
+        Mailchimp Audiences (mailchimp_lists) module.')
     );
 
     $content['fields_table'] = array(
