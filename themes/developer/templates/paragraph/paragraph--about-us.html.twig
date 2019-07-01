@@ -50,7 +50,7 @@
 <div{{ attributes.addClass(classes) }} id="about">
     <div class="row">
         <div class="three columns">
-            <img src="{{ file_url(content.field_image|field_target_entity.uri.value) }}" class="profile-pic" alt="{{ content.field_image|field_raw('alt') }}"/>
+            {{ content.field_image|field_value }}
         </div>
         <div class="nine columns">
             <h2>{{ content.field_heading|field_value }}</h2>

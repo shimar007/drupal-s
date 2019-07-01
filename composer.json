@@ -53,7 +53,8 @@
         "drupal/eu_cookie_compliance": "^1.5",
         "drupal/webform_views": "^5.0",
         "drupal/entity_reference_revisions": "^1.6",
-        "drupal/cdn": "^3.3"
+        "drupal/cdn": "^3.3",
+        "drupal/extra_image_field_classes": "^1.0"
     },
     "replace": {
     },

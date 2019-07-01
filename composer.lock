@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08ae0f78fd3e60e7edd6c3dcede7d665",
+    "content-hash": "4b21fa181713ac67ff02070c3a98d8c4",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2397,6 +2397,53 @@
             "homepage": "https://www.drupal.org/project/events_log_track",
             "support": {
                 "source": "https://git.drupalcode.org/project/events_log_track"
+            }
+        },
+        {
+            "name": "drupal/extra_image_field_classes",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/extra_image_field_classes.git",
+                "reference": "8.x-1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/extra_image_field_classes-8.x-1.0.zip",
+                "reference": "8.x-1.0",
+                "shasum": "5c2c359b939ffc8c20925a18332d5a6ae4bdbe37"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0",
+                    "datestamp": "1456055639",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "rahulbaisanemca",
+                    "homepage": "https://www.drupal.org/user/2822887"
+                }
+            ],
+            "description": "This module allows to add extra classes on image field",
+            "homepage": "https://www.drupal.org/project/extra_image_field_classes",
+            "support": {
+                "source": "https://git.drupalcode.org/project/extra_image_field_classes"
             }
         },
         {
