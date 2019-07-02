@@ -7,6 +7,7 @@ dependencies:
     - field.storage.node.field_link_to
   module:
     - link
+    - masonry_views
     - node
     - taxonomy
     - text
@@ -220,12 +221,22 @@ display:
             group_items: {  }
           plugin_id: boolean
       style:
-        type: default
+        type: masonry
         options:
           grouping: {  }
           row_class: ''
           default_row_class: true
-          uses_fields: false
+          layoutColumnWidth: ''
+          layoutColumnWidthUnit: px
+          gutterWidth: '5'
+          stampSelector: ''
+          isLayoutResizable: 1
+          isLayoutAnimated: 1
+          layoutAnimationDuration: '500'
+          isLayoutFitsWidth: 0
+          isLayoutRtlMode: 0
+          isLayoutImagesLoadedFirst: 1
+          isItemsPositionInPercent: 1
       row:
         type: fields
         options:

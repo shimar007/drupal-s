@@ -51,11 +51,15 @@ settings:
             - ShowBlocks
             - CodeSnippet
             - Source
+            - Templates
   plugins:
     stylescombo:
       styles: ''
     language:
       language_list: un
+    templates:
+      template_path: ''
+      replace_content: 0
     codesnippet:
       highlight_style: github
       highlight_languages:
