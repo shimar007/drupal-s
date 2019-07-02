@@ -911,11 +911,12 @@ properly.
    margin: 15px 0 1em;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 767px) {
    .masonry-layout .masonry-item {
       width: 100% !important;
       position: relative !important;
       top: 0px !important;
       padding: 15px;
+      margin: 15px 0px !important;
    }
 }
