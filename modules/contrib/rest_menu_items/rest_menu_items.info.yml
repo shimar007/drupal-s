@@ -4,8 +4,8 @@ description: This module provides a REST endpoint to retrieve menu items based o
 # core: 8.x
 package: Web services
 configure: rest_menu_items.config_form
-# Information added by Drupal.org packaging script on 2019-02-16
-version: '8.x-2.6'
+# Information added by Drupal.org packaging script on 2019-07-02
+version: '8.x-2.8'
 core: '8.x'
 project: 'rest_menu_items'
-datestamp: 1550305092
+datestamp: 1562078588

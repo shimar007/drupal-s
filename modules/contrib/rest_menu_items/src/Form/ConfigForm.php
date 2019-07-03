@@ -52,6 +52,14 @@ class ConfigForm extends ConfigFormBase {
       ],
       '#default_value' => $config->get('output_values'),
     ];
+
+    $form['base_url'] = [
+      '#type' => 'textfield',
+      '#default_value' => $config->get('base_url'),
+      '#title' => $this->t('Base URL'),
+      '#description' => $this->t('This url is used as the base url in the absolute links.'),
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -70,6 +78,7 @@ class ConfigForm extends ConfigFormBase {
 
     $this->config('rest_menu_items.config')
       ->set('output_values', $form_state->getValue('output_values'))
+      ->set('base_url', $form_state->getValue('base_url'))
       ->save();
   }
 
