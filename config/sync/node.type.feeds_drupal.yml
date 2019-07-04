@@ -20,9 +20,9 @@ third_party_settings:
     unpublish_enable: false
     unpublish_required: false
     unpublish_revision: false
-name: 'Feeds - Drupal'
+name: Feeds
 type: feeds_drupal
-description: 'Drupal News Feeds'
+description: 'News Feeds'
 help: ''
 new_revision: false
 preview_mode: 1

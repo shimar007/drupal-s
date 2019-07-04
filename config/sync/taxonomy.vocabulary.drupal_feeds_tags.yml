@@ -2,7 +2,7 @@ uuid: 0623ae5b-0c73-49a2-b76f-60d815b8d635
 langcode: en
 status: true
 dependencies: {  }
-name: 'Drupal Feeds - Tags'
+name: 'Feeds - Tags'
 vid: drupal_feeds_tags
 description: ''
 weight: 0

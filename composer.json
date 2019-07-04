@@ -58,7 +58,11 @@
         "drupal/advagg": "^4.0",
         "drupal/ckeditor_templates": "^1.1",
         "drupal/masonry": "^1.0",
-        "drupal/masonry_views": "^1.0"
+        "drupal/masonry_views": "^1.0",
+        "drupal/search_api": "^1.13",
+        "drupal/facets": "^1.4",
+        "drupal/search_api_autocomplete": "^1.2",
+        "drupal/search_autocomplete": "^1.1"
     },
     "replace": {
     },
