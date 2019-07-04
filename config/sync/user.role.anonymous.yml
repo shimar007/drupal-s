@@ -15,4 +15,5 @@ permissions:
   - 'display eu cookie compliance popup'
   - 'restful get rest_menu_item'
   - 'search content'
+  - 'use search autocomplete'
   - 'use text format restricted_html'

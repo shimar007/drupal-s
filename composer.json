@@ -62,7 +62,8 @@
         "drupal/search_api": "^1.13",
         "drupal/facets": "^1.4",
         "drupal/search_api_autocomplete": "^1.2",
-        "drupal/search_autocomplete": "^1.1"
+        "drupal/search_autocomplete": "^1.1",
+        "drupal/block_class": "^1.0"
     },
     "replace": {
     },

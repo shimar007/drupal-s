@@ -791,6 +791,7 @@ properly.
    z-index: 101;
    position: fixed;
    top: 0;
+   padding: 20px 0px;
 }
 
 .header .block-system-branding-block {
@@ -855,7 +856,7 @@ properly.
 .header-banner .social li a:hover:before { color: #F06000; }
 
 .content-container {
-   margin-top: 100px;
+   margin-top: 110px;
 }
 
 .resume h2 {
@@ -919,4 +920,35 @@ properly.
       padding: 15px;
       margin: 15px 0px !important;
    }
+}
+
+.header-search {
+   float: right;
+}
+
+.header-search form {
+   margin-bottom: 0px;
+}
+
+.header-search.bef-exposed-form .form--inline > .form-item {
+   float: left;
+   margin: 0px;
+}
+
+.header-search.bef-exposed-form .form--inline > .form-item input {
+   margin: 0px;
+   height: 54px;
+   border-radius: 10px 0px 0px 10px;
+}
+
+.header-search .form-actions {
+   float: left;
+   margin: 0px;
+   clear: none;
+}
+
+.ui-widget.ui-widget-content.ui-autocomplete {
+   display: block !important;
+   width: 375px !important;
+   z-index: 9999;
 }

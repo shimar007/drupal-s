@@ -5,6 +5,7 @@ module:
   better_exposed_filters: 0
   big_pipe: 0
   block: 0
+  block_class: 0
   block_content: 0
   bomWeather: 0
   breakpoint: 0

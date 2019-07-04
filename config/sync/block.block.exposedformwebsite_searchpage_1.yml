@@ -5,13 +5,18 @@ dependencies:
   config:
     - views.view.website_search
   module:
+    - block_class
+    - system
     - views
   theme:
     - developer
+third_party_settings:
+  block_class:
+    classes: header-search
 id: exposedformwebsite_searchpage_1
 theme: developer
-region: content
-weight: 0
+region: header
+weight: -5
 provider: null
 plugin: 'views_exposed_filter_block:website_search-page_1'
 settings:
@@ -20,4 +25,9 @@ settings:
   provider: views
   label_display: '0'
   views_label: ''
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: true
+    context_mapping: {  }
