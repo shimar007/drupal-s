@@ -97,7 +97,7 @@ class MailchimpListsSubscription extends FieldItemBase {
     $element = parent::storageSettingsForm($form, $form_state, $has_data);
 
     $lists = mailchimp_get_lists();
-    $options = array('' => t('-- Select --'));
+    $options = array('' => $this->t('-- Select --'));
     foreach ($lists as $mc_list) {
       $options[$mc_list->id] = $mc_list->name;
     }
@@ -130,9 +130,9 @@ class MailchimpListsSubscription extends FieldItemBase {
 
     $element['mc_list_id'] = array(
       '#type' => 'select',
-      '#title' => t('Mailchimp Audience'),
+      '#title' => $this->t('Mailchimp Audience'),
       '#multiple' => FALSE,
-      '#description' => t('Available Mailchimp audiences which are not already
+      '#description' => $this->t('Available Mailchimp audiences which are not already
         attached to Mailchimp Subscription Fields. If there are no options,
         make sure you have created an audience at @Mailchimp first, then @cacheclear.',
         array(
@@ -163,7 +163,7 @@ class MailchimpListsSubscription extends FieldItemBase {
     $mc_list_id = $this->getFieldDefinition()->getSetting('mc_list_id');
 
     if (empty($mc_list_id)) {
-      drupal_set_message(t('Select an audience to sync with on the Field Settings tab before configuring the field instance.'), 'error');
+      \Drupal::messenger()->addError($this->t('Select an audience to sync with on the Field Settings tab before configuring the field instance.'));
       return $element;
     }
     $this->definition;
@@ -180,10 +180,10 @@ class MailchimpListsSubscription extends FieldItemBase {
       '#default_value' => $instance_settings['show_interest_groups'],
     );
     $element['hide_subscribe_checkbox'] = array(
-      '#title' => t('Hide Subscribe Checkbox'),
+      '#title' => $this->t('Hide Subscribe Checkbox'),
       '#type' => 'checkbox',
       '#default_value' => $instance_settings['hide_subscribe_checkbox'],
-      '#description' => t('When Interest Groups are enabled, the "subscribe" checkbox is hidden and selecting any interest group will subscribe a user to the audience.'),
+      '#description' => $this->t('When Interest Groups are enabled, the "subscribe" checkbox is hidden and selecting any interest group will subscribe a user to the audience.'),
       '#states' => array(
         'visible' => array(
           'input[name="settings[show_interest_groups]"]' => array('checked' => TRUE),
@@ -208,15 +208,15 @@ class MailchimpListsSubscription extends FieldItemBase {
     );
     $element['merge_fields'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Merge Fields'),
-      '#description' => t('Multi-value fields will only sync their first value to Mailchimp, as Mailchimp does not support multi-value fields.'),
+      '#title' => $this->t('Merge Fields'),
+      '#description' => $this->t('Multi-value fields will only sync their first value to Mailchimp, as Mailchimp does not support multi-value fields.'),
       '#tree' => TRUE,
     );
 
     $element['unsubscribe_on_delete'] = array(
       '#title' => "Unsubscribe on deletion",
       '#type' => "checkbox",
-      '#description' => t('Unsubscribe entities from this audience when they are deleted.'),
+      '#description' => $this->t('Unsubscribe entities from this audience when they are deleted.'),
       '#default_value' => $instance_settings['unsubscribe_on_delete'],
     );
 
@@ -245,12 +245,12 @@ class MailchimpListsSubscription extends FieldItemBase {
       if (!$mergevar->required || $mergevar->tag === 'EMAIL') {
         $element['merge_fields'][$mergevar->tag]['#options'] = $fields;
         if ($mergevar->tag === 'EMAIL') {
-          $element['merge_fields'][$mergevar->tag]['#description'] = t('Any entity with an empty or invalid email address field value will simply be ignored by the Mailchimp subscription system. <em>This is why the Email field is the only required merge field which can sync to non-required fields.</em>');
+          $element['merge_fields'][$mergevar->tag]['#description'] = $this->t('Any entity with an empty or invalid email address field value will simply be ignored by the Mailchimp subscription system. <em>This is why the Email field is the only required merge field which can sync to non-required fields.</em>');
         }
       }
       else {
         $element['merge_fields'][$mergevar->tag]['#options'] = $required_fields;
-        $element['merge_fields'][$mergevar->tag]['#description'] = t("Only 'required' and 'calculated' fields are allowed to be synced with Mailchimp 'required' merge fields.");
+        $element['merge_fields'][$mergevar->tag]['#description'] = $this->t("Only 'required' and 'calculated' fields are allowed to be synced with Mailchimp 'required' merge fields.");
       }
     }
     return $element;
@@ -344,7 +344,7 @@ class MailchimpListsSubscription extends FieldItemBase {
   private function getFieldmapOptions($entity_type, $entity_bundle = NULL, $required = FALSE, $prefix = NULL, $tree = NULL) {
     $options = array();
     if (!$prefix) {
-      $options[''] = t('-- Select --');
+      $options[''] = $this->t('-- Select --');
     }
 
     /** @var \Drupal\Core\Field\FieldDefinitionInterface[] $field_definitions */

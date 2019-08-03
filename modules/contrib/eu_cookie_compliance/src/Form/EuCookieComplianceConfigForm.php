@@ -300,7 +300,7 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('Disable JavaScripts'),
       '#default_value' => $config->get('disabled_javascripts'),
-      '#description' => $this->t("Include the full path of JavaScripts, each on a separate line. When using the opt-in or opt-out consent options, you can block certain JavaScript files from being loaded when consent isn't given. The on-site JavaScripts should be written as root relative paths <strong>without the leading slash</strong>, you can use public://path/to/file.js and private://path/to/file.js, and off-site JavaScripts should be written as complete URLs <strong>with the leading http(s)://</strong>. Note that after the user gives consent, the scripts will be executed in the order you enter here.<br /><br />Libraries and scripts that attach to Drupal.behaviors are supported. To indicate a behavior that needs to be loaded on consent, append the behavior name after the script with a | (vertical bar). If you also want to conditionally load a library, place that as the third parameter, following another | (vertical bar). <strong>Example: modules/custom/custom_module/js/custom.js|customModule|custom_module/custom_module</strong>.<br />If your script file does not attach to Drupal.attributes, you may skip the second parameter. <strong>Example: modules/custom/custom_module/js/custom.js||custom_module/custom_module</strong><br /><strong>Note that Drupal behavior name and library parameters are both optional</strong>, but may be required to achieve your objective.") .
+      '#description' => $this->t("<span class='eu-cookie-compliance-word-break'>Include the full path of JavaScripts, each on a separate line. When using the opt-in or opt-out consent options, you can block certain JavaScript files from being loaded when consent isn't given. The on-site JavaScripts should be written as root relative paths <strong>without the leading slash</strong>, you can use public://path/to/file.js and private://path/to/file.js, and off-site JavaScripts should be written as complete URLs <strong>with the leading http(s)://</strong>. Note that after the user gives consent, the scripts will be executed in the order you enter here.<br /><br />Libraries and scripts that attach to Drupal.behaviors are supported. To indicate a behavior that needs to be loaded on consent, append the behavior name after the script with a | (vertical bar). If you also want to conditionally load a library, place that as the third parameter, following another | (vertical bar). <strong>Example: modules/custom/custom_module/js/custom.js|customModule|custom_module/custom_module</strong>.<br />If your script file does not attach to Drupal.attributes, you may skip the second parameter. <strong>Example: modules/custom/custom_module/js/custom.js||custom_module/custom_module</strong><br /><strong>Note that Drupal behavior name and library parameters are both optional</strong>, but may be required to achieve your objective.</span>") .
       '<br /><br />' . $this->t('When using the consent method "Opt-in with categories", you can link the script to a specific category by using the format: "category:path/to/the/script.js".'),
     ];
 
@@ -319,7 +319,7 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('Whitelisted cookies'),
       '#default_value' => $config->get('whitelisted_cookies'),
-      '#description' => $this->t("Include the name of cookies, each on a separate line. When using the opt-in or opt-out consent options, this module will <strong>prevent cookies that are not on the whitelist</strong> from being stored in the browser when consent isn't given. PHP session cookies and the cookie for this module are always whitelisted.") .
+      '#description' => $this->t("Include the name of cookies, each on a separate line. When using the opt-in or opt-out consent options, this module will <strong>delete cookies from your domain that are not on the whitelist</strong> every few seconds when consent isn't given. PHP session cookies and the cookie for this module are always whitelisted.") .
       '<br /><br />' . t('When using the consent method "Opt-in with categories", you can link the cookie to a specific consent category by using the format: "category:cookie_name".  Only when consent is given for the given category, will the cookie be whitelisted.'),
     ];
 
@@ -846,6 +846,13 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
       '#description' => $this->t('Enable this if you want to place the banner as the first HTML element on the page. This will make it possible for screen readers to close the banner without tabbing through all links on the page.'),
     ];
 
+    $form['advanced']['cookie_session'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Prompt for consent (from the same user) at every new browser session.'),
+      '#description' => $this->t("This sets cookie lifetime to 0, invalidating the cookie at the end of the browser session. To set a cookie lifetime greater than 0, uncheck this option. Note that some users will find this behavior highly annoying, and it's recommended to double-check with the legal advisor whether you really need this option enabled."),
+      '#default_value' => $config->get('cookie_session'),
+    ];
+
     $form['advanced']['domain'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Domain'),
@@ -853,11 +860,11 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
       '#description' => $this->t('Sets the domain of the cookie to a specific url. Used when you need consistency across domains. This is language independent. Note: Make sure you actually enter a domain that the browser can make use of. For example if your site is accessible at both www.domain.com and domain.com, you will not be able to hide the banner at domain.com if your value for this field is www.domain.com.'),
     ];
 
-    $form['advanced']['cookie_session'] = [
+    $form['advanced']['domain_all_sites'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Prompt for consent (from the same user) at every new browser session.'),
-      '#description' => $this->t("This sets cookie lifetime to 0, invalidating the cookie at the end of the browser session. To set a cookie lifetime greater than 0, uncheck this option. Note that some users will find this behavior highly annoying, and it's recommended to double-check with the legal advisor whether you really need this option enabled."),
-      '#default_value' => $config->get('cookie_session'),
+      '#title' => $this->t('Allow the cookie to be set for all sites on the same domain.'),
+      '#default_value' => !empty($config->get('domain_all_sites')) ? $config->get('domain_all_sites') : 0,
+      '#description' => $this->t("Sets the path of the cookie to '/' so that the cookie works across all sites on the domain."),
     ];
 
     $form['advanced']['cookie_lifetime'] = [
@@ -875,6 +882,8 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
         ],
       ],
     ];
+
+    $form['#attached']['library'][] = 'eu_cookie_compliance/admin';
 
     return parent::buildForm($form, $form_state);
   }
@@ -997,6 +1006,7 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
       ->set('use_bare_css', $form_state->getValue('use_bare_css'))
       ->set('disagree_do_not_show_popup', $form_state->getValue('disagree_do_not_show_popup'))
       ->set('reload_page', $form_state->getValue('reload_page'))
+      ->set('domain_all_sites', $form_state->getValue('domain_all_sites'))
       ->set('cookie_name', $form_state->getValue('cookie_name'))
       ->set('exclude_uid_1', $form_state->getValue('exclude_uid_1'))
       ->set('better_support_for_screen_readers', $form_state->getValue('better_support_for_screen_readers'))

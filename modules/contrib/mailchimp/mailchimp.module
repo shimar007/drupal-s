@@ -67,7 +67,7 @@ function mailchimp_get_api_object($classname = 'Mailchimp') {
   if (!class_exists($classname)) {
     $msg = t('Failed to load Mailchimp PHP library. Please refer to the installation requirements.');
     \Drupal::logger('mailchimp')->error($msg);
-    drupal_set_message($msg, 'error');
+    \Drupal::messenger()->addError($msg);
     return NULL;
   }
 
@@ -419,6 +419,14 @@ function mailchimp_subscribe_process($list_id, $email, $merge_vars = NULL, $inte
     if (!empty($interests)) {
       $selected_interests = array();
       foreach ($interests as $interest_group) {
+        // This could happen in case the selected interest group
+        // is set to display radio inputs. So we either do an
+        // explicit check here, or simply transform the single string
+        // value to an array in order to pass the condition check below.
+        if (!is_array($interest_group)) {
+          $interest_group = [$interest_group => $interest_group];
+        }
+
         foreach ($interest_group as $interest_id => $interest_status) {
           $selected_interests[$interest_id] = ($interest_status !== 0);
         }
@@ -474,7 +482,7 @@ function mailchimp_subscribe_process($list_id, $email, $merge_vars = NULL, $inte
   }
 
   if ($double_optin) {
-    drupal_set_message(t('Please check your email to confirm your subscription'), 'status', FALSE);
+    \Drupal::messenger()->addStatus(t('Please check your email to confirm your subscription'), FALSE);
   }
   return $result;
 }
@@ -597,7 +605,7 @@ function mailchimp_update_member_process($list_id, $email, $merge_vars, $interes
   }
 
   if ($double_optin) {
-    drupal_set_message(t('Please check your email to confirm your subscription'), 'status', FALSE);
+    \Drupal::messenger()->addStatus(t('Please check your email to confirm your subscription'), FALSE);
   }
 
   return $result;
@@ -681,7 +689,7 @@ function mailchimp_batch_update_members($list_id, $batch) {
  *
  * @see Mailchimp_Lists::unsubscribe()
  */
-function mailchimp_unsubscribe($list_id, $email, $delete = FALSE, $goodbye = FALSE, $notify = FALSE) {
+function mailchimp_unsubscribe($list_id, $email) {
   $config = \Drupal::config('mailchimp.settings');
 
   $result = FALSE;
@@ -693,14 +701,11 @@ function mailchimp_unsubscribe($list_id, $email, $delete = FALSE, $goodbye = FAL
         array(
           'list_id' => $list_id,
           'email' => $email,
-          'delete' => $delete,
-          'goodbye' => $goodbye,
-          'notify' => $notify,
         )
       );
     }
     else {
-      $result = mailchimp_unsubscribe_process($list_id, $email, $delete, $goodbye, $notify);
+      $result = mailchimp_unsubscribe_process($list_id, $email);
     }
   }
 
@@ -712,7 +717,7 @@ function mailchimp_unsubscribe($list_id, $email, $delete = FALSE, $goodbye = FAL
  *
  * @see Mailchimp_Lists::unsubscribe()
  */
-function mailchimp_unsubscribe_process($list_id, $email, $delete, $goodbye, $notify) {
+function mailchimp_unsubscribe_process($list_id, $email) {
   try {
     /* @var \Mailchimp\MailchimpLists $mc_lists */
     $mc_lists = mailchimp_get_api_object('MailchimpLists');
@@ -1120,8 +1125,14 @@ function mailchimp_interest_groups_form_elements($list, $defaults = array(), $em
         }
       }
       else if (!empty($defaults)) {
-        if (isset($defaults[$group->id][$interest->id]) && !empty($defaults[$group->id][$interest->id])) {
-          $default_values[$group->id][] = $interest->id;
+        if ($group->type === 'radio') {
+          if (isset($defaults[$group->id]) && $defaults[$group->id] === $interest->id) {
+            $default_values[$group->id] = $interest->id;
+          }
+        } else {
+          if (isset($defaults[$group->id][$interest->id]) && !empty($defaults[$group->id][$interest->id])) {
+            $default_values[$group->id][] = $interest->id;
+          }
         }
       }
     }

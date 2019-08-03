@@ -33,15 +33,15 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
     $mc_api_url = Url::fromUri('http://admin.mailchimp.com/account/api', array('attributes' => array('target' => '_blank')));
     $form['api_key'] = array(
       '#type' => 'textfield',
-      '#title' => t('Mailchimp API Key'),
+      '#title' => $this->t('Mailchimp API Key'),
       '#required' => TRUE,
       '#default_value' => $config->get('api_key'),
-      '#description' => t('The API key for your Mailchimp account. Get or generate a valid API key at your @apilink.', array('@apilink' => Link::fromTextAndUrl(t('Mailchimp API Dashboard'), $mc_api_url)->toString())),
+      '#description' => $this->t('The API key for your Mailchimp account. Get or generate a valid API key at your @apilink.', array('@apilink' => Link::fromTextAndUrl($this->t('Mailchimp API Dashboard'), $mc_api_url)->toString())),
     );
 
     $form['connected_sites'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Connected sites'),
+      '#title' => $this->t('Connected sites'),
     );
 
     $mc_connected_sites_url = Url::fromUri('https://kb.mailchimp.com/integrations/connected-sites/about-connected-sites')->toString();
@@ -88,15 +88,15 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
         '#type' => 'radios',
         '#options' => $connected_sites_options,
         '#default_value' => $config->get('connected_id'),
-        '#prefix' => t('<p><b>Choose a connected site from your Mailchimp account.</b></p>'),
+        '#prefix' => $this->t('<p><b>Choose a connected site from your Mailchimp account.</b></p>'),
       );
 
       // Allow the user to configure which paths to embed JavaScript on.
       $form['connected_sites']['config']['connected_paths'] = array(
         '#type' => 'textarea',
         '#default_value' => $config->get('connected_paths'),
-        '#prefix' => t("<p><b>Configure paths to embed Mailchimp's JavaScript code on.</b></p>"),
-        '#description' => t('Specify pages using their paths. Enter one path per line. <front> is the front page. If you have created a pop-up subscription form in Mailchimp, it will appear on paths defined here.'),
+        '#prefix' => $this->t("<p><b>Configure paths to embed Mailchimp's JavaScript code on.</b></p>"),
+        '#description' => $this->t('Specify pages using their paths. Enter one path per line. <front> is the front page. If you have created a pop-up subscription form in Mailchimp, it will appear on paths defined here.'),
       );
     }
     else {
@@ -112,13 +112,13 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
 
     $form['batch'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Batch processing'),
+      '#title' => $this->t('Batch processing'),
     );
 
     $form['batch']['cron'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Use batch processing.'),
-      '#description' => t('Puts all Mailchimp subscription operations into the cron queue. (Includes subscribe, update, and unsubscribe operations.) <i>Note: May cause confusion if caches are cleared, as requested changes will appear to have failed until cron is run.</i>'),
+      '#title' => $this->t('Use batch processing.'),
+      '#description' => $this->t('Puts all Mailchimp subscription operations into the cron queue. (Includes subscribe, update, and unsubscribe operations.) <i>Note: May cause confusion if caches are cleared, as requested changes will appear to have failed until cron is run.</i>'),
       '#default_value' => $config->get('cron'),
     );
     $form['batch']['batch_limit'] = array(
@@ -139,8 +139,8 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
         '7500' => '7500',
         '10000' => '10000',
       ),
-      '#title' => t('Batch limit'),
-      '#description' => t('Maximum number of entities to process in a single cron run. Mailchimp suggest keeping this at 5000 or below. <i>This value is also used for batch Merge Variable updates on the Fields tab (part of mailchimp_lists).</i>'),
+      '#title' => $this->t('Batch limit'),
+      '#description' => $this->t('Maximum number of entities to process in a single cron run. Mailchimp suggest keeping this at 5000 or below. <i>This value is also used for batch Merge Variable updates on the Fields tab (part of mailchimp_lists).</i>'),
       '#default_value' => $config->get('batch_limit'),
     );
 

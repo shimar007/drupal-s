@@ -394,7 +394,27 @@ class RestMenuItemsResource extends ResourceBase {
         break;
     }
 
+    $addFragmentElements = ['alias', 'absolute', 'relative'];
+    if (!empty($config->get('add_fragment')) && in_array($key, $addFragmentElements)) {
+      $this->addFragment($value, $link);
+    }
+
     $returnArray[$key] = $value;
+  }
+
+  /**
+   * Add the fragment to the value if neccesary.
+   *
+   * @param string $value
+   *   The value to add the fragment to. Passed by reference.
+   * @param \Drupal\Core\Menu\MenuLinkInterface $link
+   *   The link from the menu.
+   */
+  private function addFragment(&$value, $link) {
+    $options = $link->getOptions();
+    if (!empty($options) && isset($options['fragment'])) {
+      $value .= '#' . $options['fragment'];
+    }
   }
 
 }

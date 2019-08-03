@@ -43,4 +43,3 @@ Current maintainers:
 
 This project has been sponsored by:
 * [Finalist](https://www.drupal.org/finalist)
-* [Youwe](https://www.drupal.org/youwe)

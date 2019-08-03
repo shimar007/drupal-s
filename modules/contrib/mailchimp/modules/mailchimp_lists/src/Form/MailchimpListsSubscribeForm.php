@@ -111,7 +111,7 @@ class MailchimpListsSubscribeForm extends FormBase {
       if (is_array($mc_list['intgroups'])) {
         $form[$wrapper_key]['interest_groups'] = array(
           '#type' => 'fieldset',
-          '#title' => isset($settings['interest_groups_label']) ? $settings['interest_groups_label'] : t('Interest Groups'),
+          '#title' => isset($settings['interest_groups_label']) ? $settings['interest_groups_label'] : $this->t('Interest Groups'),
           '#weight' => 100,
           '#states' => array(
             'invisible' => array(
@@ -132,7 +132,7 @@ class MailchimpListsSubscribeForm extends FormBase {
 
     $form['submit'] = array(
       '#type' => 'submit',
-      '#value' => t('Save'),
+      '#value' => $this->t('Save'),
     );
 
     return $form;

@@ -87,6 +87,7 @@ function eu_cookie_compliance_install() {
     \Drupal::configFactory()
       ->getEditable('eu_cookie_compliance.settings')
       ->set('popup_link', $cookie_policy)
+      ->set('uuid', \Drupal::service('uuid')->generate())
       ->save();
   }
 
@@ -342,5 +343,25 @@ function eu_cookie_compliance_update_8112() {
     ->set('fix_first_cookie_category', TRUE)
     ->set('select_all_categories_by_default', FALSE)
     ->set('withdraw_button_on_info_popup', FALSE)
+    ->save();
+}
+
+/**
+ * Add config variables for the "Allow cookie for all sites on same domain" feature.
+ */
+function eu_cookie_compliance_update_8113() {
+  \Drupal::configFactory()
+    ->getEditable('eu_cookie_compliance.settings')
+    ->set('domain_all_sites', FALSE)
+    ->save();
+}
+
+/**
+ * Add uuid to the config.
+ */
+function eu_cookie_compliance_update_8114() {
+  \Drupal::configFactory()
+    ->getEditable('eu_cookie_compliance.settings')
+    ->set('uuid', \Drupal::service('uuid')->generate())
     ->save();
 }

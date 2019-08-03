@@ -4,6 +4,9 @@ eu_cookie_compliance.settings:
   type: config_object
   label: 'EU Cookie Compliance Settings'
   mapping:
+    uuid:
+      type: uuid
+      label: 'UUID'
     popup_enabled:
       type: boolean
       label: 'Enable banner'
@@ -200,3 +203,6 @@ eu_cookie_compliance.settings:
     fix_first_cookie_category:
       type: boolean
       label: 'Check the first checkbox and mark it read only'
+    domain_all_sites:
+      type: boolean
+      label: 'Allow the cookie to be set for all sites on the same domain'

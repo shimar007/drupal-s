@@ -115,6 +115,25 @@ class MailchimpListsSelectWidget extends WidgetBase {
       }
     }
 
+    // Make a distinction between whether the field is edited by the system or the user.
+    // This is important to prevent unwanted subscription overwrites.
+    $build_info = $form_state->getBuildInfo();
+    if ($build_info['callback_object']->getOperation() == 'edit') {
+
+      // The field is set from an edited via the UI.
+      $element['allow_unsubscribe'] = array(
+        '#type' => 'value',
+        '#value' => TRUE,
+      );
+    }
+    else {
+      // The field is NOT set from an edit.
+      $element['allow_unsubscribe'] = array(
+        '#type' => 'value',
+        '#value' => FALSE,
+      );
+    }
+
     return array('value' => $element);
   }
 

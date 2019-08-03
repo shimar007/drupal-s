@@ -311,12 +311,14 @@ function eu_cookie_compliance_page_attachments(&$attachments) {
       'popup_link'           => $popup_link,
       'popup_link_new_window' => $config->get('popup_link_new_window'),
       'popup_position'       => $config->get('popup_position'),
+      'fixed_top_position'   => !empty($config->get('fixed_top_position')) ? $config->get('fixed_top_position') : FALSE,
       'popup_language'       => $language->getId(),
       'store_consent'        => $config->get('consent_storage_method') != 'do_not_store',
       'better_support_for_screen_readers'         => !empty($config->get('better_support_for_screen_readers')) ? $config->get('better_support_for_screen_readers') : FALSE,
       'cookie_name'          => !empty($config->get('cookie_name')) ? $config->get('cookie_name') : '',
       'reload_page'          => !empty($config->get('reload_page')) ? $config->get('reload_page') : FALSE,
       'domain'               => $config->get('domain'),
+      'domain_all_sites'     => $config->get('domain_all_sites'),
       'popup_eu_only_js'     => !empty($config->get('eu_only_js')) ? $config->get('eu_only_js') : FALSE,
       'cookie_lifetime'      => $config->get('cookie_lifetime'),
       'cookie_session'       => $config->get('cookie_session'),
@@ -353,8 +355,8 @@ function eu_cookie_compliance_page_attachments(&$attachments) {
         $parts = explode('%3A', $script);
         $category = NULL;
         if (count($parts) > 1) {
-          $category = $parts[0];
-          $script = $parts[1];
+          $category = array_shift($parts);
+          $script = implode(':', $parts);
         }
 
         // Split the string if a | is present.
@@ -364,8 +366,6 @@ function eu_cookie_compliance_page_attachments(&$attachments) {
         if (strpos($script, '%7C') !== FALSE) {
           // Swallow a notice in case there are no behavior or library names.
           @list($script, $attach_name, $library_name) = explode('%7C', $script);
-          // Store the actual script name, since we will need it later.
-          $disabled_javascripts[$key] = $script;
 
           // Store the library name.
           if ($library_name) {
@@ -378,6 +378,10 @@ function eu_cookie_compliance_page_attachments(&$attachments) {
         if (strpos($script, 'http') !== 0 && strpos($script, '//') !== 0) {
           $script = '/' . $script;
         }
+
+        // Store the actual script name, since we will need it later.
+        $disabled_javascripts[$key] = $script;
+
         if ($category) {
           $load_disabled_scripts .= 'if (category === "' . $category . '") {';
         }
@@ -395,23 +399,27 @@ function eu_cookie_compliance_page_attachments(&$attachments) {
       }
     }
 
-    $attachments['#attached']['html_head'][] = [
-      [
-        '#type' => 'html_tag',
-        '#tag' => 'script',
-        '#value' => 'function euCookieComplianceLoadScripts(category) {' . $load_disabled_scripts . '}',
-      ],
-      'eu-cookie-compliance-js',
-    ];
+    if ($load_disabled_scripts) {
+      $attachments['#attached']['html_head'][] = [
+        [
+          '#type' => 'html_tag',
+          '#tag' => 'script',
+          '#value' => 'function euCookieComplianceLoadScripts(category) {' . $load_disabled_scripts . '}',
+        ],
+        'eu-cookie-compliance-js',
+      ];
+    }
 
     // Add inline css.
-    $attachments['#attached']['html_head'][] = [
-      [
-        '#tag' => 'style',
-        '#value' => $data['css'],
-      ],
-      'eu-cookie-compliance-css',
-    ];
+    if (!empty($data['css'])) {
+      $attachments['#attached']['html_head'][] = [
+        [
+          '#tag' => 'style',
+          '#value' => $data['css'],
+        ],
+        'eu-cookie-compliance-css',
+      ];
+    }
     $cache_tags = isset($attachments['#cache']['tags']) ? $attachments['#cache']['tags'] : [];
     $attachments['#cache']['tags'] = Cache::mergeTags($cache_tags, $config->getCacheTags());
 
@@ -556,9 +564,10 @@ function eu_cookie_compliance_validate_hex(array $element, FormStateInterface &$
 function eu_cookie_compliance_user_in_eu() {
   $geoip_match = FALSE;
   $eu_countries_default = [
-    NULL, 'BE', 'BG', 'CZ', 'DK', 'DE', 'EE', 'IE', 'EL', 'ES', 'FR', 'HR',
-    'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL', 'AT', 'PL', 'PT', 'RO',
-    'SI', 'SK', 'FI', 'SE', 'UK', 'GB', 'NO',
+    NULL, 'AT', 'AX', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES',
+    'EU', 'FI', 'FR', 'GB', 'GF', 'GI', 'GP', 'GR', 'HR', 'HU', 'IE', 'IS',
+    'IT', 'LI', 'LT', 'LU', 'LV', 'ME', 'MF', 'MQ', 'MT', 'NL', 'NO', 'PL',
+    'PT', 'RE', 'RO', 'SE', 'SI', 'SK', 'YT', 'UK',
   ];
   // Allow custom array of countries to be loaded from settings.php, defaulting
   // to the array above.
@@ -569,7 +578,8 @@ function eu_cookie_compliance_user_in_eu() {
 
   $country_code = extension_loaded('geoip') ? geoip_country_code_by_name($ip_address) : '';
   if (Drupal::moduleHandler()->moduleExists('smart_ip')) {
-    $smart_ip_session = SmartIp::query($ip_address);
+    $location_service = \Drupal::service('smart_ip.smart_ip_location');
+    $smart_ip_session = $location_service->get();
     $country_code = isset($smart_ip_session['countryCode']) ? $smart_ip_session['countryCode'] : NULL;
   }
 
@@ -643,29 +653,55 @@ function _eu_cookie_compliance_find_privacy_policy() {
     return FALSE;
   }
 
-  $pattern = 'privacy|privacy +policy|cookie +policy|terms +of +use|terms +of +service|terms +and +conditions';
-
   $connection = Database::getConnection();
-  // Select operator based on the database type.
-  switch ($connection->databaseType()) {
-    case 'pgsql':
-      $op = '~*';
-      break;
+  $database_type = $connection->databaseType();
 
-    case 'sqlite':
-      $op = 'REGEXP';
-      break;
+  if ($database_type === 'sqlsrv') {
+    $query = \Drupal::database()->query(
+      "select nid from {node_field_data} where 
+      title LIKE 'Privacy%' OR 
+      title LIKE 'Privacy policy%' OR 
+      title LIKE 'Privacy Policy%' OR 
+      title LIKE 'Cookie policy%' OR 
+      title LIKE 'Cookie Policy%' OR 
+      title LIKE 'Terms of use%' OR 
+      title LIKE 'Terms of Use%' OR 
+      title LIKE 'Terms of service%' OR 
+      title LIKE 'Terms of Service%' OR 
+      title LIKE 'Terms and conditions%' OR 
+      title LIKE 'Terms and Conditions%'
+      "
+    );
+    $result = $query->fetchAll();
 
-    default:
-      $op = 'RLIKE';
+    if (!empty($result)) {
+      return ('/node/' . $result[0]->nid);
+    }
   }
+  else {
+    // Select operator based on the database type.
+    switch ($connection->databaseType()) {
+      case 'pgsql':
+        $op = '~*';
+        break;
 
-  $query = \Drupal::entityQuery('node')
-    ->condition('title', $pattern, $op);
+      case 'sqlite':
+        $op = 'REGEXP';
+        break;
 
-  $result = $query->execute();
-  if (!empty($result)) {
-    return ('/node/' . array_shift($result));
+      default:
+        $op = 'RLIKE';
+    }
+
+    $pattern = 'privacy|privacy +policy|cookie +policy|terms +of +use|terms +of +service|terms +and +conditions';
+
+    $query = \Drupal::entityQuery('node')
+      ->condition('title', $pattern, $op);
+    $result = $query->execute();
+
+    if (!empty($result)) {
+      return ('/node/' . array_shift($result));
+    }
   }
   return FALSE;
 }
