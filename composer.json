@@ -65,7 +65,8 @@
         "drupal/search_autocomplete": "^1.1",
         "drupal/block_class": "^1.0",
         "drupal/csp": "^1.4",
-        "drupal/hsts": "^1.0"
+        "drupal/hsts": "^1.0",
+        "drupal/seckit": "^1.2"
     },
     "replace": {
     },
