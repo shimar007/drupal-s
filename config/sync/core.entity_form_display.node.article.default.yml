@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.article.body
     - field.field.node.article.comment
+    - field.field.node.article.feeds_item
     - field.field.node.article.field_image
     - field.field.node.article.field_meta_tags
     - field.field.node.article.field_tags
@@ -29,6 +30,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Page - Header'
+      region: content
     group_page_body_content:
       children:
         - body
@@ -41,6 +43,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Page - Body Content'
+      region: content
 _core:
   default_config_hash: vPb_yvhA-xuNoV_yOmOwYxGuHNRIH1CoMK2qi7BSga0
 id: node.article.default
@@ -134,6 +137,12 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  url_redirects:
+    weight: 50
+    settings: {  }
+    third_party_settings: {  }
+    region: content
 hidden:
   comment: true
+  feeds_item: true
   field_image: true

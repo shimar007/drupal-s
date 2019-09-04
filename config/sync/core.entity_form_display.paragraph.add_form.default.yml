@@ -26,6 +26,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Add Form - Fields'
+      region: content
 id: paragraph.add_form.default
 targetEntityType: paragraph
 bundle: add_form

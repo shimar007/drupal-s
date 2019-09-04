@@ -28,6 +28,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Education - Details'
+      region: content
 id: paragraph.education_details.default
 targetEntityType: paragraph
 bundle: education_details

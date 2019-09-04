@@ -28,6 +28,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Work Info'
+      region: content
 id: paragraph.work_experience_details.default
 targetEntityType: paragraph
 bundle: work_experience_details

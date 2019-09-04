@@ -26,6 +26,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Header - Fields'
+      region: content
 id: paragraph.home_page_header_.default
 targetEntityType: paragraph
 bundle: home_page_header_

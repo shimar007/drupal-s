@@ -65,3 +65,5 @@ accept_all_categories_button_label: 'Accept all cookies'
 fix_first_cookie_category: true
 select_all_categories_by_default: false
 withdraw_button_on_info_popup: false
+domain_all_sites: false
+uuid: 61a88403-3ce1-4ed6-8ee2-526c1e73853b

@@ -24,6 +24,7 @@ module:
   content_sync: 0
   contextual: 0
   cors: 0
+  csp: 0
   csv_serialization: 0
   ctools: 0
   datatables: 0

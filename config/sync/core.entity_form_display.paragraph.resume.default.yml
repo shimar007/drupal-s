@@ -31,6 +31,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Technical - Fields'
+      region: content
     group_work_experience:
       children:
         - field_work_experience_heading
@@ -44,6 +45,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Work Experience'
+      region: content
     group_education:
       children:
         - field_education_heading
@@ -57,6 +59,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: Education
+      region: content
 id: paragraph.resume.default
 targetEntityType: paragraph
 bundle: resume

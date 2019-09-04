@@ -34,6 +34,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Feed Details'
+      region: content
 id: node.feeds_drupal.default
 targetEntityType: node
 bundle: feeds_drupal
@@ -133,5 +134,10 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  url_redirects:
+    weight: 50
+    settings: {  }
+    third_party_settings: {  }
+    region: content
 hidden:
   feeds_item: true
