@@ -6,13 +6,13 @@ package: Menu
 dependencies:
   - drupal:block
   - drupal:menu_link_content
-  - drupal:system (>=8.2.0)
+  - drupal:system (>=8.5.0)
   - drupal:text
 simplytest_dependencies:
   - menu_item_extras:mie_demo_base
 
-# Information added by Drupal.org packaging script on 2019-06-06
-version: '8.x-2.6'
+# Information added by Drupal.org packaging script on 2019-08-19
+version: '8.x-2.7'
 core: '8.x'
 project: 'menu_item_extras'
-datestamp: 1559810891
+datestamp: 1566238392

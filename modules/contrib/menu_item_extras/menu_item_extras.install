@@ -107,6 +107,10 @@ function menu_item_extras_update_8023(&$sandbox) {
 function menu_item_extras_update_8024(&$sandbox) {
   /** @var \Drupal\menu_item_extras\Service\MenuLinkContentService $mlc_helper */
   $mlc_helper = \Drupal::service('menu_item_extras.menu_link_content_helper');
-  $mlc_helper->doEntityUpdate();
-  $mlc_helper->doBundleFieldUpdate();
+  $entity_type = \Drupal::entityTypeManager()->getDefinition('menu_link_content');
+  \Drupal::service('entity.definition_update_manager')->updateFieldableEntityType($entity_type, \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('menu_link_content'), $sandbox);
+  if (empty($sandbox['progress'])) {
+    $sandbox['progress'] = TRUE;
+    $mlc_helper->doBundleFieldUpdate();
+  }
 }
