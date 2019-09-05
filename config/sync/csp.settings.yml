@@ -1,13 +1,6 @@
 _core:
   default_config_hash: Qa0Wwo59NSFGS3lPsFxj55zyk3uJXxPqLJuQ4soNCaQ
 report-only:
-  enable: true
-  directives:
-    script-src-elem:
-      base: self
-    style-src:
-      base: self
-  reporting:
-    plugin: none
+  enable: false
 enforce:
   enable: false
