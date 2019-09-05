@@ -3,10 +3,6 @@ _core:
 report-only:
   enable: true
   directives:
-    script-src:
-      flags:
-        - unsafe-inline
-      base: self
     script-src-elem:
       base: self
     style-src:
@@ -14,15 +10,4 @@ report-only:
   reporting:
     plugin: none
 enforce:
-  enable: true
-  directives:
-    script-src:
-      base: self
-    script-src-elem:
-      base: self
-    style-src:
-      base: self
-    style-src-elem:
-      base: self
-  reporting:
-    plugin: none
+  enable: false
