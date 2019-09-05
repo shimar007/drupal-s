@@ -14,4 +14,15 @@ report-only:
   reporting:
     plugin: none
 enforce:
-  enable: false
+  enable: true
+  directives:
+    script-src:
+      base: self
+    script-src-elem:
+      base: self
+    style-src:
+      base: self
+    style-src-elem:
+      base: self
+  reporting:
+    plugin: none

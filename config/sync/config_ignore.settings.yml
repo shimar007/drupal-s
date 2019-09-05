@@ -1,5 +1,6 @@
 ignored_config_entities:
   0: system.site
   2: 'webform.webform.*'
+  4: developer.settings
 _core:
   default_config_hash: UVH1aJ4b44UM-VdPVN7hNNuuVqfReJxwfVeDQH1Hvsk
