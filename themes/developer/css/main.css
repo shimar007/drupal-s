@@ -952,3 +952,9 @@ properly.
    width: 375px !important;
    z-index: 9999;
 }
+
+.scroll-progress-bottom  {
+   height: 1px;
+   box-shadow: none !important;
+   background-color: transparent !important;
+}
