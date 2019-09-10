@@ -954,7 +954,10 @@ properly.
 }
 
 .scroll-progress-bottom  {
-   height: 1px;
+   height: 5px;
    box-shadow: none !important;
-   background-color: transparent !important;
+}
+
+.bottom-progress-tooltip, .scroll-progress-bottom-triangle {
+   display: none;
 }
