@@ -23,6 +23,7 @@ header .banner-text h1 {
    letter-spacing: -2px;
    margin: 0 auto 18px auto;
    text-shadow: 0px 1px 3px rgba(0, 0, 0, .8);
+   font-weight: bold;
 }
 header .banner-text h3 {
    font: 16px/1.9em 'librebaskerville-regular', serif;
@@ -96,6 +97,7 @@ header .scrolldown a:hover { color: #11ABB0; }
    margin: 0 auto;
    z-index: 100;
    float: right;
+   font-weight: bold;
 }
 
 .opaque { background-color: #333; }
@@ -157,6 +159,7 @@ ul#nav li.current a { color: #F06000; }
    font: 22px/30px 'opensans-bold', sans-serif;
    color: #fff;
    margin-bottom: 12px;
+   font-weight: bold;
 }
 #about p {
    line-height: 30px;
@@ -206,13 +209,17 @@ ul#nav li.current a { color: #F06000; }
    font: 18px/24px 'opensans-bold', sans-serif;
    text-transform: uppercase;
    letter-spacing: 1px;
+   font-weight: bold;
 }
+
 #resume h1 span {
    border-bottom: 3px solid #11ABB0;
    padding-bottom: 6px;
 }
+
 #resume h3 {
    font: 25px/30px 'opensans-bold', sans-serif;
+   font-weight: bold;
 }
 
 #resume .header-col { padding-top: 9px; }
@@ -225,18 +232,21 @@ ul#nav li.current a { color: #F06000; }
    border-bottom: 1px solid #E8E8E8;
 }
 #resume .info {
-   font: 16px/24px 'librebaskerville-italic', serif;
-   color: #6E7881;
+   font: 16px/24px 'opensans-regular', serif;
+   color: #000000;
    margin-bottom: 18px;
    margin-top: 9px;
+   font-style: italic;
 }
 #resume .info span {
    margin-right: 5px;
    margin-left: 5px;
 }
 #resume .date {
-   font: 15px/24px 'opensans-regular', sans-serif;
+   font: 15px/24px 'opensans-regular', serif;
    margin-top: 6px;
+   font-style: italic;
+   color: #000000;
 }
 
 /*----------------------------------------------*/
@@ -267,7 +277,8 @@ ul#nav li.current a { color: #F06000; }
    letter-spacing: 2px;
 	font-weight: normal;
    position: relative;
-	top: -36px;
+   top: -36px;
+   font-weight: bold;
 }
 .bar-expand {
    position: absolute;
@@ -406,6 +417,7 @@ ul#nav li.current a { color: #F06000; }
 .portfolio-item .portfolio-item-meta h5 {
    font: 14px/21px 'opensans-bold', sans-serif;
    color: #fff;
+   font-weight: bold;
 }
 .portfolio-item .portfolio-item-meta p {
    font: 12px/18px 'opensans-light', sans-serif;
@@ -437,6 +449,7 @@ ul#nav li.current a { color: #F06000; }
    font: 15px/24px 'opensans-bold', sans-serif;
 	margin-bottom: 12px;
    color: #111;
+   font-weight: bold;
 }
 .popup-modal .description-box p {
 	font: 14px/24px 'opensans-regular', sans-serif;
@@ -465,6 +478,7 @@ ul#nav li.current a { color: #F06000; }
 	text-transform: uppercase;
    letter-spacing: 3px;
    cursor: pointer;
+   font-weight: bold;
 }
 .popup-modal a:hover {	color: #00CCCC; }
 .popup-modal a.popup-modal-dismiss { margin-left: 24px; }
@@ -505,6 +519,7 @@ ul#nav li.current a { color: #F06000; }
    text-transform: uppercase;
    letter-spacing: 3px;
    color: #fff;
+   font-weight: bold;
 }
 #call-to-action h1 span { display: none; }
 #call-to-action .header-col h1:before {
@@ -524,6 +539,7 @@ ul#nav li.current a { color: #F06000; }
    font: 28px/36px 'opensans-bold', sans-serif;
    color: #EBEEEE;
    margin-bottom: 6px;
+   font-weight: bold;
 }
 #call-to-action h2 a {
    color: inherit;
@@ -572,6 +588,7 @@ call-to-action .button {
    text-transform: uppercase;
    letter-spacing: 3px;
    color: #fff;
+   font-weight: bold;
 }
 #testimonials h1 span { display: none; }
 #testimonials .header-col { padding-top: 9px; }
@@ -718,6 +735,7 @@ call-to-action .button {
    letter-spacing: 3px;
    color: #EBEEEE;
    margin-bottom: 6px;
+   font-weight: bold;
 }
 #contact h1 span { display: none; }
 #contact h1:before {
@@ -735,6 +753,7 @@ call-to-action .button {
    font: 16px/24px 'opensans-bold', sans-serif;
    color: #EBEEEE;
    margin-bottom: 6px;
+   font-weight: bold;
 }
 #contact p.lead {
    font: 18px/36px 'opensans-light', sans-serif;
@@ -750,7 +769,8 @@ call-to-action .button {
    margin: 12px 0;
    color: #EBEEEE;
 	display: inline-block;
-	width: 25%;
+   width: 25%;
+   font-weight: bold;
 }
 #contact input,
 #contact textarea,
