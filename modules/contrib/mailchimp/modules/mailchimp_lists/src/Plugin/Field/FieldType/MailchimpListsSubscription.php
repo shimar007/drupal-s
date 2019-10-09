@@ -270,7 +270,7 @@ class MailchimpListsSubscription extends FieldItemBase {
   public function preSave() {
     parent::preSave();
 
-    $choices = $this->value;
+    $choices = $this->values;
 
     // Only act if the field has a value to prevent unintended unsubscription.
     if (!empty($choices)) {
@@ -304,8 +304,8 @@ class MailchimpListsSubscription extends FieldItemBase {
    * @return bool
    */
   public function getSubscribe() {
-    if (isset($this->values['value'])) {
-      return ($this->values['value']['subscribe'] == 1);
+    if (isset($this->values['subscribe'])) {
+      return ($this->values['subscribe'] == 1);
     }
 
     return NULL;
@@ -317,8 +317,8 @@ class MailchimpListsSubscription extends FieldItemBase {
    * @return array
    */
   public function getInterestGroups() {
-    if (isset($this->values['value']['interest_groups'])) {
-      return $this->values['value']['interest_groups'];
+    if (isset($this->values['interest_groups'])) {
+      return $this->values['interest_groups'];
     }
 
     return NULL;

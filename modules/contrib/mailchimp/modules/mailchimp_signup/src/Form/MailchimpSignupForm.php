@@ -277,6 +277,42 @@ class MailchimpSignupForm extends EntityForm {
         ],
       ],
     ];
+    
+    $form['subscription_settings']['gdpr_consent'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Add a GDPR consent checkbox'),
+      '#description' => t('Add a GDPR consent checkbox to the signup form that syncs with the Mailchimp marketing permission field.'),
+      '#default_value' => isset($signup->settings['gdpr_consent']) ? $signup->settings['gdpr_consent'] : FALSE,
+    );
+ 
+    $form['subscription_settings']['gdpr_checkbox_label'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Consent checkbox label'),
+      '#description' => t('The label to display on the GDPR consent checkbox, for example "I agree to the privacy policy". This should coincide with what you have in Mailchimp!'),
+      '#default_value' => isset($signup->settings['gdpr_checkbox_label']) ? $signup->settings['gdpr_checkbox_label'] : NULL,
+      '#states' => array(
+        // Hide unless needed.
+        'visible' => array(
+          ':input[name="gdpr_consent"]' => array('checked' => TRUE),
+        ),
+        'required' => array(
+          ':input[name="gdpr_consent"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+
+    $form['subscription_settings']['gdpr_consent_required'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('GDPR consent required'),
+      '#description' => t('Make the GDPR consent checkbox a required field.'),
+      '#default_value' => isset($signup->settings['gdpr_consent_required']) ? $signup->settings['gdpr_consent_required'] : FALSE,
+      '#states' => array(
+        // Hide unless needed.
+        'visible' => array(
+          ':input[name="gdpr_consent"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
 
     // An empty array as a default value for all of the interest groups.
     $groups = [];
@@ -382,7 +418,7 @@ class MailchimpSignupForm extends EntityForm {
     $signup = $this->getEntity();
     $signup->mode = array_sum($mode);
 
-    $mergefields = $form_state->getValue('mergefields');
+    $mergefields = $form_state->getValue('mergefields', []);
 
     $mc_lists = $form_state->getValue('mc_lists') ? $form_state->getValue('mc_lists') : $signup->mc_lists;
 
@@ -395,12 +431,23 @@ class MailchimpSignupForm extends EntityForm {
       }
     }
 
+    // This can occur when the form is submitted without JS enabled.
+    if (!isset($signup->mergefields)) {
+      $signup->mergefields['EMAIL'] = TRUE;
+    }
+    if (empty($mergefields)) {
+      $mergefields['EMAIL'] = serialize($mergevar_options['EMAIL']);
+    }
+
     $signup->settings['mergefields'] = $mergefields;
     $signup->settings['description'] = $form_state->getValue('description');
     $signup->settings['doublein'] = $form_state->getValue('doublein');
     $signup->settings['include_interest_groups'] = $form_state->getValue('include_interest_groups');
     $signup->settings['safe_interest_groups'] = $form_state->getValue('safe_interest_groups');
     $signup->settings['configure_groups'] = $form_state->getValue('configure_groups');
+    $signup->settings['gdpr_consent'] = $form_state->getValue('gdpr_consent');
+    $signup->settings['gdpr_checkbox_label'] = $form_state->getValue('gdpr_checkbox_label');
+    $signup->settings['gdpr_consent_required'] = $form_state->getValue('gdpr_consent_required');
 
     $groups_items = [];
     $groups_settings = $form_state->getValue('groups_container');
@@ -435,7 +482,7 @@ class MailchimpSignupForm extends EntityForm {
     $mergevar_options = array();
     foreach ($mergevar_settings as $list_mergevars) {
       foreach ($list_mergevars as $mergevar) {
-        if ($mergevar->public) {
+        if (isset($mergevar->public) && $mergevar->public) {
           $mergevar_options[$mergevar->tag] = $mergevar;
         }
       }

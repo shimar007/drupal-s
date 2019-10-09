@@ -3,6 +3,7 @@
 namespace Drupal\mailchimp_lists\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -118,7 +119,7 @@ class MailchimpListsSelectWidget extends WidgetBase {
     // Make a distinction between whether the field is edited by the system or the user.
     // This is important to prevent unwanted subscription overwrites.
     $build_info = $form_state->getBuildInfo();
-    if ($build_info['callback_object']->getOperation() == 'edit') {
+    if ($build_info['callback_object'] instanceof EntityFormInterface &&  $build_info['callback_object']->getOperation() == 'edit') {
 
       // The field is set from an edited via the UI.
       $element['allow_unsubscribe'] = array(
@@ -134,7 +135,7 @@ class MailchimpListsSelectWidget extends WidgetBase {
       );
     }
 
-    return array('value' => $element);
+    return $element;
   }
 
 }
