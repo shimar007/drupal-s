@@ -67,7 +67,8 @@
         "drupal/csp": "^1.4",
         "drupal/hsts": "^1.0",
         "drupal/seckit": "^1.2",
-        "drupal/scroll_progress": "^2.1"
+        "drupal/scroll_progress": "^2.1",
+        "drupal/mongodb": "^2.0"
     },
     "replace": {
     },

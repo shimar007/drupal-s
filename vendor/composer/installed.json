@@ -3617,6 +3617,119 @@
         }
     },
     {
+        "name": "drupal/mongodb",
+        "version": "2.0.0-beta1",
+        "version_normalized": "2.0.0.0-beta1",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupalcode.org/project/mongodb.git",
+            "reference": "8.x-2.0-beta1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/mongodb-8.x-2.0-beta1.zip",
+            "reference": "8.x-2.0-beta1",
+            "shasum": "65bdca198bf7b2089dc1093043e4b038059eee20"
+        },
+        "require": {
+            "drupal/core": "~8.0"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-2.x": "2.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-2.0-beta1",
+                "datestamp": "1536856980",
+                "security-coverage": {
+                    "status": "not-covered",
+                    "message": "Beta releases are not covered by Drupal security advisories."
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0-or-later"
+        ],
+        "authors": [
+            {
+                "name": "Damien Tournoud",
+                "homepage": "https://www.drupal.org/user/22211"
+            },
+            {
+                "name": "David Strauss",
+                "homepage": "https://www.drupal.org/user/93254"
+            },
+            {
+                "name": "Rok Žlender",
+                "homepage": "https://www.drupal.org/user/61873"
+            },
+            {
+                "name": "chx",
+                "homepage": "https://www.drupal.org/user/9446"
+            },
+            {
+                "name": "crea",
+                "homepage": "https://www.drupal.org/user/169459"
+            },
+            {
+                "name": "dawehner",
+                "homepage": "https://www.drupal.org/user/99340"
+            },
+            {
+                "name": "douggreen",
+                "homepage": "https://www.drupal.org/user/29191"
+            },
+            {
+                "name": "fgm",
+                "homepage": "https://www.drupal.org/user/27985"
+            },
+            {
+                "name": "japerry",
+                "homepage": "https://www.drupal.org/user/45640"
+            },
+            {
+                "name": "jyee",
+                "homepage": "https://www.drupal.org/user/712186"
+            },
+            {
+                "name": "litwol",
+                "homepage": "https://www.drupal.org/user/78134"
+            },
+            {
+                "name": "majorrobot",
+                "homepage": "https://www.drupal.org/user/168019"
+            },
+            {
+                "name": "marcingy",
+                "homepage": "https://www.drupal.org/user/77320"
+            },
+            {
+                "name": "mikeryan",
+                "homepage": "https://www.drupal.org/user/4420"
+            },
+            {
+                "name": "slashrsm",
+                "homepage": "https://www.drupal.org/user/744628"
+            },
+            {
+                "name": "thebuckst0p",
+                "homepage": "https://www.drupal.org/user/342780"
+            },
+            {
+                "name": "tomhollevoet",
+                "homepage": "https://www.drupal.org/user/3289561"
+            }
+        ],
+        "description": "Integration between Drupal and MongoDB.",
+        "homepage": "https://www.drupal.org/project/mongodb",
+        "support": {
+            "source": "https://git.drupalcode.org/project/mongodb"
+        }
+    },
+    {
         "name": "drupal/noreqnewpass",
         "version": "1.1.0",
         "version_normalized": "1.1.0.0",
@@ -3827,21 +3940,21 @@
     },
     {
         "name": "drupal/pathauto",
-        "version": "1.4.0",
-        "version_normalized": "1.4.0.0",
+        "version": "1.5.0",
+        "version_normalized": "1.5.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/pathauto.git",
-            "reference": "8.x-1.4"
+            "reference": "8.x-1.5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/pathauto-8.x-1.4.zip",
-            "reference": "8.x-1.4",
-            "shasum": "ddfb047ae04ca2ddf475d65f6c09bceb44169e25"
+            "url": "https://ftp.drupal.org/files/projects/pathauto-8.x-1.5.zip",
+            "reference": "8.x-1.5",
+            "shasum": "ae3c13f26d625e63da3b13dc64016888eca519c7"
         },
         "require": {
-            "drupal/core": "^8.5",
+            "drupal/core": "^8.6",
             "drupal/ctools": "*",
             "drupal/token": "*"
         },
@@ -3851,8 +3964,8 @@
                 "dev-1.x": "1.x-dev"
             },
             "drupal": {
-                "version": "8.x-1.4",
-                "datestamp": "1554239887",
+                "version": "8.x-1.5",
+                "datestamp": "1570828084",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"
