@@ -98,7 +98,7 @@ class MenuItemExtrasUninstallTest extends BrowserTestBase {
 
     $definishions = \Drupal::entityTypeManager()->getDefinition($entity_type);
     $this->assertNotEquals('Drupal\menu_item_extras\Entity\MenuItemExtrasMenuLinkContent', $definishions->getClass());
-    $this->assertNotEquals('Drupal\menu_item_extras\MenuLinkContentViewsData',  $definishions->getHandlerClass('views_data'));
+    $this->assertNotEquals('Drupal\menu_item_extras\MenuLinkContentViewsData', $definishions->getHandlerClass('views_data'));
 
     $module_installer->install(['menu_item_extras']);
     $this->drupalGet(Url::fromRoute('entity.' . $entity_type . '.edit_form', [$entity_type => $linkAfterUninstall->id()]));

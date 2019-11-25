@@ -32,6 +32,14 @@ interface FeedTypeInterface extends ConfigEntityInterface {
   public function getDescription();
 
   /**
+   * Gets the help information.
+   *
+   * @return string
+   *   The help information of this feed type.
+   */
+  public function getHelp();
+
+  /**
    * Returns the import period.
    *
    * @return int

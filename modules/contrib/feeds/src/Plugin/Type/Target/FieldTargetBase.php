@@ -134,7 +134,7 @@ abstract class FieldTargetBase extends TargetBase {
    */
   protected function getUniqueQuery() {
     return \Drupal::entityQuery($this->feedType->getProcessor()->entityType())
-      ->range(0, 1);
+      ->range(0, 1)->accessCheck(FALSE);
   }
 
   /**
@@ -161,7 +161,20 @@ abstract class FieldTargetBase extends TargetBase {
     else {
       $field = "$target.$key";
     }
-    if ($result = $this->getUniqueQuery()->condition($field, $value)->execute()) {
+
+    // Construct "Unique" query.
+    $query = $this->getUniqueQuery()
+      ->condition($field, $value);
+
+    // Restrict search to the same bundle if the entity type we import for
+    // supports bundles.
+    $bundle_key = $this->feedType->getProcessor()->bundleKey();
+    if ($bundle_key) {
+      $query->condition($bundle_key, $this->feedType->getProcessor()->bundle());
+    }
+
+    // Execute "Unique" query.
+    if ($result = $query->execute()) {
       return reset($result);
     }
   }

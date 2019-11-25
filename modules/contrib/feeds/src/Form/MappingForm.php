@@ -55,7 +55,7 @@ class MappingForm extends FormBase {
 
     $target_options = [];
     foreach ($targets as $key => $target) {
-      $target_options[$key] = $target->getLabel();
+      $target_options[$key] = $target->getLabel() . ' (' . $key . ')';
     }
     $target_options = $this->sortOptions($target_options);
 
@@ -122,6 +122,9 @@ class MappingForm extends FormBase {
     $table['add']['remove']['#markup'] = '';
 
     $form['mappings'] = $table;
+
+    // Legend explaining source and target elements.
+    $form['legendset'] = $this->buildLegend($form, $form_state);
 
     $form['actions'] = ['#type' => 'actions'];
     $form['actions']['submit'] = [
@@ -221,13 +224,16 @@ class MappingForm extends FormBase {
         ],
       ];
 
-      $label = Html::escape($this->targets[$mapping['target']]->getLabel());
+      $label = Html::escape($this->targets[$mapping['target']]->getLabel() . ' (' . $mapping['target'] . ')');
 
       if (count($mapping['map']) > 1) {
-        $label .= ': ' . $this->targets[$mapping['target']]->getPropertyLabel($column);
+        $desc = $this->targets[$mapping['target']]->getPropertyLabel($column);
       }
       else {
-        $label .= ': ' . $this->targets[$mapping['target']]->getDescription();
+        $desc = $this->targets[$mapping['target']]->getDescription();
+      }
+      if ($desc) {
+        $label .= ': ' . $desc;
       }
       $row['targets']['#items'][] = $label;
     }
@@ -322,6 +328,64 @@ class MappingForm extends FormBase {
     }
 
     return $row;
+  }
+
+  /**
+   * Builds legend which explains source and target elements.
+   *
+   * @param array $form
+   *   The complete mapping form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the complete form.
+   *
+   * @return array
+   *   The legend form element.
+   */
+  protected function buildLegend(array $form, FormStateInterface $form_state) {
+    $element = [
+      '#type' => 'details',
+      '#title' => $this->t('Legend'),
+      'sources' => [
+        '#caption' => $this->t('Sources'),
+        '#type' => 'table',
+        '#header' => [
+          $this->t('Name'),
+          $this->t('Machine name'),
+          $this->t('Description'),
+        ],
+        '#rows' => [],
+      ],
+      'targets' => [
+        '#caption' => $this->t('Targets'),
+        '#type' => 'table',
+        '#header' => [
+          $this->t('Name'),
+          $this->t('Machine name'),
+          $this->t('Description'),
+        ],
+        '#rows' => [],
+      ],
+    ];
+
+    foreach ($this->feedType->getMappingSources() as $key => $info) {
+      $element['sources']['#rows'][$key] = [
+        'label' => $info['label'],
+        'name' => $key,
+        'description' => isset($info['description']) ? $info['description'] : NULL,
+      ];
+    }
+    asort($element['sources']['#rows']);
+
+    /** @var \Drupal\feeds\TargetDefinitionInterface $definition */
+    foreach ($this->targets as $key => $definition) {
+      $element['targets']['#rows'][$key] = [
+        'label' => $definition->getLabel(),
+        'name' => $key,
+        'description' => $definition->getDescription(),
+      ];
+    }
+
+    return $element;
   }
 
   /**

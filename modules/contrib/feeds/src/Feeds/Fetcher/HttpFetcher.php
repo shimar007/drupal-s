@@ -4,6 +4,7 @@ namespace Drupal\feeds\Feeds\Fetcher;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\FeedInterface;
 use Drupal\feeds\Plugin\Type\ClearableInterface;
@@ -15,6 +16,7 @@ use Drupal\feeds\Utility\Feed;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -27,11 +29,10 @@ use Symfony\Component\HttpFoundation\Response;
  *   form = {
  *     "configuration" = "Drupal\feeds\Feeds\Fetcher\Form\HttpFetcherForm",
  *     "feed" = "Drupal\feeds\Feeds\Fetcher\Form\HttpFetcherFeedForm",
- *   },
- *   arguments = {"@http_client", "@cache.feeds_download", "@file_system"}
+ *   }
  * )
  */
-class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInterface {
+class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInterface, ContainerFactoryPluginInterface {
 
   /**
    * The Guzzle client.
@@ -75,6 +76,20 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
     $this->cache = $cache;
     $this->fileSystem = $file_system;
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('http_client'),
+      $container->get('cache.feeds_download'),
+      $container->get('file_system')
+    );
   }
 
   /**

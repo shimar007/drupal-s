@@ -1,0 +1,30 @@
+diff --git a/drush.services.yml b/drush.services.yml
+new file mode 100644
+index 0000000..05064d1
+--- /dev/null
++++ b/drush.services.yml
+@@ -0,0 +1,7 @@
++services:
++  menu_item_extras.drush_commands:
++    class: Drupal\menu_item_extras\Commands\MenuItemExtrasCommands
++    arguments:
++      - '@menu_item_extras.menu_link_content_helper'
++    tags:
++      - { name: drush.command }
+diff --git a/menu_item_extras.services.yml b/menu_item_extras.services.yml
+index 49ea4a1..6f0af2b 100644
+--- a/menu_item_extras.services.yml
++++ b/menu_item_extras.services.yml
+@@ -26,10 +26,4 @@ services:
+     calls:
+       - [setContainer, ['@service_container']]
+     tags:
+-      - { name: cache.context }
+-  menu_item_extras.drush_commands:
+-    class: Drupal\menu_item_extras\Commands\MenuItemExtrasCommands
+-    arguments:
+-      - '@menu_item_extras.menu_link_content_helper'
+-    tags:
+-      - { name: drush.command }
++      - { name: cache.context }
+\ No newline at end of file

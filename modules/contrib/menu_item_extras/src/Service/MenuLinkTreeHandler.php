@@ -92,8 +92,6 @@ class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
     $cached_context = [
       'languages',
       'theme',
-      'url.path',
-      'url.query_args',
       'user',
     ];
     $render_output['#cache']['contexts'] = array_merge($cached_context, $render_output['#cache']['contexts']);
@@ -140,7 +138,7 @@ class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function processMenuLinkTree(array &$items, $menu_level = -1, $show_item_link = FALSE) {
+  public function processMenuLinkTree(array &$items, $menu_name, $menu_level = -1, $show_item_link = FALSE) {
     $menu_level++;
     foreach ($items as &$item) {
       $content = [];
@@ -148,11 +146,12 @@ class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
         $content['#item'] = $item;
         $content['entity'] = $this->getMenuLinkItemEntity($item['original_link']);
         $content['content'] = $content['entity'] ? $this->getMenuLinkItemContent($content['entity'], $menu_level, $show_item_link) : NULL;
+        $content['content']['#cache']['contexts'][] = 'menu_item_extras_link_item_content_active_trails:' . $menu_name . ':' . $item['original_link']->getDerivativeId();
         $content['menu_level'] = $menu_level;
       }
       // Process subitems.
       if (!empty($item['below'])) {
-        $content['content']['children'] = $this->processMenuLinkTree($item['below'], $menu_level, $show_item_link);
+        $content['content']['children'] = $this->processMenuLinkTree($item['below'], $menu_name, $menu_level, $show_item_link);
       }
       $item = array_merge($item, $content);
     }

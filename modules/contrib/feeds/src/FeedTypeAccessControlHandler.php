@@ -22,7 +22,7 @@ class FeedTypeAccessControlHandler extends EntityAccessControlHandler {
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
     if ($operation === 'delete') {
       if ($entity->isNew()) {
-        return AccessResult::forbidden()->cacheUntilEntityChanges($entity);
+        return AccessResult::forbidden()->addCacheableDependency($entity);
       }
 
       // The delete operation is not cacheable since the locked status can

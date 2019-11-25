@@ -2,6 +2,8 @@
 
 namespace Drupal\feeds\Feeds\Target;
 
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+
 /**
  * Defines a datetime field mapper.
  *
@@ -24,7 +26,7 @@ class DateTime extends DateTargetBase {
    */
   public function __construct(array $configuration, $plugin_id, array $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->storageFormat = $this->settings['datetime_type'] === 'date' ? DATETIME_DATE_STORAGE_FORMAT : DATETIME_DATETIME_STORAGE_FORMAT;
+    $this->storageFormat = $this->settings['datetime_type'] === 'date' ? DateTimeItemInterface::DATE_STORAGE_FORMAT : DateTimeItemInterface::DATETIME_STORAGE_FORMAT;
   }
 
   /**
@@ -49,7 +51,7 @@ class DateTime extends DateTargetBase {
 
     if (isset($date) && !$date->hasErrors()) {
       return $date->format($this->storageFormat, [
-        'timezone' => DATETIME_STORAGE_TIMEZONE,
+        'timezone' => DateTimeItemInterface::STORAGE_TIMEZONE,
       ]);
     }
     return '';
@@ -59,7 +61,7 @@ class DateTime extends DateTargetBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return ['timezone' => DATETIME_STORAGE_TIMEZONE];
+    return ['timezone' => DateTimeItemInterface::STORAGE_TIMEZONE];
   }
 
 }

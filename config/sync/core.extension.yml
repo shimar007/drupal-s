@@ -79,6 +79,8 @@ module:
   metatag_views: 0
   minifyhtml: 0
   module_filter: 0
+  mongodb: 0
+  mongodb_storage: 0
   node: 0
   noreqnewpass: 0
   options: 0

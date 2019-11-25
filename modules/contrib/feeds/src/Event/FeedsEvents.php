@@ -43,6 +43,21 @@ final class FeedsEvents {
   const PROCESS = 'feeds.process';
 
   /**
+   * Fired before an entity is validated.
+   */
+  const PROCESS_ENTITY_PREVALIDATE = 'feeds.process_entity_prevalidate';
+
+  /**
+   * Fired before an entity is saved.
+   */
+  const PROCESS_ENTITY_PRESAVE = 'feeds.process_entity_presave';
+
+  /**
+   * Fired after an entity is saved.
+   */
+  const PROCESS_ENTITY_POSTSAVE = 'feeds.process_entity_postsave';
+
+  /**
    * Fired when cleaning has started.
    */
   const CLEAN = 'feeds.clean';

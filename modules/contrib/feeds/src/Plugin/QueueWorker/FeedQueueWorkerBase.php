@@ -106,7 +106,7 @@ abstract class FeedQueueWorkerBase extends QueueWorkerBase implements ContainerF
    * @see \Drupal\Core\Session\AccountSwitcherInterface::switchTo()
    */
   protected function switchAccount(FeedInterface $feed) {
-    $account = new AccountProxy();
+    $account = new AccountProxy($this->getEventDispatcher());
     $account->setInitialAccountId($feed->getOwnerId());
     return $this->accountSwitcher->switchTo($account);
   }

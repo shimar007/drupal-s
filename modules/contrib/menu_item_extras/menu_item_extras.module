@@ -236,7 +236,7 @@ function menu_item_extras_preprocess_menu(&$variables) {
   // We preprocess only menus that has additional fields.
   if (!empty($variables['menu_name']) && Utility::checkBundleHasExtraFieldsThanEntity('menu_link_content', $variables['menu_name'])) {
     $variables['items'] = \Drupal::service('menu_item_extras.menu_link_tree_handler')
-      ->processMenuLinkTree($variables['items']);
+      ->processMenuLinkTree($variables['items'], $variables['menu_name']);
   }
 }
 

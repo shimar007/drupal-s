@@ -359,6 +359,20 @@ class FeedTest extends FeedsKernelTestBase {
   }
 
   /**
+   * @covers ::getState
+   */
+  public function testGetStateAfterSettingStateToNull() {
+    $feed = $this->createFeed($this->feedType->id());
+
+    // Explicitly set a state to NULL.
+    $feed->setState(StateInterface::PARSE, NULL);
+    $feed->saveStates();
+
+    // Assert that getState() still returns an instance of StateInterface.
+    $this->assertInstanceOf(StateInterface::class, $feed->getState(StateInterface::PARSE));
+  }
+
+  /**
    * @covers ::setState
    */
   public function testSetState() {

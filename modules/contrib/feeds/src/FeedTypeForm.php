@@ -13,6 +13,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\Url;
 use Drupal\feeds\Ajax\SetHashCommand;
 use Drupal\feeds\Plugin\PluginFormFactory;
 use Drupal\feeds\Plugin\Type\FeedsPluginInterface;
@@ -127,6 +128,12 @@ class FeedTypeForm extends EntityForm {
       '#description' => $this->t('A description of this feed type.'),
       '#default_value' => $this->entity->getDescription(),
     ];
+    $form['basics']['help'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Explanation or submission guidelines'),
+      '#default_value' => $this->entity->getHelp(),
+      '#description' => $this->t('This text will be displayed at the top of the feed when creating or editing a feed of this type.'),
+    ];
 
     $form['plugin_settings'] = [
       '#type' => 'vertical_tabs',
@@ -169,11 +176,19 @@ class FeedTypeForm extends EntityForm {
       FeedTypeInterface::SCHEDULE_CONTINUOUSLY => $this->t('As often as possible'),
     ] + $period;
 
+    $cron_required = [
+      '#type' => 'link',
+      '#url' => Url::fromUri('https://www.drupal.org/docs/user_guide/en/security-cron.html'),
+      '#title' => $this->t('Requires cron to be configured.'),
+      '#attributes' => [
+        'target' => '_new',
+      ],
+    ];
     $form['feed_type_settings']['import_period'] = [
       '#type' => 'select',
       '#title' => $this->t('Import period'),
       '#options' => $period,
-      '#description' => $this->t('Choose how often a feed should be imported.'),
+      '#description' => $this->t('Choose how often a feed should be imported.') . ' ' . $this->renderer->renderRoot($cron_required),
       '#default_value' => $this->entity->getImportPeriod(),
     ];
 

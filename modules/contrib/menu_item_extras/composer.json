@@ -30,6 +30,6 @@
   "minimum-stability": "dev",
   "support": {
     "issues": "https://www.drupal.org/project/issues/menu_item_extras",
-    "source": "http://cgit.drupalcode.org/menu_item_extras"
+    "source": "https://git.drupalcode.org/project/menu_item_extras"
   }
 }

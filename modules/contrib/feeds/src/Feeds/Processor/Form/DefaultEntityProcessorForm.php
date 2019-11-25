@@ -165,7 +165,7 @@ class DefaultEntityProcessorForm extends ExternalPluginFormBase {
     $options = [];
 
     $action_definitions = \Drupal::service('plugin.manager.action')->getDefinitionsByType($this->plugin->entityType());
-    foreach ($action_definitions as $definition) {
+    foreach ($action_definitions as $id => $definition) {
       // Filter out configurable actions.
       $interfaces = class_implements($definition['class']);
       if (isset($interfaces[ConfigurablePluginInterface::class])) {
@@ -177,7 +177,7 @@ class DefaultEntityProcessorForm extends ExternalPluginFormBase {
         continue;
       }
 
-      $options[$definition['id']] = $definition['label'];
+      $options[$id] = $definition['label'];
     }
 
     return [

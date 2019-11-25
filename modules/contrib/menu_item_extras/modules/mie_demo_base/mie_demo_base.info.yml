@@ -3,7 +3,7 @@ description: "Provide a base demo example of Mega Menu"
 type: module
 package: Menu
 hidden: false
-# core: 8.x
+core: 8.x
 dependencies:
   - drupal:menu_item_extras
   - drupal:taxonomy
@@ -11,8 +11,7 @@ dependencies:
   - drupal:path
   - drupal:ckeditor
 
-# Information added by Drupal.org packaging script on 2019-08-19
-version: '8.x-2.7'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2019-10-28
+version: '8.x-2.8'
 project: 'menu_item_extras'
-datestamp: 1566238392
+datestamp: 1572279491

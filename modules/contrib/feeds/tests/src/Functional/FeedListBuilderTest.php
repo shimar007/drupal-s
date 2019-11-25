@@ -333,8 +333,9 @@ class FeedListBuilderTest extends FeedsBrowserTestBase {
    * Asserts that there are no warnings nor errors displayed.
    */
   protected function assertNoWarnings() {
-    $this->assertSession()->pageTextNotContains('warning');
-    $this->assertSession()->pageTextNotContains('error');
+    $this->assertSession()->elementNotExists('css', '.messages--warning');
+    $this->assertSession()->elementNotExists('css', '.messages--error');
+    $this->assertSession()->pageTextNotContains('The website encountered an unexpected error.');
   }
 
 }

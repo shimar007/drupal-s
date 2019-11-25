@@ -4,6 +4,8 @@ namespace Drupal\feeds;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\feeds\Feeds\Item\ItemInterface;
 use Drupal\feeds\Plugin\Type\FeedsPluginInterface;
 use Drupal\user\EntityOwnerInterface;
 
@@ -159,6 +161,18 @@ interface FeedInterface extends ContentEntityInterface, EntityChangedInterface, 
    *   Re-throws any exception that bubbles up.
    */
   public function startBatchExpire();
+
+  /**
+   * Dispatches an entity event.
+   *
+   * @param string $event
+   *   The event to invoke.
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity being inserted or updated.
+   * @param \Drupal\feeds\Feeds\Item\ItemInterface $item
+   *   The item that is being processed.
+   */
+  public function dispatchEntityEvent($event, EntityInterface $entity, ItemInterface $item);
 
   /**
    * Cleans up after an import.

@@ -11,6 +11,9 @@ feeds.feed_type.*:
     description:
       type: text
       label: 'Description'
+    help:
+      type: text
+      label: 'Help'
     import_period:
       type: integer
       label: 'The import period'

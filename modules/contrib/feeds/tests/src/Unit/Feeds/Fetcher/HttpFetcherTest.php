@@ -116,7 +116,7 @@ class HttpFetcherTest extends FeedsUnitTestCase {
    * @expectedException \RuntimeException
    */
   public function testFetchError() {
-    $this->mockHandler->append(new RequestException('', new Request(200, 'http://google.com')));
+    $this->mockHandler->append(new RequestException('', new Request('GET', 'http://google.com')));
     $this->fetcher->fetch($this->feed->reveal(), new State());
   }
 

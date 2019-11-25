@@ -11,6 +11,7 @@ use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\Exception\ReferenceNotFoundException;
@@ -19,22 +20,17 @@ use Drupal\feeds\FeedInterface;
 use Drupal\feeds\FieldTargetDefinition;
 use Drupal\feeds\Plugin\Type\Target\ConfigurableTargetInterface;
 use Drupal\feeds\Plugin\Type\Target\FieldTargetBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines an entity reference mapper.
  *
  * @FeedsTarget(
  *   id = "entity_reference",
- *   field_types = {"entity_reference"},
- *   arguments = {
- *     "@entity_type.manager",
- *     "@entity.query",
- *     "@entity_field.manager",
- *     "@entity.repository",
- *   }
+ *   field_types = {"entity_reference"}
  * )
  */
-class EntityReference extends FieldTargetBase implements ConfigurableTargetInterface {
+class EntityReference extends FieldTargetBase implements ConfigurableTargetInterface, ContainerFactoryPluginInterface {
 
   /**
    * The entity type manager.
@@ -88,6 +84,21 @@ class EntityReference extends FieldTargetBase implements ConfigurableTargetInter
     $this->entityFieldManager = $entity_field_manager;
     $this->entityRepository = $entity_repository;
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.manager'),
+      $container->get('entity.query'),
+      $container->get('entity_field.manager'),
+      $container->get('entity.repository')
+    );
   }
 
   /**

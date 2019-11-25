@@ -6,14 +6,17 @@ use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\feeds\Event\DeleteFeedsEvent;
+use Drupal\feeds\Event\EntityEvent;
 use Drupal\feeds\Event\FeedsEvents;
 use Drupal\feeds\Event\ImportFinishedEvent;
 use Drupal\feeds\Exception\LockException;
 use Drupal\feeds\FeedInterface;
+use Drupal\feeds\Feeds\Item\ItemInterface;
 use Drupal\feeds\Feeds\State\CleanState;
 use Drupal\feeds\FeedTypeInterface;
 use Drupal\feeds\Plugin\Type\FeedsPluginInterface;
@@ -287,6 +290,13 @@ class Feed extends ContentEntityBase implements FeedInterface {
   /**
    * {@inheritdoc}
    */
+  public function dispatchEntityEvent($event, EntityInterface $entity, ItemInterface $item) {
+    return $this->eventDispatcher()->dispatch($event, new EntityEvent($this, $entity, $item));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function finishImport() {
     $time = time();
 
@@ -340,17 +350,22 @@ class Feed extends ContentEntityBase implements FeedInterface {
    */
   public function getState($stage) {
     if (!isset($this->states[$stage])) {
-      // @todo move this logic to a factory or alike.
-      switch ($stage) {
-        case StateInterface::CLEAN:
-          $state = new CleanState();
-          break;
+      $state = \Drupal::keyValue('feeds_feed.' . $this->id())->get($stage);
 
-        default:
-          $state = new State();
-          break;
+      if (empty($state)) {
+        // @todo move this logic to a factory or alike.
+        switch ($stage) {
+          case StateInterface::CLEAN:
+            $state = new CleanState();
+            break;
+
+          default:
+            $state = new State();
+            break;
+        }
       }
-      $this->states[$stage] = \Drupal::keyValue('feeds_feed.' . $this->id())->get($stage, $state);
+
+      $this->states[$stage] = $state;
     }
     return $this->states[$stage];
   }

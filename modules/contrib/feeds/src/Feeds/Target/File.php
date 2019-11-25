@@ -9,26 +9,19 @@ use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Utility\Token;
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\Exception\TargetValidationException;
 use Drupal\feeds\FieldTargetDefinition;
 use GuzzleHttp\ClientInterface;
-use Drupal\Core\Utility\Token;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a file field mapper.
  *
  * @FeedsTarget(
  *   id = "file",
- *   field_types = {"file"},
- *   arguments = {
- *     "@entity_type.manager",
- *     "@entity.query",
- *     "@http_client",
- *     "@token",
- *     "@entity_field.manager",
- *     "@entity.repository",
- *   }
+ *   field_types = {"file"}
  * )
  */
 class File extends EntityReference {
@@ -81,6 +74,23 @@ class File extends EntityReference {
     $this->token = $token;
     parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $query_factory, $entity_field_manager, $entity_repository);
     $this->fileExtensions = array_filter(explode(' ', $this->settings['file_extensions']));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.manager'),
+      $container->get('entity.query'),
+      $container->get('http_client'),
+      $container->get('token'),
+      $container->get('entity_field.manager'),
+      $container->get('entity.repository')
+    );
   }
 
   /**

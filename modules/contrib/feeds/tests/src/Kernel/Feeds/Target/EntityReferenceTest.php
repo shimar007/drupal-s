@@ -3,11 +3,11 @@
 namespace Drupal\Tests\feeds\Kernel\Feeds\Target;
 
 use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
-use Drupal\field\Tests\EntityReference\EntityReferenceTestTrait;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\Tests\feeds\Kernel\FeedsKernelTestBase;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 
 /**
  * Tests for the entityreference target.

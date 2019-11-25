@@ -155,7 +155,7 @@ class EntityProcessorBaseTest extends FeedsKernelTestBase {
   public function testCleanWithUnpublishAction() {
     // Change configuration of processor.
     $config = $this->processor->getConfiguration();
-    $config['update_non_existent'] = 'node_unpublish_action';
+    $config['update_non_existent'] = 'entity:unpublish_action:node';
     $this->processor->setConfiguration($config);
 
     // Add feeds_item field to article content type.
@@ -174,8 +174,8 @@ class EntityProcessorBaseTest extends FeedsKernelTestBase {
 
     // Assert that the node is unpublished now.
     $this->assertFalse($node->isPublished());
-    // Assert that the hash is now 'node_unpublish_action'.
-    $this->assertEquals('node_unpublish_action', $node->feeds_item->hash);
+    // Assert that the hash is now 'entity:unpublish_action:node'.
+    $this->assertEquals('entity:unpublish_action:node', $node->feeds_item->hash);
   }
 
   /**

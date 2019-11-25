@@ -68,7 +68,8 @@
         "drupal/hsts": "^1.0",
         "drupal/seckit": "^1.2",
         "drupal/scroll_progress": "^2.1",
-        "drupal/mongodb": "^2.0"
+        "drupal/mongodb": "^2.0",
+        "drupal/read_time": "^1.0"
     },
     "replace": {
     },

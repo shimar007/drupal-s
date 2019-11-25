@@ -2,6 +2,7 @@
 
 namespace Drupal\feeds\Result;
 
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\File\FileSystemInterface;
 
 /**
@@ -10,6 +11,8 @@ use Drupal\Core\File\FileSystemInterface;
  * This will write the string to a file on-demand if the parser requests it.
  */
 class RawFetcherResult extends FetcherResult {
+
+  use DependencySerializationTrait;
 
   /**
    * The raw input string.

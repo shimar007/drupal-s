@@ -3,6 +3,7 @@
 namespace Drupal\Tests\feeds\Unit\Feeds\Target;
 
 use Drupal\feeds\Feeds\Target\DateRange;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 
 /**
  * @coversDefaultClass \Drupal\feeds\Feeds\Target\DateRange
@@ -58,8 +59,8 @@ class DateRangeTest extends FieldTargetWithContainerTestBase {
       'end_value' => 1489582776,
     ];
     $method(0, $values);
-    $this->assertSame(date(DATETIME_DATE_STORAGE_FORMAT, 1411606273), $values['value']);
-    $this->assertSame(date(DATETIME_DATE_STORAGE_FORMAT, 1489582776), $values['end_value']);
+    $this->assertSame(date(DateTimeItemInterface::DATE_STORAGE_FORMAT, 1411606273), $values['value']);
+    $this->assertSame(date(DateTimeItemInterface::DATE_STORAGE_FORMAT, 1489582776), $values['end_value']);
   }
 
 }

@@ -48,12 +48,12 @@ class UpdateNonExistentTest extends FeedsKernelTestBase {
    *
    * Tests that previously imported items that are no longer available in the
    * feed get unpublished when the 'update_non_existent' setting is set to
-   * 'node_unpublish_action'.
+   * 'entity:unpublish_action:node'.
    */
   public function testUnpublishNonExistentItems() {
     // Set 'update_non_existent' setting to 'unpublish'.
     $config = $this->feedType->getProcessor()->getConfiguration();
-    $config['update_non_existent'] = 'node_unpublish_action';
+    $config['update_non_existent'] = 'entity:unpublish_action:node';
     $this->feedType->getProcessor()->setConfiguration($config);
     $this->feedType->save();
 

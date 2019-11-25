@@ -46,12 +46,12 @@ class UpdateNonExistentTest extends FeedsBrowserTestBase {
    *
    * Tests that previously imported items that are no longer available in the
    * feed get unpublished when the 'update_non_existent' setting is set to
-   * 'node_unpublish_action' and when performing an import using the UI.
+   * 'entity:unpublish_action:node' and when performing an import using the UI.
    */
   public function testUnpublishNonExistentItemsWithBatch() {
     // Set 'update_non_existent' setting to 'unpublish'.
     $config = $this->feedType->getProcessor()->getConfiguration();
-    $config['update_non_existent'] = 'node_unpublish_action';
+    $config['update_non_existent'] = 'entity:unpublish_action:node';
     $this->feedType->getProcessor()->setConfiguration($config);
     $this->feedType->save();
 
@@ -154,12 +154,12 @@ class UpdateNonExistentTest extends FeedsBrowserTestBase {
    *
    * Tests that previously imported items that are no longer available in the
    * feed get unpublished when the 'update_non_existent' setting is set to
-   * 'node_unpublish_action' and when performing an import using cron.
+   * 'entity:unpublish_action:node' and when performing an import using cron.
    */
   public function testUnpublishNonExistentItemsWithCron() {
     // Set 'update_non_existent' setting to 'unpublish'.
     $config = $this->feedType->getProcessor()->getConfiguration();
-    $config['update_non_existent'] = 'node_unpublish_action';
+    $config['update_non_existent'] = 'entity:unpublish_action:node';
     $this->feedType->getProcessor()->setConfiguration($config);
     // Set the import period to run as often as possible.
     $this->feedType->setImportPeriod(FeedTypeInterface::SCHEDULE_CONTINUOUSLY);

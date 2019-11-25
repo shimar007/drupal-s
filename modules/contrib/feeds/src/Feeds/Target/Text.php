@@ -4,9 +4,11 @@ namespace Drupal\feeds\Feeds\Target;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\feeds\FieldTargetDefinition;
 use Drupal\feeds\Plugin\Type\Target\ConfigurableTargetInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a text field mapper.
@@ -17,11 +19,10 @@ use Drupal\feeds\Plugin\Type\Target\ConfigurableTargetInterface;
  *     "text",
  *     "text_long",
  *     "text_with_summary"
- *   },
- *   arguments = {"@current_user"}
+ *   }
  * )
  */
-class Text extends StringTarget implements ConfigurableTargetInterface {
+class Text extends StringTarget implements ConfigurableTargetInterface, ContainerFactoryPluginInterface {
 
   /**
    * The current user.
@@ -45,6 +46,18 @@ class Text extends StringTarget implements ConfigurableTargetInterface {
   public function __construct(array $configuration, $plugin_id, array $plugin_definition, AccountInterface $user) {
     $this->user = $user;
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('current_user')
+    );
   }
 
   /**

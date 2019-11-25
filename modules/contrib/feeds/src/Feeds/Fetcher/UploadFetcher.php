@@ -4,6 +4,7 @@ namespace Drupal\feeds\Feeds\Fetcher;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\feeds\FeedInterface;
@@ -12,6 +13,7 @@ use Drupal\feeds\Plugin\Type\PluginBase;
 use Drupal\feeds\Result\FetcherResult;
 use Drupal\feeds\StateInterface;
 use Drupal\file\FileUsage\FileUsageInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a file upload fetcher.
@@ -20,18 +22,13 @@ use Drupal\file\FileUsage\FileUsageInterface;
  *   id = "upload",
  *   title = @Translation("Upload file"),
  *   description = @Translation("Upload content from a local file."),
- *   arguments = {
- *     "@file.usage",
- *     "@entity_type.manager",
- *     "@stream_wrapper_manager"
- *   },
  *   form = {
  *     "configuration" = "Drupal\feeds\Feeds\Fetcher\Form\UploadFetcherForm",
  *     "feed" = "Drupal\feeds\Feeds\Fetcher\Form\UploadFetcherFeedForm",
  *   },
  * )
  */
-class UploadFetcher extends PluginBase implements FetcherInterface {
+class UploadFetcher extends PluginBase implements FetcherInterface, ContainerFactoryPluginInterface {
 
   /**
    * The file usage backend.
@@ -76,6 +73,20 @@ class UploadFetcher extends PluginBase implements FetcherInterface {
     $this->streamWrapperManager = $stream_wrapper_manager;
 
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('file.usage'),
+      $container->get('entity_type.manager'),
+      $container->get('stream_wrapper_manager')
+    );
   }
 
   /**

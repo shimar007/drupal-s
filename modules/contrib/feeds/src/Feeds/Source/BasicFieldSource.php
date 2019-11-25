@@ -28,6 +28,7 @@ class BasicFieldSource extends SourceBase {
       }
       $sources['parent:' . $field] = [
         'label' => t('Feed: @label', ['@label' => $field_definition->getLabel()]),
+        'description' => $field_definition->getDescription(),
         'id' => $definition['id'],
       ];
     }

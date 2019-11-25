@@ -73,6 +73,13 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
   protected $description;
 
   /**
+   * Help information shown to the user when creating a Feed of this type.
+   *
+   * @var string
+   */
+  protected $help;
+
+  /**
    * The import period.
    *
    * @var int
@@ -214,6 +221,13 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
    */
   public function getDescription() {
     return $this->description;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getHelp() {
+    return $this->help;
   }
 
   /**

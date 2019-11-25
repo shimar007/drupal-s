@@ -16,8 +16,9 @@ class FeedTypeListBuilderTest extends FeedsBrowserTestBase {
     $this->drupalGet('/admin/structure/feeds');
 
     // Assert that there are no warnings nor errors displayed.
-    $this->assertSession()->pageTextNotContains('warning');
-    $this->assertSession()->pageTextNotContains('error');
+    $this->assertSession()->elementNotExists('css', '.messages--warning');
+    $this->assertSession()->elementNotExists('css', '.messages--error');
+    $this->assertSession()->pageTextNotContains('The website encountered an unexpected error.');
 
     // Now add a feed type.
     $this->feedType = $this->createFeedType([

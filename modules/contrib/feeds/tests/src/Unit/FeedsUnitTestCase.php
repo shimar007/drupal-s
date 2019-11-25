@@ -75,16 +75,6 @@ namespace Drupal\Tests\feeds\Unit {
      * Defines stub constants.
      */
     protected function defineConstants() {
-      if (!defined('DATETIME_STORAGE_TIMEZONE')) {
-        define('DATETIME_STORAGE_TIMEZONE', 'UTC');
-      }
-      if (!defined('DATETIME_DATETIME_STORAGE_FORMAT')) {
-        define('DATETIME_DATETIME_STORAGE_FORMAT', 'Y-m-d\TH:i:s');
-      }
-      if (!defined('DATETIME_DATE_STORAGE_FORMAT')) {
-        define('DATETIME_DATE_STORAGE_FORMAT', 'Y-m-d');
-      }
-
       if (!defined('FILE_MODIFY_PERMISSIONS')) {
         define('FILE_MODIFY_PERMISSIONS', 2);
       }

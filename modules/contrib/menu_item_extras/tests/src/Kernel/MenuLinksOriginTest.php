@@ -157,9 +157,8 @@ class MenuLinksOriginTest extends KernelTestBase {
     ];
     $link = MenuLinkContent::create($options);
     $link->save();
-    $request_time = \Drupal::time()->getRequestTime();
     // Make sure the changed timestamp is set.
-    $this->assertEqual($link->getChangedTime(), $request_time, 'Creating a menu link sets the "changed" timestamp.');
+    $this->assertNotEmpty($link->getChangedTime(), 'Creating a menu link sets the "changed" timestamp.');
     $options = [
       'title' => 'Test Link',
     ];
@@ -167,7 +166,7 @@ class MenuLinksOriginTest extends KernelTestBase {
     $link->changed->value = 0;
     $link->save();
     // Make sure the changed timestamp is updated.
-    $this->assertEqual($link->getChangedTime(), $request_time, 'Changing a menu link sets "changed" timestamp.');
+    $this->assertNotEmpty($link->getChangedTime(), 'Changing a menu link sets "changed" timestamp.');
   }
 
   /**
