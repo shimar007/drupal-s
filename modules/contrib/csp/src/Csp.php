@@ -7,6 +7,8 @@ namespace Drupal\csp;
  */
 class Csp {
 
+  const HASH_ALGORITHMS = ['sha256', 'sha384', 'sha512'];
+
   const POLICY_ANY = "*";
   const POLICY_NONE = "'none'";
   const POLICY_SELF = "'self'";
@@ -116,6 +118,26 @@ class Csp {
    * @var array
    */
   protected $directives = [];
+
+  /**
+   * Calculate the Base64 encoded hash of a script.
+   *
+   * @param $data
+   *   The source data to hash.
+   * @param string $algorithm
+   *   The hash algorithm to use.
+   *   Supported values are defined in \Drupal\csp\Csp::HASH_ALGORITHMS
+   *
+   * @return string
+   *   The hash value in the format <hash-algorithm>-<base64-value>
+   */
+  public static function calculateHash($data, $algorithm = 'sha256') {
+    if (!in_array($algorithm, self::HASH_ALGORITHMS)) {
+      throw new \InvalidArgumentException("Specified hash algorithm is not supported");
+    }
+
+    return $algorithm . '-' . base64_encode(hash($algorithm, $data, TRUE));
+  }
 
   /**
    * Set the policy to report-only.
@@ -353,8 +375,13 @@ class Csp {
   private static function reduceSourceList(array $sources) {
     $sources = array_unique($sources);
 
+    // 'none' overrides any other sources.
+    if (in_array(Csp::POLICY_NONE, $sources)) {
+      return [Csp::POLICY_NONE];
+    }
+
     // Global wildcard covers all network scheme sources.
-    if (in_array('*', $sources)) {
+    if (in_array(Csp::POLICY_ANY, $sources)) {
       $sources = array_filter($sources, function ($source) {
         // Keep any values that are a quoted string, or non-network scheme.
         // e.g. '* https: data: example.com' -> 'data: *'

@@ -1,14 +1,13 @@
 name: Content Security Policy
 type: module
 description: Provide Content-Security-Policy headers
-# core: 8.x
+core: 8.x
 configure: csp.settings
 
 dependencies:
 - drupal:system (>= 8.5)
 
-# Information added by Drupal.org packaging script on 2019-02-12
-version: '8.x-1.4'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2019-11-27
+version: '8.x-1.5'
 project: 'csp'
-datestamp: 1549957085
+datestamp: 1574888885
