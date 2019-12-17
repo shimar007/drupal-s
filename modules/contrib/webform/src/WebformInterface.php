@@ -853,6 +853,16 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
   public function hasMessageHandler();
 
   /**
+   * Determine if a webform handler requires anonymous submission tracking.
+   *
+   * @return bool
+   *   TRUE if a webform handler requires anonymous submission tracking.
+   *
+   * @see \Drupal\webform_options_limit\Plugin\WebformHandler\OptionsLimitWebformHandler
+   */
+  public function hasAnonymousSubmissionTrackingHandler();
+
+  /**
    * Returns a specific webform handler.
    *
    * @param string $handler_id
@@ -926,8 +936,13 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
    *   (optional) An additional variable that is passed by reference.
    * @param mixed $context2
    *   (optional) An additional variable that is passed by reference.
+   * @param mixed $context3
+   *   (optional) An additional variable that is passed by reference.
+   *
+   * @return \Drupal\Core\Access\AccessResult|null
+   *   If 'access' method is invoked an AccessResult is returned.
    */
-  public function invokeHandlers($method, &$data, &$context1 = NULL, &$context2 = NULL);
+  public function invokeHandlers($method, &$data, &$context1 = NULL, &$context2 = NULL, &$context3 = NULL);
 
   /**
    * Invoke elements method.

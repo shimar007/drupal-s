@@ -69,7 +69,12 @@
         "drupal/seckit": "^1.2",
         "drupal/scroll_progress": "^2.1",
         "drupal/mongodb": "^2.0",
-        "drupal/read_time": "^1.0"
+        "drupal/read_time": "^1.0",
+        "drupal/o365": "^1.0",
+        "drupal/openid_connect_windows_aad": "^1.1",
+        "drupal/geocoder": "^2.3",
+        "drupal/address": "^1.7",
+        "drupal/geofield": "^1.7"
     },
     "replace": {
     },

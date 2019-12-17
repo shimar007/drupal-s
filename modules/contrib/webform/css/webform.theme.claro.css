@@ -114,10 +114,15 @@ html.js .webform-message--close .webform-message__link:active {
  * Align all tables cells need to align top, so we are removing the cell height
  * and adding more padding around the cells.
  */
-table td {
+table td,
+table td.tabledrag-cell {
   vertical-align: top;
   height: auto;
   padding: 1em 1rem;
+}
+
+table td.tabledrag-cell .tabledrag-handle::after {
+  padding: 0 1rem;
 }
 
 /**
@@ -125,6 +130,9 @@ table td {
  */
 table .button {
   margin: 0 0.75rem 0 0;
+  padding: -webkit-calc(0.5rem - 1px) -webkit-calc(1rem - 1px);
+  padding: calc(0.5rem - 1px) calc(1rem - 1px);
+  font-size: 0.79rem;
 }
 [dir="rtl"] table .button {
   margin: 0 0 0 0.75rem;
@@ -138,7 +146,6 @@ table td > .button:only-child {
   margin-top: 0;
   margin-bottom: 0;
 }
-
 /**
  * Results table.
  */
@@ -165,6 +172,10 @@ th.webform-results-table__icon.sortable-heading {
 
 table.webform-states-table td {
   padding: 1em .25rem;
+}
+
+table.webform-states-table td.webform-states-table--operator > .form-item > .form-element {
+  width: auto;
 }
 
 /******************************************************************************/

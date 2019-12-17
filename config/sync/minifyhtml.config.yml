@@ -1,3 +1,4 @@
-strip_comments: 1
+strip_comments: true
 _core:
   default_config_hash: MtHPIRZfH2_MaZTyY-YbYMZmUz67nm2_ipdGliPMw90
+minify: true

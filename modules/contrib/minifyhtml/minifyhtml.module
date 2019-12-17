@@ -5,24 +5,7 @@
  * Hooks and helper functions for the Minify HTML module.
  */
 
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
-
-/**
- * Implements hook_FORM_ID_alter().
- */
-function minifyhtml_form_system_performance_settings_alter(array &$form, FormStateInterface &$form_state, $form_id) {
-  if (\Drupal::currentUser()->hasPermission('administer minifyhtml')) {
-    $form['bandwidth_optimization']['minifyhtml_minify'] = [
-      '#type'          => 'checkbox',
-      '#title'         => t('Minified Source HTML.'),
-      '#description'   => t('Toggle minified HTML on or off.'),
-      '#default_value' => \Drupal::config('system.performance')->get('minifyhtml.minify_html'),
-    ];
-
-    $form['#submit'][] = 'minifyhtml_system_performance_settings_submit';
-  }
-}
 
 /**
  * Implements hook_help().
@@ -44,18 +27,4 @@ function minifyhtml_help($route_name, RouteMatchInterface $route_match) {
       }
   }
   return NULL;
-}
-
-/**
- * Helper function to handle submit hook in form alter.
- *
- * @param array $form
- *   Form array.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   Form State object.
- */
-function minifyhtml_system_performance_settings_submit(array &$form, FormStateInterface $form_state) {
-  \Drupal::service('config.factory')->getEditable('system.performance')
-    ->set('minifyhtml.minify_html', $form_state->getValue('minifyhtml_minify'))
-    ->save();
 }

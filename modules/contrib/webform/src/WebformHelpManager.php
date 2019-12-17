@@ -1194,7 +1194,7 @@ class WebformHelpManager implements WebformHelpManagerInterface {
         ],
       ],
       'custom_options' => [
-        'title' => $this->t('Webform custom options elenents'),
+        'title' => $this->t('Webform custom options elements'),
         'content' => $this->t("The screencast walks through creating custom webform options elements."),
         'youtube_id' => '08Ze1eACM48',
         'presentation_id' => '1MZQ0we3qG9G3eFLtnHXiQ5c_uDfn1jjiBHciAeW311g',

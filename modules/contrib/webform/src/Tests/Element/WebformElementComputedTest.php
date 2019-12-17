@@ -51,11 +51,11 @@ class WebformElementComputedTest extends WebformElementTestBase {
     $token_webform = Webform::load('test_element_computed_token');
 
     // Check computed tokens are processed on form load.
-    $this->drupalGet('webform/test_element_computed_token');
+    $this->drupalGet('/webform/test_element_computed_token');
     $this->assertRaw('<b class="webform_computed_token_auto">simple string:</b> This is a string<br />');
 
     // Get computed token preview.
-    $this->drupalPostForm('webform/test_element_computed_token', [], t('Preview'));
+    $this->drupalPostForm('/webform/test_element_computed_token', [], t('Preview'));
 
     // Check token auto detection.
     $this->assertRaw('<b class="webform_computed_token_auto">simple string:</b> This is a string<br />');
@@ -111,7 +111,7 @@ class WebformElementComputedTest extends WebformElementTestBase {
     $this->assertFieldByName('webform_computed_twig_spaceless', '<em>This is spaceless</em><br/>');
 
     // Get computed Twig preview.
-    $this->drupalPostForm('webform/test_element_computed_twig', [], t('Preview'));
+    $this->drupalPostForm('/webform/test_element_computed_twig', [], t('Preview'));
 
     // Check Twig auto detection.
     $this->assertRaw('<b class="webform_computed_twig_auto">number:</b> 2 * 2 = 4<br />');

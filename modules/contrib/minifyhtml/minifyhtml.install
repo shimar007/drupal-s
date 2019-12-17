@@ -13,3 +13,15 @@ function minifyhtml_update_8001() {
     ->set('strip_comments', 1)
     ->save();
 }
+
+/**
+ * Copy the configuration values to the new config.
+ */
+function minifyhtml_update_8002() {
+  \Drupal::service('config.factory')->getEditable('minifyhtml.config')
+    ->set('minify', (bool) \Drupal::config('system.performance')->get('minifyhtml.minify_html'))
+    ->save();
+  \Drupal::service('config.factory')->getEditable('system.performance')
+    ->clear('minifyhtml')
+    ->save();
+}

@@ -2823,12 +2823,13 @@ function webform_update_8153() {
   $webform = Webform::loadMultiple();
 
   if (\Drupal::entityTypeManager()->hasDefinition('path_alias')) {
-    $ids = \Drupal::entityTypeManager()->getStorage('path_alias')->getQuery()
+    $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+    $ids = $storage->getQuery()
       ->condition('path', '/webform/', 'STARTS_WITH')
       ->execute();
 
-    /** @var \Drupal\Core\Path\PathAliasInterface $path_alias */
-    foreach (PathAlias::loadMultiple($ids) as $path_alias) {
+    /** @var \Drupal\path_alias\PathAliasInterface $path_alias */
+    foreach ($storage->loadMultiple($ids) as $path_alias) {
       if (preg_match('#^/webform/([^/]+)/(?:drafts|submissions)$#', $path_alias->getPath(), $match)) {
         // Check if the webform still exists.
         $webform_id = $match[1];
@@ -2994,7 +2995,7 @@ function webform_update_8157() {
  * Issue #3023863: Typo in State/Province codes options.
  */
 function webform_update_8158() {
-  /** \Drupal\webform\WebformOptionsInterface $webform_options */
+  /** @var \Drupal\webform\WebformOptionsInterface $webform_options */
   $webform_options = WebformOptions::load('state_province_codes');
   if (!$webform_options) {
     return;
@@ -3250,7 +3251,7 @@ function _webform_update_8173(array &$element) {
 }
 
 /**
- * Issue #3084531: Allow Email handler add additional parameters
+ * Issue #3084531: Allow Email handler add additional parameters.
  */
 function webform_update_8174() {
   _webform_update_webform_handler_settings();
@@ -3282,8 +3283,15 @@ function webform_update_8175() {
 }
 
 /**
-  * Issue #3086507: Allow wizard pages / bar to be updated based on states API.
-  */
+ * Issue #3086507: Allow wizard pages / bar to be updated based on states API.
+ */
 function webform_update_8176() {
+  _webform_update_webform_settings();
+}
+
+/**
+ * Issue #3082822: Anonymous role view submission via secure token.
+ */
+function webform_update_8177() {
   _webform_update_webform_settings();
 }

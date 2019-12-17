@@ -5,6 +5,7 @@ CONTENTS OF THIS FILE
  * Requirements
  * Installation
  * Configuration
+ * Drush
 
 INTRODUCTION
 ------------
@@ -47,8 +48,8 @@ DRUSH
 
 * Enable the minification of html:
 
-  drush cset system.performance minifyhtml.minify_html 1
+  drush cset minify.config minify true
 
 * Disable the minification of html:
 
-  drush cset system.performance minifyhtml.minify_html 0
+  drush cset minify.config minify false

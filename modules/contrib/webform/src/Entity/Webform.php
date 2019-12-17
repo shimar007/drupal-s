@@ -3,6 +3,7 @@
 namespace Drupal\webform\Entity;
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Serialization\Yaml;
@@ -439,7 +440,14 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
    *
    * @var bool
    */
-  protected $hasMessagehandler;
+  protected $hasMessageHandler;
+
+  /**
+   * Track if a webform handler requires anonymous submission tracking .
+   *
+   * @var bool
+   */
+  protected $hasAnonymousSubmissionTrackingHandler;
 
   /**
    * {@inheritdoc}
@@ -1092,6 +1100,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
       'purge_days' => NULL,
       'results_disabled' => FALSE,
       'results_disabled_ignore' => FALSE,
+      'token_view' => FALSE,
       'token_update' => FALSE,
     ];
   }
@@ -1233,7 +1242,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     /** @var \Drupal\webform\Plugin\WebformElementManagerInterface $element_manager */
     $element_manager = \Drupal::service('plugin.manager.webform.element');
     foreach ($elements as $key => $element) {
-      $element_plugin = $element_manager->getElementInstance($element);
+      $element_plugin = $element_manager->getElementInstance($element, $this);
       if (!$element_plugin->checkAccessRules($operation, $element)) {
         unset($elements[$key]);
       }
@@ -1256,7 +1265,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     $selectors = [];
     $elements = $this->getElementsInitializedAndFlattened();
     foreach ($elements as $element) {
-      $element_plugin = $element_manager->getElementInstance($element);
+      $element_plugin = $element_manager->getElementInstance($element, $this);
 
       // Check excluded elements.
       if ($options['excluded_elements'] && in_array($element_plugin->getPluginId(), $options['excluded_elements'])) {
@@ -1294,7 +1303,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     $source_values = [];
     $elements = $this->getElementsInitializedAndFlattened();
     foreach ($elements as $element) {
-      $element_plugin = $element_manager->getElementInstance($element);
+      $element_plugin = $element_manager->getElementInstance($element, $this);
       $source_values += $element_plugin->getElementSelectorSourceValues($element);
     }
     return $source_values;
@@ -1504,7 +1513,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
       $element_plugin = NULL;
       if (isset($element['#type'])) {
         // Load the element's handler.
-        $element_plugin = $element_manager->getElementInstance($element);
+        $element_plugin = $element_manager->getElementInstance($element, $this);
 
         // Initialize the element.
         // Note: Composite sub elements are initialized via
@@ -1818,7 +1827,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
         }
 
         /** @var \Drupal\webform\Plugin\WebformElementInterface $element_plugin */
-        $element_plugin = $element_manager->createInstance($element['#type']);
+        $element_plugin = $element_manager->getElementInstance($element, $this);
         if (!($element_plugin instanceof WebformElementWizardPageInterface)) {
           continue;
         }
@@ -2014,7 +2023,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
         $cache_contexts[] = 'url.query_args:entity_id';
       }
       // Add webform (secure) token query string parameter.
-      if ($this->getSetting('token_update')) {
+      if ($this->getSetting('token_view') || $this->getSetting('token_update')) {
         $cache_contexts[] = 'url.query_args:token';
       }
     }
@@ -2105,7 +2114,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
       $element_manager = \Drupal::service('plugin.manager.webform.element');
       $checked_elements = $created_elements + $deleted_elements;
       foreach ($checked_elements as $element_key => $element) {
-        $element_plugin = $element_manager->getElementInstance($element);
+        $element_plugin = $element_manager->getElementInstance($element, $this);
         if ($element_plugin instanceof WebformElementAssetInterface
           && $element_plugin->hasAssets()) {
           Cache::invalidateTags(['library_info']);
@@ -2218,6 +2227,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
    */
   protected function resetHandlers() {
     $this->hasMessageHandler = NULL;
+    $this->hasAnonymousSubmissionTrackingHandler = NULL;
   }
 
   /**
@@ -2238,6 +2248,26 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     }
 
     return $this->hasMessagehandler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function hasAnonymousSubmissionTrackingHandler() {
+    if (isset($this->hasAnonymousSubmissionTrackingHandler)) {
+      $this->hasAnonymousSubmissionTrackingHandler;
+    }
+
+    $this->hasAnonymousSubmissionTrackingHandler = FALSE;
+    $handlers = $this->getHandlers();
+    foreach ($handlers as $handler) {
+      if ($handler->hasAnonymousSubmissionTracking()) {
+        $this->hasAnonymousSubmissionTrackingHandler = TRUE;
+        break;
+      }
+    }
+
+    return $this->hasAnonymousSubmissionTrackingHandler;
   }
 
   /**
@@ -2365,7 +2395,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
   /**
    * {@inheritdoc}
    */
-  public function invokeHandlers($method, &$data, &$context1 = NULL, &$context2 = NULL) {
+  public function invokeHandlers($method, &$data, &$context1 = NULL, &$context2 = NULL, &$context3 = NULL) {
     // Get webform submission from arguments for conditions validations.
     $webform_submission = NULL;
     $args = func_get_args();
@@ -2376,45 +2406,79 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
       }
     }
 
-    // If webform submission and alter settings, make sure to completely
-    // reset all settings to their original values.
-    if ($method === 'overrideSettings') {
-      $this->resetSettings();
-      $settings = $this->getSettings();
-      $handlers = $this->getHandlers();
-      foreach ($handlers as $handler) {
-        $handler->setWebformSubmission($webform_submission);
-        $this->invokeHandlerAlter($handler, $method, $args);
+    // Get handlers.
+    $handlers = $this->getHandlers();
 
-        if ($handler->isEnabled() && $handler->checkConditions($webform_submission)) {
-          $handler->overrideSettings($settings, $webform_submission);
+    switch ($method) {
+      case 'overrideSettings';
+        // If webform submission and alter settings, make sure to completely
+        // reset all settings to their original values.
+        $this->resetSettings();
+        $settings = $this->getSettings();
+        foreach ($handlers as $handler) {
+          $handler->setWebformSubmission($webform_submission);
+          $this->invokeHandlerAlter($handler, $method, $args);
+          if ($this->isHandlerEnabled($handler, $webform_submission)) {
+            $handler->overrideSettings($settings, $webform_submission);
+          }
         }
-      }
-      // If a handler has change some settings set override.
-      // Only look for altered original settings, which prevents issues where
-      // a webform saved settings and default settings are out-of-sync.
-      if (array_intersect_key($settings, $this->settingsOriginal) != $this->settingsOriginal) {
-        $this->setSettingsOverride($settings);
-      }
+        // If a handler has change some settings set override.
+        // Only look for altered original settings, which prevents issues where
+        // a webform saved settings and default settings are out-of-sync.
+        if (array_intersect_key($settings, $this->settingsOriginal) != $this->settingsOriginal) {
+          $this->setSettingsOverride($settings);
+        }
+        return NULL;
+
+      case 'access':
+      case 'accessElement':
+        // WebformHandler::access() and WebformHandler::accessElement()
+        // returns a AccessResult.
+        /** @var \Drupal\Core\Access\AccessResultInterface $result */
+        $result = AccessResult::neutral();
+        foreach ($handlers as $handler) {
+          $handler->setWebformSubmission($webform_submission);
+          $this->invokeHandlerAlter($handler, $method, $args);
+          if ($this->isHandlerEnabled($handler, $webform_submission)) {
+            $result = $result->orIf($handler->$method($data, $context1, $context2));
+          }
+        }
+        return $result;
+
+      default:
+        foreach ($handlers as $handler) {
+          $handler->setWebformSubmission($webform_submission);
+          $this->invokeHandlerAlter($handler, $method, $args);
+          if ($this->isHandlerEnabled($handler, $webform_submission)) {
+            $handler->$method($data, $context1, $context2);
+          }
+        }
+        return NULL;
+    }
+  }
+
+  /**
+   * Determine if a webform handler is enabled.
+   *
+   * @param \Drupal\webform\Plugin\WebformHandlerInterface $handler
+   *   A webform handler.
+   * @param \Drupal\webform\WebformSubmissionInterface|null $webform_submission
+   *   A webform submission.
+   *
+   * @return bool
+   *   TRUE if a webform handler is enabled.
+   */
+  protected function isHandlerEnabled(WebformHandlerInterface $handler, WebformSubmissionInterface $webform_submission = NULL) {
+    // Check if the handler is disabled.
+    if ($handler->isDisabled()) {
+      return FALSE;
+    }
+    // If webform submission defined, check the handlers conditions.
+    elseif ($webform_submission && !$handler->checkConditions($webform_submission)) {
+      return FALSE;
     }
     else {
-      $handlers = $this->getHandlers();
-      foreach ($handlers as $handler) {
-        $handler->setWebformSubmission($webform_submission);
-        $this->invokeHandlerAlter($handler, $method, $args);
-
-        // If the handler is disabled never invoke it.
-        if ($handler->isDisabled()) {
-          continue;
-        }
-
-        // If the arguments contain the webform submission check conditions.
-        if ($webform_submission && !$handler->checkConditions($webform_submission)) {
-          continue;
-        }
-
-        $handler->$method($data, $context1, $context2);
-      }
+      return TRUE;
     }
   }
 

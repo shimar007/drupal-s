@@ -88,7 +88,7 @@ class MinifyHTMLExit implements EventSubscriberInterface {
 
     // Abort minification until cache is cleared.
     if ($arg_error) {
-      drupal_set_message(t('Minify HTML has been disabled until the cache has been cleared.'), 'warning');
+      \Drupal::messenger()->addWarning(t('Minify HTML has been disabled until the cache has been cleared.'));
       $this->abort = TRUE;
     }
   }
@@ -100,7 +100,7 @@ class MinifyHTMLExit implements EventSubscriberInterface {
    *   Response event object.
    */
   public function response(FilterResponseEvent $event) {
-    if (!$this->abort && $this->config->get('system.performance')->get('minifyhtml.minify_html')) {
+    if (!$this->abort && $this->config->get('minifyhtml.config')->get('minify')) {
       $response = $event->getResponse();
 
       // Make sure that the following render classes are the only ones that

@@ -35,6 +35,13 @@ class SettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = [];
 
+    $form['minifyhtml_minify'] = [
+      '#type'          => 'checkbox',
+      '#title'         => t('Minified Source HTML.'),
+      '#description'   => t('Toggle minified HTML on or off.'),
+      '#default_value' => $this->config('minifyhtml.config')->get('minify'),
+    ];
+
     $form['strip_comments'] = [
       '#title'         => $this->t('Strip comments from the source HTML'),
       '#description'   => $this->t('If checked, strip HTML comments and multi-line comments in @script and @style tags.', ['@script' => '<script>', '@style' => '<style>']),
@@ -63,6 +70,7 @@ class SettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('minifyhtml.config')
       ->set('strip_comments', $form_state->getValue('strip_comments'))
+      ->set('minify', (bool) $form_state->getValue('minifyhtml_minify'))
       ->save();
     parent::submitForm($form, $form_state);
   }

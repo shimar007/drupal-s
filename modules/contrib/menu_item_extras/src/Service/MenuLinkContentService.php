@@ -160,6 +160,7 @@ class MenuLinkContentService implements MenuLinkContentServiceInterface {
       // Get the old data.
       $existing_data[$table] = $this->connection->select($table)
         ->fields($table)
+        ->orderBy('id', 'ASC')
         ->execute()
         ->fetchAll(\PDO::FETCH_ASSOC);
       // Wipe it.

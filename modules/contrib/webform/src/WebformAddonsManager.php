@@ -318,7 +318,7 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
     $projects['webform_email_reply_d8'] = [
       'title' => $this->t('Webform Email Reply'),
       'description' => $this->t('Allows users to send an email reply to submissions.'),
-      'url' => Url::fromUri('https://www.drupal.org/project/webform_embed'),
+      'url' => Url::fromUri('https://www.drupal.org/project/webform_email_reply'),
       'category' => 'enhancement',
     ];
 
@@ -331,17 +331,17 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
     ];
 
     // Enhancement: Webform Extra Field Validation.
-    $projects['webform extra field validation'] = [
+    $projects['webform_extra_field_validation'] = [
       'title' => $this->t('Webform Extra Field Validation'),
-      'description' => $this->t('Provides an extra field for placing a webform in any entity display mode.'),
-      'url' => Url::fromUri('https://www.drupal.org/project/webform extra field validation'),
+      'description' => $this->t('Provides extra validation to webform, allowing you to specify validation rules for your Webform components.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/webform_extra_field_validation'),
       'category' => 'enhancement',
     ];
 
     // Enhancement: Webform Feedback.
     $projects['webform_feedback'] = [
       'title' => $this->t('Webform Feedback'),
-      'description' => $this->t('Provides extra validation to webform, allowing you to specify validation rules for your Webform components.'),
+      'description' => $this->t('Adds a lightbox like pop-up for a contact/feedback form based on webform.'),
       'url' => Url::fromUri('https://www.drupal.org/project/webform_feedback'),
       'category' => 'enhancement',
     ];
@@ -426,14 +426,6 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'category' => 'integration',
     ];
 
-//    // Integrations: Donorbox.
-//    $projects['donorbox'] = [
-//      'title' => $this->t('Donorbox'),
-//      'description' => $this->t('Provides integration with Donorbox'),
-//      'url' => Url::fromUri('https://www.drupal.org/project/donorbox'),
-//      'category' => 'integration',
-//    ];
-
     // Integrations: Druminate Webforms.
     $projects['druminate'] = [
       'title' => $this->t('Druminate Webforms'),
@@ -455,6 +447,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'title' => $this->t('Flashpoint Course Content: Webform'),
       'description' => $this->t('Integrates Webforms into Flashpoint Courses.'),
       'url' => Url::fromUri('https://www.drupal.org/project/flashpoint_course_webform'),
+      'category' => 'integration',
+    ];
+
+    // Integrations: Group Webform.
+    $projects['group_webform'] = [
+      'title' => $this->t('Group Webform'),
+      'description' => $this->t('Designed to associate group specific webforms with a group when using the Group module.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/group_webform'),
       'category' => 'integration',
     ];
 
@@ -644,10 +644,18 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'category' => 'integration',
     ];
 
+    // Integrations: Webform Pardot.
+    $projects['webform_pardot'] = [
+      'title' => $this->t('Webform Pardot'),
+      'description' => $this->t('Links commerce products to webform elements.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/webform_pardot'),
+      'category' => 'integration',
+    ];
+
     // Integrations: Webform Product.
     $projects['webform_product'] = [
       'title' => $this->t('Webform Product'),
-      'description' => $this->t('Links commerce products to webform elements.'),
+      'description' => $this->t('Provides a webform handler for posting submissions to Pardot.'),
       'url' => Url::fromUri('https://github.com/chx/webform_product'),
       'category' => 'integration',
     ];
@@ -682,6 +690,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'title' => $this->t('Webform SugarCRM Integration'),
       'description' => $this->t('Provides integration for webform submission with SugarCRM.'),
       'url' => Url::fromUri('https://www.drupal.org/project/webform_sugarcrm'),
+      'category' => 'integration',
+    ];
+
+    // Integrations: Webform to Paypal.
+    $projects['webform_to_paypal'] = [
+      'title' => $this->t('Webform to Paypal'),
+      'description' => $this->t('Adds extra fields and settings to webforms to integrate with Paypal.'),
+      'url' => Url::fromUri('https://github.com/IE-Digital/webform_to_paypal'),
       'category' => 'integration',
     ];
 
@@ -1125,6 +1141,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'title' => $this->t('Validators'),
       'description' => $this->t('Provides Symfony (form) Validators for Drupal 8.'),
       'url' => Url::fromUri('https://www.drupal.org/project/validators'),
+      'category' => 'validation',
+    ];
+
+    // Webform Handler: Compare Fields.
+    $projects['webform_handler_compare_fields'] = [
+      'title' => $this->t('Webform Handler: Compare Fields'),
+      'description' => $this->t('Validation handler to compare two fields on a webform.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/webform_handler_compare_fields'),
       'category' => 'validation',
     ];
 

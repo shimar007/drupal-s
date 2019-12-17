@@ -5,10 +5,12 @@ namespace Drupal\csp\EventSubscriber;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Cache\CacheableResponseInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\csp\Csp;
+use Drupal\csp\CspEvents;
+use Drupal\csp\Event\PolicyAlterEvent;
 use Drupal\csp\LibraryPolicyBuilder;
 use Drupal\csp\ReportingHandlerPluginManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -26,13 +28,6 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
   protected $configFactory;
 
   /**
-   * The module handler service.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
-
-  /**
    * The Library Policy Builder service.
    *
    * @var \Drupal\csp\LibraryPolicyBuilder
@@ -47,27 +42,34 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
   private $reportingHandlerPluginManager;
 
   /**
+   * The Event Dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private $eventDispatcher;
+
+  /**
    * Constructs a new ResponseSubscriber object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Config Factory service.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
-   *   The Module Handler service.
    * @param \Drupal\csp\LibraryPolicyBuilder $libraryPolicyBuilder
    *   The Library Parser service.
    * @param \Drupal\csp\ReportingHandlerPluginManager $reportingHandlerPluginManager
    *   The Reporting Handler Plugin Manager service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The Event Dispatcher Service.
    */
   public function __construct(
     ConfigFactoryInterface $configFactory,
-    ModuleHandlerInterface $moduleHandler,
     LibraryPolicyBuilder $libraryPolicyBuilder,
-    ReportingHandlerPluginManager $reportingHandlerPluginManager
+    ReportingHandlerPluginManager $reportingHandlerPluginManager,
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->configFactory = $configFactory;
-    $this->moduleHandler = $moduleHandler;
     $this->libraryPolicyBuilder = $libraryPolicyBuilder;
     $this->reportingHandlerPluginManager = $reportingHandlerPluginManager;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -133,6 +135,11 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
           case 'any':
             $policy->setDirective($directiveName, [Csp::POLICY_ANY]);
             break;
+
+          default:
+            // Initialize to an empty value so that any alter subscribers can
+            // tell that this directive was enabled.
+            $policy->setDirective($directiveName, []);
         }
 
         if (!empty($directiveOptions['flags'])) {
@@ -147,35 +154,6 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
 
         if (isset($libraryDirectives[$directiveName])) {
           $policy->appendDirective($directiveName, $libraryDirectives[$directiveName]);
-        }
-      }
-
-      // Prior to Drupal 8.7, in order to support IE9, CssCollectionRenderer
-      // outputs more than 31 stylesheets as inline @import statements.
-      // @see https://www.drupal.org/node/2993171
-      // Since checking the actual number of stylesheets included on the page is
-      // more difficult, just check the optimization settings, as in
-      // HtmlResponseAttachmentsProcessor::processAssetLibraries()
-      // @see CssCollectionRenderer::render()
-      // @see HtmlResponseAttachmentsProcessor::processAssetLibraries()
-      if (
-        (
-          version_compare(\Drupal::VERSION, '8.7', '<')
-          ||
-          $this->moduleHandler->moduleExists('ie9')
-        )
-        &&
-        (
-          defined('MAINTENANCE_MODE')
-          ||
-          !$this->configFactory->get('system.performance')->get('css.preprocess')
-        )
-      ) {
-        $policy->appendDirective('style-src', [Csp::POLICY_UNSAFE_INLINE]);
-        // style-src-elem may not be set, if it is expected to fall back to
-        // style-src.
-        if ($policy->hasDirective('style-src-elem')) {
-          $policy->appendDirective('style-src-elem', [Csp::POLICY_UNSAFE_INLINE]);
         }
       }
 
@@ -194,6 +172,11 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
           watchdog_exception('csp', $e);
         }
       }
+
+      $this->eventDispatcher->dispatch(
+        CspEvents::POLICY_ALTER,
+        new PolicyAlterEvent($policy, $response)
+      );
 
       $response->headers->set($policy->getHeaderName(), $policy->getHeaderValue());
     }

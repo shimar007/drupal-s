@@ -15,6 +15,7 @@ class Csp {
   const POLICY_STRICT_DYNAMIC = "'strict-dynamic'";
   const POLICY_UNSAFE_EVAL = "'unsafe-eval'";
   const POLICY_UNSAFE_INLINE = "'unsafe-inline'";
+  const POLICY_UNSAFE_HASHES = "'unsafe-hashes'";
 
   // https://www.w3.org/TR/CSP/#grammardef-serialized-source-list
   const DIRECTIVE_SCHEMA_SOURCE_LIST = 'serialized-source-list';
@@ -34,7 +35,7 @@ class Csp {
    *
    * @var array
    */
-  private static $directiveSchemaMap = [
+  const DIRECTIVES = [
     // Fetch Directives.
     // @see https://www.w3.org/TR/CSP3/#directives-fetch
     'default-src' => self::DIRECTIVE_SCHEMA_SOURCE_LIST,
@@ -86,7 +87,7 @@ class Csp {
    *
    * @see https://www.w3.org/TR/CSP/#directive-fallback-list
    */
-  private static $directiveFallbackList = [
+  const DIRECTIVES_FALLBACK = [
     'script-src-elem' => ['script-src', 'default-src'],
     'script-src-attr' => ['script-src', 'default-src'],
     'script-src' => ['default-src'],
@@ -122,11 +123,11 @@ class Csp {
   /**
    * Calculate the Base64 encoded hash of a script.
    *
-   * @param $data
+   * @param string $data
    *   The source data to hash.
    * @param string $algorithm
    *   The hash algorithm to use.
-   *   Supported values are defined in \Drupal\csp\Csp::HASH_ALGORITHMS
+   *   Supported values are defined in \Drupal\csp\Csp::HASH_ALGORITHMS.
    *
    * @return string
    *   The hash value in the format <hash-algorithm>-<base64-value>
@@ -140,16 +141,6 @@ class Csp {
   }
 
   /**
-   * Set the policy to report-only.
-   *
-   * @param bool $value
-   *   The report-only status.
-   */
-  public function reportOnly($value = TRUE) {
-    $this->reportOnly = $value;
-  }
-
-  /**
    * Check if a directive name is valid.
    *
    * @param string $name
@@ -159,7 +150,7 @@ class Csp {
    *   True if the directive name is valid.
    */
   public static function isValidDirectiveName($name) {
-    return array_key_exists($name, static::$directiveSchemaMap);
+    return array_key_exists($name, static::DIRECTIVES);
   }
 
   /**
@@ -183,7 +174,7 @@ class Csp {
    *   An array of directive names.
    */
   public static function getDirectiveNames() {
-    return array_keys(self::$directiveSchemaMap);
+    return array_keys(self::DIRECTIVES);
   }
 
   /**
@@ -198,7 +189,7 @@ class Csp {
   public static function getDirectiveSchema($name) {
     self::validateDirectiveName($name);
 
-    return self::$directiveSchemaMap[$name];
+    return self::DIRECTIVES[$name];
   }
 
   /**
@@ -213,11 +204,31 @@ class Csp {
   public static function getDirectiveFallbackList($name) {
     self::validateDirectiveName($name);
 
-    if (array_key_exists($name, self::$directiveFallbackList)) {
-      return self::$directiveFallbackList[$name];
+    if (array_key_exists($name, self::DIRECTIVES_FALLBACK)) {
+      return self::DIRECTIVES_FALLBACK[$name];
     }
 
     return [];
+  }
+
+  /**
+   * Set the policy to report-only.
+   *
+   * @param bool $value
+   *   The report-only status.
+   */
+  public function reportOnly($value = TRUE) {
+    $this->reportOnly = $value;
+  }
+
+  /**
+   * Retrieve whether this policy is report-only.
+   *
+   * @return bool
+   *   The report-only status.
+   */
+  public function isReportOnly() {
+    return $this->reportOnly;
   }
 
   /**
@@ -234,6 +245,21 @@ class Csp {
   }
 
   /**
+   * Get the value of a directive.
+   *
+   * @param string $name
+   *   The directive name.
+   *
+   * @return array
+   *   The directive's values.
+   */
+  public function getDirective($name) {
+    self::validateDirectiveName($name);
+
+    return $this->directives[$name];
+  }
+
+  /**
    * Add a new directive to the policy, or replace an existing directive.
    *
    * @param string $name
@@ -244,7 +270,7 @@ class Csp {
   public function setDirective($name, $value) {
     self::validateDirectiveName($name);
 
-    if (self::$directiveSchemaMap[$name] === self::DIRECTIVE_SCHEMA_BOOLEAN) {
+    if (self::DIRECTIVES[$name] === self::DIRECTIVE_SCHEMA_BOOLEAN) {
       $this->directives[$name] = (bool) $value;
       return;
     }
@@ -318,20 +344,20 @@ class Csp {
     $optimizedDirectives = [];
 
     foreach ($this->directives as $name => $value) {
-      if (empty($value) && self::$directiveSchemaMap[$name] !== self::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST) {
+      if (empty($value) && self::DIRECTIVES[$name] !== self::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST) {
         continue;
       }
 
       if (
-        self::$directiveSchemaMap[$name] === self::DIRECTIVE_SCHEMA_BOOLEAN
+        self::DIRECTIVES[$name] === self::DIRECTIVE_SCHEMA_BOOLEAN
         ||
-        self::$directiveSchemaMap[$name] === self::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST && empty($value)
+        self::DIRECTIVES[$name] === self::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST && empty($value)
       ) {
         $output[] = $name;
         continue;
       }
 
-      if (in_array(self::$directiveSchemaMap[$name], [
+      if (in_array(self::DIRECTIVES[$name], [
         self::DIRECTIVE_SCHEMA_SOURCE_LIST,
         self::DIRECTIVE_SCHEMA_ANCESTOR_SOURCE_LIST,
       ])) {
@@ -384,14 +410,26 @@ class Csp {
     if (in_array(Csp::POLICY_ANY, $sources)) {
       $sources = array_filter($sources, function ($source) {
         // Keep any values that are a quoted string, or non-network scheme.
-        // e.g. '* https: data: example.com' -> 'data: *'
+        // e.g. '* https: data: example.com' -> '* data:'
         // https://www.w3.org/TR/CSP/#match-url-to-source-expression
         return strpos($source, "'") === 0 || preg_match('<^(?!ftp|https?:)([a-z]+:)>', $source);
       });
 
-      $sources[] = '*';
+      array_unshift($sources, Csp::POLICY_ANY);
+    }
 
-      return $sources;
+    // Remove protocol-prefixed hosts if protocol is allowed.
+    // e.g. 'http: data: example.com https://example.com' -> 'http: data: example.com'
+    $protocols = array_filter($sources, function ($source) {
+      return preg_match('<^(https?|ftp):$>', $source);
+    });
+    if (!empty($protocols)) {
+      if (in_array('http:', $protocols)) {
+        $protocols[] = 'https:';
+      }
+      $sources = array_filter($sources, function ($source) use ($protocols) {
+        return !preg_match('<^(' . implode('|', $protocols) . ')//>', $source);
+      });
     }
 
     return $sources;

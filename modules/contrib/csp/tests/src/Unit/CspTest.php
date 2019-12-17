@@ -14,26 +14,67 @@ use Drupal\Tests\UnitTestCase;
 class CspTest extends UnitTestCase {
 
   /**
+   * Test calculating hash values.
+   *
+   * @covers ::calculateHash
+   */
+  public function testHash() {
+    $this->assertEquals(
+      'sha256-BnZSlC9IkS7BVcseRf0CAOmLntfifZIosT2C1OMQ088=',
+      Csp::calculateHash('alert("Hello World");')
+    );
+
+    $this->assertEquals(
+      'sha256-BnZSlC9IkS7BVcseRf0CAOmLntfifZIosT2C1OMQ088=',
+      Csp::calculateHash('alert("Hello World");', 'sha256')
+    );
+
+    $this->assertEquals(
+      'sha384-iZxROpttQr5JcGhwPlHbUPBm+IHbO2CwTxLGhVoZXCIIpjSZo+Ourcmqw1QHOpGM',
+      Csp::calculateHash('alert("Hello World");', 'sha384')
+    );
+
+    $this->assertEquals(
+      'sha512-6/WbXCJEH9R1/effxooQuXLAsm6xIsfGMK6nFa7TG76VuHZJVRZHIirKrXi/Pib8QbQmkzpo5K/3Ye+cD46ADQ==',
+      Csp::calculateHash('alert("Hello World");', 'sha512')
+    );
+  }
+
+  /**
+   * Test specifying an invalid hash algorithm.
+   *
+   * @covers ::calculateHash
+   * @expectedException \InvalidArgumentException
+   */
+  public function testInvalidHashAlgo() {
+    Csp::calculateHash('alert("Hello World");', 'md5');
+  }
+
+  /**
    * Test that changing the policy's report-only flag updates the header name.
    *
    * @covers ::reportOnly
+   * @covers ::isReportOnly
    * @covers ::getHeaderName
    */
   public function testReportOnly() {
     $policy = new Csp();
 
+    $this->assertFalse($policy->isReportOnly());
     $this->assertEquals(
       "Content-Security-Policy",
       $policy->getHeaderName()
     );
 
     $policy->reportOnly();
+    $this->assertTrue($policy->isReportOnly());
     $this->assertEquals(
       "Content-Security-Policy-Report-Only",
       $policy->getHeaderName()
     );
 
     $policy->reportOnly(FALSE);
+    $this->assertFalse($policy->isReportOnly());
     $this->assertEquals(
       "Content-Security-Policy",
       $policy->getHeaderName()
@@ -45,6 +86,7 @@ class CspTest extends UnitTestCase {
    *
    * @covers ::setDirective
    * @covers ::isValidDirectiveName
+   * @covers ::validateDirectiveName
    *
    * @expectedException \InvalidArgumentException
    */
@@ -59,6 +101,7 @@ class CspTest extends UnitTestCase {
    *
    * @covers ::appendDirective
    * @covers ::isValidDirectiveName
+   * @covers ::validateDirectiveName
    *
    * @expectedException \InvalidArgumentException
    */
@@ -72,7 +115,10 @@ class CspTest extends UnitTestCase {
    * Test setting a single value to a directive.
    *
    * @covers ::setDirective
+   * @covers ::hasDirective
+   * @covers ::getDirective
    * @covers ::isValidDirectiveName
+   * @covers ::validateDirectiveName
    * @covers ::getHeaderValue
    */
   public function testSetSingle() {
@@ -80,6 +126,11 @@ class CspTest extends UnitTestCase {
 
     $policy->setDirective('default-src', Csp::POLICY_SELF);
 
+    $this->assertTrue($policy->hasDirective('default-src'));
+    $this->assertEquals(
+      $policy->getDirective('default-src'),
+      ["'self'"]
+    );
     $this->assertEquals(
       "default-src 'self'",
       $policy->getHeaderValue()
@@ -90,7 +141,10 @@ class CspTest extends UnitTestCase {
    * Test appending a single value to an uninitialized directive.
    *
    * @covers ::appendDirective
+   * @covers ::hasDirective
+   * @covers ::getDirective
    * @covers ::isValidDirectiveName
+   * @covers ::validateDirectiveName
    * @covers ::getHeaderValue
    */
   public function testAppendSingle() {
@@ -98,6 +152,11 @@ class CspTest extends UnitTestCase {
 
     $policy->appendDirective('default-src', Csp::POLICY_SELF);
 
+    $this->assertTrue($policy->hasDirective('default-src'));
+    $this->assertEquals(
+      $policy->getDirective('default-src'),
+      ["'self'"]
+    );
     $this->assertEquals(
       "default-src 'self'",
       $policy->getHeaderValue()
@@ -117,10 +176,11 @@ class CspTest extends UnitTestCase {
     $policy->setDirective('default-src', Csp::POLICY_ANY);
     $policy->setDirective('default-src', [Csp::POLICY_SELF, 'one.example.com']);
     $policy->setDirective('script-src', Csp::POLICY_SELF . ' two.example.com');
+    $policy->setDirective('upgrade-insecure-requests', TRUE);
     $policy->setDirective('report-uri', 'example.com/report-uri');
 
     $this->assertEquals(
-      "default-src 'self' one.example.com; script-src 'self' two.example.com; report-uri example.com/report-uri",
+      "upgrade-insecure-requests; default-src 'self' one.example.com; script-src 'self' two.example.com; report-uri example.com/report-uri",
       $policy->getHeaderValue()
     );
   }
@@ -251,6 +311,7 @@ class CspTest extends UnitTestCase {
    *
    * @covers ::removeDirective
    * @covers ::isValidDirectiveName
+   * @covers ::validateDirectiveName
    *
    * @expectedException \InvalidArgumentException
    */
@@ -425,7 +486,28 @@ class CspTest extends UnitTestCase {
   }
 
   /**
+   * Test reducing the source list when 'none' is included.
+   *
+   * @covers ::reduceSourceList
+   */
+  public function testReduceSourceListWithNone() {
+    $policy = new Csp();
+
+    $policy->setDirective('object-src', [
+      Csp::POLICY_NONE,
+      'example.com',
+      "'hash-123abc'",
+    ]);
+    $this->assertEquals(
+      "object-src 'none'",
+      $policy->getHeaderValue()
+    );
+  }
+
+  /**
    * Test reducing source list when any host allowed.
+   *
+   * @covers ::reduceSourceList
    */
   public function testReduceSourceListAny() {
     $policy = new Csp();
@@ -438,32 +520,78 @@ class CspTest extends UnitTestCase {
       'http:',
       'https:',
       'ftp:',
-      // Non-network protocols should be kept
+      // Non-network protocols should be kept.
       'data:',
-      // Additional keywords should be kept
+      // Additional keywords should be kept.
       Csp::POLICY_UNSAFE_INLINE,
       "'hash-123abc'",
       "'nonce-abc123'",
     ]);
     $this->assertEquals(
-      "default-src data: 'unsafe-inline' 'hash-123abc' 'nonce-abc123' *",
+      "default-src * data: 'unsafe-inline' 'hash-123abc' 'nonce-abc123'",
       $policy->getHeaderValue()
     );
   }
 
   /**
-   * Test reducing the source list when 'none' is included.
+   * Test reducing the source list when 'http:' is included.
+   *
+   * @covers ::reduceSourceList
    */
-  public function testReduceSourceListWithNone() {
+  public function testReduceSourceListWithHttp() {
     $policy = new Csp();
 
-    $policy->setDirective('object-src', [
-      Csp::POLICY_NONE,
+    $policy->setDirective('default-src', [
+      'http:',
+      // Hosts without protocol should be kept.
+      // (e.g. this would allow ftp://example.com)
       'example.com',
-      "'hash-123abc'"
+      // HTTP hosts should be removed.
+      'http://example.org',
+      'https://example.net',
+      // Other network protocols should be kept.
+      'ftp:',
+      // Non-network protocols should be kept.
+      'data:',
+      // Additional keywords should be kept.
+      Csp::POLICY_UNSAFE_INLINE,
+      "'hash-123abc'",
+      "'nonce-abc123'",
     ]);
+
     $this->assertEquals(
-      "object-src 'none'",
+      "default-src http: example.com ftp: data: 'unsafe-inline' 'hash-123abc' 'nonce-abc123'",
+      $policy->getHeaderValue()
+    );
+  }
+
+  /**
+   * Test reducing the source list when 'https:' is included.
+   *
+   * @covers ::reduceSourceList
+   */
+  public function testReduceSourceListWithHttps() {
+    $policy = new Csp();
+
+    $policy->setDirective('default-src', [
+      'https:',
+      // Non-secure hosts should be kept.
+      'example.com',
+      'http://example.org',
+      // Secure Hosts should be removed.
+      'https://example.net',
+      // Other network protocols should be kept.
+      'ftp:',
+      // Non-network protocols should be kept.
+      'data:',
+      // Additional keywords should be kept.
+      Csp::POLICY_UNSAFE_INLINE,
+      "'hash-123abc'",
+      "'nonce-abc123'",
+    ]);
+
+    $this->assertEquals(
+      "default-src https: example.com http://example.org ftp: data: 'unsafe-inline' 'hash-123abc' 'nonce-abc123'",
       $policy->getHeaderValue()
     );
   }

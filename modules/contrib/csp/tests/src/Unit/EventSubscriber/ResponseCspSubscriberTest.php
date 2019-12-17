@@ -5,10 +5,13 @@ namespace Drupal\Tests\csp\Unit\EventSubscriber;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Render\HtmlResponse;
+use Drupal\csp\Csp;
+use Drupal\csp\CspEvents;
 use Drupal\csp\EventSubscriber\ResponseCspSubscriber;
 use Drupal\csp\LibraryPolicyBuilder;
 use Drupal\csp\ReportingHandlerPluginManager;
 use Drupal\Tests\UnitTestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -34,13 +37,6 @@ class ResponseCspSubscriberTest extends UnitTestCase {
   protected $event;
 
   /**
-   * Mock Module Handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface|\PHPUnit_Framework_MockObject_MockObject
-   */
-  protected $moduleHandler;
-
-  /**
    * The Library Policy service.
    *
    * @var \Drupal\csp\LibraryPolicyBuilder|\PHPUnit_Framework_MockObject_MockObject
@@ -53,6 +49,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
    * @var \Drupal\csp\ReportingHandlerPluginManager|\PHPUnit_Framework_MockObject_MockObject
    */
   private $reportingHandlerPluginManager;
+
+  /**
+   * The Event Dispatcher Service.
+   *
+   * @var \PHPUnit\Framework\MockObject\MockObject|\Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private $eventDispatcher;
 
   /**
    * {@inheritdoc}
@@ -82,15 +85,15 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->method('getResponse')
       ->willReturn($this->response);
 
-    $this->moduleHandler = $this->getMockBuilder(ModuleHandler::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-
     $this->libraryPolicy = $this->getMockBuilder(LibraryPolicyBuilder::class)
       ->disableOriginalConstructor()
       ->getMock();
 
     $this->reportingHandlerPluginManager = $this->getMockBuilder(ReportingHandlerPluginManager::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $this->eventDispatcher = $this->getMockBuilder(EventDispatcher::class)
       ->disableOriginalConstructor()
       ->getMock();
   }
@@ -105,18 +108,75 @@ class ResponseCspSubscriberTest extends UnitTestCase {
   }
 
   /**
+   * Check that Policy Alter events are dispatched.
+   *
+   * @covers ::onKernelResponse
+   */
+  public function testPolicyAlterEvent() {
+
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
+    $configFactory = $this->getConfigFactoryStub([
+      'system.performance' => [
+        'css.preprocess' => FALSE,
+      ],
+      'csp.settings' => [
+        'report-only' => [
+          'enable' => TRUE,
+          'directives' => [
+            'style-src' => [
+              'base' => 'any',
+            ],
+          ],
+        ],
+        'enforce' => [
+          'enable' => TRUE,
+          'directives' => [
+            'script-src' => [
+              'base' => 'self',
+            ],
+          ],
+        ],
+      ],
+    ]);
+
+    $this->eventDispatcher->expects($this->exactly(2))
+      ->method('dispatch')
+      ->with(
+        $this->equalTo(CspEvents::POLICY_ALTER),
+        $this->callback(function ($event) {
+          $policy = $event->getPolicy();
+          return $policy->hasDirective(($policy->isReportOnly() ? 'style-src' : 'script-src'));
+        })
+      )
+      ->willReturnCallback(function ($eventName, $event) {
+        $policy = $event->getPolicy();
+        $policy->setDirective('font-src', [Csp::POLICY_SELF]);
+      });
+
+    $this->response->headers->expects($this->exactly(2))
+      ->method('set')
+      ->withConsecutive(
+        [
+          $this->equalTo('Content-Security-Policy-Report-Only'),
+          $this->equalTo("style-src *; font-src 'self'"),
+        ],
+        [
+          $this->equalTo('Content-Security-Policy'),
+          $this->equalTo("script-src 'self'; font-src 'self'"),
+        ]
+      );
+
+    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
+
+    $subscriber->onKernelResponse($this->event);
+  }
+
+  /**
    * Check the policy with CSS optimization disabled.
    *
    * @covers ::onKernelResponse
    */
   public function testUnoptimizedResponse() {
-
-    // IE9 workaround was removed in 8.7.0.
-    // @see https://www.drupal.org/node/2993171
-    if (version_compare(\Drupal::VERSION, '8.7', '<')) {
-      $this->markTestSkipped("Test for drupal/core >=8.7 skipped");
-    }
-
     /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
     $configFactory = $this->getConfigFactoryStub([
       'system.performance' => [
@@ -147,7 +207,7 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->method('getSources')
       ->willReturn([]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->moduleHandler, $this->libraryPolicy, $this->reportingHandlerPluginManager);
+    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
 
     $this->response->headers->expects($this->once())
       ->method('set')
@@ -159,119 +219,6 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->expects($this->once())
       ->method('addCacheTags')
       ->with(['config:csp.settings']);
-
-    $subscriber->onKernelResponse($this->event);
-  }
-
-  /**
-   * Check the policy with CSS optimization disabled in Drupal <=8.6.
-   *
-   * @covers ::onKernelResponse
-   */
-  public function testUnoptimizedResponse86() {
-
-    // IE9 workaround was removed in 8.7.0.
-    // @see https://www.drupal.org/node/2993171
-    if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
-      $this->markTestSkipped("Test for drupal/core <=8.6 skipped");
-    }
-
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
-    $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => FALSE,
-      ],
-      'csp.settings' => [
-        'report-only' => [
-          'enable' => TRUE,
-          'directives' => [
-            'script-src' => [
-              'base' => 'self',
-              'flags' => [
-                'unsafe-inline',
-              ],
-            ],
-            'style-src' => [
-              'base' => 'self',
-            ],
-          ],
-        ],
-        'enforce' => [
-          'enable' => FALSE,
-        ],
-      ],
-    ]);
-
-    $this->libraryPolicy->expects($this->any())
-      ->method('getSources')
-      ->willReturn([]);
-
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->moduleHandler, $this->libraryPolicy, $this->reportingHandlerPluginManager);
-
-    $this->response->headers->expects($this->once())
-      ->method('set')
-      ->with(
-        $this->equalTo('Content-Security-Policy-Report-Only'),
-        $this->equalTo("script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'")
-      );
-    $this->response->getCacheableMetadata()
-      ->expects($this->once())
-      ->method('addCacheTags')
-      ->with(['config:csp.settings']);
-
-    $subscriber->onKernelResponse($this->event);
-  }
-
-  /**
-   * Check the policy with CSS optimization disabled if IE9 module installed.
-   *
-   * @covers ::onKernelResponse
-   */
-  public function testUnoptimizedResponseIe9() {
-
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
-    $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => FALSE,
-      ],
-      'csp.settings' => [
-        'report-only' => [
-          'enable' => TRUE,
-          'directives' => [
-            'script-src' => [
-              'base' => 'self',
-              'flags' => [
-                'unsafe-inline',
-              ],
-            ],
-            'style-src' => [
-              'base' => 'self',
-            ],
-          ],
-        ],
-        'enforce' => [
-          'enable' => FALSE,
-        ],
-      ],
-    ]);
-
-    $this->moduleHandler->expects($this->any())
-      ->method('moduleExists')
-      ->with($this->equalTo('ie9'))
-      ->willReturn(TRUE);
-
-    $this->libraryPolicy->expects($this->any())
-      ->method('getSources')
-      ->willReturn([]);
-
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->moduleHandler, $this->libraryPolicy, $this->reportingHandlerPluginManager);
-
-    $this->response->headers->expects($this->once())
-      ->method('set')
-      ->with(
-        $this->equalTo('Content-Security-Policy-Report-Only'),
-        $this->equalTo("script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'")
-      );
 
     $subscriber->onKernelResponse($this->event);
   }
@@ -313,7 +260,7 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->method('getSources')
       ->willReturn([]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->moduleHandler, $this->libraryPolicy, $this->reportingHandlerPluginManager);
+    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
 
     $this->response->headers->expects($this->once())
       ->method('set')
@@ -362,7 +309,7 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->method('getSources')
       ->willReturn([]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->moduleHandler, $this->libraryPolicy, $this->reportingHandlerPluginManager);
+    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
 
     $this->response->headers->expects($this->once())
       ->method('set')
@@ -422,14 +369,14 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->method('getSources')
       ->willReturn([]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->moduleHandler, $this->libraryPolicy, $this->reportingHandlerPluginManager);
+    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
 
     $this->response->headers->expects($this->exactly(2))
       ->method('set')
       ->withConsecutive(
         [
           $this->equalTo('Content-Security-Policy-Report-Only'),
-          $this->equalTo("script-src 'unsafe-inline' *; style-src 'unsafe-inline' *"),
+          $this->equalTo("script-src * 'unsafe-inline'; style-src * 'unsafe-inline'"),
         ],
         [
           $this->equalTo('Content-Security-Policy'),
@@ -483,13 +430,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
         'style-src-elem' => ['example.com'],
       ]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->moduleHandler, $this->libraryPolicy, $this->reportingHandlerPluginManager);
+    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
 
     $this->response->headers->expects($this->once())
       ->method('set')
       ->with(
         $this->equalTo('Content-Security-Policy-Report-Only'),
-        $this->equalTo("script-src 'unsafe-inline' *; style-src 'self' 'unsafe-inline' example.com; style-src-elem 'self' example.com")
+        $this->equalTo("script-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline' example.com; style-src-elem 'self' example.com")
       );
 
     $subscriber->onKernelResponse($this->event);
@@ -536,13 +483,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
         'style-src-elem' => ['example.com'],
       ]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->moduleHandler, $this->libraryPolicy, $this->reportingHandlerPluginManager);
+    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
 
     $this->response->headers->expects($this->once())
       ->method('set')
       ->with(
         $this->equalTo('Content-Security-Policy-Report-Only'),
-        $this->equalTo("script-src 'unsafe-inline' *; style-src 'self' 'unsafe-inline' example.com")
+        $this->equalTo("script-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline' example.com")
       );
 
     $subscriber->onKernelResponse($this->event);
