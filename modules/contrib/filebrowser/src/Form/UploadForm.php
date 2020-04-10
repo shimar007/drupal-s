@@ -100,10 +100,10 @@ class UploadForm extends FormBase {
     if (count($file_ids)) {
       $success = \Drupal::service('filebrowser.storage')->genericDeleteMultiple('file_managed', 'fid', join(',', $file_ids));
       if ($success) {
-        drupal_set_message($this->t("Your filebrowser upload is completed successfully!"));
+        \Drupal::messenger()->addMessage($this->t("Your filebrowser upload is completed successfully!"));
       }
       else {
-        drupal_set_message($this->t('Your upload completed successfully, but file_managed clean-up failed', 'error'));
+        \Drupal::messenger()->addError($this->t('Your upload completed successfully, but file_managed clean-up failed'));
       }
     }
     // invalidate the cache for this node

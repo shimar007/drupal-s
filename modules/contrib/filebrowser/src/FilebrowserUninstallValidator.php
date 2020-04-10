@@ -31,7 +31,6 @@ class FilebrowserUninstallValidator implements ModuleUninstallValidatorInterface
    * Constructs a new FilebrowserUninstallValidator.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface EntityTypeManager
-   * @param \Drupal\Core\Entity\Query\QueryFactory $query_factory
    *   The entity query factory.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
    *   The string translation service.

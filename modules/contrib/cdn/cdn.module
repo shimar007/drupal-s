@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\editor\Entity\Editor;
 
 /**
  * Implements hook_help().
@@ -44,6 +45,12 @@ function cdn_file_url_alter(&$uri) {
     return;
   }
 
+  // Don't serve CKEditor from a CDN when far future future is enabled (CKEditor
+  // insists on computing other assets to load based on this URL).
+  if ($uri === 'core/assets/vendor/ckeditor/ckeditor.js' && \Drupal::service('cdn.settings')->farfutureIsEnabled()) {
+    return;
+  }
+
   // Don't alter file URLs while processing a CSS file.
   // @see \Drupal\cdn\Asset\CssOptimizer
   global $_cdn_in_css_file;
@@ -55,4 +62,37 @@ function cdn_file_url_alter(&$uri) {
   if ($result) {
     $uri = $result;
   }
+}
+
+/**
+ * Implements hook_editor_js_settings_alter().
+ */
+function cdn_editor_js_settings_alter(array &$settings) {
+  if (!\Drupal::moduleHandler()->moduleExists('ckeditor')) {
+    return;
+  }
+
+  // Don't serve CKEditor plugins from a CDN when far future future is enabled
+  // (CKEditor insists on computing other assets to load based on these URLs).
+  if (!\Drupal::service('cdn.settings')->farfutureIsEnabled()) {
+    return;
+  }
+
+  global $_cdn_in_css_file;
+  $_cdn_in_css_file = TRUE;
+
+  $ckeditor_plugin_manager = \Drupal::service('plugin.manager.ckeditor.plugin');
+  $root_relative_file_url = function ($uri) {
+    return file_url_transform_relative(file_create_url($uri));
+  };
+  foreach ($settings['editor']['formats'] as $format => &$format_settings) {
+    if ($format_settings['editor'] === 'ckeditor') {
+      $editor = Editor::load($format);
+      // @see \Drupal\ckeditor\Plugin\Editor\CKEditor::getJSSettings()
+      $external_plugin_files = $ckeditor_plugin_manager->getEnabledPluginFiles($editor);
+      $format_settings['editorSettings']['drupalExternalPlugins'] = array_map($root_relative_file_url, $external_plugin_files);
+    }
+  }
+
+  $_cdn_in_css_file = FALSE;
 }

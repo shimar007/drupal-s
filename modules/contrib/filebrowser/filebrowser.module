@@ -86,6 +86,28 @@ function filebrowser_entity_type_build(array &$entity_types) {
 }
 
 /**
+ * Implements hook_entity_extra_field_info().
+ */
+function filebrowser_entity_extra_field_info() {
+  $extra = [];
+
+  $extra['node']['dir_listing']['display']['filebrowser_file_list'] = [
+    'label' => t('Filebrowser file listing'),
+    'description' => t('Show file listing content part.'),
+    'weight' => 100,
+    'visible' => TRUE,
+  ];
+  $extra['node']['dir_listing']['display']['filebrowser_statistics'] = [
+    'label' => t('Filebrowser statistics'),
+    'description' => t('Show the statistics of this listing.'),
+    'weight' => 100,
+    'visible' => TRUE,
+  ];
+
+  return $extra;
+}
+
+/**
  * Whe can define the filebrowser fields for node dir_listing.
  * but for the time we won't use this. We will continue to use hook_form_alter due to the
  * the complexity of updating.
@@ -218,18 +240,24 @@ function filebrowser_node_view(array &$build, NodeInterface $node, EntityViewDis
     // get the argument $fid from query
     $fid = \Drupal::request()->query->get('fid');
 
-    // we will not use cache
     $list = new \Drupal\filebrowser\File\DisplayFileList($node, $fid);
     $display_list = $list->get();
 
-    // Insert file listing content part
-    $contents = $manager->createPresentation($node, $display_list);
-    $build['filebrowser_file_list'] = $contents;
+    // Show file listing content part
+    if ($display->getComponent('filebrowser_file_list')) {
+      $contents = $manager->createPresentation($node, $display_list);
+      $build['filebrowser_file_list'] = $contents;
+    }
 
     // Show the statistics of this listing
-    $statistics = new \Drupal\filebrowser\Statistics($display_list);
-    $build['filebrowser_statistics'] = $statistics->get();
+    if ($display->getComponent('filebrowser_statistics')) {
+      $statistics = new \Drupal\filebrowser\Statistics($display_list);
+      $build['filebrowser_statistics'] = $statistics->get();
+    }
+
+    // we will not use cache
     $build['#cache']['max-age'] = 0;
+    \Drupal::service('page_cache_kill_switch')->trigger();
   }
 }
 

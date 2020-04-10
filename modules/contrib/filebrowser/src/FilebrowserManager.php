@@ -90,17 +90,7 @@ class FilebrowserManager extends ControllerBase {
         '#attributes' => [
           'placeholder' => 'public://your_folder_here'
         ],
-        '#element_validate' => [[$this, 'validateFolderPath']],
-        //fixme: not working possibly core issue?
-//        '#ajax' => [
-//          'callback' => [$this, 'validateFolderPathAjax'],
-//          'event' => 'change',
-//          'progress' => [
-//            'type' => 'throbber',
-//            'message' => $this->t('Verifying folder uri...'),
-//          ],
-//        ],
-//        '#suffix' => '<span class="folder-path-valid-message"></span>',
+        '#element_validate' => [[__CLASS__, 'validateFolderPath'],],
       ];
     }
 
@@ -255,7 +245,7 @@ class FilebrowserManager extends ControllerBase {
       '#default_value' => isset($nodeValues->hideExtension) ? $nodeValues->hideExtension : $config['presentation']['hide_extension'],
     ];
 
-    /** @var MetadataInfo $event */
+    /**  @var MetadataInfo $event */
     $options = [];
     $e = new MetadataInfo($options);
     $event = $dispatcher->dispatch('filebrowser.metadata_info', $e);
@@ -322,7 +312,6 @@ class FilebrowserManager extends ControllerBase {
         //'#open'=> true,
       ];
       $image_styles = \Drupal::service('entity_type.manager')->getStorage('image_style')->loadMultiple();
-     // $image_styles = $this->entityManager->getStorage('image_styles')->loadMultiple();
       $styles = [];
       foreach ($image_styles as $key => $image_style) {
         $styles[$key] = $image_style->label();
@@ -389,7 +378,7 @@ class FilebrowserManager extends ControllerBase {
     /** @var \Drupal\Core\Database\Connection $connection */
 
     if (empty($filebrowser->nid)) {
-      drupal_set_message('No filebrowser data available in node - remove exit', 'error');
+      \Drupal::messenger()->addError($this->t('No filebrowser data available in node - remove exit'));
       exit();
     }
 
@@ -405,7 +394,7 @@ class FilebrowserManager extends ControllerBase {
     }
   }
 
-  public function validateFolderPath($element, FormStateInterface $form_state) {
+  public static function validateFolderPath($element, FormStateInterface $form_state) {
 
     $folder_path = $form_state->getValue('filebrowser')['folder_path'];
     $file_service = \Drupal::service('file_system');
@@ -415,13 +404,13 @@ class FilebrowserManager extends ControllerBase {
 
     // Scheme is valid?
     if (!$scheme || !$file_service->validScheme($scheme)) {
-      $message = $this->t('The scheme: %scheme in your uri is not valid.', ['%scheme' => $scheme]);
+      $message = t('The scheme: %scheme in your uri is not valid.', ['%scheme' => $scheme]);
       $error = true;
       $form_state->setError($element, $message);
     }
     // is directory name contains illegal characters?
     if (strpbrk($folder_path, "\\/?%*:|\"<>") === TRUE) {
-      $message = $this->t('This @name contains illegal characters.', ['name => $folder_path']);
+      $message = t('This @name contains illegal characters.', ['name => $folder_path']);
       $error = true;
       $form_state->setError($element, $message);
     }
@@ -430,11 +419,11 @@ class FilebrowserManager extends ControllerBase {
       // name is safe, create the folder if it doesn't exists.
       if (!file_exists($folder_path)) {
         if (\Drupal::service('file_system')->mkdir($folder_path, NULL, TRUE, NULL)) {
-          drupal_set_message($this->t('Folder location @uri created.', ['@uri' => $folder_path]));
+          \Drupal::messenger()->addMessage('Folder location @uri created.', ['@uri' => $folder_path]);
         }
         else {
           $error = true;
-          $message = $this->t('@url does not exist and Filebrowser can not create it.', ['@url' => $folder_path]);
+          $message = t('@url does not exist and Filebrowser can not create it.', ['@url' => $folder_path]);
           $form_state->setError($element, $message );
         }
       }
@@ -524,7 +513,7 @@ class FilebrowserManager extends ControllerBase {
         return $presentation->iconView();
       default:
         return
-          drupal_set_message($this->t('Selected display @display not available ', ['@display' => $view]), 'error');
+          \Drupal::messenger()->addError($this->t('Selected display @display not available ', ['@display' => $view]));
     }
   }
 

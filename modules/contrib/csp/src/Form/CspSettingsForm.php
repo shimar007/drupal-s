@@ -110,12 +110,19 @@ class CspSettingsForm extends ConfigFormBase {
    */
   private function getConfigurableDirectives() {
     // Exclude some directives
-    // - Reporting directives have dedicated fields elsewhere in the form.
-    // - 'referrer' is deprecated in favour of the Referrer-Policy header, and
-    //   not supported in most browsers.
+    // - Reporting directives are handled by plugins.
+    // - 'referrer' was deprecated prior to CSP Level 1 and not supported in
+    //   most browsers.
+    // - 'require-sri-for' was never publicly implemented, and dropped from the
+    //   SRI spec.
     $directives = array_diff(
       Csp::getDirectiveNames(),
-      ['report-uri', 'report-to', 'referrer']
+      [
+        'report-uri',
+        'report-to',
+        'referrer',
+        'require-sri-for',
+      ]
     );
 
     return $directives;
@@ -187,7 +194,7 @@ class CspSettingsForm extends ConfigFormBase {
       $form[$policyTypeKey]['enable'] = [
         '#type' => 'checkbox',
         '#title' => $this->t("Enable '@type'", ['@type' => $policyTypeName]),
-        '#default_value' => $config->get($policyTypeKey . '.enable'),
+        '#default_value' => $config->get($policyTypeKey . '.enable') ?: FALSE,
       ];
 
       $form[$policyTypeKey]['directives'] = [
@@ -195,11 +202,6 @@ class CspSettingsForm extends ConfigFormBase {
         '#title' => $this->t('Directives'),
         '#description_display' => 'before',
         '#tree' => TRUE,
-        '#states' => [
-          'visible' => [
-            ':input[name="' . $policyTypeKey . '[enable]"]' => ['checked' => TRUE],
-          ],
-        ],
       ];
 
       foreach ($directiveNames as $directiveName) {
@@ -214,7 +216,7 @@ class CspSettingsForm extends ConfigFormBase {
           '#type' => 'checkbox',
           '#title' => $directiveName,
         ];
-        if ($config->get($policyTypeKey . '.enable')) {
+        if ($config->get($policyTypeKey)) {
           // Csp::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST may be an empty array,
           // so is_null() must be used instead of empty().
           // Directives which cannot be empty should not be present in config.
@@ -222,9 +224,14 @@ class CspSettingsForm extends ConfigFormBase {
           $form[$policyTypeKey]['directives'][$directiveName]['enable']['#default_value'] = !is_null($config->get($policyTypeKey . '.directives.' . $directiveName));
         }
         else {
-          // Enable the directive by default if it has any automatically
-          // detected values.
-          $form[$policyTypeKey]['directives'][$directiveName]['enable']['#default_value'] = isset($autoDirectives[$directiveName]);
+          // Directives to enable by default (with 'self').
+          if (
+            in_array($directiveName, ['script-src', 'script-src-attr', 'script-src-elem', 'style-src', 'style-src-attr', 'style-src-elem', 'frame-ancestors'])
+            ||
+            isset($autoDirectives[$directiveName])
+          ) {
+            $form[$policyTypeKey]['directives'][$directiveName]['enable']['#default_value'] = TRUE;
+          }
         }
 
         $form[$policyTypeKey]['directives'][$directiveName]['options'] = [
@@ -372,26 +379,10 @@ class CspSettingsForm extends ConfigFormBase {
         '#default_value' => $config->get($policyTypeKey . '.directives.sandbox') ?: [],
       ];
 
-      $form[$policyTypeKey]['directives']['require-sri-for']['options']['keys'] = [
-        '#type' => 'checkboxes',
-        '#parents' => [$policyTypeKey, 'directives', 'require-sri-for', 'keys'],
-        '#options' => [
-          'script' => '<code>script</code>',
-          'style' => '<code>style</code>',
-        ],
-        '#default_value' => $config->get($policyTypeKey . '.directives.require-sri-for') ?: [],
-      ];
-
-
       $form[$policyTypeKey]['reporting'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Reporting'),
         '#tree' => TRUE,
-        '#states' => [
-          'visible' => [
-            ':input[name="' . $policyTypeKey . '[enable]"]' => ['checked' => TRUE],
-          ],
-        ],
       ];
       $form[$policyTypeKey]['reporting']['handler'] = [
         '#type' => 'radios',
@@ -432,6 +423,16 @@ class CspSettingsForm extends ConfigFormBase {
           '#CspReportingHandlerPlugin' => $reportingHandlerPlugin,
         ]);
       }
+
+      $form[$policyTypeKey]['clear'] = [
+        '#type' => 'submit',
+        '#value' => $this->t('Reset @policyType policy to default values', ['@policyType' => $policyTypeName]),
+        '#cspPolicyType' => $policyTypeKey,
+        '#button_type' => 'danger',
+        '#submit' => [
+          '::submitClearPolicy'
+        ],
+      ];
     }
 
     // Skip this check when building the form before validation/submission.
@@ -531,7 +532,7 @@ class CspSettingsForm extends ConfigFormBase {
   private static function isValidHost($url) {
     return (bool) preg_match("
         /^                                                      # Start at the beginning of the text
-        (?:https?:\/\/)?                                        # Look for http or https schemes (optional)
+        (?:(?:https?|wss?):\/\/)?                               # Look for http or ws schemes (optional)
         (?:
           (?:                                                   # A domain name or a IPv4 address
             (?:\*\.)?                                           # Wildcard prefix (optional)
@@ -548,6 +549,20 @@ class CspSettingsForm extends ConfigFormBase {
   }
 
   /**
+   * Submit handler for clear policy buttons.
+   *
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   */
+  public function submitClearPolicy(array &$form, FormStateInterface $form_state) {
+    $submitElement = $form_state->getTriggeringElement();
+
+    $this->config('csp.settings')
+      ->clear($submitElement['#cspPolicyType'])
+      ->save();
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
@@ -560,9 +575,6 @@ class CspSettingsForm extends ConfigFormBase {
       $policyFormData = $form_state->getValue($policyTypeKey);
 
       $config->set($policyTypeKey . '.enable', !empty($policyFormData['enable']));
-      if (empty($policyFormData['enable'])) {
-        continue;
-      }
 
       foreach ($directiveNames as $directiveName) {
         if (empty($policyFormData['directives'][$directiveName])) {
@@ -610,7 +622,7 @@ class CspSettingsForm extends ConfigFormBase {
             if (!empty($directiveFormData['sources'])) {
               $directiveOptions['sources'] = array_filter(preg_split('/,?\s+/', $directiveFormData['sources']));
             }
-            if ($directiveName != 'frame-ancestors') {
+            if ($directiveSchema == Csp::DIRECTIVE_SCHEMA_SOURCE_LIST) {
               $directiveFormData['flags'] = array_filter($directiveFormData['flags']);
               if (!empty($directiveFormData['flags'])) {
                 $directiveOptions['flags'] = array_keys($directiveFormData['flags']);

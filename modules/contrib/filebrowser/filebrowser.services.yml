@@ -44,10 +44,7 @@ services:
     arguments: ['@filebrowser.storage', '@filebrowser.common']
     tags:
       - { name: breadcrumb_builder, priority: 1005 }
-  stream_wrapper.filebrowser:
-    class: Drupal\filebrowser\FilebrowserStream\FilebrowserStream
-    tags:
-      - { name: stream_wrapper, scheme: filebrowser }
+
   filebrowser.uninstall.validator:
     class: Drupal\filebrowser\FilebrowserUninstallValidator
     tags:

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn;
 
 use Drupal\cdn\StackMiddleware\DuplicateContentPreventionMiddleware;
@@ -32,8 +34,15 @@ class CdnServiceProvider implements ServiceProviderInterface {
   /**
    * @return bool
    */
-  protected function cdnStatusIsEnabled() {
-    return BootstrapConfigStorageFactory::get()->read('cdn.settings')['status'] === TRUE;
+  protected function cdnStatusIsEnabled() : bool {
+    $cdn_settings = BootstrapConfigStorageFactory::get()->read('cdn.settings');
+    // In Kernel tests it's possible this code is called before cdn.settings
+    // exists. In such cases behave as though the CDN status is "disabled". This
+    // is also the default value in cdn.settings.yml.
+    if ($cdn_settings === FALSE) {
+      return FALSE;
+    }
+    return $cdn_settings['status'] === TRUE;
   }
 
 }

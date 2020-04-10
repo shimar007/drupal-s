@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -39,7 +41,7 @@ class CdnStreamWrapperConstraintValidator extends ConstraintValidator {
    *
    * @return bool
    */
-  protected static function isValidCdnStreamWrapper($stream_wrapper) {
+  protected static function isValidCdnStreamWrapper(string $stream_wrapper) : bool {
     /** @var \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager */
     $stream_wrapper_manager = \Drupal::service('stream_wrapper_manager');
     $forbidden_wrappers = ['private'];

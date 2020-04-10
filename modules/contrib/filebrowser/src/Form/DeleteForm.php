@@ -162,37 +162,39 @@ class DeleteForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-        if ($this->error) {
-             // Create an AjaxResponse.
-            $response = new AjaxResponse();
-            // Remove old events
-            $response->addCommand(new RemoveCommand('#filebrowser-form-action-error'));
-            $response->addCommand(new RemoveCommand('.form-in-slide-down'));
-            // Insert event details after event.
-            $response->addCommand(new AfterCommand('#form-action-actions-wrapper', $form));
-            // $response->addCommand(new AfterCommand('#form-action-actions-wrapper', $html));
-            $response->addCommand(new AlertCommand($this->t('You must confirm deletion of selected folders.')));
-            $form_state->setResponse($response);
-          } else {
-            foreach ($this->itemsToDelete as $item) {
-                $data = unserialize($item['file_data']);
-                $success = file_unmanaged_delete_recursive($data->uri);
-                if ($success) {
-                    // invalidate the cache for this node
-                    Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
-                  }
-        else {
-                    drupal_set_message($this->t('Unable to delete @file', ['@file' => $data->uri]), 'warning');
-                  }
+    if ($this->error) {
+       // Create an AjaxResponse.
+      $response = new AjaxResponse();
+      // Remove old events
+      $response->addCommand(new RemoveCommand('#filebrowser-form-action-error'));
+      $response->addCommand(new RemoveCommand('.form-in-slide-down'));
+      // Insert event details after event.
+      $response->addCommand(new AfterCommand('#form-action-actions-wrapper', $form));
+      // $response->addCommand(new AfterCommand('#form-action-actions-wrapper', $html));
+      $response->addCommand(new AlertCommand($this->t('You must confirm deletion of selected folders.')));
+      $form_state->setResponse($response);
       }
-          $route = $this->common->redirectRoute($this->queryFid, $this->node->id());
-                if($this->ajax) {
-                    $response_url = Url::fromRoute($route['name'], $route['node'], $route['query']);
-                    $response = new AjaxResponse();
-                    $response->addCommand(new RedirectCommand($response_url->toString()));
-                    $form_state->setResponse($response);
-                  } else {
-                    $form_state->setRedirect($route['name'], $route['node'], $route['query']);
+    else {
+      foreach ($this->itemsToDelete as $item) {
+        $data = unserialize($item['file_data']);
+        $success = file_unmanaged_delete_recursive($data->uri);
+        if ($success) {
+          // invalidate the cache for this node
+          Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
+        }
+        else {
+          \Drupal::messenger()->addWarning($this->t('Unable to delete @file', ['@file' => $data->uri]));
+        }
+      }
+      $route = $this->common->redirectRoute($this->queryFid, $this->node->id());
+      if($this->ajax) {
+        $response_url = Url::fromRoute($route['name'], $route['node'], $route['query']);
+        $response = new AjaxResponse();
+        $response->addCommand(new RedirectCommand($response_url->toString()));
+        $form_state->setResponse($response);
+      }
+      else {
+        $form_state->setRedirect($route['name'], $route['node'], $route['query']);
       }
     }
   }

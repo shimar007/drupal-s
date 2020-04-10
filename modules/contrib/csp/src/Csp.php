@@ -72,12 +72,14 @@ class Csp {
     // Other directives.
     // @see https://www.w3.org/TR/CSP/#directives-elsewhere
     'block-all-mixed-content' => self::DIRECTIVE_SCHEMA_BOOLEAN,
-    'require-sri-for' => self::DIRECTIVE_SCHEMA_TOKEN_LIST,
     'upgrade-insecure-requests' => self::DIRECTIVE_SCHEMA_BOOLEAN,
     // Deprecated directives.
     // Referrer isn't in the Level 1 spec, but was accepted until Chrome 56 and
     // Firefox 62.
     'referrer' => self::DIRECTIVE_SCHEMA_TOKEN,
+    // 'require-sri-for' was removed from the SRI spec.
+    // @see https://www.drupal.org/project/csp/issues/3106728
+    'require-sri-for' => self::DIRECTIVE_SCHEMA_TOKEN_LIST,
   ];
 
   /**
@@ -412,7 +414,7 @@ class Csp {
         // Keep any values that are a quoted string, or non-network scheme.
         // e.g. '* https: data: example.com' -> '* data:'
         // https://www.w3.org/TR/CSP/#match-url-to-source-expression
-        return strpos($source, "'") === 0 || preg_match('<^(?!ftp|https?:)([a-z]+:)>', $source);
+        return strpos($source, "'") === 0 || preg_match('<^(?!(?:https?|wss?|ftp):)([a-z]+:)>', $source);
       });
 
       array_unshift($sources, Csp::POLICY_ANY);
@@ -421,11 +423,14 @@ class Csp {
     // Remove protocol-prefixed hosts if protocol is allowed.
     // e.g. 'http: data: example.com https://example.com' -> 'http: data: example.com'
     $protocols = array_filter($sources, function ($source) {
-      return preg_match('<^(https?|ftp):$>', $source);
+      return preg_match('<^(https?|wss?|ftp):$>', $source);
     });
     if (!empty($protocols)) {
       if (in_array('http:', $protocols)) {
         $protocols[] = 'https:';
+      }
+      if (in_array('ws:', $protocols)) {
+        $protocols[] = 'wss:';
       }
       $sources = array_filter($sources, function ($source) use ($protocols) {
         return !preg_match('<^(' . implode('|', $protocols) . ')//>', $source);

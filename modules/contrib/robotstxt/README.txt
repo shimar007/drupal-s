@@ -12,8 +12,8 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 ------------
 
-Maintainer: hass <http://drupal.org/user/85918>
-Project Page: http://drupal.org/project/robotstxt
+Maintainer: hass <https://drupal.org/user/85918>
+Project Page: https://drupal.org/project/robotstxt
 
 Use this module when you are running multiple Drupal sites from a single code
 base (multisite) and you need a different robots.txt file for each one. This
@@ -27,7 +27,7 @@ implementing hook_robotstxt(). See robotstxt.api.php for more documentation.
 INSTALLATION
 ------------
 
-See http://drupal.org/getting-started/install-contrib for instructions on
+See https://drupal.org/getting-started/install-contrib for instructions on
 how to install or update Drupal modules.
 
 Once you have the RobotsTxt modules installed, make sure to delete or rename
@@ -64,15 +64,30 @@ A: The module allows adding a default.robots.txt to the defaults folder.
    3. Run the module installation.
 
 Q: Is there a way to automatically delete robots.txt provided by Drupal core?
-A: Yes, if you are using composer to build the site, you can add the following
-   section into the composer.json on your root folder:
+A: Yes, if you are using composer to build the site, you can add a command
+   into your composer.json that will make sure the file gets deleted. Depending
+   on your project's structure, you will need to add one of the two following
+   sections into the composer.json of your root folder:
+
+   If the drupal site root folder is the same as your repository root folder:
 
    "scripts": {
        "post-install-cmd": [
-           "rm robots.txt"
+           "test -e robots.txt && rm robots.txt || echo robots already deleted"
        ],
        "post-update-cmd": [
-           "rm robots.txt"
+           "test -e robots.txt && rm robots.txt || echo robots already deleted"
+       ]
+   }
+
+   or, if the drupal site root folder is web/ :
+
+   "scripts": {
+       "post-install-cmd": [
+           "test -e web/robots.txt && rm web/robots.txt || echo robots already deleted"
+       ],
+       "post-update-cmd": [
+           "test -e web/robots.txt && rm web/robots.txt || echo robots already deleted"
        ]
    }
 
@@ -87,11 +102,11 @@ KNOWN ISSUES
 There are no known issues at this time.
 
 To report new bug reports, feature requests, and support requests, visit
-http://drupal.org/project/issues/robotstxt.
+https://drupal.org/project/issues/robotstxt.
 
 
 HOW CAN YOU CONTRIBUTE?
 ---------------------
 
 - Report any bugs, feature requests, etc. in the issue tracker.
-  http://drupal.org/project/issues/robotstxt
+  https://drupal.org/project/issues/robotstxt

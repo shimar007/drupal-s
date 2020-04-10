@@ -89,12 +89,7 @@ class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
       $view_mode = 'default';
     }
     $render_output = $view_builder->view($entity, $view_mode);
-    $cached_context = [
-      'languages',
-      'theme',
-      'user',
-    ];
-    $render_output['#cache']['contexts'] = array_merge($cached_context, $render_output['#cache']['contexts']);
+    unset($render_output['#cache']);
     $render_output['#show_item_link'] = $show_item_link;
 
     if (!is_null($menu_level)) {

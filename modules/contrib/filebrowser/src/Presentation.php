@@ -2,13 +2,9 @@
 
 namespace Drupal\filebrowser;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\filebrowser\Entity\FilebrowserMetadataEntity;
-use Drupal\filebrowser\Entity\MetadataEntity;
-use Drupal\filebrowser\Events\MetadataEvent;
 use Drupal\filebrowser\Events\MetadataInfo;
-use Drupal\Core\Url;
 use Drupal\filebrowser\File\DisplayFile;
 use Drupal\filebrowser\Grid\Grid;
 use Drupal\filebrowser\Services\Common;
@@ -223,7 +219,6 @@ class Presentation extends ControllerBase{
       // Check if we can create an image
       if (empty($data->fileData->uri) || (!\Drupal::service('image.factory')->get($data->fileData->uri)->isValid())) {
         // create thumbnail from icon file
-        drupal_set_message('can not create img for ' . $data->fileData->uri);
         $thumbnail = $this->common->iconGenerate($data->fileData->type, $data->fileData->mimetype, $height, $width);
       }
       else {

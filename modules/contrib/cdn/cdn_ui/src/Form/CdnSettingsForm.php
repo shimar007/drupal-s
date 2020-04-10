@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn_ui\Form;
 
 use Drupal\Component\Utility\UrlHelper;
@@ -59,7 +61,7 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  protected static function getMainConfigName() {
+  protected static function getMainConfigName() : string {
     return 'cdn.settings';
   }
 
@@ -99,7 +101,7 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
     ];
 
     $mapping_type_ui_string = $this->t('Use @mapping-type mapping');
-    list($mapping_type_ui_string_prefix, $mapping_type_ui_string_suffix) = explode('@mapping-type', $mapping_type_ui_string, 2);
+    list($mapping_type_ui_string_prefix, $mapping_type_ui_string_suffix) = explode('@mapping-type', (string) $mapping_type_ui_string, 2);
     $form['mapping']['type'] = [
       '#field_prefix' => $mapping_type_ui_string_prefix,
       '#field_suffix' => $mapping_type_ui_string_suffix,
@@ -124,8 +126,8 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
       ],
       '#attributes' => ['class' => ['container-inline']],
     ];
-    $simple_mapping_ui_string = $this->t('Serve @files-with-some-extension from @domain');
-    list($simple_mapping_ui_string_part_one, $simple_mapping_ui_string_part_two) = preg_split('/\@[a-z\-]+/', $simple_mapping_ui_string, -1, PREG_SPLIT_NO_EMPTY);
+    $simple_mapping_ui_string = $this->t('Serve @files-with-some-extension from @domain using @type-of-urls');
+    list($simple_mapping_ui_string_part_one, $simple_mapping_ui_string_part_two, $simple_mapping_ui_string_part_three) = preg_split('/\@[a-z\-]+/', (string) $simple_mapping_ui_string, -1, PREG_SPLIT_NO_EMPTY);
     $form['mapping']['simple']['extensions_condition_toggle'] = [
       '#type' => 'select',
       '#title' => $this->t('Limit by file extension'),
@@ -170,6 +172,18 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
         ],
       ],
     ];
+    $form['mapping']['simple']['scheme'] = [
+      '#field_prefix' => $simple_mapping_ui_string_part_three,
+      '#type' => 'select',
+      '#title' => $this->t('Type of URLs'),
+      '#title_display' => 'FALSE',
+      '#options' => [
+        '//' => $this->t('scheme-relative URLs'),
+        'https://' => $this->t('HTTPS URLs'),
+        'http://' => $this->t('HTTP URLs'),
+      ],
+      '#default_value' => $config->get('scheme'),
+    ];
 
     $form['farfuture'] = [
       '#type' => 'details',
@@ -200,11 +214,10 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
       '#type' => 'checkboxes',
       '#options' => array_combine(array_keys($checkboxes), array_keys($checkboxes)),
       '#default_value' => $config->get('stream_wrappers'),
-      '#description' => $this->t('Stream wrappers whose files to serve from CDN. <code>public://</code> is always enabled, any other stream wrapper generating local file URLs is eligible.'),
+      '#description' => $this->t('Stream wrappers whose files to serve from CDN. Any stream wrapper generating local file URLs is eligible.'),
     ];
     $form['wrappers']['stream_wrappers'] += $checkboxes;
-    // Special cases: public:// and private://.
-    $form['wrappers']['stream_wrappers']['public']['#disabled'] = TRUE;
+    // Special case: private://.
     if (!empty($form['wrappers']['stream_wrappers']['private'])) {
       $form['wrappers']['stream_wrappers']['private']['#disabled'] = TRUE;
       $form['wrappers']['stream_wrappers']['private']['#title'] = '<del>' . $form['wrappers']['stream_wrappers']['private']['#title'] . '</del>';
@@ -224,7 +237,7 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
    *
    * @return bool
    */
-  protected function streamWrapperGeneratesExternalUrls($stream_wrapper_scheme, StreamWrapperInterface $stream_wrapper) {
+  protected function streamWrapperGeneratesExternalUrls($stream_wrapper_scheme, StreamWrapperInterface $stream_wrapper) : bool {
     // Generate URL to imaginary file 'cdn.test'. Most stream wrappers don't
     // check file existence, just concatenate strings.
     $stream_wrapper->setUri($stream_wrapper_scheme . '://cdn.test');
@@ -248,7 +261,7 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
    *
    * @return array
    */
-  protected function buildStreamWrapperCheckboxes(array $stream_wrapper_schemes) {
+  protected function buildStreamWrapperCheckboxes(array $stream_wrapper_schemes) : array {
     $checkboxes = [];
     foreach ($stream_wrapper_schemes as $stream_wrapper_scheme) {
       $wrapper = $this->streamWrapperManager->getViaScheme($stream_wrapper_scheme);
@@ -271,8 +284,6 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
 
     // Vertical tab: 'Stream wrappers'.
     $stream_wrappers = array_values(array_filter($form_state->getValue(['wrappers', 'stream_wrappers'])));
-    // Ensure 'public://' is always enabled, and ensure it's always first.
-    $stream_wrappers = array_merge(['public'], $stream_wrappers);
     $config->set('stream_wrappers', $stream_wrappers);
 
     // Vertical tab: 'Mapping'.
@@ -302,6 +313,7 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
         }
         $config->set('mapping.conditions', $conditions);
       }
+      $config->set('scheme', $simple_mapping['scheme']);
     }
 
     // Vertical tab: 'Forever cacheable files'.
@@ -313,10 +325,13 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  protected static function mapViolationPropertyPathsToFormNames($property_path) {
+  protected static function mapViolationPropertyPathsToFormNames(string $property_path) : string {
     switch ($property_path) {
       case 'mapping.domain':
         return 'mapping][simple][domain';
+
+      case 'scheme':
+        return 'mapping][simple][scheme';
 
       default:
         return parent::mapViolationPropertyPathsToFormNames($property_path);

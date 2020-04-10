@@ -6,7 +6,6 @@ use Drupal\cdn\CdnSettings;
 use Drupal\cdn\File\FileUrlGenerator;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\File\FileSystem;
 use Drupal\Core\PrivateKey;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\LocalStream;
@@ -15,7 +14,6 @@ use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Tests\UnitTestCase;
 use Prophecy\Argument;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -25,6 +23,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class FileUrlGeneratorTest extends UnitTestCase {
 
+  /**
+   * The private key to use in tests.
+   *
+   * @var string
+   */
   protected static $privateKey = 'super secret key that really is just some string';
 
   /**
@@ -43,7 +46,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
    * @covers ::generate
    * @dataProvider urlProvider
    */
-  public function testGenerate($base_path, $uri, $expected_result) {
+  public function testGenerate($scheme, $base_path, $uri, $expected_result) {
     $gen = $this->createFileUrlGenerator($base_path, [
       'status' => TRUE,
       'mapping' => [
@@ -69,6 +72,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
           ],
         ],
       ],
+      'scheme' => $scheme,
       'farfuture' => [
         'status' => FALSE,
       ],
@@ -80,7 +84,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
   public function urlProvider() {
     $cases_root = [
       'absolute URL' => ['http://example.com/llama.jpg', FALSE],
-      'protocol-relative URL' => ['//example.com/llama.jpg', FALSE],
+      'scheme-relative URL' => ['//example.com/llama.jpg', FALSE],
       'shipped file (fallback)' => ['core/misc/something.else', '//cdn.example.com/core/misc/something.else'],
       'shipped file (simple)' => ['core/misc/simple.css', '//static.example.com/core/misc/simple.css'],
       'shipped file (auto-balanced)' => ['core/misc/auto-balanced.png', '//img2.example.com/core/misc/auto-balanced.png'],
@@ -92,11 +96,12 @@ class FileUrlGeneratorTest extends UnitTestCase {
       'managed public public file (auto-balanced)' => ['public://auto-balanced.png', '//img2.example.com/sites/default/files/auto-balanced.png'],
       'managed private file (fallback)' => ['private://something.else', FALSE],
       'unicode' => ['public://újjáépítésérol — 100% in B&W.jpg', '//img1.example.com/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg'],
+      'reserved characters in RFC3986' => ['public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something', '//cdn.example.com/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something'],
     ];
 
     $cases_subdir = [
       'absolute URL' => ['http://example.com/llama.jpg', FALSE],
-      'protocol-relative URL' => ['//example.com/llama.jpg', FALSE],
+      'scheme-relative URL' => ['//example.com/llama.jpg', FALSE],
       'shipped file (fallback)' => ['core/misc/feed.svg', '//cdn.example.com/subdir/core/misc/feed.svg'],
       'shipped file (simple)' => ['core/misc/simple.css', '//static.example.com/subdir/core/misc/simple.css'],
       'shipped file (auto-balanced)' => ['core/misc/auto-balanced.png', '//img2.example.com/subdir/core/misc/auto-balanced.png'],
@@ -108,6 +113,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
       'managed public file (auto-balanced)' => ['public://auto-balanced.png', '//img2.example.com/subdir/sites/default/files/auto-balanced.png'],
       'managed private file (fallback)' => ['private://something.else', FALSE],
       'unicode' => ['public://újjáépítésérol — 100% in B&W.jpg', '//img1.example.com/subdir/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg'],
+      'reserved characters in RFC3986' => ['public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something', '//cdn.example.com/subdir/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something'],
     ];
 
     $cases = [];
@@ -118,7 +124,22 @@ class FileUrlGeneratorTest extends UnitTestCase {
     foreach ($cases_subdir as $description => $case) {
       $cases['subdir, ' . $description] = array_merge(['/subdir'], $case);
     }
-    return $cases;
+
+    // Generate `https://`, `http://` and `//` permutations for each case.
+    $cases_with_scheme = [];
+    foreach ($cases as $description => $case) {
+      foreach (['https://', 'http://', '//'] as $scheme) {
+        list($base_path, $uri, $expected_result) = $case;
+        $cases_with_scheme['scheme=' . $scheme . ', ' . $description] = [
+          $scheme,
+          $base_path,
+          $uri,
+          !is_string($expected_result) ? $expected_result : $scheme . substr($expected_result, 2),
+        ];
+      }
+    }
+
+    return $cases_with_scheme;
   }
 
   /**
@@ -132,6 +153,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
         'domain' => 'cdn.example.com',
         'conditions' => [],
       ],
+      'scheme' => '//',
       'farfuture' => [
         'status' => TRUE,
       ],
@@ -162,13 +184,13 @@ class FileUrlGeneratorTest extends UnitTestCase {
     // injecting a leading into the path that we compare against, to match
     // the method.
     $llama_jpg_security_token = Crypt::hmacBase64($llama_jpg_mtime . 'file' . UrlHelper::encodePath('/' . $llama_jpg_filepath), static::$privateKey . Settings::getHashSalt());
-    $this->assertSame('//cdn.example.com/cdn/ff/' . $llama_jpg_security_token . '/' . $llama_jpg_mtime . '/file/' . $llama_jpg_filepath, $gen->generate('file://' . $llama_jpg_filepath));
+    $this->assertSame('//cdn.example.com/cdn/ff/' . $llama_jpg_security_token . '/' . $llama_jpg_mtime . '/file/' . UrlHelper::encodePath($llama_jpg_filepath), $gen->generate('file://' . $llama_jpg_filepath));
 
     // In subdir: 1) non-existing file, 2) shipped file, 3) managed file.
     $gen = $this->createFileUrlGenerator('/subdir', $config);
     $this->assertSame('//cdn.example.com/subdir/core/misc/does-not-exist.js', $gen->generate('core/misc/does-not-exist.js'));
     $this->assertSame('//cdn.example.com/subdir/cdn/ff/' . $drupal_js_security_token . '/' . $drupal_js_mtime . '/:relative:/core/misc/drupal.js', $gen->generate('core/misc/drupal.js'));
-    $this->assertSame('//cdn.example.com/subdir/cdn/ff/' . $llama_jpg_security_token . '/' . $llama_jpg_mtime . '/file/' . $llama_jpg_filepath, $gen->generate('file://' . $llama_jpg_filepath));
+    $this->assertSame('//cdn.example.com/subdir/cdn/ff/' . $llama_jpg_security_token . '/' . $llama_jpg_mtime . '/file/' . UrlHelper::encodePath($llama_jpg_filepath), $gen->generate('file://' . $llama_jpg_filepath));
 
     unlink($llama_jpg_filepath);
   }
@@ -236,11 +258,6 @@ class FileUrlGeneratorTest extends UnitTestCase {
 
     return new FileUrlGenerator(
       $this->root,
-      new FileSystem(
-        $this->prophesize(StreamWrapperManagerInterface::class)->reveal(),
-        Settings::getInstance(),
-        $this->prophesize(LoggerInterface::class)->reveal()
-      ),
       $stream_wrapper_manager->reveal(),
       $request_stack->reveal(),
       $private_key->reveal(),

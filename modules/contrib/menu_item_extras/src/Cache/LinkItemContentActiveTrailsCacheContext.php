@@ -34,11 +34,15 @@ class LinkItemContentActiveTrailsCacheContext implements CalculatedCacheContextI
       throw new \LogicException('No menu name provided for menu.active_trails cache context.');
     }
 
-    $active_trail_link = $this->container->get('menu.active_trail')
-      ->getActiveLink($menu_name);
+    $active_trail_manager = $this->container->get('menu.active_trail');
+    $active_trail_link = $active_trail_manager->getActiveLink($menu_name);
+    $active_trail_ids = array_values($active_trail_manager->getActiveTrailIds($menu_name));
 
     if ($active_trail_link && $active_trail_link->getDerivativeId() == $menu_link_id) {
       return 'link_item_content.active.' . $menu_link_id;
+    }
+    elseif (in_array('menu_link_content:' . $menu_link_id, $active_trail_ids)) {
+      return 'link_item_content.active_trail';
     }
     else {
       return 'link_item_content.inactive';

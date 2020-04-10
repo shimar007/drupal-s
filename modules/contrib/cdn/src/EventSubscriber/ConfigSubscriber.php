@@ -7,6 +7,7 @@ use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
+use Drupal\Core\Config\ConfigInstallerInterface;
 use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\DrupalKernelInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -38,6 +39,13 @@ class ConfigSubscriber implements EventSubscriberInterface {
   protected $drupalKernel;
 
   /**
+   * The config installer.
+   *
+   * @var \Drupal\Core\Config\ConfigInstallerInterface
+   */
+  protected $configInstaller;
+
+  /**
    * Constructs a ConfigSubscriber object.
    *
    * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cache_tags_invalidator
@@ -46,11 +54,14 @@ class ConfigSubscriber implements EventSubscriberInterface {
    *   The typed config manager.
    * @param \Drupal\Core\DrupalKernelInterface $drupal_kernel
    *   The Drupal kernel.
+   * @param \Drupal\Core\Config\ConfigInstallerInterface $config_installer
+   *   The config installer.
    */
-  public function __construct(CacheTagsInvalidatorInterface $cache_tags_invalidator, TypedConfigManagerInterface $typed_config_manager, DrupalKernelInterface $drupal_kernel) {
+  public function __construct(CacheTagsInvalidatorInterface $cache_tags_invalidator, TypedConfigManagerInterface $typed_config_manager, DrupalKernelInterface $drupal_kernel, ConfigInstallerInterface $config_installer) {
     $this->cacheTagsInvalidator = $cache_tags_invalidator;
     $this->typedConfigManager = $typed_config_manager;
     $this->drupalKernel = $drupal_kernel;
+    $this->configInstaller = $config_installer;
   }
 
   /**
@@ -60,6 +71,15 @@ class ConfigSubscriber implements EventSubscriberInterface {
    *   The Event to process.
    */
   public function onSave(ConfigCrudEvent $event) {
+    // Stream wrappers may be provided by contrib modules, e.g. Flysystem.
+    // In the case of modules, there is no API to determine and dynamically add
+    // the module dependency. If Drupal is installed from configuration, this
+    // could result in CDN rejecting the saved config which references a stream
+    // wrapper from a not-yet-installed module.
+    if ($this->configInstaller->isSyncing()) {
+      return;
+    }
+
     if ($event->getConfig()->getName() === 'cdn.settings') {
       $this->cacheTagsInvalidator->invalidateTags([
         // Rendered output that is cached. (HTML containing URLs.)

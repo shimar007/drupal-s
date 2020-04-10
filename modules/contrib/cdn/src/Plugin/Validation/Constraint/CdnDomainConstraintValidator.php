@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -39,7 +41,7 @@ class CdnDomainConstraintValidator extends ConstraintValidator {
    *
    * @return bool
    */
-  protected static function isValidCdnDomain($domain) {
+  protected static function isValidCdnDomain(string $domain) : bool {
     // Add a scheme so that we have a parseable URL.
     $url = 'https://' . $domain;
     $components = parse_url($url);

@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn\File;
 
 use Drupal\cdn\CdnSettings;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\PrivateKey;
 use Drupal\Core\Site\Settings;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -26,13 +28,6 @@ class FileUrlGenerator {
    * @var string
    */
   protected $root;
-
-  /**
-   * The file system service.
-   *
-   * @var \Drupal\Core\File\FileSystemInterface
-   */
-  protected $fileSystem;
 
   /**
    * The stream wrapper manager.
@@ -67,8 +62,6 @@ class FileUrlGenerator {
    *
    * @param string $root
    *   The app root.
-   * @param \Drupal\Core\File\FileSystemInterface $file_system
-   *   The file system service.
    * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
    *   The stream wrapper manager.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
@@ -78,9 +71,8 @@ class FileUrlGenerator {
    * @param \Drupal\cdn\CdnSettings $cdn_settings
    *   The CDN settings service.
    */
-  public function __construct($root, FileSystemInterface $file_system, StreamWrapperManagerInterface $stream_wrapper_manager, RequestStack $request_stack, PrivateKey $private_key, CdnSettings $cdn_settings) {
+  public function __construct($root, StreamWrapperManagerInterface $stream_wrapper_manager, RequestStack $request_stack, PrivateKey $private_key, CdnSettings $cdn_settings) {
     $this->root = $root;
-    $this->fileSystem = $file_system;
     $this->streamWrapperManager = $stream_wrapper_manager;
     $this->requestStack = $request_stack;
     $this->privateKey = $private_key;
@@ -104,10 +96,10 @@ class FileUrlGenerator {
    *   file.
    *
    * @return string|false
-   *   A string containing the protocol-relative CDN file URI, or FALSE if this
+   *   A string containing the scheme-relative CDN file URI, or FALSE if this
    *   file URI should not be served from a CDN.
    */
-  public function generate($uri) {
+  public function generate(string $uri) {
     if (!$this->settings->isEnabled()) {
       return FALSE;
     }
@@ -121,7 +113,7 @@ class FileUrlGenerator {
       return FALSE;
     }
 
-    if (!$scheme = $this->fileSystem->uriScheme($uri)) {
+    if (!$scheme = StreamWrapperManager::getScheme($uri)) {
       $scheme = self::RELATIVE;
       $relative_url = '/' . $uri;
       $relative_file_path = rawurldecode($relative_url);
@@ -145,10 +137,10 @@ class FileUrlGenerator {
       // file they want by manipulating the URL (they could otherwise request
       // settings.php for example). See https://www.drupal.org/node/1441502.
       $calculated_token = Crypt::hmacBase64($mtime . $scheme . UrlHelper::encodePath($relative_file_path), $this->privateKey->get() . Settings::getHashSalt());
-      return '//' . $cdn_domain . $this->getBasePath() . '/cdn/ff/' . $calculated_token . '/' . $mtime . '/' . $scheme . $relative_file_path;
+      return $this->settings->getScheme() . $cdn_domain . $this->getBasePath() . '/cdn/ff/' . $calculated_token . '/' . $mtime . '/' . $scheme . UrlHelper::encodePath($relative_file_path);
     }
 
-    return '//' . $cdn_domain . $this->getBasePath() . $relative_url;
+    return $this->settings->getScheme() . $cdn_domain . $this->getBasePath() . $relative_url;
   }
 
   /**
@@ -162,7 +154,7 @@ class FileUrlGenerator {
    *   Returns FALSE if the URI has an extension is not configured to be served
    *   from a CDN. Otherwise, returns a CDN domain.
    */
-  protected function getCdnDomain($uri) {
+  protected function getCdnDomain(string $uri) {
     // Extension-specific mapping.
     $file_extension = mb_strtolower(pathinfo($uri, PATHINFO_EXTENSION));
     $lookup_table = $this->settings->getLookupTable();
@@ -206,8 +198,8 @@ class FileUrlGenerator {
    *   Returns FALSE if the URI is not for a shipped file or in an eligible
    *   stream. TRUE otherwise.
    */
-  protected function canServe($uri) {
-    $scheme = $this->fileSystem->uriScheme($uri);
+  protected function canServe(string $uri) : bool {
+    $scheme = StreamWrapperManager::getScheme($uri);
 
     // Allow additional stream wrappers to be served via CDN.
     $allowed_stream_wrappers = $this->settings->getStreamWrappers();
@@ -216,7 +208,7 @@ class FileUrlGenerator {
     if ($scheme && !in_array($scheme, $allowed_stream_wrappers, TRUE)) {
       return FALSE;
     }
-    // If the URI is protocol-relative, return early.
+    // If the URI is scheme-relative, return early.
     elseif (mb_substr($uri, 0, 2) === '//') {
       return FALSE;
     }
@@ -226,7 +218,7 @@ class FileUrlGenerator {
   /**
    * @see \Symfony\Component\HttpFoundation\Request::getBasePath()
    */
-  protected function getBasePath() {
+  protected function getBasePath() : string {
     return $this->requestStack->getCurrentRequest()->getBasePath();
   }
 

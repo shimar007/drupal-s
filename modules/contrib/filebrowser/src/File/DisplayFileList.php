@@ -157,13 +157,13 @@ class DisplayFileList extends ControllerBase {
     $this->isSubDir = $this->relativePath != '/';
     // If this is a sub dir, check if we may access it, else redirect to root_dir.
     if ($this->isSubDir && !$this->common->canExploreSubFolders($this->node)) {
-      drupal_set_message($this->t('You\'re not allowed to browse sub folders.'), 'error');
+      \Drupal::messenger()->addError($this->t('You\'re not allowed to browse sub folders.'));
       return false;
     }
 
     // full path valid?
     if ($this->fsRoot === false) {
-      drupal_set_message($this->t('Configured folder is not readable or is not a directory.'), 'error');
+      \Drupal::messenger()->addError($this->t('Configured folder is not readable or is not a directory.'));
       return false;
     }
 
@@ -266,7 +266,7 @@ class DisplayFileList extends ControllerBase {
       $db_content['/']['display_name'] = '.';
 
       // changes to the File System Array
-      $result_file = new DisplayFile();
+      $result_file = new DisplayFile($this->node->id());
       $result_list['.'] = $result_file->createUpDir($this->relativePath);
     }
     //debug($db_content, 'END DB CONTENT');
@@ -377,7 +377,7 @@ class DisplayFileList extends ControllerBase {
       }
     }
     else {
-      drupal_set_message($this->t('No content in method LoadRecordFromPath', 'error'));
+      \Drupal::messenger()->addError($this->t('No content in method LoadRecordFromPath'));
     }
     $array['exists'] = true;
     $array['display_name'] = '..';

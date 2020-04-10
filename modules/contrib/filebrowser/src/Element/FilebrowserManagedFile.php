@@ -2,6 +2,8 @@
 
 namespace Drupal\filebrowser\Element;
 
+use Drupal\Core\File\FileSystem;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\file\Element\ManagedFile;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\NestedArray;
@@ -35,7 +37,7 @@ class FilebrowserManagedFile extends ManagedFile {
     $file_upload = $all_files[$upload_name];
 
     $destination = isset($element['#upload_location']) ? $element['#upload_location'] : NULL;
-    if (isset($destination) && !file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
+    if (isset($destination) && !\Drupal::service('file_system')->prepareDirectory($destination, FileSystemInterface::CREATE_DIRECTORY)) {
       \Drupal::logger('file')->notice('The upload directory %directory for the file field %name could not be created or is not accessible. A newly uploaded file could not be saved in this directory as a consequence, and the upload was canceled.', array('%directory' => $destination, '%name' => $element['#field_name']));
       $form_state->setError($element, t('The file could not be uploaded.'));
       return FALSE;
@@ -58,7 +60,7 @@ class FilebrowserManagedFile extends ManagedFile {
         $nodeValues = isset($node->filebrowser) ? $node->filebrowser : null;
         $allowOverwrite = isset($nodeValues->allowOverwrite) ? $nodeValues->allowOverwrite : $config['uploads']['allow_overwrite'];
         if($allowOverwrite) {
-          $files = file_save_upload($upload_name, $element['#upload_validators'], $destination, null, FILE_EXISTS_REPLACE);
+          $files = file_save_upload($upload_name, $element['#upload_validators'], $destination, null, FileSystem::EXISTS_REPLACE);
         }
         else {
           $files = file_save_upload($upload_name, $element['#upload_validators'], $destination);

@@ -19,4 +19,9 @@
         <exclude-pattern>*Controller.php</exclude-pattern>
         <exclude-pattern>*Subscriber.php</exclude-pattern>
     </rule>
+
+    <!-- Don't require boilerplate variable docs for particular kinds of classes. -->
+    <rule ref="Drupal.Commenting.VariableComment.Missing">
+        <exclude-pattern>*Constraint.php</exclude-pattern>
+    </rule>
 </ruleset>

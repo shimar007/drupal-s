@@ -4,6 +4,7 @@ namespace Drupal\robotstxt\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Configure robotstxt settings for this site.
@@ -50,6 +51,7 @@ class RobotsTxtAdminSettingsForm extends ConfigFormBase {
       ->set('content', $form_state->getValue('robotstxt_content'))
       ->save();
 
+    Cache::invalidateTags(['robotstxt']);
     parent::submitForm($form, $form_state);
   }
 

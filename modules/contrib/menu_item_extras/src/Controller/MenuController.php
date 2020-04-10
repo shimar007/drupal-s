@@ -65,7 +65,7 @@ class MenuController extends ControllerBase {
    */
   public function removeExtraData() {
     $this->menuLinkContentHelper->clearMenuData('all');
-    $this->messenger->addStatus($this->t('Extra data for all menus were deleted.'), 'status');
+    $this->messenger()->addStatus($this->t('Extra data for all menus were deleted.'), 'status');
     return $this->redirect('system.modules_uninstall');
   }
 

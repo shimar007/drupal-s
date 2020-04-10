@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn\StackMiddleware;
 
 use Drupal\Component\Assertion\Inspector;
@@ -180,10 +182,10 @@ class DuplicateContentPreventionMiddleware implements HttpKernelInterface {
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   A request.
    *
-   * @return \Drupal\Core\GeneratedUrl
+   * @return string
    *   The URL for the request.
    */
-  protected function generateRedirectUrl(Request $request) {
+  protected function generateRedirectUrl(Request $request) : string {
     // Put the current request on the stack. We have to do this manually
     // because this runs so early that the request stack is still empty.
     // @see \Drupal\Core\StackMiddleware\KernelPreHandle::handle()

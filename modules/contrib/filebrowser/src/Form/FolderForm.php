@@ -3,6 +3,7 @@
 namespace Drupal\filebrowser\Form;
 
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
@@ -93,9 +94,9 @@ class FolderForm extends FormBase {
     $folder_uri =
       $this->node->filebrowser->folderPath . $this->relativeRoot . '/' . $form_state->getValue('folder_name');
 
-    $success = file_prepare_directory($folder_uri, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    $success = \Drupal::service('file_system')->prepareDirectory($folder_uri, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
     if (!$success) {
-      drupal_set_message(t("Unable to create this folder, do you have filesystem right to do that ?"), 'error');
+      \Drupal::messenger()->addError($this->t('Unable to create this folder, do you have filesystem right to do that ?'));
     }
     else{
       Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);

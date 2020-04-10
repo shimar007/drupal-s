@@ -1,6 +1,15 @@
+CONTENTS OF THIS FILE
+---------------------
 
-Description
------------
+ * Introduction
+ * Installation
+ * FAQ
+ * Troubleshooting
+ * Maintainers
+
+INTRODUCTION
+------------
+
 This module provide easy Content Delivery Network integration for Drupal sites.
 It alters file URLs, so that files (CSS, JS, images, fonts, videos …) are
 downloaded from a CDN instead of your web server.
@@ -14,19 +23,21 @@ pretty much every CDN is an Origin Pull CDN.
 
 The CDN module aims to do only one thing and do it well: altering URLs to
 point to files on CDNs. It supports:
-    • Any sort of CDN mapping
-    • DNS prefetching: lets browsers connect to the CDN faster
-    • SEO: prevents CDN from serving HTML and REST responses, only allow files
-    • Forever cacheable files (optimal far future expiration)
-    • Auto-balancing files over multiple CDNs
-    • … and many more details that are taken care of automatically
+
+  * Any sort of CDN mapping
+  * DNS prefetching: lets browsers connect to the CDN faster
+  * SEO: prevents CDN from serving HTML and REST responses, only allow files
+  * Forever cacheable files (optimal far future expiration)
+  * Auto-balancing files over multiple CDNs
+  * … and many more details that are taken care of automatically
 
 The "CDN UI" module is included, and can be used for configuring the CDN module.
 Once set up, it can be uninstalled.
 
 
-Installation
+INSTALLATION
 ------------
+
 1) Place this module directory in your "modules" folder
 
 2) Install the module.
@@ -69,6 +80,7 @@ Installation
 
 FAQ
 ---
+
 Q: Is the CDN module compatible with Drupal's Page Cache?
 A: Yes.
 
@@ -84,8 +96,9 @@ Q: Does this module only work with Apache or also with nginx, lighttpd, etc.?
 A: This module only affects HTML, so it doesn't matter which web server you use!
 
 
-The "Forever cacheable files" (farfuture) setting
--------------------------------------------------
+TROUBLESHOOTING
+---------------
+
 For small sites the 'Forever cacheable files' (farfuture) functionality works
 fine out of the box. The CDN module serves all files through PHP with optimal
 headers. Since the CDN only occasionally re-requests files, the far-from-great
@@ -101,9 +114,9 @@ your .htaccess file:
   ### CDN START ###
   # See http://drupal.org/node/1413156
   <IfModule mod_headers.c>
-    # Transform /cdn/farfuture/[security token]/[mtime]/X/Y/Z to /X/Y/Z and set
+    # Transform /cdn/ff/[security token]/[mtime]/[scheme]/X/Y/Z to /X/Y/Z and set
     # environment variable for later Header rules.
-    RewriteCond %{REQUEST_URI} ^/cdn/farfuture/[^/]+/[^/]+/(.+)$
+    RewriteCond %{REQUEST_URI} ^/cdn/ff/[^/]+/[^/]+/[^/]+/(.+)$
     RewriteRule .* %1 [L,E=FARFUTURE_CDN:1]
 
     # Apache will change FARFUTURE_CDN to REDIRECT_FARFUTURE_CDN on internal
@@ -126,7 +139,7 @@ your .htaccess file:
 
 
     ###
-    ### Generic headers that apply to all /cdn/farfuture/* requests.
+    ### Generic headers that apply to all /cdn/ff/* requests.
     ###
 
     # Instead of being powered by Apache, tell the world this resource was
@@ -169,13 +182,14 @@ your .htaccess file:
   </IfModule>
   ### CDN END ###
 
+MAINTAINERS
+-----------
 
-Author
-------
-Wim Leers ~ http://wimleers.com/
+Current maintainers:
+  * Wim Leers - https://wimleers.com/
 
 Version 1 of this module (for Drupal 6) was written as part of the bachelor
 thesis of Wim Leers at Hasselt University.
 
-http://wimleers.com/tags/bachelor-thesis
-http://uhasselt.be/
+  * https://wimleers.com/tags/bachelor-thesis
+  * https://uhasselt.be/

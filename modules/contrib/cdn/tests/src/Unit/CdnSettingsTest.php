@@ -22,11 +22,12 @@ class CdnSettingsTest extends UnitTestCase {
     $this->assertTrue($cdn_settings->isEnabled());
     $this->assertSame($expected_lookup_table, $cdn_settings->getLookupTable());
     $this->assertSame(array_values($expected_domains), array_values($cdn_settings->getDomains()));
+    $this->assertSame($raw_config['scheme'], $cdn_settings->getScheme());
   }
 
   public function settingsProvider() {
     return [
-      'simple, on, no conditions' => [
+      'simple, on, no conditions, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -34,11 +35,38 @@ class CdnSettingsTest extends UnitTestCase {
             'domain' => 'cdn.example.com',
             'conditions' => [],
           ],
+          'scheme' => '//',
         ],
         ['*' => 'cdn.example.com'],
         ['cdn.example.com'],
       ],
-      'simple, on, no conditions, IPv4 address + port' => [
+      'simple, on, no conditions, HTTPS' => [
+        [
+          'status' => TRUE,
+          'mapping' => [
+            'type' => 'simple',
+            'domain' => 'cdn.example.com',
+            'conditions' => [],
+          ],
+          'scheme' => 'https://',
+        ],
+        ['*' => 'cdn.example.com'],
+        ['cdn.example.com'],
+      ],
+      'simple, on, no conditions, HTTP' => [
+        [
+          'status' => TRUE,
+          'mapping' => [
+            'type' => 'simple',
+            'domain' => 'cdn.example.com',
+            'conditions' => [],
+          ],
+          'scheme' => 'http://',
+        ],
+        ['*' => 'cdn.example.com'],
+        ['cdn.example.com'],
+      ],
+      'simple, on, no conditions, IPv4 address + port, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -46,11 +74,12 @@ class CdnSettingsTest extends UnitTestCase {
             'domain' => '127.0.0.1:8080',
             'conditions' => [],
           ],
+          'scheme' => '//',
         ],
         ['*' => '127.0.0.1:8080'],
         ['127.0.0.1:8080'],
       ],
-      'simple, on, no conditions, IPv6 address + port' => [
+      'simple, on, no conditions, IPv6 address + port, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -58,11 +87,12 @@ class CdnSettingsTest extends UnitTestCase {
             'domain' => '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80',
             'conditions' => [],
           ],
+          'scheme' => '//',
         ],
         ['*' => '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80'],
         ['[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80'],
       ],
-      'simple, on, one empty condition' => [
+      'simple, on, one empty condition, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -72,11 +102,12 @@ class CdnSettingsTest extends UnitTestCase {
               'extensions' => [],
             ],
           ],
+          'scheme' => '//',
         ],
         ['*' => 'cdn.example.com'],
         ['cdn.example.com'],
       ],
-      'simple, on, one condition' => [
+      'simple, on, one condition, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -86,6 +117,7 @@ class CdnSettingsTest extends UnitTestCase {
               'extensions' => ['jpg', 'jpeg', 'png'],
             ],
           ],
+          'scheme' => '//',
         ],
         [
           'jpg' => 'cdn.example.com',
@@ -94,7 +126,7 @@ class CdnSettingsTest extends UnitTestCase {
         ],
         ['cdn.example.com'],
       ],
-      'simple, on, one negative condition' => [
+      'simple, on, one negative condition, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -106,6 +138,7 @@ class CdnSettingsTest extends UnitTestCase {
               ],
             ],
           ],
+          'scheme' => '//',
         ],
         [
           '*' => 'cdn.example.com',
@@ -114,7 +147,7 @@ class CdnSettingsTest extends UnitTestCase {
         ],
         ['cdn.example.com'],
       ],
-      'auto-balanced, on' => [
+      'auto-balanced, on, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -127,6 +160,7 @@ class CdnSettingsTest extends UnitTestCase {
               'extensions' => ['jpg', 'png'],
             ],
           ],
+          'scheme' => '//',
         ],
         [
           'jpg' => ['img1.example.com', 'img2.example.com'],
@@ -134,7 +168,7 @@ class CdnSettingsTest extends UnitTestCase {
         ],
         ['img1.example.com', 'img2.example.com'],
       ],
-      'complex containing two simple mappings, with fallback' => [
+      'complex containing two simple mappings, with fallback, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -157,6 +191,7 @@ class CdnSettingsTest extends UnitTestCase {
               ],
             ],
           ],
+          'scheme' => '//',
         ],
         [
           '*' => '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:42',
@@ -172,7 +207,7 @@ class CdnSettingsTest extends UnitTestCase {
           'downloads.example.com',
         ],
       ],
-      'complex containing two simple mappings, without fallback' => [
+      'complex containing two simple mappings, without fallback, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -195,6 +230,7 @@ class CdnSettingsTest extends UnitTestCase {
               ],
             ],
           ],
+          'scheme' => '//',
         ],
         [
           'css' => 'static.example.com',
@@ -205,7 +241,7 @@ class CdnSettingsTest extends UnitTestCase {
         ],
         ['static.example.com', 'downloads.example.com'],
       ],
-      'complex containing one simple and one auto-balanced mapping, without fallback' => [
+      'complex containing one simple and one auto-balanced mapping, without fallback, scheme-relative' => [
         [
           'status' => TRUE,
           'mapping' => [
@@ -231,6 +267,7 @@ class CdnSettingsTest extends UnitTestCase {
               ],
             ],
           ],
+          'scheme' => '//',
         ],
         [
           'css' => 'static.example.com',
@@ -248,7 +285,8 @@ class CdnSettingsTest extends UnitTestCase {
    * @covers ::getLookupTable
    */
   public function testSimpleMappingWithConditionsAndNegatedConditions() {
-    $this->setExpectedException(\AssertionError::class, "It does not make sense to provide an 'extensions' condition as well as a negated 'extensions' condition.");
+    $this->expectException(\AssertionError::class);
+    $this->expectExceptionMessage("It does not make sense to provide an 'extensions' condition as well as a negated 'extensions' condition.");
     $this->createCdnSettings([
       'status' => TRUE,
       'mapping' => [
@@ -268,7 +306,8 @@ class CdnSettingsTest extends UnitTestCase {
    * @covers ::getLookupTable
    */
   public function testComplexDomainWithNegatedConditions() {
-    $this->setExpectedException(\AssertionError::class, "The nested mapping 1 includes negated conditions, which is not allowed for complex mappings: the fallback_domain already serves this purpose.");
+    $this->expectException(\AssertionError::class);
+    $this->expectExceptionMessage("The nested mapping 1 includes negated conditions, which is not allowed for complex mappings: the fallback_domain already serves this purpose.");
     $this->createCdnSettings([
       'status' => TRUE,
       'mapping' => [
@@ -300,7 +339,8 @@ class CdnSettingsTest extends UnitTestCase {
    * @covers ::getLookupTable
    */
   public function testAutobalancedWithoutConditions() {
-    $this->setExpectedException(ConfigValueException::class, "It does not make sense to apply auto-balancing to all files, regardless of extension.");
+    $this->expectException(ConfigValueException::class);
+    $this->expectExceptionMessage("It does not make sense to apply auto-balancing to all files, regardless of extension.");
     $this->createCdnSettings([
       'status' => TRUE,
       'mapping' => [
@@ -318,7 +358,8 @@ class CdnSettingsTest extends UnitTestCase {
    * @covers ::getLookupTable
    */
   public function testComplexMappingWithoutConditions() {
-    $this->setExpectedException(\AssertionError::class, "The nested mapping 0 includes no conditions, which is not allowed for complex mappings.");
+    $this->expectException(\AssertionError::class);
+    $this->expectExceptionMessage("The nested mapping 0 includes no conditions, which is not allowed for complex mappings.");
     $this->createCdnSettings([
       'status' => TRUE,
       'mapping' => [

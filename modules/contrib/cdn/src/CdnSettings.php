@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn;
 
 use Drupal\Component\Assertion\Inspector;
@@ -41,15 +43,25 @@ class CdnSettings {
   /**
    * @return bool
    */
-  public function isEnabled() {
+  public function isEnabled() : bool {
     return $this->rawSettings->get('status') === TRUE;
   }
 
   /**
    * @return bool
    */
-  public function farfutureIsEnabled() {
+  public function farfutureIsEnabled() : bool {
     return $this->rawSettings->get('farfuture.status') === TRUE;
+  }
+
+  /**
+   * Returns the scheme to use.
+   *
+   * @return string
+   *   Possible values are `//`, `https://`, `http://`.
+   */
+  public function getScheme() : string {
+    return $this->rawSettings->get('scheme');
   }
 
   /**
@@ -60,7 +72,7 @@ class CdnSettings {
    *   Values are CDN domains (either string if only one, or array of strings if
    *   multiple).
    */
-  public function getLookupTable() {
+  public function getLookupTable() : array {
     if ($this->lookupTable === NULL) {
       $this->lookupTable = $this->buildLookupTable($this->rawSettings->get('mapping'));
     }
@@ -72,7 +84,7 @@ class CdnSettings {
    *
    * @return string[]
    */
-  public function getDomains() {
+  public function getDomains() : array {
     $flattened = iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->getLookupTable())), FALSE);
     $unique_domains = array_unique(array_filter($flattened));
     return $unique_domains;
@@ -84,7 +96,7 @@ class CdnSettings {
    * @return string[]
    *   The allowed stream wrapper scheme names.
    */
-  public function getStreamWrappers() {
+  public function getStreamWrappers() : array {
     $stream_wrappers = $this->rawSettings->get('stream_wrappers');
     // @see cdn_update_8002()
     assert(Inspector::assertAllStrings($stream_wrappers), 'Please run update.php!');
@@ -107,7 +119,7 @@ class CdnSettings {
    * @todo Abstract this out further in the future if the need arises, i.e. if
    *       more conditions besides extensions are added. For now, KISS.
    */
-  protected function buildLookupTable(array $mapping) {
+  protected function buildLookupTable(array $mapping) : array {
     assert(!\Drupal::hasContainer() || \Drupal::service('config.typed')->get('cdn.settings')->validate()->count() === 0, 'There are validation errors for the "cdn.settings" configuration.');
     $lookup_table = [];
     if ($mapping['type'] === 'simple') {

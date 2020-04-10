@@ -13,6 +13,9 @@ cdn.settings:
     mapping:
       label: 'File URL to CDN mapping'
       type: cdn.mapping.[type]
+    scheme:
+      label: 'Scheme to use for CDN file URLs'
+      type: cdn.scheme
     farfuture:
       label: 'Forever cacheable files — configuration'
       type: mapping

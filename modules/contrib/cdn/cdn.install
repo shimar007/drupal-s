@@ -27,3 +27,10 @@ function cdn_update_8001() {
 function cdn_update_8002() {
   \Drupal::configFactory()->getEditable('cdn.settings')->set('stream_wrappers', ['public'])->save();
 }
+
+/**
+ * Add the new "scheme" setting, set it to its default initial value.
+ */
+function cdn_update_8003() {
+  \Drupal::configFactory()->getEditable('cdn.settings')->set('scheme', '//')->save();
+}

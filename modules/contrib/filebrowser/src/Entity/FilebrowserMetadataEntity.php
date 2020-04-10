@@ -8,6 +8,7 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\node\Entity\Node;
 use Drupal\user\UserInterface;
 
 /**
@@ -112,7 +113,7 @@ class FilebrowserMetadataEntity extends ContentEntityBase implements Filebrowser
    * {@inheritdoc}
    */
   public function setPublished($published) {
-    $this->set('status', $published ? NODE_PUBLISHED : NODE_NOT_PUBLISHED);
+    $this->set('status', $published ? Node::PUBLISHED: Node::NOT_PUBLISHED);
     return $this;
   }
 

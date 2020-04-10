@@ -274,6 +274,7 @@ function menu_item_extras_form_menu_edit_form_alter(array &$form, FormStateInter
     '#url' => Url::fromRoute('entity.menu.clear_extra_data', ['menu' => $menu]),
     '#button_type' => 'danger',
     '#attributes' => ['class' => ['button', 'button--danger']],
+    '#access' => \Drupal::currentUser()->hasPermission('administer menu'),
   ];
 }
 

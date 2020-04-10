@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Cache\CacheableResponse;
 
 /**
  * Provides output robots.txt output.
@@ -71,7 +72,10 @@ class RobotsTxtController extends ControllerBase implements ContainerInjectionIn
     $content = array_filter($content);
     $content = implode("\n", $content);
 
-    return new Response($content, 200, ['Content-Type' => 'text/plain']);
+    $response = new CacheableResponse($content, Response::HTTP_OK, array('content-type' => 'text/plain'));
+    $meta_data = $response->getCacheableMetadata();
+    $meta_data->addCacheTags(['robotstxt']);
+    return $response;
   }
 
 }

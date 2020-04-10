@@ -186,16 +186,31 @@ class DefaultController extends ControllerBase {
     $archive = new \ZipArchive();
     $created = $archive->open($file_name, \ZipArchive::CREATE);
 
-    if ($created) {
+    if ($created === TRUE) {
       foreach ($itemsToArchive as $item) {
         $file_data = unserialize($item['file_data']);
         if ($file_data->type == 'file') {
           $archive->addFile(\Drupal::service('file_system')->realpath($file_data->uri), $file_data->filename);
         }
+        if ($file_data->type == 'dir') {
+          $dirPath = \Drupal::service('file_system')->realpath($file_data->uri);
+          // Iterate through the directory, adding each file within
+          $iterator = new \RecursiveDirectoryIterator($dirPath);
+          // Skip files that begin with a dot
+          $iterator->setFlags(\RecursiveDirectoryIterator::SKIP_DOTS);
+          $dirFiles = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::SELF_FIRST);
+
+          foreach ($dirFiles as $dirFile) {
+            if (is_dir($dirFile)) {
+              $archive->addEmptyDir(str_replace(dirname($dirPath) . '/', '', $dirFile . ''));
+            } else if (is_file($dirFile)) {
+              $archive->addFromString(str_replace(dirname($dirPath) . '/', '', $dirFile), file_get_contents($dirFile));
+            }
+          }
+        }
       }
       $name = $archive->filename;
       $archive->close();
-
       // serve the file
       $response = new BinaryFileResponse($name);
       $response->deleteFileAfterSend(true);
@@ -205,7 +220,8 @@ class DefaultController extends ControllerBase {
       return $response;
     }
     else {
-      drupal_set_message($this->t('Can not create archive'), 'error');
+      \Drupal::logger('filebrowser')->error($this->t('Can not create archive: @error', ['@error' => $created]));
+      \Drupal::messenger()->addError($this->t('Can not create archive'));
       return false;
     }
   }

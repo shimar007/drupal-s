@@ -48,6 +48,14 @@ tips:
     weight: 5
     attributes:
       data-id: edit-mapping-simple-domain
+  cdn-ui-mapping-simple-scheme:
+    id: cdn-ui-mapping-simple-scheme
+    plugin: text
+    label: 'Scheme-relative or absolute CDN URLs'
+    body: 'By default, scheme-relative URLs are used to link to files on CDN.<br><br>On sites that are only accessible via <code>https://</code>, absolute HTTPS URLs are recommended.<br><br>For local development, absolute HTTP URLs are recommended.'
+    weight: 6
+    attributes:
+      data-id: edit-mapping-simple-scheme
   cdn-ui-mapping-simple-conditions:
     id: cdn-ui-mapping-simple-conditions
     plugin: text

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types = 1);
+
 // @codingStandardsIgnoreFile
 
 namespace Drupal\cdn_ui\Form;
@@ -37,7 +40,7 @@ abstract class ValidatableConfigFormBase extends ConfigFormBase {
     parent::__construct($config_factory);
   }
 
-  abstract protected static function getMainConfigName();
+  abstract protected static function getMainConfigName() : string;
 
   /**
    * {@inheritdoc}
@@ -63,7 +66,7 @@ abstract class ValidatableConfigFormBase extends ConfigFormBase {
 
   abstract protected static function mapFormValuesToConfig(FormStateInterface $form_state, Config $config);
 
-  protected static function mapViolationPropertyPathsToFormNames($property_path) {
+  protected static function mapViolationPropertyPathsToFormNames(string $property_path) : string {
     return str_replace('.', '][', $property_path);
   }
 

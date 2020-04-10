@@ -150,11 +150,11 @@ class Common extends ControllerBase{
       $theme_path . $mime_type . $ext,
       $theme_path . $main_type . $ext,
       // use default filebrowser icons
-      'filebrowser://icons/' . $mime_type . $ext,
-      'filebrowser://icons/'  . $main_type . $ext,
+      $this->filebrowserPath() . '//icons/' . $mime_type . $ext,
+      $this->filebrowserPath() . '//icons/' . $main_type . $ext,
     ];
 
-    $eligible = 'filebrowser://icons/' . 'unknown' . $ext;
+    $eligible = $this->filebrowserPath() . '//icons/' . 'unknown' . $ext;
     foreach ($icons as $icon) {
       if (file_exists($icon)) {
         $eligible = $icon;
@@ -491,6 +491,11 @@ class Common extends ControllerBase{
       return $node;
     }
     return NULL;
+  }
+
+  public function filebrowserPath() {
+    $module_handler = \Drupal::service('module_handler');
+    return  $module_handler->getModule('filebrowser')->getPath();
   }
 
 }

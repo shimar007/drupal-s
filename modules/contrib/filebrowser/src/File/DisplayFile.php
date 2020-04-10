@@ -99,7 +99,7 @@ class DisplayFile extends ControllerBase {
    */
   public $metadata;
 
-  public function __constructor($nid) {
+  public function __construct($nid) {
     $this->nid = $nid;
   }
 

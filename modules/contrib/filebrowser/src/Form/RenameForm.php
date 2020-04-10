@@ -155,7 +155,7 @@ class RenameForm extends ConfirmFormBase {
 
           $success = rename($file_data->uri, $new_uri);
           if ($success) {
-            drupal_set_message($this->t('Renamed @old to @new', [
+            \Drupal::messenger()->addMessage($this->t('Renamed @old to @new', [
               '@old' => $file_data->uri,
               '@new' => $new_uri
             ]));
@@ -167,12 +167,12 @@ class RenameForm extends ConfirmFormBase {
             $this->storage->updateContentField('fid', $fid, 'path', $new_filename);
           }
           else {
-            drupal_set_message($this->t('Can not rename @old', ['@old' => $file_data->uri]), 'error');
+            \Drupal::messenger()->addError($this->t('Can not rename @old', ['@old' => $file_data->uri]));
           }
         }
         else {
           // this is a folder, we will not change anything
-          drupal_set_message($this->t('@old is a folder. Folder rename is not supported', ['@old' => $file_data->uri]), 'error');
+          \Drupal::messenger()->addError($this->t('@old is a folder. Folder rename is not supported', ['@old' => $file_data->uri]));
         }
       }
     }

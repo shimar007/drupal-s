@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn;
 
 use Drupal\cdn\File\FileUrlGenerator;
 use Drupal\Component\Utility\Crypt;
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\PrivateKey;
 use Drupal\Core\Site\Settings;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CdnFarfutureController {
@@ -22,21 +24,21 @@ class CdnFarfutureController {
   protected $privateKey;
 
   /**
-   * The file system service.
+   * The stream wrapper manager.
    *
-   * @var \Drupal\Core\File\FileSystemInterface
+   * @var \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface
    */
-  protected $fileSystem;
+  protected $streamWrapperManager;
 
   /**
    * @param \Drupal\Core\PrivateKey $private_key
    *   The private key service.
-   * @param \Drupal\Core\File\FileSystemInterface $file_system
-   *   The file system service.
+   * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
+   *   The stream wrapper manager.
    */
-  public function __construct(PrivateKey $private_key, FileSystemInterface $file_system) {
+  public function __construct(PrivateKey $private_key, StreamWrapperManagerInterface $stream_wrapper_manager) {
     $this->privateKey = $private_key;
-    $this->fileSystem = $file_system;
+    $this->streamWrapperManager = $stream_wrapper_manager;
   }
 
   /**
@@ -54,19 +56,17 @@ class CdnFarfutureController {
    * @param string $scheme
    *   The file's scheme.
    *
-   * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+   * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Symfony\Component\HttpFoundation\Response
    *   The response that will efficiently send the requested file.
    *
    * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
    *   Thrown when the 'relative_file_url' query argument is not set, which can
    *   only happen in case of malicious requests or in case of a malfunction in
    *   \Drupal\cdn\PathProcessor\CdnFarfuturePathProcessor.
-   * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
-   *   Thrown when an invalid security token is provided.
    */
-  public function downloadByScheme(Request $request, $security_token, $mtime, $scheme) {
+  public function downloadByScheme(Request $request, string $security_token, int $mtime, string $scheme) : Response {
     // Validate the scheme early.
-    if (!$request->query->has('relative_file_url') || ($scheme !== FileUrlGenerator::RELATIVE && !$this->fileSystem->validScheme($scheme))) {
+    if (!$request->query->has('relative_file_url') || ($scheme !== FileUrlGenerator::RELATIVE && !$this->streamWrapperManager->isValidScheme($scheme))) {
       throw new BadRequestHttpException();
     }
 
@@ -74,7 +74,7 @@ class CdnFarfutureController {
     $relative_file_url = $request->query->get('relative_file_url');
     $calculated_token = Crypt::hmacBase64($mtime . $scheme . $relative_file_url, $this->privateKey->get() . Settings::getHashSalt());
     if ($security_token !== $calculated_token) {
-      throw new AccessDeniedHttpException('Invalid security token.');
+      return new Response('Invalid security token.', 403);
     }
 
     // A relative URL for a file contains '%20' instead of spaces. A relative
@@ -103,15 +103,13 @@ class CdnFarfutureController {
    * @param int $mtime
    *   The file's mtime.
    *
-   * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+   * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Symfony\Component\HttpFoundation\Response
    *   The response that will efficiently send the requested file.
    *
    * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
    *   Thrown when the 'root_relative_file_url' query argument is not set, which
    *   can only happen in case of malicious requests or in case of a malfunction
    *   in \Drupal\cdn\PathProcessor\CdnFarfuturePathProcessor.
-   * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
-   *   Thrown when an invalid security token is provided.
    *
    * @todo Remove in 4.x.
    */
@@ -125,7 +123,7 @@ class CdnFarfutureController {
     $root_relative_file_url = $request->query->get('root_relative_file_url');
     $calculated_token = Crypt::hmacBase64($mtime . $root_relative_file_url, $this->privateKey->get() . Settings::getHashSalt());
     if ($security_token !== $calculated_token) {
-      throw new AccessDeniedHttpException('Invalid security token.');
+      return new Response('Invalid security token.', 403);
     }
 
     // A relative URL for a file contains '%20' instead of spaces. A relative
@@ -142,7 +140,7 @@ class CdnFarfutureController {
    *
    * @return string[]
    */
-  protected function getFarfutureHeaders() {
+  protected function getFarfutureHeaders() : array {
     return [
       // Instead of being powered by PHP, tell the world this resource was
       // powered by the CDN module!

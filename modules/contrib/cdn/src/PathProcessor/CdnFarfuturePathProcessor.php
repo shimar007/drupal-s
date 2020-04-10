@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\cdn\PathProcessor;
 
 use Drupal\Component\Utility\UrlHelper;
@@ -44,7 +46,7 @@ class CdnFarfuturePathProcessor implements InboundPathProcessorInterface {
    * @return string
    *   The processed path.
    */
-  protected function processFarFuture($path, Request $request) {
+  protected function processFarFuture(string $path, Request $request) : string {
     // Parse the security token, mtime, scheme and root-relative file URL.
     $tail = substr($path, strlen('/cdn/ff/'));
     list($security_token, $mtime, $scheme, $relative_file_url) = explode('/', $tail, 4);
