@@ -6,7 +6,7 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\Exception\TargetValidationException;
@@ -33,13 +33,6 @@ abstract class FileTestBase extends FeedsKernelTestBase {
   protected $entityTypeManager;
 
   /**
-   * Query factory used in the test.
-   *
-   * @var \Prophecy\Prophecy\ProphecyInterface|\Drupal\Core\Entity\Query\QueryFactory
-   */
-  protected $entityQueryFactory;
-
-  /**
    * The http client prophecy used in the test.
    *
    * @var \Prophecy\Prophecy\ProphecyInterface|\GuzzleHttp\ClientInterface
@@ -52,6 +45,13 @@ abstract class FileTestBase extends FeedsKernelTestBase {
    * @var \Prophecy\Prophecy\ProphecyInterface|\Drupal\Core\Utility\Token
    */
   protected $token;
+
+  /**
+   * The file and stream wrapper helper.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
 
   /**
    * The FeedsTarget plugin being tested.
@@ -68,12 +68,12 @@ abstract class FileTestBase extends FeedsKernelTestBase {
     $this->setUpFileFields();
 
     $this->entityTypeManager = $this->prophesize(EntityTypeManagerInterface::class);
-    $this->entityQueryFactory = $this->prophesize(QueryFactory::class);
     $this->client = $this->prophesize(ClientInterface::class);
     $this->token = $this->prophesize(Token::class);
     $this->entityFieldManager = $this->prophesize(EntityFieldManagerInterface::class);
     $this->entityFieldManager->getFieldStorageDefinitions('file')->willReturn([]);
     $this->entityRepository = $this->prophesize(EntityRepositoryInterface::class);
+    $this->fileSystem = $this->prophesize(FileSystemInterface::class);
 
     // Made-up entity type that we are referencing to.
     $referenceable_entity_type = $this->prophesize(EntityTypeInterface::class);
@@ -81,21 +81,24 @@ abstract class FileTestBase extends FeedsKernelTestBase {
     $this->entityTypeManager->getDefinition('file')->willReturn($referenceable_entity_type)->shouldBeCalled();
 
     $configuration = [
-      'feed_type' => $this->getMock(FeedTypeInterface::class),
+      'feed_type' => $this->createMock(FeedTypeInterface::class),
       'target_definition' => $this->getTargetDefinition(),
     ];
 
-    $this->targetPlugin = $this->getMock($this->getTargetPluginClass(), ['findEntity', 'getDestinationDirectory'], [
-      $configuration,
-      'file',
-      [],
-      $this->entityTypeManager->reveal(),
-      $this->entityQueryFactory->reveal(),
-      $this->client->reveal(),
-      $this->token->reveal(),
-      $this->entityFieldManager->reveal(),
-      $this->entityRepository->reveal(),
-    ]);
+    $this->targetPlugin = $this->getMockBuilder($this->getTargetPluginClass())
+      ->setMethods(['findEntity', 'getDestinationDirectory'])
+      ->setConstructorArgs([
+        $configuration,
+        'file',
+        [],
+        $this->entityTypeManager->reveal(),
+        $this->client->reveal(),
+        $this->token->reveal(),
+        $this->entityFieldManager->reveal(),
+        $this->entityRepository->reveal(),
+        $this->fileSystem->reveal(),
+      ])
+      ->getMock();
 
     $this->targetPlugin->expects($this->any())
       ->method('findEntity')

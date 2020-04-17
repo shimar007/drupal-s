@@ -3,6 +3,7 @@
 namespace Drupal\Tests\feeds\Unit\Feeds\Fetcher\Form;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
@@ -26,12 +27,19 @@ class UploadFetcherFormTest extends FeedsUnitTestCase {
     $container = new ContainerBuilder();
     \Drupal::setContainer($container);
 
+    $file_system = $this->prophesize(FileSystemInterface::class);
+    $file_system->prepareDirectory('vfs://feeds/uploads', FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)->will(function () {
+      return mkdir('vfs://feeds/uploads');
+    });
+    $file_system->prepareDirectory('vfs://noroot', FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)->will(function () {
+      return mkdir('vfs://noroot');
+    });
     $stream_wrapper_manager = $this->prophesize(StreamWrapperManagerInterface::class);
+    $stream_wrapper_manager->getWrappers(StreamWrapperInterface::WRITE_VISIBLE)->willReturn([]);
 
+    $container->set('file_system', $file_system->reveal());
     $container->set('stream_wrapper_manager', $stream_wrapper_manager->reveal());
     $container->set('string_translation', $this->getStringTranslationStub());
-
-    $stream_wrapper_manager->getWrappers(StreamWrapperInterface::WRITE_VISIBLE)->willReturn([]);
 
     $form_object = UploadFetcherForm::create($container);
 

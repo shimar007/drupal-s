@@ -39,6 +39,21 @@ use Drupal\feeds\Plugin\Type\Target\ConfigurableTargetInterface;
  *     "uuid" = "uuid",
  *     "status" = "status"
  *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "description",
+ *     "help",
+ *     "import_period",
+ *     "fetcher",
+ *     "fetcher_configuration",
+ *     "parser",
+ *     "parser_configuration",
+ *     "processor",
+ *     "processor_configuration",
+ *     "custom_sources",
+ *     "mappings"
+ *   },
  *   links = {
  *     "collection" = "/admin/structure/feeds",
  *     "add-form" = "/admin/structure/feeds/add",

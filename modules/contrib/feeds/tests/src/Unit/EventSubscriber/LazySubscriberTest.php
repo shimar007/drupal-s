@@ -86,24 +86,24 @@ class LazySubscriberTest extends FeedsUnitTestCase {
     $this->dispatcher = new EventDispatcher();
 
     // Dispatcher used to verify things only get called once.
-    $this->explodingDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+    $this->explodingDispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
     $this->explodingDispatcher->expects($this->any())
       ->method('addListener')
       ->will($this->throwException(new \Exception()));
 
-    $this->state = $this->getMock('Drupal\feeds\StateInterface');
-    $this->feed = $this->getMock('Drupal\feeds\FeedInterface');
+    $this->state = $this->createMock('Drupal\feeds\StateInterface');
+    $this->feed = $this->createMock('Drupal\feeds\FeedInterface');
     $this->feed->expects($this->any())
       ->method('getState')
       ->will($this->returnValue($this->state));
-    $this->feedType = $this->getMock('Drupal\feeds\FeedTypeInterface');
+    $this->feedType = $this->createMock('Drupal\feeds\FeedTypeInterface');
     $this->feedType->expects($this->any())
       ->method('getMappedSources')
       ->will($this->returnValue([]));
 
-    $this->fetcher = $this->getMock('Drupal\feeds\Plugin\Type\Fetcher\FetcherInterface');
-    $this->parser = $this->getMock('Drupal\feeds\Plugin\Type\Parser\ParserInterface');
-    $this->processor = $this->getMock('Drupal\feeds\Plugin\Type\Processor\ProcessorInterface');
+    $this->fetcher = $this->createMock('Drupal\feeds\Plugin\Type\Fetcher\FetcherInterface');
+    $this->parser = $this->createMock('Drupal\feeds\Plugin\Type\Parser\ParserInterface');
+    $this->processor = $this->createMock('Drupal\feeds\Plugin\Type\Processor\ProcessorInterface');
 
     $this->feed
       ->expects($this->any())
@@ -123,7 +123,7 @@ class LazySubscriberTest extends FeedsUnitTestCase {
    * @covers ::onInitImport
    */
   public function testOnInitImport() {
-    $fetcher_result = $this->getMock('Drupal\feeds\Result\FetcherResultInterface');
+    $fetcher_result = $this->createMock('Drupal\feeds\Result\FetcherResultInterface');
     $parser_result = new ParserResult();
     $parser_result->addItem(new DynamicItem());
 
@@ -174,7 +174,7 @@ class LazySubscriberTest extends FeedsUnitTestCase {
    * @covers ::onInitClear
    */
   public function testOnInitClear() {
-    $clearable = $this->getMock('Drupal\feeds\Plugin\Type\ClearableInterface');
+    $clearable = $this->createMock('Drupal\feeds\Plugin\Type\ClearableInterface');
     $clearable->expects($this->exactly(2))
       ->method('clear')
       ->with($this->feed);

@@ -44,25 +44,25 @@ class UploadFetcherTest extends FeedsUnitTestCase {
   public function setUp() {
     parent::setUp();
 
-    $this->fileStorage = $this->getMock(EntityStorageInterface::class);
-    $entity_manager = $this->getMock(EntityTypeManagerInterface::class);
+    $this->fileStorage = $this->createMock(EntityStorageInterface::class);
+    $entity_manager = $this->createMock(EntityTypeManagerInterface::class);
     $entity_manager->expects($this->once())
       ->method('getStorage')
       ->with('file')
       ->will($this->returnValue($this->fileStorage));
 
     $this->fetcher = new UploadFetcher(
-      ['feed_type' => $this->getMock(FeedTypeInterface::class)],
+      ['feed_type' => $this->createMock(FeedTypeInterface::class)],
       'test_plugin',
       ['plugin_type' => 'fetcher'],
-      $this->getMock(FileUsageInterface::class),
+      $this->createMock(FileUsageInterface::class),
       $entity_manager,
       $this->getMockStreamWrapperManager()
     );
 
     $this->fetcher->setStringTranslation($this->getStringTranslationStub());
 
-    $this->state = $this->getMock(StateInterface::class);
+    $this->state = $this->createMock(StateInterface::class);
   }
 
   /**
@@ -73,7 +73,7 @@ class UploadFetcherTest extends FeedsUnitTestCase {
   public function testFetch() {
     touch('vfs://feeds/test_file');
 
-    $feed = $this->getMock(FeedInterface::class);
+    $feed = $this->createMock(FeedInterface::class);
     $feed->expects($this->any())
       ->method('getSource')
       ->will($this->returnValue('vfs://feeds/test_file'));
@@ -87,7 +87,7 @@ class UploadFetcherTest extends FeedsUnitTestCase {
    * @expectedException \RuntimeException
    */
   public function testFetchException() {
-    $feed = $this->getMock(FeedInterface::class);
+    $feed = $this->createMock(FeedInterface::class);
     $feed->expects($this->any())
       ->method('getSource')
       ->will($this->returnValue('vfs://feeds/test_file'));
@@ -98,7 +98,7 @@ class UploadFetcherTest extends FeedsUnitTestCase {
    * @covers ::onFeedDeleteMultiple
    */
   public function testOnFeedDeleteMultiple() {
-    $feed = $this->getMock(FeedInterface::class);
+    $feed = $this->createMock(FeedInterface::class);
     $feed->expects($this->exactly(2))
       ->method('getConfigurationFor')
       ->with($this->fetcher)

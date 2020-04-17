@@ -23,6 +23,6 @@
     "drupal/search_api": "1.x"
   },
   "require-dev": {
-    "drupal/search_api_page": "@dev"
+    "drupal/search_api_page": "1.x-dev"
   }
 }

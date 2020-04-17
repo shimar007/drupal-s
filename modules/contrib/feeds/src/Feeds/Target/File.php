@@ -5,9 +5,9 @@ namespace Drupal\feeds\Feeds\Target;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
-use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\feeds\Exception\EmptyFeedException;
@@ -48,6 +48,13 @@ class File extends EntityReference {
   protected $token;
 
   /**
+   * The file and stream wrapper helper.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * Constructs a File object.
    *
    * @param array $configuration
@@ -58,8 +65,6 @@ class File extends EntityReference {
    *   The plugin definition.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param \Drupal\Core\Entity\Query\QueryFactory $query_factory
-   *   The entity query factory.
    * @param \GuzzleHttp\ClientInterface $client
    *   The http client.
    * @param \Drupal\Core\Utility\Token $token
@@ -68,12 +73,15 @@ class File extends EntityReference {
    *   The entity field manager.
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
    *   The entity repository service.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file and stream wrapper helper.
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, EntityTypeManagerInterface $entity_type_manager, QueryFactory $query_factory, ClientInterface $client, Token $token, EntityFieldManagerInterface $entity_field_manager, EntityRepositoryInterface $entity_repository) {
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, EntityTypeManagerInterface $entity_type_manager, ClientInterface $client, Token $token, EntityFieldManagerInterface $entity_field_manager, EntityRepositoryInterface $entity_repository, FileSystemInterface $file_system) {
     $this->client = $client;
     $this->token = $token;
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $query_factory, $entity_field_manager, $entity_repository);
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $entity_field_manager, $entity_repository);
     $this->fileExtensions = array_filter(explode(' ', $this->settings['file_extensions']));
+    $this->fileSystem = $file_system;
   }
 
   /**
@@ -85,11 +93,11 @@ class File extends EntityReference {
       $plugin_id,
       $plugin_definition,
       $container->get('entity_type.manager'),
-      $container->get('entity.query'),
       $container->get('http_client'),
       $container->get('token'),
       $container->get('entity_field.manager'),
-      $container->get('entity.repository')
+      $container->get('entity.repository'),
+      $container->get('file_system')
     );
   }
 
@@ -180,11 +188,11 @@ class File extends EntityReference {
     $filepath = $this->getDestinationDirectory() . '/' . $this->getFileName($value);
 
     switch ($this->configuration['existing']) {
-      case FILE_EXISTS_ERROR:
+      case FileSystemInterface::EXISTS_ERROR:
         if (file_exists($filepath) && $fid = $this->findEntity($filepath, 'uri')) {
           return $fid;
         }
-        if ($file = file_save_data($this->getContent($value), $filepath, FILE_EXISTS_REPLACE)) {
+        if ($file = file_save_data($this->getContent($value), $filepath, FileSystemInterface::EXISTS_REPLACE)) {
           return $file->id();
         }
         break;
@@ -211,7 +219,7 @@ class File extends EntityReference {
    */
   protected function getDestinationDirectory() {
     $destination = $this->token->replace($this->settings['uri_scheme'] . '://' . trim($this->settings['file_directory'], '/'));
-    file_prepare_directory($destination, FILE_MODIFY_PERMISSIONS | FILE_CREATE_DIRECTORY);
+    $this->fileSystem->prepareDirectory($destination, FileSystemInterface::MODIFY_PERMISSIONS | FileSystemInterface::CREATE_DIRECTORY);
     return $destination;
   }
 
@@ -271,7 +279,7 @@ class File extends EntityReference {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return ['existing' => FILE_EXISTS_ERROR] + parent::defaultConfiguration();
+    return ['existing' => FileSystemInterface::EXISTS_ERROR] + parent::defaultConfiguration();
   }
 
   /**
@@ -282,9 +290,9 @@ class File extends EntityReference {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
     $options = [
-      FILE_EXISTS_REPLACE => $this->t('Replace'),
-      FILE_EXISTS_RENAME => $this->t('Rename'),
-      FILE_EXISTS_ERROR => $this->t('Ignore'),
+      FileSystemInterface::EXISTS_REPLACE => $this->t('Replace'),
+      FileSystemInterface::EXISTS_RENAME => $this->t('Rename'),
+      FileSystemInterface::EXISTS_ERROR => $this->t('Ignore'),
     ];
 
     $form['existing'] = [
@@ -304,20 +312,22 @@ class File extends EntityReference {
     $summary = parent::getSummary();
 
     switch ($this->configuration['existing']) {
-      case FILE_EXISTS_REPLACE:
+      case FileSystemInterface::EXISTS_REPLACE:
         $message = 'Replace';
         break;
 
-      case FILE_EXISTS_RENAME:
+      case FileSystemInterface::EXISTS_RENAME:
         $message = 'Rename';
         break;
 
-      case FILE_EXISTS_ERROR:
+      case FileSystemInterface::EXISTS_ERROR:
         $message = 'Ignore';
         break;
     }
 
-    return $summary . '<br>' . $this->t('Exsting files: %existing', ['%existing' => $message]);
+    $summary[] = $this->t('Existing files: %existing', ['%existing' => $message]);
+
+    return $summary;
   }
 
   /**

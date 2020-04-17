@@ -28,7 +28,7 @@ class TelephoneTest extends FieldTargetTestBase {
       ->method('getType')
       ->will($this->returnValue('string'));
     $configuration = [
-      'feed_type' => $this->getMock('Drupal\feeds\FeedTypeInterface'),
+      'feed_type' => $this->createMock('Drupal\feeds\FeedTypeInterface'),
       'target_definition' => $method($field_definition),
     ];
     $target = new Telephone($configuration, 'telephone', []);

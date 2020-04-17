@@ -105,7 +105,6 @@ class PagesIntegrationTest extends IntegrationTestBase {
     // Save the settings.
     $this->click('[data-drupal-selector="edit-actions-submit"]');
     $this->logPageChange(NULL, 'POST');
-    $assert_session->statusCodeEquals(200);
     $assert_session->pageTextContains('The settings have been saved.');
     // Our admin user for this test doesn't have the "administer permissions"
     // permission, so the permission reminder should not be included.
@@ -114,8 +113,9 @@ class PagesIntegrationTest extends IntegrationTestBase {
     // Edit the search.
     $this->click('.dropbutton-action a[href$="/edit"]');
     $this->logPageChange();
-    $assert_session->statusCodeEquals(200);
     $assert_session->addressEquals($this->getAdminPath('edit'));
+    $page = $this->getSession()->getPage();
+    $page->findButton('Show row weights')->click();
     $edit = [
       'suggesters[enabled][server]' => TRUE,
       'suggesters[enabled][search_api_autocomplete_test]' => TRUE,
@@ -161,13 +161,11 @@ class PagesIntegrationTest extends IntegrationTestBase {
     $assert_session = $this->assertSession();
 
     $this->drupalGet('test-search');
-    $assert_session->statusCodeEquals(200);
 
     $assert_session->elementAttributeContains('css', 'input[data-drupal-selector="edit-keys"]', 'data-search-api-autocomplete-search', $this->searchId);
 
     $elements = $this->getAutocompleteSuggestions();
     $suggestions = [];
-    $suggestion_elements = [];
     foreach ($elements as $element) {
       $label = $this->getElementText($element, '.autocomplete-suggestion-label');
       $user_input = $this->getElementText($element, '.autocomplete-suggestion-user-input');
@@ -178,27 +176,26 @@ class PagesIntegrationTest extends IntegrationTestBase {
         'keys' => $keys,
         'count' => $count,
       ];
-      $suggestion_elements[$keys] = $element;
     }
     $expected = [
       [
-        'keys' => 'test-suggester-1',
+        'keys' => 'Tést-suggester-1',
         'count' => 1,
       ],
       [
-        'keys' => 'test-suggester-2',
+        'keys' => 'Tést-suggester-2',
         'count' => 2,
       ],
       [
-        'keys' => 'test-suggester-url',
+        'keys' => 'Tést-suggester-url',
         'count' => NULL,
       ],
       [
-        'keys' => 'test-backend-1',
+        'keys' => 'Tést-backend-1',
         'count' => 1,
       ],
       [
-        'keys' => 'test-backend-2',
+        'keys' => 'Tést-backend-2',
         'count' => 2,
       ],
     ];
@@ -208,13 +205,15 @@ class PagesIntegrationTest extends IntegrationTestBase {
     list($query) = $this->getMethodArguments('backend', 'getAutocompleteSuggestions');
     $this->assertEquals(['name'], $query->getFulltextFields());
 
+    $this->drupalGet($this->getAdminPath('edit'));
+    $page = $this->getSession()->getPage();
+    $page->find('css', '#edit-suggesters-settings-server > summary')->click();
     $edit = [
       'suggesters[settings][server][fields][body]' => TRUE,
     ];
-    $this->drupalPostForm($this->getAdminPath('edit'), $edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     $this->drupalGet('test-search');
-    $assert_session->statusCodeEquals(200);
 
     $elements = $this->getAutocompleteSuggestions();
     $this->assertCount(5, $elements);

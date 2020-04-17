@@ -18,8 +18,8 @@ abstract class FieldTargetWithContainerTestBase extends FieldTargetTestBase {
     parent::setUp();
 
     $container = new ContainerBuilder();
-    $language_manager = $this->getMock(LanguageManagerInterface::class);
-    $language = $this->getMock(LanguageInterface::class);
+    $language_manager = $this->createMock(LanguageManagerInterface::class);
+    $language = $this->createMock(LanguageInterface::class);
     $language->expects($this->any())
       ->method('getId')
       ->will($this->returnValue('en'));

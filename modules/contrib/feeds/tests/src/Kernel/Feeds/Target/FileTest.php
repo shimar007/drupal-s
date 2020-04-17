@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\feeds\Kernel\Feeds\Target;
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\feeds\Feeds\Target\File;
 use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
 use Drupal\node\entity\Node;
@@ -64,8 +65,8 @@ class FileTest extends FileTestBase {
   public function testFullImportProcess() {
     // Add the file and image to test.
     $scheme = file_default_scheme();
-    $testImage = file_save_data('<svg width="5" height="5"><circle cx="3" cy="3" r="2" stroke="black" stroke-width="1" fill="white" /></svg>', $scheme . '://testImage.svg', FILE_EXISTS_REPLACE);
-    $testFile = file_save_data('feeds test file', $scheme . '://testFile.txt', FILE_EXISTS_REPLACE);
+    $testImage = file_save_data('<svg width="5" height="5"><circle cx="3" cy="3" r="2" stroke="black" stroke-width="1" fill="white" /></svg>', $scheme . '://testImage.svg', FileSystemInterface::EXISTS_REPLACE);
+    $testFile = file_save_data('feeds test file', $scheme . '://testFile.txt', FileSystemInterface::EXISTS_REPLACE);
 
     $feed_type = $this->createFeedType([
       'fetcher' => 'directory',

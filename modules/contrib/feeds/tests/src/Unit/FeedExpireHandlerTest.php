@@ -44,9 +44,12 @@ class FeedExpireHandlerTest extends FeedsUnitTestCase {
     parent::setUp();
 
     $this->dispatcher = new EventDispatcher();
-    $this->feed = $this->getMock(FeedInterface::class);
-    $this->handler = $this->getMock(FeedExpireHandler::class, ['getExpiredIds'], [$this->dispatcher]);
-    $this->handler->setStringTranslation($this->getMock(TranslationInterface::class));
+    $this->feed = $this->createMock(FeedInterface::class);
+    $this->handler = $this->getMockBuilder(FeedExpireHandler::class)
+      ->setMethods(['getExpiredIds'])
+      ->setConstructorArgs([$this->dispatcher])
+      ->getMock();
+    $this->handler->setStringTranslation($this->createMock(TranslationInterface::class));
   }
 
   /**

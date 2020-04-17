@@ -50,11 +50,11 @@ class HttpFetcherTest extends FeedsUnitTestCase {
   public function setUp() {
     parent::setUp();
 
-    $feed_type = $this->getMock(FeedTypeInterface::class);
+    $feed_type = $this->createMock(FeedTypeInterface::class);
 
     $this->mockHandler = new MockHandler();
     $client = new Client(['handler' => HandlerStack::create($this->mockHandler)]);
-    $cache = $this->getMock(CacheBackendInterface::class);
+    $cache = $this->createMock(CacheBackendInterface::class);
 
     $file_system = $this->prophesize(FileSystemInterface::class);
     $file_system->tempnam(Argument::type('string'), Argument::type('string'))->will(function ($args) {
@@ -124,7 +124,7 @@ class HttpFetcherTest extends FeedsUnitTestCase {
    * @covers ::onFeedDeleteMultiple
    */
   public function testOnFeedDeleteMultiple() {
-    $feed = $this->getMock(FeedInterface::class);
+    $feed = $this->createMock(FeedInterface::class);
     $feed->expects($this->exactly(3))
       ->method('getSource')
       ->will($this->returnValue('http://example.com'));

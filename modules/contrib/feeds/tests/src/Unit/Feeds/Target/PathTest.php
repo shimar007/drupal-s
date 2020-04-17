@@ -24,7 +24,7 @@ class PathTest extends FieldTargetTestBase {
     $method = $this->getMethod('Drupal\feeds\Feeds\Target\Path', 'prepareTarget')->getClosure();
 
     $configuration = [
-      'feed_type' => $this->getMock('Drupal\feeds\FeedTypeInterface'),
+      'feed_type' => $this->createMock('Drupal\feeds\FeedTypeInterface'),
       'target_definition' => $method($this->getMockFieldDefinition()),
     ];
     $target = new Path($configuration, 'path', []);

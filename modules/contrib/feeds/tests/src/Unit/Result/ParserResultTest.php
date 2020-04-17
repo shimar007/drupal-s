@@ -19,9 +19,9 @@ class ParserResultTest extends FeedsUnitTestCase {
     $result = new ParserResult();
 
     // Create some items.
-    $item1 = $this->getMock(ItemInterface::class);
-    $item2 = $this->getMock(ItemInterface::class);
-    $item3 = $this->getMock(ItemInterface::class);
+    $item1 = $this->createMock(ItemInterface::class);
+    $item2 = $this->createMock(ItemInterface::class);
+    $item3 = $this->createMock(ItemInterface::class);
 
     // Add an item.
     $result->addItem($item1);
@@ -44,9 +44,9 @@ class ParserResultTest extends FeedsUnitTestCase {
     $result = new ParserResult();
 
     // Create some items.
-    $item1 = $this->getMock(ItemInterface::class);
-    $item2 = $this->getMock(ItemInterface::class);
-    $item3 = $this->getMock(ItemInterface::class);
+    $item1 = $this->createMock(ItemInterface::class);
+    $item2 = $this->createMock(ItemInterface::class);
+    $item3 = $this->createMock(ItemInterface::class);
 
     $result->addItems([$item1, $item2, $item3]);
     $this->assertSame(3, $result->count());

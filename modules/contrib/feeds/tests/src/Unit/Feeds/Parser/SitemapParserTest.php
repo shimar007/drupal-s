@@ -47,14 +47,14 @@ class SitemapParserTest extends FeedsUnitTestCase {
   public function setUp() {
     parent::setUp();
 
-    $this->feedType = $this->getMock('Drupal\feeds\FeedTypeInterface');
+    $this->feedType = $this->createMock('Drupal\feeds\FeedTypeInterface');
     $configuration = ['feed_type' => $this->feedType];
     $this->parser = new SitemapParser($configuration, 'sitemap', []);
     $this->parser->setStringTranslation($this->getStringTranslationStub());
 
     $this->state = new State();
 
-    $this->feed = $this->getMock('Drupal\feeds\FeedInterface');
+    $this->feed = $this->createMock('Drupal\feeds\FeedInterface');
     $this->feed->expects($this->any())
       ->method('getType')
       ->will($this->returnValue($this->feedType));

@@ -181,6 +181,8 @@ feeds.processor.entity:
       type: sequence
       sequence:
         type: ignore
+    langcode:
+      type: string
     update_existing:
       type: integer
     update_non_existent:

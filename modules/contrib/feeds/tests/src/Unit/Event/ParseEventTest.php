@@ -16,9 +16,9 @@ class ParseEventTest extends FeedsUnitTestCase {
    * @covers ::getParserResult
    */
   public function test() {
-    $feed = $this->getMock('Drupal\feeds\FeedInterface');
-    $fetcher_result = $this->getMock('Drupal\feeds\Result\FetcherResultInterface');
-    $parser_result = $this->getMock('Drupal\feeds\Result\ParserResultInterface');
+    $feed = $this->createMock('Drupal\feeds\FeedInterface');
+    $fetcher_result = $this->createMock('Drupal\feeds\Result\FetcherResultInterface');
+    $parser_result = $this->createMock('Drupal\feeds\Result\ParserResultInterface');
     $event = new ParseEvent($feed, $fetcher_result);
 
     $this->assertSame($fetcher_result, $event->getFetcherResult());

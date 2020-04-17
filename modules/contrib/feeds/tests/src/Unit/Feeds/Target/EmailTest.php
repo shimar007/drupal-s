@@ -26,7 +26,7 @@ class EmailTest extends FieldTargetTestBase {
     $method = $this->getMethod('Drupal\feeds\Feeds\Target\Email', 'prepareTarget')->getClosure();
 
     $configuration = [
-      'feed_type' => $this->getMock('Drupal\feeds\FeedTypeInterface'),
+      'feed_type' => $this->createMock('Drupal\feeds\FeedTypeInterface'),
       'target_definition' => $method($this->getMockFieldDefinition()),
     ];
     $target = new Email($configuration, 'email', []);

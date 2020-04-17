@@ -4,6 +4,7 @@ namespace Drupal\feeds\Feeds\Fetcher\Form;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
@@ -23,13 +24,23 @@ class UploadFetcherForm extends ExternalPluginFormBase implements ContainerInjec
   protected $streamWrapperManager;
 
   /**
+   * The file and stream wrapper helper.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * Constructs a DirectoryFetcherForm object.
    *
    * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
    *   The stream wrapper manager.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file and stream wrapper helper.
    */
-  public function __construct(StreamWrapperManagerInterface $stream_wrapper_manager) {
+  public function __construct(StreamWrapperManagerInterface $stream_wrapper_manager, FileSystemInterface $file_system) {
     $this->streamWrapperManager = $stream_wrapper_manager;
+    $this->fileSystem = $file_system;
   }
 
   /**
@@ -37,7 +48,9 @@ class UploadFetcherForm extends ExternalPluginFormBase implements ContainerInjec
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('stream_wrapper_manager'));
+      $container->get('stream_wrapper_manager'),
+      $container->get('file_system')
+    );
   }
 
   /**
@@ -72,7 +85,7 @@ class UploadFetcherForm extends ExternalPluginFormBase implements ContainerInjec
     $values['allowed_extensions'] = preg_replace('/\s+/', ' ', trim($values['allowed_extensions']));
 
     // Ensure that the upload directory exists.
-    if (!empty($form['directory']) && !file_prepare_directory($values['directory'], FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+    if (!empty($form['directory']) && !$this->fileSystem->prepareDirectory($values['directory'], FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
       $form_state->setError($form['directory'], $this->t('The chosen directory does not exist and attempts to create it failed.'));
     }
   }

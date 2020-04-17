@@ -108,7 +108,7 @@ class GenericContentEntityProcessorTest extends FeedsKernelTestBase {
     $this->assertArrayNotHasKey('error', $messages);
 
     // Test expected values.
-    $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
+    $storage = $this->container->get('entity_type.manager')->getStorage($entity_type);
 
     $expected = [
       1 => [

@@ -21,11 +21,11 @@ class FeedHandlerBaseTest extends FeedsUnitTestCase {
    */
   public function testConstruct() {
     $container = new ContainerBuilder();
-    $container->set('event_dispatcher', $this->getMock(EventDispatcherInterface::class));
+    $container->set('event_dispatcher', $this->createMock(EventDispatcherInterface::class));
 
     $mock = $this->getMockForAbstractClass(FeedHandlerBase::class, [], '', FALSE);
     $mock_class = get_class($mock);
-    $handler = $mock_class::createInstance($container, $this->getMock(EntityTypeInterface::class));
+    $handler = $mock_class::createInstance($container, $this->createMock(EntityTypeInterface::class));
     $this->assertInstanceOf(FeedHandlerBase::class, $handler);
   }
 

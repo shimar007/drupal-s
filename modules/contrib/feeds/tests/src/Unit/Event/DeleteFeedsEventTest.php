@@ -15,7 +15,7 @@ class DeleteFeedsEventTest extends FeedsUnitTestCase {
    * @covers ::getFeeds
    */
   public function testGetFeeds() {
-    $feeds = [$this->getMock('Drupal\feeds\FeedInterface')];
+    $feeds = [$this->createMock('Drupal\feeds\FeedInterface')];
     $event = new DeleteFeedsEvent($feeds);
 
     $this->assertSame($feeds, $event->getFeeds());

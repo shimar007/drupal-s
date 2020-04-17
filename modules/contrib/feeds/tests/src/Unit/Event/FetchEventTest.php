@@ -15,8 +15,8 @@ class FetchEventTest extends FeedsUnitTestCase {
    * @covers ::getFetcherResult
    */
   public function testGetFetcherResult() {
-    $feed = $this->getMock('Drupal\feeds\FeedInterface');
-    $result = $this->getMock('Drupal\feeds\Result\FetcherResultInterface');
+    $feed = $this->createMock('Drupal\feeds\FeedInterface');
+    $result = $this->createMock('Drupal\feeds\Result\FetcherResultInterface');
     $event = new FetchEvent($feed);
 
     $event->setFetcherResult($result);

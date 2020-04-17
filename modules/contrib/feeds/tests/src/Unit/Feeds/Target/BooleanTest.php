@@ -25,7 +25,7 @@ class BooleanTest extends FieldTargetTestBase {
     $method = $this->getMethod(Boolean::class, 'prepareTarget')->getClosure();
 
     $configuration = [
-      'feed_type' => $this->getMock(FeedTypeInterface::class),
+      'feed_type' => $this->createMock(FeedTypeInterface::class),
       'target_definition' => $method($this->getMockFieldDefinition()),
     ];
 

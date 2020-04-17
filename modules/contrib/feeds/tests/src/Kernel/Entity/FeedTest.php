@@ -205,8 +205,13 @@ class FeedTest extends FeedsKernelTestBase {
   public function testPushImport() {
     $feed = $this->createFeed($this->feedType->id());
     $feed->pushImport(file_get_contents($this->resourcesPath() . '/rss/googlenewstz.rss2'));
-    // @todo pushImport() may be put a job on the queue in the future, so no
-    // further asserts are being made here.
+
+    // pushImport() is expected to put a job on a queue. Run all items from
+    // this queue.
+    $this->runCompleteQueue('feeds_feed_refresh:' . $this->feedType->id());
+
+    // Assert that 6 nodes have been created.
+    $this->assertNodeCount(6);
   }
 
   /**
@@ -379,7 +384,7 @@ class FeedTest extends FeedsKernelTestBase {
     $feed = $this->createFeed($this->feedType->id());
 
     // Mock a state object.
-    $state = $this->getMock(StateInterface::class);
+    $state = $this->createMock(StateInterface::class);
 
     // Set state on the fetch stage.
     $feed->setState(StateInterface::FETCH, $state);
@@ -398,7 +403,7 @@ class FeedTest extends FeedsKernelTestBase {
     $feed = $this->createFeed($this->feedType->id());
 
     // Set a state.
-    $state = $this->getMock(StateInterface::class);
+    $state = $this->createMock(StateInterface::class);
     $feed->setState(StateInterface::FETCH, $state);
     $this->assertSame($state, $feed->getState(StateInterface::FETCH));
 
@@ -414,7 +419,7 @@ class FeedTest extends FeedsKernelTestBase {
     $feed = $this->createFeed($this->feedType->id());
 
     // Set a state.
-    $state = $this->getMock(StateInterface::class);
+    $state = $this->createMock(StateInterface::class);
     $feed->setState(StateInterface::FETCH, $state);
 
     // Save states.
@@ -455,7 +460,7 @@ class FeedTest extends FeedsKernelTestBase {
     ];
 
     foreach ($classes as $class) {
-      $plugin = $this->getMock($class);
+      $plugin = $this->createMock($class);
       $plugin->expects($this->atLeastOnce())
         ->method('defaultFeedConfiguration')
         ->will($this->returnValue([]));
@@ -480,7 +485,7 @@ class FeedTest extends FeedsKernelTestBase {
     ];
 
     foreach ($classes as $class) {
-      $plugin = $this->getMock($class);
+      $plugin = $this->createMock($class);
       $plugin->expects($this->atLeastOnce())
         ->method('defaultFeedConfiguration')
         ->will($this->returnValue([]));

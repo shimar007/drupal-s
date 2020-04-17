@@ -22,7 +22,7 @@ class CsvParserFeedFormTest extends FeedsUnitTestCase {
    * @covers ::submitConfigurationForm
    */
   public function testFeedForm() {
-    $plugin = $this->getMock(FeedsPluginInterface::class);
+    $plugin = $this->createMock(FeedsPluginInterface::class);
 
     $feed = $this->prophesize(FeedInterface::class);
     $feed->getConfigurationFor($plugin)

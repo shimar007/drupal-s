@@ -21,7 +21,7 @@ class HttpFetcherFormTest extends FeedsUnitTestCase {
   public function testConfigurationForm() {
     $form_object = new HttpFetcherForm();
 
-    $form_object->setPlugin($this->getMock(FeedsPluginInterface::class));
+    $form_object->setPlugin($this->createMock(FeedsPluginInterface::class));
 
     $form_object->setStringTranslation($this->getStringTranslationStub());
 

@@ -115,7 +115,7 @@ trait FeedsCommonTrait {
    */
   protected function reloadEntity(EntityInterface $entity) {
     /** @var \Drupal\Core\Entity\ $storageEntityStorageInterface */
-    $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
+    $storage = $this->container->get('entity_type.manager')->getStorage($entity->getEntityTypeId());
     $storage->resetCache([$entity->id()]);
     return $storage->load($entity->id());
   }
@@ -183,6 +183,25 @@ trait FeedsCommonTrait {
    */
   protected function resourcesPath() {
     return $this->absolutePath() . '/tests/resources';
+  }
+
+  /**
+   * Runs all items from one queue.
+   *
+   * @param string $queue_name
+   *   The name of the queue to run all items from.
+   */
+  protected function runCompleteQueue($queue_name) {
+    // Create queue.
+    $queue = \Drupal::service('queue')->get($queue_name);
+    $queue->createQueue();
+    $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance($queue_name);
+
+    // Process all items of queue.
+    while ($item = $queue->claimItem()) {
+      $queue_worker->processItem($item->data);
+      $queue->deleteItem($item);
+    }
   }
 
 }

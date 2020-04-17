@@ -18,7 +18,7 @@ class EventDispatcherTraitTest extends FeedsUnitTestCase {
    */
   public function test() {
     $mock = $this->getMockForTrait('Drupal\feeds\Event\EventDispatcherTrait');
-    $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+    $dispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
 
     $container = new ContainerBuilder();
     $container->set('event_dispatcher', $dispatcher);

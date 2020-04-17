@@ -21,10 +21,10 @@ class FeedQueueWorkerBaseTest extends FeedsUnitTestCase {
    */
   public function test() {
     $container = new ContainerBuilder();
-    $container->set('queue', $this->getMock('Drupal\Core\Queue\QueueFactory', [], [], '', FALSE));
+    $container->set('queue', $this->createMock('Drupal\Core\Queue\QueueFactory', [], [], '', FALSE));
     $container->set('event_dispatcher', new EventDispatcher());
     $container->set('account_switcher', $this->getMockedAccountSwitcher());
-    $container->set('entity_type.manager', $this->getMock(EntityTypeManagerInterface::class));
+    $container->set('entity_type.manager', $this->createMock(EntityTypeManagerInterface::class));
 
     $plugin = $this->getMockForAbstractClass('Drupal\feeds\Plugin\QueueWorker\FeedQueueWorkerBase', [], '', FALSE);
     $plugin = $plugin::create($container, [], '', []);

@@ -53,7 +53,7 @@ namespace Drupal\Tests\feeds\Unit {
      *   A mocked stream wrapper manager.
      */
     protected function getMockStreamWrapperManager() {
-      $mock = $this->getMock(StreamWrapperManager::class, [], [], '', FALSE);
+      $mock = $this->createMock(StreamWrapperManager::class, [], [], '', FALSE);
 
       $wrappers = [
         'vfs' => 'VFS',
@@ -75,21 +75,6 @@ namespace Drupal\Tests\feeds\Unit {
      * Defines stub constants.
      */
     protected function defineConstants() {
-      if (!defined('FILE_MODIFY_PERMISSIONS')) {
-        define('FILE_MODIFY_PERMISSIONS', 2);
-      }
-      if (!defined('FILE_CREATE_DIRECTORY')) {
-        define('FILE_CREATE_DIRECTORY', 1);
-      }
-      if (!defined('FILE_EXISTS_RENAME')) {
-        define('FILE_EXISTS_RENAME', 0);
-      }
-      if (!defined('FILE_EXISTS_REPLACE')) {
-        define('FILE_EXISTS_REPLACE', 1);
-      }
-      if (!defined('FILE_EXISTS_ERROR')) {
-        define('FILE_EXISTS_ERROR', 2);
-      }
       if (!defined('FILE_STATUS_PERMANENT')) {
         define('FILE_STATUS_PERMANENT', 1);
       }
@@ -120,17 +105,6 @@ namespace {
      */
     function file_stream_wrapper_uri_normalize($dir) {
       return $dir;
-    }
-
-  }
-
-  if (!function_exists('file_prepare_directory')) {
-
-    /**
-     * Stub for file_prepare_directory() function.
-     */
-    function file_prepare_directory(&$directory) {
-      return mkdir($directory);
     }
 
   }

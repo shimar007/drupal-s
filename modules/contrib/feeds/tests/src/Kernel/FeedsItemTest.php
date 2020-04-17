@@ -3,6 +3,7 @@
 namespace Drupal\Tests\feeds\Kernel;
 
 use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
+use Drupal\node\Entity\Node;
 
 /**
  * Tests for the feeds_item field.
@@ -77,9 +78,9 @@ class FeedsItemTest extends FeedsKernelTestBase {
     $feed->import();
 
     // Assert that two nodes have been updated.
-    $node = node_load(1);
+    $node = Node::load(1);
     $this->assertEquals('Lorem ipsum dolor sit amet.', $node->body->value);
-    $node = node_load(2);
+    $node = Node::load(2);
     $this->assertEquals('Ut wisi enim ad minim veniam.', $node->body->value);
   }
 
@@ -141,9 +142,9 @@ class FeedsItemTest extends FeedsKernelTestBase {
     $feed->import();
 
     // Assert that two nodes have been updated.
-    $node = node_load(1);
+    $node = Node::load(1);
     $this->assertEquals('Lorem ipsum dolor sit amet.', $node->body->value);
-    $node = node_load(2);
+    $node = Node::load(2);
     $this->assertEquals('Ut wisi enim ad minim veniam.', $node->body->value);
   }
 

@@ -17,8 +17,8 @@ class ProcessEventTest extends FeedsUnitTestCase {
    * @covers ::getItem
    */
   public function testGetItem() {
-    $feed = $this->getMock(FeedInterface::class);
-    $item = $this->getMock(ItemInterface::class);
+    $feed = $this->createMock(FeedInterface::class);
+    $item = $this->createMock(ItemInterface::class);
     $event = new ProcessEvent($feed, $item);
 
     $this->assertSame($item, $event->getItem());

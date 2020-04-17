@@ -25,7 +25,7 @@ class TimestampTest extends FieldTargetWithContainerTestBase {
     $target_definition = $method($this->getMockFieldDefinition());
 
     $configuration = [
-      'feed_type' => $this->getMock('Drupal\feeds\FeedTypeInterface'),
+      'feed_type' => $this->createMock('Drupal\feeds\FeedTypeInterface'),
       'target_definition' => $target_definition,
     ];
     $target = new Timestamp($configuration, 'timestamp', []);

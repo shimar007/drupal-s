@@ -50,14 +50,14 @@ class CsvParserTest extends FeedsUnitTestCase {
   public function setUp() {
     parent::setUp();
 
-    $this->feedType = $this->getMock(FeedTypeInterface::class);
+    $this->feedType = $this->createMock(FeedTypeInterface::class);
     $configuration = ['feed_type' => $this->feedType, 'line_limit' => 3];
     $this->parser = new CsvParser($configuration, 'csv', []);
     $this->parser->setStringTranslation($this->getStringTranslationStub());
 
     $this->state = new State();
 
-    $this->feed = $this->getMock(FeedInterface::class);
+    $this->feed = $this->createMock(FeedInterface::class);
     $this->feed->expects($this->any())
       ->method('getType')
       ->will($this->returnValue($this->feedType));

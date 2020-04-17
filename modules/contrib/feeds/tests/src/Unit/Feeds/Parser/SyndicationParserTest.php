@@ -81,14 +81,14 @@ class SyndicationParserTest extends FeedsUnitTestCase {
     $container->set('feed.bridge.reader', $manager);
     \Drupal::setContainer($container);
 
-    $this->feedType = $this->getMock('Drupal\feeds\FeedTypeInterface');
+    $this->feedType = $this->createMock('Drupal\feeds\FeedTypeInterface');
     $configuration = ['feed_type' => $this->feedType];
     $this->parser = new SyndicationParser($configuration, 'syndication', []);
     $this->parser->setStringTranslation($this->getStringTranslationStub());
 
     $this->state = new State();
 
-    $this->feed = $this->getMock('Drupal\feeds\FeedInterface');
+    $this->feed = $this->createMock('Drupal\feeds\FeedInterface');
     $this->feed->expects($this->any())
       ->method('getType')
       ->will($this->returnValue($this->feedType));

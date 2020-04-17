@@ -6,7 +6,7 @@
   "homepage": "https://www.drupal.org/project/feeds",
   "support": {
     "issues": "https://www.drupal.org/project/issues/feeds",
-    "source": "http://cgit.drupalcode.org/feeds"
+    "source": "https://git.drupalcode.org/project/feeds"
   },
   "license": "GPL-2.0+"
 }

@@ -24,7 +24,7 @@ trait FeedsMockingTrait {
    *   A mocked feed type entity.
    */
   protected function getMockFeedType() {
-    $feed_type = $this->getMock(FeedTypeInterface::class);
+    $feed_type = $this->createMock(FeedTypeInterface::class);
     $feed_type->id = 'test_feed_type';
     $feed_type->description = 'This is a test feed type';
     $feed_type->label = 'Test feed type';
@@ -42,7 +42,7 @@ trait FeedsMockingTrait {
    *   A mocked feed entity.
    */
   protected function getMockFeed() {
-    $feed = $this->getMock(FeedInterface::class);
+    $feed = $this->createMock(FeedInterface::class);
     $feed->expects($this->any())
       ->method('getType')
       ->will($this->returnValue($this->getMockFeedType()));
@@ -82,7 +82,7 @@ trait FeedsMockingTrait {
    *   The mocked acount object.
    */
   protected function getMockAccount(array $perms = []) {
-    $account = $this->getMock(AccountInterface::class);
+    $account = $this->createMock(AccountInterface::class);
     if ($perms) {
       $map = [];
       foreach ($perms as $perm => $has) {
@@ -106,7 +106,7 @@ trait FeedsMockingTrait {
    *   A mocked field definition.
    */
   protected function getMockFieldDefinition(array $settings = []) {
-    $definition = $this->getMock(FieldDefinitionInterface::class);
+    $definition = $this->createMock(FieldDefinitionInterface::class);
     $definition->expects($this->any())
       ->method('getSettings')
       ->will($this->returnValue($settings));
@@ -121,7 +121,7 @@ trait FeedsMockingTrait {
    *   A mocked file system.
    */
   protected function getMockFileSystem() {
-    $definition = $this->getMock(FileSystemInterface::class);
+    $definition = $this->createMock(FileSystemInterface::class);
     $definition->expects($this->any())
       ->method('tempnam')
       ->will($this->returnCallback(function () {

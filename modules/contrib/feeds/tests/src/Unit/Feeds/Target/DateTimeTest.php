@@ -32,7 +32,7 @@ class DateTimeTest extends FieldTargetWithContainerTestBase {
   public function setUp() {
     parent::setUp();
 
-    $this->feedType = $this->getMock('Drupal\feeds\FeedTypeInterface');
+    $this->feedType = $this->createMock('Drupal\feeds\FeedTypeInterface');
     $method = $this->getMethod('Drupal\feeds\Feeds\Target\DateTime', 'prepareTarget')->getClosure();
     $this->targetDefinition = $method($this->getMockFieldDefinition(['datetime_type' => 'time']));
   }

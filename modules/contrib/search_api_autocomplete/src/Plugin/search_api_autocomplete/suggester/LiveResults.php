@@ -221,7 +221,7 @@ class LiveResults extends SuggesterPluginBase implements PluginFormInterface {
       }
 
       // Check whether the user has access to this item.
-      if (!$item->checkAccess()) {
+      if (!$item->getAccessResult()->isAllowed()) {
         continue;
       }
 

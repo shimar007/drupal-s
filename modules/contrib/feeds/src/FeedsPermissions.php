@@ -2,8 +2,8 @@
 
 namespace Drupal\feeds;
 
-use Drupal\Core\Routing\UrlGeneratorTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Url;
 use Drupal\feeds\Entity\FeedType;
 
 /**
@@ -12,7 +12,6 @@ use Drupal\feeds\Entity\FeedType;
 class FeedsPermissions {
 
   use StringTranslationTrait;
-  use UrlGeneratorTrait;
 
   /**
    * Returns an array of content permissions.
@@ -24,7 +23,7 @@ class FeedsPermissions {
     return [
       'access feed overview' => [
         'title' => $this->t('Access the Feed overview page'),
-        'description' => $this->t('Get an overview of <a href=":url">all feeds</a>.', [':url' => $this->url('feeds.admin')]),
+        'description' => $this->t('Get an overview of <a href=":url">all feeds</a>.', [':url' => Url::fromRoute('feeds.admin')]),
       ],
     ];
   }

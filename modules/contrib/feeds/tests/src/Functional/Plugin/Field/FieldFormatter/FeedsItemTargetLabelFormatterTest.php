@@ -75,8 +75,8 @@ class FeedsItemTargetLabelFormatterTest extends FeedsItemFormatterTestBase {
     $expected = [
       '#type' => 'link',
       '#title' => $feed->label(),
-      '#url' => $feed->urlInfo(),
-      '#options' => $feed->urlInfo()->getOptions(),
+      '#url' => $feed->toUrl(),
+      '#options' => $feed->toUrl()->getOptions(),
       '#cache' => [
         'contexts' => [
           'user.permissions',
