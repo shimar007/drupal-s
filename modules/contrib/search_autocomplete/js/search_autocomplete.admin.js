@@ -12,7 +12,7 @@
    * Determine a unique selector for the given element
    */
   $.fn.extend({
-    getPath: function(path) {
+    getPath: function (path) {
 
       // The first time this function is called, path won't be defined.
       if (typeof path == 'undefined') {
@@ -28,7 +28,7 @@
       var cur = this.get(0).nodeName.toLowerCase();
 
       // Determine the IDs and path.
-      var id    = this.attr('id');
+      var id = this.attr('id');
       var aClass = this.attr('class');
 
       // Add the #id if there is one.
@@ -43,8 +43,9 @@
 
       if ($(cur + path).length <= 1) {
         return cur + path;
-      } else {
-      // Recurse up the DOM.
+      }
+      else {
+        // Recurse up the DOM.
         return this.parent().getPath(' > ' + cur + path);
       }
     }
@@ -52,7 +53,7 @@
 
   Drupal.behaviors.search_autocomplete_admin = {
 
-    attach: function(context) {
+    attach: function (context) {
 
       var input_selector = "input[type='text']:not(.ui-autocomplete-input), input[type='search']:not(.ui-autocomplete-input)";
       var selector = '';
@@ -66,7 +67,7 @@
         $("#sa_admin_menu").show();
         $('#sa_admin_menu').css('left', offset.left + $(this).width() - 5);
         $('#sa_admin_menu').css('top', offset.top + $(this).height() - 5);
-        $('#sa_admin_menu').css('display','inline');
+        $('#sa_admin_menu').css('display', 'inline');
         $("#sa_admin_menu").css("position", "absolute");
 
         // find element unique selector
@@ -82,16 +83,16 @@
       });
 
       // hide the menu when out
-      $("body").on("mouseover", "#sa_admin_menu", function(){
+      $("body").on("mouseover", "#sa_admin_menu", function () {
         $(this).show();
       });
-      $("body").on("mouseout", "#sa_admin_menu", function(){
+      $("body").on("mouseout", "#sa_admin_menu", function () {
         $(this).hide();
       });
 
       // add a new autocompletion
       $("body").on("click", ".sa_add", function () {
-        var $selector = Drupal.encodePath(selector)
+        var $selector = Drupal.encodePath(selector);
         document.location.href = Drupal.url('admin/config/search/search_autocomplete/add?label=' + Drupal.t('Autocompletion for @selector', {'@selector': $selector}) + '&selector=' + $selector);
       });
     }

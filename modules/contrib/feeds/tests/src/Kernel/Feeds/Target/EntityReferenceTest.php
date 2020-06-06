@@ -409,12 +409,12 @@ class EntityReferenceTest extends FeedsKernelTestBase {
 
     // Assert that "Belgium" did not get a parent assigned, but "Netherlands"
     // did, since the latter appeared later in the file.
-    $this->assertEquals([], $this->entityManager->getStorage('taxonomy_term')->loadParents(1));
-    $this->assertEquals([2], array_keys($this->entityManager->getStorage('taxonomy_term')->loadParents(3)));
+    $this->assertEquals([], $this->entityTypeManager->getStorage('taxonomy_term')->loadParents(1));
+    $this->assertEquals([2], array_keys($this->entityTypeManager->getStorage('taxonomy_term')->loadParents(3)));
 
     // Second import. Now Belgium should have a parent term.
     $feed->import();
-    $this->assertEquals([2], array_keys($this->entityManager->getStorage('taxonomy_term')->loadParents(1)));
+    $this->assertEquals([2], array_keys($this->entityTypeManager->getStorage('taxonomy_term')->loadParents(1)));
 
     // Ensure that terms aren't updated again. Change the descriptions of all
     // terms, so we can check that these won't be updated by Feeds.

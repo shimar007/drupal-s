@@ -363,7 +363,7 @@ elements: |
     '#type': webform_video_file
     '#title': 'Video file'
     '#disabled': true
-
+  
 css: ''
 javascript: ''
 settings:
@@ -405,6 +405,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -477,6 +482,7 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
 access:
@@ -527,3 +533,4 @@ access:
     users: {  }
     permissions: {  }
 handlers: {  }
+variants: {  }

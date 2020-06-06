@@ -1,6 +1,8 @@
 <?php
 
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\views\Views;
 
@@ -25,10 +27,10 @@ function search_autocomplete_element_info_alter(&$types) {
    * even if coming from other modules or if unknown yet.
    */
   foreach ($types as $type => $info) {
-    $process_methods = isset($info['#process']) ? $info['#process'] : array();
+    $process_methods = isset($info['#process']) ? $info['#process'] : [];
     foreach ($process_methods as $method) {
       // If the element is autocompleted, overrides it.
-      if (in_array('processAutocomplete', (array)$method)) {
+      if (in_array('processAutocomplete', (array) $method)) {
         $types[$type]['#process'][] = 'process_search_autocomplete';
         break;
       }
@@ -75,13 +77,17 @@ function process_search_autocomplete(&$element) {
 function attach_configuration_to_element(&$element, $config_id) {
 
   // Load the configuration.
-  $config = \Drupal::entityTypeManager()->getStorage('autocompletion_configuration')->load($config_id);
+  $config = Drupal::entityTypeManager()
+    ->getStorage('autocompletion_configuration')
+    ->load($config_id);
 
   // No need to continue if the $config is empty.
-  if ($config == null)  return;
+  if ($config == NULL || !$config->getStatus()) {
+    return;
+  }
 
   $source = $config->getSource();
-  $exposed_filters = array();
+  $exposed_filters = [];
 
   // Build the callback URL.
   $input_source = explode('::', $source);
@@ -90,7 +96,7 @@ function attach_configuration_to_element(&$element, $config_id) {
     // Load the view.
     $view = Views::getView($input_source[0]);
     // Load the required display.
-    if ($view != null && $view->setDisplay($input_source[1])) {
+    if ($view != NULL && $view->setDisplay($input_source[1])) {
       // Retrieve the display URL.
       $display = $view->getDisplay();
       $source = '/' . $display->getPath();
@@ -107,40 +113,59 @@ function attach_configuration_to_element(&$element, $config_id) {
 
   // In case of internal URL, convert it to absolute.
   if (!UrlHelper::isExternal($source)) {
-    $source = Url::fromUri('internal:' . $source, array('absolute' => TRUE))->toString();
+    $prefix = 'internal:';
+    if (strpos($source, '/') !== 0) {
+      $prefix .= '/';
+    }
+    $source = Url::fromUri($prefix . $source, ['absolute' => FALSE])->toString();
   }
 
-  $settings = array(
-    'source'          => $source,
-    'selector'        => $config->getSelector(),
-    'minChars'        => $config->getMinChar(),
-    'maxSuggestions'  => $config->getMaxSuggestions(),
-    'autoSubmit'      => $config->getAutoSubmit(),
-    'autoRedirect'    => $config->getAutoRedirect(),
-    'theme'           => basename($config->getTheme(), '.css'), // theme without extension
-    'filters'         => $exposed_filters,
-    'noResult'       => array(
-      'group' => array(
+  $settings = [
+    'source' => $source,
+    'selector' => $config->getSelector(),
+    'minChars' => $config->getMinChar(),
+    'maxSuggestions' => $config->getMaxSuggestions(),
+    'autoSubmit' => $config->getAutoSubmit(),
+    'autoRedirect' => $config->getAutoRedirect(),
+    'theme' => basename($config->getTheme(), '.css'), // theme without extension
+    'filters' => $exposed_filters,
+    'noResult' => [
+      'group' => [
         'group_id' => 'no_results',
-      ),
+      ],
       'label' => $config->getNoResultLabel(),
-      'value' => $config->getNoResultValue()
-    ),
-    'moreResults'       => array(
-      'group' => array(
+      'value' => $config->getNoResultValue(),
+      'link' => $config->getNoResultLink(),
+    ],
+    'moreResults' => [
+      'group' => [
         'group_id' => 'more_results',
-      ),
+      ],
       'label' => $config->getMoreResultsLabel(),
-      'value' => $config->getMoreResultsValue()
-    )
-  );
+      'value' => $config->getMoreResultsValue(),
+      'link' => $config->getMoreResultsLink(),
+    ],
+  ];
   $element['#attached']['drupalSettings']['search_autocomplete'][$config->id()] = $settings;
 
   // Add the theme library if available
-  if (\Drupal::service('library.discovery')->getLibraryByName('search_autocomplete', 'theme.' . $config->getTheme())) {
+  if (Drupal::service('library.discovery')
+    ->getLibraryByName('search_autocomplete', 'theme.' . $config->getTheme())) {
     $element['#attached']['library'][] = 'search_autocomplete/theme.' . $config->getTheme();
   }
   return $element;
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Display a notice to user for cache rebuild after install.
+ */
+function search_autocomplete_install() {
+  drupal_set_message(t('To finish install of Search Autocomplete, you must %clear_caches.', [
+    '%clear_caches' => Link::fromTextAndUrl(t('Clear all caches'),
+      Url::fromRoute('system.performance_settings'))->toString()
+  ]));
 }
 
 /**
@@ -151,15 +176,15 @@ function attach_configuration_to_element(&$element, $config_id) {
  * Since we can't add files through css in #attached anymore, this is a trick
  * defining as many libraries as the number of found CSS in the theme folder.
  *
- * @return array[]
+ * @return array
  *   An array of library definitions.
  */
 function search_autocomplete_library_info_build() {
   $libraries = [];
 
   // Find all available themes.
-  $themes = array();
-  $files = file_scan_directory(drupal_get_path('module', 'search_autocomplete') . '/css/themes', '/.*\.css\z/', array('recurse' => FALSE));
+  $themes = [];
+  $files = file_scan_directory(drupal_get_path('module', 'search_autocomplete') . '/css/themes', '/.*\.css\z/', ['recurse' => FALSE]);
 
   // Create a new library for all themes.
   foreach ($files as $file) {
@@ -180,9 +205,9 @@ function search_autocomplete_library_info_build() {
  */
 function search_autocomplete_library_info_alter(array &$libraries, $extension) {
   if ($extension == 'core' && isset($libraries['drupal.autocomplete'])) {
-    $libraries['drupal.autocomplete']['js'] = array(
-      '/' . drupal_get_path('module', 'search_autocomplete') . '/js/jquery.autocomplete.js' => array(),
-    );
+    $libraries['drupal.autocomplete']['js'] = [
+      '/' . drupal_get_path('module', 'search_autocomplete') . '/js/jquery.autocomplete.js' => [],
+    ];
   }
 }
 
@@ -194,23 +219,24 @@ function search_autocomplete_library_info_alter(array &$libraries, $extension) {
  */
 function search_autocomplete_page_attachments(array &$attachments) {
   // Check user permissions.
-  if (!\Drupal::currentUser()->hasPermission('use search autocomplete')) {
+  if (!Drupal::currentUser()->hasPermission('use search autocomplete')) {
     return;
   }
 
   // Load module settings.
-  $module_settings = \Drupal::config('search_autocomplete.settings');
+  $module_settings = Drupal::config('search_autocomplete.settings');
 
   // Check if user have authorization to use admin tools and if enabled.
-  if (\Drupal::currentUser()->hasPermission('administer Search Autocomplete') && $module_settings->get('admin_helper')) {
+  if (Drupal::currentUser()
+      ->hasPermission('administer Search Autocomplete') && $module_settings->get('admin_helper')) {
     $attachments['#attached']['library'][] = 'search_autocomplete/search_autocomplete.admin.helper';
   }
 
   // Load all configurations with selectors
-  $autocomplete_configuration_entities = \Drupal::entityQuery('autocompletion_configuration')
-  ->condition('status', TRUE)
-  ->condition('selector', '', '<>')
-  ->execute();
+  $autocomplete_configuration_entities = Drupal::entityQuery('autocompletion_configuration')
+    ->condition('status', TRUE)
+    ->condition('selector', '', '<>')
+    ->execute();
 
   // End-up here if no config to set.
   if (empty($autocomplete_configuration_entities)) {
@@ -218,12 +244,10 @@ function search_autocomplete_page_attachments(array &$attachments) {
   }
 
   // Add the settings to be pass to JS:
-  $autocomplete_configurations = array();
   foreach ($autocomplete_configuration_entities as $config_id) {
     attach_configuration_to_element($attachments, $config_id);
   }
 
-  //$view = \Drupal::entityManager()->getStorage('view')->load(EntityAutocomplete::extractEntityIdFromAutocompleteInput($config->getSource()));
   $attachments['#attached']['library'][] = 'core/drupal.autocomplete';
 }
 
@@ -233,15 +257,28 @@ function search_autocomplete_page_attachments(array &$attachments) {
  * Adds autocomplete_configurations to formAPI for search block and search page.
  * This is an example on how to use configurations from code.
  */
-function search_autocomplete_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+function search_autocomplete_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+
+  // Prevent a useless query to configurations.
+  if ($form_id != $form_id && $form_id != 'search_form') {
+    return;
+  }
+
+  // Load the default activated configurations.
+  $autocomplete_configuration_entities = Drupal::entityQuery('autocompletion_configuration')
+    ->condition('status', TRUE)
+    ->condition('id', ['search_block', 'search_form_users', 'search_form_content'], 'IN')
+    ->execute();
+
   // Autocomplete the default search block.
-  if ($form_id == 'search_block_form') {
+  if ($form_id == 'search_block_form' && isset($autocomplete_configuration_entities['search_block'])) {
     $form['keys']['#autocomplete_configuration'] = 'search_block';
   }
   else if ($form_id == 'search_form') {
-    if (\Drupal::routeMatch()->getRouteName() == 'search.view_user_search') {
+    if (Drupal::routeMatch()->getRouteName() == 'search.view_user_search' && isset($autocomplete_configuration_entities['search_form_users'])) {
       $form['basic']['keys']['#autocomplete_configuration'] = 'search_form_users';
-    } else {
+    }
+    else if (isset($autocomplete_configuration_entities['search_form_users'])) {
       $form['basic']['keys']['#autocomplete_configuration'] = 'search_form_content';
     }
   }

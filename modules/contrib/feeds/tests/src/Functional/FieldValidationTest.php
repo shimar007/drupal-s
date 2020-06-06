@@ -136,7 +136,7 @@ class FieldValidationTest extends FeedsBrowserTestBase {
 
     // Assert that 2 nodes have been created.
     $this->assertNodeCount(2);
-    $this->assertSession()->pageTextContains('Created 2 Articles');
+    $this->assertSession()->pageTextContains('Created 2 Article items');
   }
 
   /**

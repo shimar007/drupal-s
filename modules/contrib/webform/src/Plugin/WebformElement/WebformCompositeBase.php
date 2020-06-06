@@ -7,7 +7,9 @@ use Drupal\Core\Form\OptGroup;
 use Drupal\Core\Render\Element as RenderElement;
 use Drupal\Core\Render\Element;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\file\Entity\File;
 use Drupal\webform\Entity\WebformOptions;
+use Drupal\webform\Plugin\WebformElementAttachmentInterface;
 use Drupal\webform\Plugin\WebformElementComputedInterface;
 use Drupal\webform\Plugin\WebformElementEntityReferenceInterface;
 use Drupal\webform\Utility\WebformArrayHelper;
@@ -20,7 +22,7 @@ use Drupal\webform\WebformSubmissionInterface;
 /**
  * Provides a base for composite elements.
  */
-abstract class WebformCompositeBase extends WebformElementBase {
+abstract class WebformCompositeBase extends WebformElementBase implements WebformElementAttachmentInterface {
 
   /**
    * Composite elements defined in the webform composite form element.
@@ -835,7 +837,7 @@ abstract class WebformCompositeBase extends WebformElementBase {
 
     // Update #required label.
     $form['validation']['required_container']['required']['#title'] .= ' <em>' . $this->t('(Display purposes only)') . '</em>';
-    $form['validation']['required_container']['required']['#description'] = $this->t('If checked, adds required indicator to the title, if visible. To enforce individual fields, also tick "Required" under the @name settings above.', ['@name' => $this->getPluginLabel()]);
+    $form['validation']['required_container']['required']['#description'] = $this->t('If checked, adds required indicator to the title, if visible. To required individual elements, also tick "Required" under the @name settings above.', ['@name' => $this->getPluginLabel()]);
 
     // Update '#multiple__header_label'.
     $form['element']['multiple__header_container']['multiple__header_label']['#states']['visible'][':input[name="properties[multiple__header]"]'] = ['checked' => FALSE];
@@ -1415,7 +1417,7 @@ abstract class WebformCompositeBase extends WebformElementBase {
    * @return array
    *   An array of managed file element keys.
    */
-  protected function getManagedFiles(array $element) {
+  public function getManagedFiles(array $element) {
     $id = $element['#webform_id'];
 
     if (isset($this->elementsManagedFiles[$id])) {
@@ -1480,6 +1482,42 @@ abstract class WebformCompositeBase extends WebformElementBase {
     }
 
     return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAttachments(array $element, WebformSubmissionInterface $webform_submission, array $options = []) {
+    $data = $webform_submission->getData();
+
+    // Get file ids.
+    $fids = [];
+    $composite_elements_managed_files = $this->getManagedFiles($element);
+    foreach ($composite_elements_managed_files as $composite_key) {
+      $fids = array_merge($fids, $this->getManagedFileIdsFromData($element, $data, $composite_key));
+    }
+
+    if (!$fids) {
+      return [];
+    }
+
+    // Get attachments.
+    $attachments = [];
+    $files = File::loadMultiple($fids);
+    foreach ($files as $file) {
+      $attachments[] = [
+        'filecontent' => file_get_contents($file->getFileUri()),
+        'filename' => $file->getFilename(),
+        'filemime' => $file->getMimeType(),
+        // File URIs that are not supported return FALSE, when this happens
+        // still use the file's URI as the file's path.
+        'filepath' => \Drupal::service('file_system')->realpath($file->getFileUri()) ?: $file->getFileUri(),
+        // URI is used when debugging or resending messages.
+        // @see \Drupal\webform\Plugin\WebformHandler\EmailWebformHandler::buildAttachments
+        '_fileurl' => file_create_url($file->getFileUri()),
+      ];
+    }
+    return $attachments;
   }
 
 }

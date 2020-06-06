@@ -10,7 +10,7 @@ dependencies:
 
 configure: minifyhtml.config
 
-# Information added by Drupal.org packaging script on 2019-12-11
-version: '8.x-1.9'
+# Information added by Drupal.org packaging script on 2020-05-14
+version: '8.x-1.10'
 project: 'minifyhtml'
-datestamp: 1576075988
+datestamp: 1589484099

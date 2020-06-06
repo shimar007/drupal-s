@@ -18,26 +18,17 @@ class SettingsTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('node', 'search_autocomplete');
+  public static $modules = ['node', 'search_autocomplete'];
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Search Autocomplete settings test.',
       'description' => 'Test the Search Autocomplete settings page.',
       'group' => 'Search Autocomplete',
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-    $admin_user = $this->drupalCreateUser(array('administer search autocomplete'));
-    $this->drupalLogin($admin_user);
+    ];
   }
 
   /**
@@ -65,15 +56,25 @@ class SettingsTest extends WebTestBase {
 
     // ----------------------------------------------------------------------
     // 2) Desactivate all available configurations and reverse settings.
-    $edit = array(
+    $edit = [
       'configs[search_block][enabled]' => FALSE,
       'admin_helper' => TRUE,
-    );
-    $this->drupalPostForm(NULL, $edit, t('Save changes'));
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save changes');
 
     // 3) Check that all default configurations are desactivate,
     // and settings are toogled.
     $this->assertNoFieldChecked('edit-configs-search-block-enabled', 'Default config search_block is disabled.');
     $this->assertFieldChecked('edit-admin-helper', 'Admin helper tool is activated.');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    $admin_user = $this->drupalCreateUser(['administer search autocomplete']);
+    $this->drupalLogin($admin_user);
+  }
+
 }

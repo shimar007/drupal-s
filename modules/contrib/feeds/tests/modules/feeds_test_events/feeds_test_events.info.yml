@@ -2,11 +2,10 @@ name: 'Feeds test events'
 type: module
 description: 'Provides subscribers to feeds events.'
 package: Testing
-core: 8.x
 dependencies:
   - feeds
 
-# Information added by Drupal.org packaging script on 2020-04-16
-version: '8.x-3.0-alpha7'
+# Information added by Drupal.org packaging script on 2020-06-04
+version: '8.x-3.0-alpha8'
 project: 'feeds'
-datestamp: 1587040479
+datestamp: 1591294328

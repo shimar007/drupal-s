@@ -108,7 +108,7 @@ class FileTest extends FieldTargetTestBase {
     $method = $this->getProtectedClosure($this->targetPlugin, 'prepareValue');
 
     if ($expected_exception) {
-      $this->setExpectedException($expected_exception);
+      $this->expectException($expected_exception);
     }
 
     $method(0, $values);

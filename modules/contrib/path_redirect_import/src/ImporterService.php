@@ -39,12 +39,12 @@ class ImporterService {
     if ($options['suppress_messages'] != 1 && !empty(self::$messages['warning'])) {
       // Messaging/logging is separated out in case we want to suppress these.
       foreach (self::$messages['warning'] as $warning) {
-        drupal_set_message($warning, 'warning');
+        \Drupal::messenger()->addWarning($warning, 'warning');
       }
     }
 
     if (empty($data)) {
-      drupal_set_message(t('The uploaded file contains no rows with compatible redirect data. No redirects have imported. Compare your file to <a href=":sample">this sample data.</a>', [':sample' => '/' . drupal_get_path('module', 'path_redirect_import') . '/redirect-example-file.csv']), 'warning');
+      \Drupal::messenger()->addWarning(t('The uploaded file contains no rows with compatible redirect data. No redirects have imported. Compare your file to <a href=":sample">this sample data.</a>', [':sample' => '/' . drupal_get_path('module', 'path_redirect_import') . '/redirect-example-file.csv']));
     }
     else {
       if (PHP_SAPI == 'cli' && function_exists('drush_main')) {
@@ -83,7 +83,7 @@ class ImporterService {
     else {
       $message = t('Finished with an error.');
     }
-    drupal_set_message($message, 'status');
+    \Drupal::messenger()->addStatus($message);
   }
 
   /**
@@ -125,7 +125,7 @@ class ImporterService {
       $message = [];
       $line_no++;
       if ($line_no == 1 && !$options['no_headers']) {
-        drupal_set_message(t('Skipping the header row.'));
+        \Drupal::messenger()->addMessage(t('Skipping the header row.'));
         continue;
       }
 
@@ -248,12 +248,11 @@ class ImporterService {
     $redirect->setStatusCode($redirect_array['status_code']);
     $redirect->setLanguage($redirect_array['language']);
     $redirect->save();
-    drupal_set_message(t('@message_type redirect from @source to @redirect', [
+    \Drupal::messenger()->addStatus(t('@message_type redirect from @source to @redirect', [
       '@message_type' => $message_type,
       '@source' => $redirect_array['source'],
       '@redirect' => $redirect_array['redirect'],
-    ]),
-    'status');
+    ]));
   }
 
   /**

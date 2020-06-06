@@ -51,14 +51,14 @@ class WebformSubmissionExportImportImporter implements WebformSubmissionExportIm
   protected $entityTypeManager;
 
   /**
-   * Webform submission storage.
+   * The webform submission storage.
    *
    * @var \Drupal\webform\WebformSubmissionStorageInterface
    */
   protected $entityStorage;
 
   /**
-   * Webform element manager.
+   * The webform element manager.
    *
    * @var \Drupal\webform\Plugin\WebformElementManagerInterface
    */
@@ -636,7 +636,7 @@ class WebformSubmissionExportImportImporter implements WebformSubmissionExportIm
         $record[$element_key][$composite_key] = $value;
       }
       elseif ($element_plugin instanceof WebformCompositeBase) {
-        // Get the the composite element element and make sure it exists.
+        // Get the composite element and make sure it exists.
         $composite_elements = $element_plugin->getCompositeElements();
         if (!isset($composite_elements[$composite_key])) {
           continue;

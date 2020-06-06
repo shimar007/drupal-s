@@ -190,6 +190,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'category' => 'element',
     ];
 
+    // Element: Webform Attachment Gated Download.
+    $projects['webform_attachment_gated_download'] = [
+      'title' => $this->t('Webform Attachment Gated Download'),
+      'description' => $this->t('Provides a field formatter for file, image, and media types which links to a webform.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/webform_attachment_gated_download'),
+      'category' => 'element',
+    ];
+
     // Element: Webform Handsontable.
     $projects['handsontable_yml_webform'] = [
       'title' => $this->t('Webform Handsontable'),
@@ -295,6 +303,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'title' => $this->t('Formset'),
       'description' => $this->t('Enables the creation of webform sets.'),
       'url' => Url::fromUri('https://github.com/simesy/formset'),
+      'category' => 'enhancement',
+    ];
+
+    // Enhancement: Webform Calculation.
+    $projects['webform_calculation'] = [
+      'title' => $this->t('Webform Calculation'),
+      'description' => $this->t('Provides ability to make dynamic calculations using Webform.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/webform_calculation'),
       'category' => 'enhancement',
     ];
 
@@ -527,7 +543,7 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
     $projects['graphql_webform'] = [
       'title' => $this->t('GraphQL Webform'),
       'description' => $this->t('Provides GraphQL integration with the Webform module.'),
-      'url' => Url::fromUri('https://github.com/duartegarin/graphql_webform'),
+      'url' => Url::fromUri('https://www.drupal.org/project/graphql_webform'),
       'category' => 'integration',
     ];
 
@@ -844,6 +860,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'category' => 'mail',
     ];
 
+    // Mail: Mailboxlayer.
+    $projects['mailboxlayer'] = [
+      'title' => $this->t('Mailboxlayer'),
+      'description' => $this->t('Integrates the <a href=":href">Mailboxlayer API</a> with the Webforms.', [':href' => 'https://mailboxlayer.com']),
+      'url' => Url::fromUri('https://www.drupal.org/project/mailboxlayer'),
+      'category' => 'mail',
+    ];
+
     // Mail: Mail System: SendGrid Integration.
     $projects['sendgrid_integration'] = [
       'title' => $this->t('SendGrid Integration <em>(requires Mail System)</em>'),
@@ -1027,6 +1051,15 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'title' => $this->t('Webform Views'),
       'description' => $this->t('Integrates Webform 8.x-5.x and Views modules.'),
       'url' => Url::fromUri('https://www.drupal.org/project/webform_views'),
+      'category' => 'submission',
+      'recommended' => TRUE,
+    ];
+
+    // Submissions: Webform Submission Views Token Field.
+    $projects['ws_views_field'] = [
+      'title' => $this->t('Webform Submission Views Token Field'),
+      'description' => $this->t('Provides a token approach to list WebformSubmission fields in views.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/ws_views_field'),
       'category' => 'submission',
       'recommended' => TRUE,
     ];

@@ -15,7 +15,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Render\ElementInfoManagerInterface;
-use Drupal\Core\Render\Markup;
+use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
@@ -51,7 +51,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @see \Drupal\webform\Plugin\WebformElementManagerInterface
  * @see plugin_api
  */
-class WebformElementBase extends PluginBase implements WebformElementInterface {
+class WebformElementBase extends PluginBase implements WebformElementInterface, TrustedCallbackInterface {
 
   use StringTranslationTrait;
   use MessengerTrait;
@@ -108,7 +108,7 @@ class WebformElementBase extends PluginBase implements WebformElementInterface {
   protected $tokenManager;
 
   /**
-   * The libraries manager.
+   * The webform libraries manager.
    *
    * @var \Drupal\webform\WebformLibrariesManagerInterface
    */
@@ -1653,7 +1653,7 @@ class WebformElementBase extends PluginBase implements WebformElementInterface {
     $value = $this->formatTextItem($element, $webform_submission, ['prefixing' => FALSE] + $options);
 
     if ($format === 'raw') {
-      return Markup::create($value);
+      return $value;
     }
 
     // Build a render that used #plain_text so that HTML characters are escaped.
@@ -2759,7 +2759,7 @@ class WebformElementBase extends PluginBase implements WebformElementInterface {
     $form['flex'] = [
       '#type' => 'details',
       '#title' => $this->t('Flexbox item'),
-      '#description' => $this->t('Learn more about using <a href=":href">flexbox layouts</a>.', [':href' => 'http://www.w3schools.com/css/css3_flexbox.asp']),
+      '#description' => $this->t('Learn more about using <a href=":href">flexbox layouts</a>.', [':href' => 'https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox']),
     ];
     $flex_range = range(0, 12);
     $form['flex']['flex'] = [
@@ -3695,6 +3695,13 @@ class WebformElementBase extends PluginBase implements WebformElementInterface {
       }
     }
     return FALSE;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public static function trustedCallbacks() {
+    return ['preRenderFixStatesWrapper', 'preRenderFixFlexboxWrapper', 'preRenderWebformCompositeFormElement'];
   }
 
 }

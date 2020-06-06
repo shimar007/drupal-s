@@ -2,18 +2,18 @@
 
 namespace Drupal\path_redirect_import\Tests\Functional;
 
-use Drupal\search\Tests\SearchTestBase;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Test that redirects are properly imported from CSV file.
  *
  * @group path_redirect_import
  */
-class RedirectImportTest extends SearchTestBase {
+class RedirectImportTest extends BrowserTestBase {
 
   /**
    * Modules to install.
@@ -129,7 +129,7 @@ class RedirectImportTest extends SearchTestBase {
     $csv = drupal_get_path('module', 'path_redirect_import') . '/src/Tests/files/' . 'test-redirects.csv';
     $edit = [
       'override' => TRUE,
-      'files[csv_file]' => drupal_realpath($csv),
+      'files[csv_file]' => \Drupal::service('file_system')->realpath($csv),
     ];
 
     $form_path = 'admin/config/search/redirect/import';

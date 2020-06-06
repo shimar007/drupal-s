@@ -2,6 +2,7 @@
 
 namespace Drupal\search_autocomplete\Controller;
 
+use Drupal;
 use Drupal\Component\Render\HtmlEscapedText;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Form\FormInterface;
@@ -38,68 +39,63 @@ class AutocompletionConfigurationListBuilder extends ConfigEntityListBuilder imp
   }
 
   /**
-   * {@inheritdoc}
-   */
-  protected function getEditableConfigNames() {
-    return ['search_autocomplete.settings'];
-  }
-
-
-  /**
    * Implements \Drupal\Core\Form\FormInterface::buildForm().
    *
    * Form constructor for the main block administration form.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $settings = \Drupal::config('search_autocomplete.settings');
+    $settings = Drupal::config('search_autocomplete.settings');
 
     // Define the table of configurations.
-    $form['configs'] = array(
+    $form['configs'] = [
       '#type' => 'table',
-      '#header' => array(
+      '#header' => [
         $this->t('Autocompletion Configuration Name'),
         $this->t('Enabled'),
         $this->t('Selector'),
         $this->t('Operations'),
-      ),
-    );
+      ],
+    ];
 
     // Retrieve existing configurations.
     $entity_ids = $this->getEntityIds();
     $entities = $this->storage->loadMultiple($entity_ids);
 
     // Build blocks first for each region.
-    $configs = array();
+    $configs = [];
     foreach ($entities as $entity_id => $entity) {
       $editable = $entity->getEditable() ? 'editable' : '';
       $deletable = $entity->getEditable() ? 'deletable' : '';
-      $form['configs'][$entity_id]['#attributes'] = array('id' => array($entity_id), 'class' => array($editable, $deletable));
-      $form['configs'][$entity_id]['label'] = array(
+      $form['configs'][$entity_id]['#attributes'] = [
+        'id' => [$entity_id],
+        'class' => [$editable, $deletable],
+      ];
+      $form['configs'][$entity_id]['label'] = [
         '#markup' => new HtmlEscapedText($entity->label()),
-      );
-      $form['configs'][$entity_id]['enabled'] = array(
+      ];
+      $form['configs'][$entity_id]['enabled'] = [
         '#type' => 'checkbox',
         '#default_value' => $entity->getStatus(),
-      );
-      $form['configs'][$entity_id]['selector'] = array(
+      ];
+      $form['configs'][$entity_id]['selector'] = [
         '#markup' => new HtmlEscapedText($entity->getSelector()),
-      );
+      ];
       $form['configs'][$entity_id]['operations'] = $this->buildOperations($entity);
     }
 
     // Use admin helper tool option settings.
-    $form['admin_helper'] = array(
-      '#type'           => 'checkbox',
-      '#title'          => t('Use autocompletion helper tool for Search Autocomplete administrators.'),
-      '#description'    => t('If enabled, user with "administer Search Autocomplete" permission will be able to use admin helper tool on input fields (recommended).'),
-      '#default_value'  => $settings->get('admin_helper'),
-    );
+    $form['admin_helper'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use autocompletion helper tool for Search Autocomplete administrators.'),
+      '#description' => $this->t('If enabled, user with "administer Search Autocomplete" permission will be able to use admin helper tool on input fields (recommended).'),
+      '#default_value' => $settings->get('admin_helper'),
+    ];
 
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => t('Save changes'),
+      '#value' => $this->t('Save changes'),
       '#button_type' => 'primary',
-    );
+    ];
 
     return $form;
 
@@ -121,14 +117,14 @@ class AutocompletionConfigurationListBuilder extends ConfigEntityListBuilder imp
     $values = $form_state->getValues();
 
     // Save global configurations.
-    \Drupal::configFactory()->getEditable('search_autocomplete.settings')
+    Drupal::configFactory()->getEditable('search_autocomplete.settings')
       ->set('admin_helper', $values['admin_helper'])
       ->save();
 
     // Save all configuration activations.
     $entities = $this->storage->loadMultiple(array_keys($form_state->getValue('configs')));
     foreach ($entities as $entity_id => $entity) {
-      $entity_values = $form_state->getValue(array('configs', $entity_id));
+      $entity_values = $form_state->getValue(['configs', $entity_id]);
       $entity->setStatus($entity_values['enabled']);
       $entity->save();
     }
@@ -145,7 +141,14 @@ class AutocompletionConfigurationListBuilder extends ConfigEntityListBuilder imp
    *   Renderable array.
    */
   public function render() {
-    return \Drupal::formBuilder()->getForm($this);
+    return Drupal::formBuilder()->getForm($this);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return ['search_autocomplete.settings'];
   }
 
 }

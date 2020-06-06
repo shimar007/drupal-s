@@ -432,7 +432,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
         '%webform' => $this->webform->label(),
         '%user' => $this->account->getDisplayName(),
       ];
-      if ($this->state == self::STATE_DRAFT) {
+      if ($this->draft) {
         $build['#title'] = $this->t('Drafts for %webform for %user', $t_args);
       }
       else {
@@ -496,10 +496,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
     // Populate the views arguments.
     $arguments = [];
     foreach ($display_arguments as $argument_name => $display_argument) {
-      if ($display_argument['table'] !== 'webform_submission') {
-        $arguments[] = 'all';
-      }
-      else {
+      if ($display_argument['table'] === 'webform_submission') {
         switch ($argument_name) {
           case 'webform_id':
             $arguments[] = (isset($this->webform)) ? $this->webform->id() : 'all';
@@ -726,7 +723,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
    *   A render array representing the information summary.
    */
   protected function buildInfo() {
-    if ($this->account && $this->state == self::STATE_DRAFT) {
+    if ($this->draft) {
       $info = $this->formatPlural($this->total, '@total draft', '@total drafts', ['@total' => $this->total]);
     }
     else {
@@ -881,7 +878,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
         return ($is_raw) ? $source_entity->getEntityTypeId . ':' . $source_entity->id() : ($source_entity->hasLinkTemplate('canonical') ? $source_entity->toLink() : $source_entity->label());
 
       case 'langcode':
-        $langcode = $entity->langcode->value;
+        $langcode = $entity->getLangcode();
         if (!$langcode) {
           return '';
         }
@@ -1309,7 +1306,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
       // Must manually initialize the pager because the DISTINCT clause in the
       // query is breaking the row counting.
       // @see webform_query_alter()
-      pager_default_initialize($this->total, $this->limit);
+      \Drupal::service('pager.manager')->createPager($this->total, $this->limit);
       return $result;
     }
     else {

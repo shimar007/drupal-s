@@ -210,7 +210,7 @@ function feeds_menu_links_discovered_alter(&$links) {
  * Default template: feeds_feed.html.twig.
  *
  * Most themes utilize their own copy of feeds_feed.html.twig. The default is
- * located inside "modules/feeds/templates/feeds_feedhtml.twig". Look in there
+ * located inside "modules/feeds/templates/feeds_feed.html.twig". Look in there
  * for the full list of variables.
  *
  * @param array $variables
@@ -230,7 +230,7 @@ function template_preprocess_feeds_feed(array &$variables) {
   $variables['author_name'] = \Drupal::service('renderer')->render($variables['elements']['uid']);
   unset($variables['elements']['uid']);
 
-  $variables['url'] = $feed->url('canonical', [
+  $variables['url'] = $feed->toUrl('canonical', [
     'language' => $feed->language(),
   ]);
   $variables['label'] = $variables['elements']['title'];

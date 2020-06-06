@@ -19,29 +19,17 @@ class InstallTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('node', 'search_autocomplete');
+  public static $modules = ['node', 'search_autocomplete'];
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Search Autocomplete installation test.',
       'description' => 'Test the Search Autocomplete installation.',
       'group' => 'Search Autocomplete',
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-    // Make default entity deletable for testing purpose.
-    $config = AutocompletionConfiguration::load('search_block');
-    $config->setDeletable(TRUE);
-    $config->save();
+    ];
   }
 
   /**
@@ -59,12 +47,12 @@ class InstallTest extends WebTestBase {
   public function testInstallModule() {
 
     // Define paths to be tested.
-    $admin_paths = array(
+    $admin_paths = [
       '/admin/config/search/search_autocomplete',
       '/admin/config/search/search_autocomplete/add',
       '/admin/config/search/search_autocomplete/manage/search_block',
       '/admin/config/search/search_autocomplete/manage/search_block/delete',
-    );
+    ];
 
     /* ----------------------------------------------------------------------
      * 1) Verify that anonymous users can't access admin paths.
@@ -96,7 +84,7 @@ class InstallTest extends WebTestBase {
      */
 
     // Create a user who can administer search autocomplete.
-    $perms_user = $this->drupalCreateUser(array('administer search autocomplete'));
+    $perms_user = $this->drupalCreateUser(['administer search autocomplete']);
     $this->drupalLogin($perms_user);
     // Forbidden paths aren't forbidden any more.
     foreach ($admin_paths as $unforbidden) {
@@ -110,10 +98,26 @@ class InstallTest extends WebTestBase {
      */
 
     // Create admin user.
-    $admin_user = $this->drupalCreateUser(array('access administration pages', 'administer search autocomplete'));
+    $admin_user = $this->drupalCreateUser([
+      'access administration pages',
+      'administer search autocomplete',
+    ]);
     $this->drupalLogin($admin_user);
     // Now that we have the admin user logged in, check the menu links.
     $this->drupalGet('/admin/config');
     $this->assertLinkByHref("admin/config/search/search_autocomplete");
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+
+    // Make default entity deletable for testing purpose.
+    $config = AutocompletionConfiguration::load('search_block');
+    $config->setDeletable(TRUE);
+    $config->save();
+  }
+
 }

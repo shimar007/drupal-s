@@ -59,7 +59,7 @@ abstract class FeedsKernelTestBase extends EntityKernelTestBase {
     $this->installEntitySchema('taxonomy_term');
 
     // Create tags vocabulary.
-    $vocabulary = $this->entityManager->getStorage('taxonomy_vocabulary')->create([
+    $vocabulary = $this->entityTypeManager->getStorage('taxonomy_vocabulary')->create([
       'vid' => 'tags',
       'name' => 'Tags',
     ]);

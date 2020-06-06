@@ -6,6 +6,8 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\path_redirect_import\ImporterService;
 use Drupal\Core\Language\Language;
+use Drupal\Component\Utility\Environment;
+use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
  * Class RedirectImportForm.
@@ -56,7 +58,7 @@ class RedirectImportForm extends FormBase {
     ];
     $validators = [
       'file_validate_extensions' => ['csv'],
-      'file_validate_size' => [file_upload_max_size()],
+      'file_validate_size' => [Environment::getUploadMaxSize()],
     ];
     $form['csv']['csv_file'] = [
       '#type' => 'file',
@@ -128,7 +130,7 @@ class RedirectImportForm extends FormBase {
     ini_set('auto_detect_line_endings', TRUE);
     // Don't do anything if no valid file.
     if (!isset($this->file)) {
-      drupal_set_message($this->t('No valid file was found. No redirects have been imported.'), 'warning');
+      $this->messenger()->addWarning($this->t('No valid file was found. No redirects have been imported.'));
       return;
     }
     $options = [
@@ -143,7 +145,7 @@ class RedirectImportForm extends FormBase {
     ImporterService::import($this->file, $options);
 
     // Remove file from Drupal managed files & from filesystem.
-    file_delete($this->file->id());
+    \Drupal::service('entity_type.manager')->getStorage('file')->delete([$this->file]);
   }
 
 }

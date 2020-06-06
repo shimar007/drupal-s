@@ -257,7 +257,7 @@ class EntityProcessorBaseTest extends FeedsKernelTestBase {
    * @covers ::entityTypeLabelPlural
    */
   public function testEntityTypeLabelPlural() {
-    $this->assertEquals('Contents', $this->processor->entityTypeLabelPlural());
+    $this->assertEquals('content items', $this->processor->entityTypeLabelPlural());
   }
 
   /**
@@ -271,14 +271,14 @@ class EntityProcessorBaseTest extends FeedsKernelTestBase {
    * @covers ::getItemLabelPlural
    */
   public function testGetItemLabelPlural() {
-    $this->assertEquals('Articles', $this->processor->getItemLabelPlural());
+    $this->assertEquals('Article items', $this->processor->getItemLabelPlural());
   }
 
   /**
    * @covers ::defaultConfiguration
    */
   public function testDefaultConfiguration() {
-    $this->assertInternalType('array', $this->processor->defaultConfiguration());
+    $this->assertTrue(is_array($this->processor->defaultConfiguration()));
   }
 
   /**
@@ -364,7 +364,7 @@ class EntityProcessorBaseTest extends FeedsKernelTestBase {
   public function testBuildAdvancedForm() {
     $form = [];
     $form_state = $this->createMock(FormStateInterface::class);
-    $this->assertInternalType('array', $this->processor->buildAdvancedForm($form, $form_state));
+    $this->assertTrue(is_array($this->processor->buildAdvancedForm($form, $form_state)));
   }
 
   /**

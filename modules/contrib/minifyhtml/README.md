@@ -48,8 +48,16 @@ DRUSH
 
 * Enable the minification of html:
 
-  drush cset minify.config minify true
+  drush cset minifyhtml.config minify true
 
 * Disable the minification of html:
 
-  drush cset minify.config minify false
+  drush cset minifyhtml.config minify false
+
+* Enable the strip comments option:
+
+  drush cset minifyhtml.config strip_comments true
+
+* Disable the strip comments option:
+
+  drush cset minifyhtml.config strip_comments false

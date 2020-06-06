@@ -21,13 +21,13 @@ class UpdateExistingTest extends FeedsKernelTestBase {
     $this->installTaxonomyModuleWithVocabulary();
 
     // Create a second vocabulary.
-    $this->entityManager->getStorage('taxonomy_vocabulary')->create([
+    $this->entityTypeManager->getStorage('taxonomy_vocabulary')->create([
       'vid' => 'vocab2',
       'name' => 'Vocabulary 2',
     ])->save();
 
     /** @var \Drupal\taxonomy\TermStorageInterface $term_storage */
-    $term_storage = $this->entityManager->getStorage('taxonomy_term');
+    $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
 
     // Create a term in the first vocabulary.
     $tags_term1 = $term_storage->create([

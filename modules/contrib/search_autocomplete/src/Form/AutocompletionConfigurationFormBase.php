@@ -5,7 +5,6 @@ namespace Drupal\search_autocomplete\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Link;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -59,7 +58,8 @@ class AutocompletionConfigurationFormBase extends EntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager')->getStorage('autocompletion_configuration')
+      $container->get('entity.manager')
+        ->getStorage('autocompletion_configuration')
     );
   }
 
@@ -95,54 +95,30 @@ class AutocompletionConfigurationFormBase extends EntityForm {
     }
 
     // Label.
-    $form['label'] = array(
+    $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Human readable name'),
       '#maxlength' => 255,
-      '#description'    => 'Please enter a label for this autocompletion configuration.',
+      '#description' => 'Please enter a label for this autocompletion configuration.',
       '#default_value' => $label ? $label : $autocompletion_configuration->label(),
       '#required' => TRUE,
-    );
+    ];
 
     // ID.
-    $form['id'] = array(
+    $form['id'] = [
       '#type' => 'machine_name',
       '#title' => $this->t('Machine name'),
       '#default_value' => $autocompletion_configuration->id(),
-      '#machine_name' => array(
-        'exists' => array($this->entityStorage, 'load'),
+      '#machine_name' => [
+        'exists' => [$this->entityStorage, 'load'],
         'replace_pattern' => '([^a-z0-9_]+)|(^custom$)',
         'error' => 'The machine-readable name must be unique, and can only contain lowercase letters, numbers, and underscores. Additionally, it can not be the reserved word "custom".',
-      ),
+      ],
       '#disabled' => !$autocompletion_configuration->isNew(),
-    );
+    ];
 
     // Return the form.
     return $form;
-  }
-
-  /**
-   * Overrides Drupal\Core\Entity\EntityFormController::actions().
-   *
-   * To set the submit button text, we need to override actions().
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   An associative array containing the current state of the form.
-   *
-   * @return array
-   *   An array of supported actions for the current entity form.
-   */
-  protected function actions(array $form, FormStateInterface $form_state) {
-    // Get the basic actins from the base class.
-    $actions = parent::actions($form, $form_state);
-
-    // Change the submit button text.
-    $actions['submit']['#value'] = $this->t('Save');
-
-    // Return the result.
-    return $actions;
   }
 
   /**
@@ -158,9 +134,9 @@ class AutocompletionConfigurationFormBase extends EntityForm {
 
     // Retrieve all configurations with same selector.
     $entities = $this->entityStorage->loadByProperties(
-      array(
-        'selector'  => $form_state->getValue('selector'),
-      )
+      [
+        'selector' => $form_state->getValue('selector'),
+      ]
     );
 
     // If other configurations have the same selector (not null)...
@@ -204,17 +180,43 @@ class AutocompletionConfigurationFormBase extends EntityForm {
 
     if ($status == SAVED_UPDATED) {
       // If we edited an existing entity...
-      drupal_set_message($this->t('Autocompletion Configuration %label has been updated.', array('%label' => $autocompletion_configuration->label())));
-      $this->logger('search_autocomplete')->notice('Autocompletion Configuration %label has been updated.', ['%label' => $autocompletion_configuration->label()]);
+      drupal_set_message($this->t('Autocompletion Configuration %label has been updated.', ['%label' => $autocompletion_configuration->label()]));
+      $this->logger('search_autocomplete')
+        ->notice('Autocompletion Configuration %label has been updated.', ['%label' => $autocompletion_configuration->label()]);
     }
     else {
       // If we created a new entity...
-      drupal_set_message($this->t('Autocompletion Configuration %label has been added.', array('%label' => $autocompletion_configuration->label())));
-      $this->logger('search_autocomplete')->notice('Autocompletion Configuration %label has been added.', ['%label' => $autocompletion_configuration->label()]);
+      drupal_set_message($this->t('Autocompletion Configuration %label has been added.', ['%label' => $autocompletion_configuration->label()]));
+      $this->logger('search_autocomplete')
+        ->notice('Autocompletion Configuration %label has been added.', ['%label' => $autocompletion_configuration->label()]);
     }
 
     // Redirect the user back to the listing route after the save operation.
     $form_state->setRedirect('autocompletion_configuration.list');
+  }
+
+  /**
+   * Overrides Drupal\Core\Entity\EntityFormController::actions().
+   *
+   * To set the submit button text, we need to override actions().
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   An associative array containing the current state of the form.
+   *
+   * @return array
+   *   An array of supported actions for the current entity form.
+   */
+  protected function actions(array $form, FormStateInterface $form_state) {
+    // Get the basic actins from the base class.
+    $actions = parent::actions($form, $form_state);
+
+    // Change the submit button text.
+    $actions['submit']['#value'] = $this->t('Save');
+
+    // Return the result.
+    return $actions;
   }
 
 }

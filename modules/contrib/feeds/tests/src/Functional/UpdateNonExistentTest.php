@@ -65,7 +65,7 @@ class UpdateNonExistentTest extends FeedsBrowserTestBase {
 
     // Reload feed and assert that 6 nodes have been created.
     $feed = $this->reloadFeed($feed);
-    $this->assertText('Created 6 Articles.');
+    $this->assertText('Created 6 Article items.');
     static::assertEquals(6, $feed->getItemCount());
     $this->assertNodeCount(6);
 
@@ -126,7 +126,7 @@ class UpdateNonExistentTest extends FeedsBrowserTestBase {
 
     // Assert that 6 nodes have been created.
     $feed = $this->reloadFeed($feed);
-    $this->assertText('Created 6 Articles.');
+    $this->assertText('Created 6 Article items.');
     static::assertEquals(6, $feed->getItemCount());
     $this->assertNodeCount(6);
 
@@ -325,6 +325,46 @@ class UpdateNonExistentTest extends FeedsBrowserTestBase {
     $feed = $this->reloadFeed($feed);
     static::assertEquals(5, $feed->getItemCount());
     $this->assertNodeCount(5);
+  }
+
+  /**
+   * Tests cleaning when using a non-existing action plugin.
+   *
+   * When upgrading from Drupal 8 to Drupal 9, it is possible that the
+   * configured action for the 'update_non_existent' setting no longer exists.
+   * In this case, we want the import to fail gracefully, not with a fatal
+   * error.
+   */
+  public function testWithNonExistentActionPlugin() {
+    // Set 'update_non_existent' setting to 'unpublish'.
+    $config = $this->feedType->getProcessor()->getConfiguration();
+    $config['update_non_existent'] = 'foo';
+    $this->feedType->getProcessor()->setConfiguration($config);
+    $this->feedType->save();
+
+    // Create a feed and import first file.
+    $feed = $this->createFeed($this->feedType->id(), [
+      'source' => $this->resourcesPath() . '/rss/googlenewstz.rss2',
+    ]);
+    $this->batchImport($feed);
+
+    // Reload feed and assert that 6 nodes have been created.
+    $feed = $this->reloadFeed($feed);
+    $this->assertText('Created 6 Article items.');
+    static::assertEquals(6, $feed->getItemCount());
+    $this->assertNodeCount(6);
+
+    // Import an "updated" version of the file from which one item is removed.
+    $feed->setSource($this->resourcesPath() . '/rss/googlenewstz_missing.rss2');
+    $feed->save();
+    $this->batchImport($feed);
+
+    // Assert that cleaning failed.
+    $this->assertText('Cleaning Egypt, Hamas exchange fire on Gaza frontier, 1 dead - Reuters failed because of non-existing action plugin foo.');
+
+    // Try to import again and assert that the same error message appears.
+    $this->batchImport($feed);
+    $this->assertText('Cleaning Egypt, Hamas exchange fire on Gaza frontier, 1 dead - Reuters failed because of non-existing action plugin foo.');
   }
 
   /**

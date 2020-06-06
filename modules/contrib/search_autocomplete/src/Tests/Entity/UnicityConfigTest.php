@@ -18,7 +18,7 @@ class UnicityConfigTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('node', 'search_autocomplete');
+  public static $modules = ['node', 'search_autocomplete'];
 
   public $adminUser;
 
@@ -26,22 +26,12 @@ class UnicityConfigTest extends WebTestBase {
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Test Autocompletion Configuration test.',
       'description' => 'Test unicity autocompletion configurations scenario.',
       'group' => 'Search Autocomplete',
-    );
+    ];
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-    $this->adminUser = $this->drupalCreateUser(array('administer search autocomplete'));
-    $this->drupalLogin($this->adminUser);
-  }
-
 
   /**
    * Configuration creation should fail if ID is not unique.
@@ -55,20 +45,20 @@ class UnicityConfigTest extends WebTestBase {
 
     // Default values.
     $config_name = "testing";
-    $config = array(
-      'label'             => 'test-label',
-      'selector'          => 'input#edit',
-    );
+    $config = [
+      'label' => 'test-label',
+      'selector' => 'input#edit',
+    ];
 
     // Click Add new button.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'label' => $config['label'],
         'id' => $config_name,
         'selector' => $config['selector'],
-      ),
-      t('Create Autocompletion Configuration')
+      ],
+      'Create Autocompletion Configuration'
     );
 
     // ----------------------------------------------------------------------
@@ -78,20 +68,20 @@ class UnicityConfigTest extends WebTestBase {
 
     // Default values.
     $config_name = "testing";
-    $config = array(
-      'label'             => 'test-another',
-      'selector'          => 'another',
-    );
+    $config = [
+      'label' => 'test-another',
+      'selector' => 'another',
+    ];
 
     // Click Add new button.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'label' => $config['label'],
         'id' => $config_name,
         'selector' => $config['selector'],
-      ),
-      t('Create Autocompletion Configuration')
+      ],
+      'Create Autocompletion Configuration'
     );
     $this->assertRaw(t('The machine-readable name is already in use. It must be unique.'));
   }
@@ -108,20 +98,20 @@ class UnicityConfigTest extends WebTestBase {
 
     // Default values.
     $config_name = "test1";
-    $config = array(
-      'label'             => 'test1',
-      'selector'          => 'input#edit',
-    );
+    $config = [
+      'label' => 'test1',
+      'selector' => 'input#edit',
+    ];
 
     // Click Add new button.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'label' => $config['label'],
         'id' => $config_name,
         'selector' => $config['selector'],
-      ),
-        t('Create Autocompletion Configuration')
+      ],
+      'Create Autocompletion Configuration'
     );
 
     // ----------------------------------------------------------------------
@@ -131,22 +121,31 @@ class UnicityConfigTest extends WebTestBase {
 
     // Default values.
     $config_name = "test2";
-    $config = array(
-      'label'             => 'test2',
-      'selector'          => 'input#edit',
-    );
+    $config = [
+      'label' => 'test2',
+      'selector' => 'input#edit',
+    ];
 
     // Click Add new button.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'label' => $config['label'],
         'id' => $config_name,
         'selector' => $config['selector'],
-      ),
-      t('Create Autocompletion Configuration')
+      ],
+      'Create Autocompletion Configuration'
     );
-    $this->assertRaw(t('The selector ID must be unique.'));
+    $this->assertRaw('The selector ID must be unique.');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    $this->adminUser = $this->drupalCreateUser(['administer search autocomplete']);
+    $this->drupalLogin($this->adminUser);
   }
 
 }

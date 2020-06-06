@@ -176,7 +176,7 @@ abstract class FileTestBase extends FeedsKernelTestBase {
       $expected_exception_message = strtr($expected_exception_message, [
         '[url]' => $this->resourcesUrl(),
       ]);
-      $this->setExpectedException($expected_exception, $expected_exception_message);
+      $this->expectException($expected_exception, $expected_exception_message);
     }
 
     // Call prepareValue().

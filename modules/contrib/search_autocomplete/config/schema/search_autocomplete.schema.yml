@@ -1,7 +1,7 @@
 # Schema for the configuration files of the Autocompletion Configuration.
 
 # This schema tells the config system how to read our config YML files.
-# Our default configurations are stored in files 
+# Our default configurations are stored in files
 # config/search_autocomplete.autocompletion_configuration.%.yml
 
 # Documentation for schema files like this one is located here:
@@ -68,7 +68,7 @@ search_autocomplete.autocompletion_configuration.*:
     deletable:
       type: boolean
       label: 'Define if users can delete this configuration.'
-      
+
 search_autocomplete.settings:
   type: config_object
   label: 'Search Autocomplete module settings'
@@ -76,4 +76,3 @@ search_autocomplete.settings:
     admin_helper:
       type: boolean
       label: 'Use admin tool'
-      

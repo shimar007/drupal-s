@@ -4,10 +4,12 @@ namespace Drupal\Tests\feeds\Unit\Feeds\Parser;
 
 use Drupal\Component\Bridge\ZfExtensionManagerSfContainer;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\Feeds\Parser\SyndicationParser;
 use Drupal\feeds\Result\RawFetcherResult;
 use Drupal\feeds\State;
 use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
+use RuntimeException;
 use Zend\Feed\Reader\StandaloneExtensionManager;
 
 /**
@@ -113,10 +115,11 @@ class SyndicationParserTest extends FeedsUnitTestCase {
    * Tests parsing an invalid feed.
    *
    * @covers ::parse
-   * @expectedException \RuntimeException
    */
   public function testInvalidFeed() {
     $fetcher_result = new RawFetcherResult('beep boop', $this->getMockFileSystem());
+
+    $this->expectException(RuntimeException::class);
     $result = $this->parser->parse($this->feed, $fetcher_result, $this->state);
   }
 
@@ -124,10 +127,11 @@ class SyndicationParserTest extends FeedsUnitTestCase {
    * Tests parsing an empty feed.
    *
    * @covers ::parse
-   * @expectedException \Drupal\feeds\Exception\EmptyFeedException
    */
   public function testEmptyFeed() {
     $result = new RawFetcherResult('', $this->getMockFileSystem());
+
+    $this->expectException(EmptyFeedException::class);
     $this->parser->parse($this->feed, $result, $this->state);
   }
 

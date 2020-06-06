@@ -33,9 +33,9 @@ class AutocompletionConfigurationDeleteForm extends EntityConfirmFormBase {
    *   Translated string.
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the autocompletion configuration %label?', array(
-        '%label' => $this->entity->label(),
-    ));
+    return $this->t('Are you sure you want to delete the autocompletion configuration %label?', [
+      '%label' => $this->entity->label(),
+    ]);
   }
 
   /**
@@ -49,20 +49,6 @@ class AutocompletionConfigurationDeleteForm extends EntityConfirmFormBase {
    */
   public function getConfirmText() {
     return $this->t('Delete this configuration');
-  }
-
-  /**
-   * Gets the cancel URL.
-   *
-   * Provides the URL to go to if the user cancels the action. For entity
-   * delete forms, this is typically the route that points at the list
-   * controller.
-   *
-   * @return \Drupal\Core\Url
-   *   The URL to go to if the user cancels the deletion.
-   */
-  public function getCancelUrl() {
-    return new Url('autocompletion_configuration.list');
   }
 
   /**
@@ -81,12 +67,26 @@ class AutocompletionConfigurationDeleteForm extends EntityConfirmFormBase {
     $this->entity->delete();
 
     // Set a message that the entity was deleted.
-    drupal_set_message(t('The autocompletion configuration %label is deleted.', array(
+    drupal_set_message($this->t('The autocompletion configuration %label is deleted.', [
       '%label' => $this->entity->label(),
-    )));
+    ]));
 
     // Redirect the user to the list controller when complete.
     $form_state->setRedirectUrl($this->getCancelUrl());
+  }
+
+  /**
+   * Gets the cancel URL.
+   *
+   * Provides the URL to go to if the user cancels the action. For entity
+   * delete forms, this is typically the route that points at the list
+   * controller.
+   *
+   * @return \Drupal\Core\Url
+   *   The URL to go to if the user cancels the deletion.
+   */
+  public function getCancelUrl() {
+    return new Url('autocompletion_configuration.list');
   }
 
 }

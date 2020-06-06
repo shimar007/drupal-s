@@ -18,7 +18,7 @@ class NoSelectorConfigTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('node', 'search_autocomplete');
+  public static $modules = ['node', 'search_autocomplete'];
 
   public $adminUser;
 
@@ -26,22 +26,12 @@ class NoSelectorConfigTest extends WebTestBase {
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Test Autocompletion Configuration test.',
       'description' => 'Test special autocompletion configurations scenario.',
       'group' => 'Search Autocomplete',
-    );
+    ];
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-    $this->adminUser = $this->drupalCreateUser(array('administer search autocomplete'));
-    $this->drupalLogin($this->adminUser);
-  }
-
 
   /**
    * Test addition with default values from URL.
@@ -49,31 +39,31 @@ class NoSelectorConfigTest extends WebTestBase {
   public function testAdditionFromUrl() {
 
     // Add new from URL.
-    $options = array(
-      'query' => array(
-        'label'     => 'test label',
-        'selector'  => 'input#edit',
-      ),
-    );
+    $options = [
+      'query' => [
+        'label' => 'test label',
+        'selector' => 'input#edit',
+      ],
+    ];
     $this->drupalGet('admin/config/search/search_autocomplete/add', $options);
 
     $config_name = "testing_from_url";
-    $config = array(
-      'label'             => 'test label',
-      'selector'          => 'input#edit',
-      'minChar'           => 3,
-      'maxSuggestions'    => 10,
-      'autoSubmit'        => TRUE,
-      'autoRedirect'      => TRUE,
-      'noResultLabel'     => 'No results found for [search-phrase]. Click to perform full search.',
-      'noResultValue'     => '[search-phrase]',
-      'noResultLink'      => '',
-      'moreResultsLabel'  => 'View all results for [search-phrase].',
-      'moreResultsValue'  => '[search-phrase]',
-      'moreResultsLink'   => '',
-      'source'            => 'autocompletion_callbacks_nodes::nodes_autocompletion_callback',
-      'theme'             => 'basic-blue.css',
-    );
+    $config = [
+      'label' => 'test label',
+      'selector' => 'input#edit',
+      'minChar' => 3,
+      'maxSuggestions' => 10,
+      'autoSubmit' => TRUE,
+      'autoRedirect' => TRUE,
+      'noResultLabel' => 'No results found for [search-phrase]. Click to perform full search.',
+      'noResultValue' => '[search-phrase]',
+      'noResultLink' => '',
+      'moreResultsLabel' => 'View all results for [search-phrase].',
+      'moreResultsValue' => '[search-phrase]',
+      'moreResultsLink' => '',
+      'source' => 'autocompletion_callbacks_nodes::nodes_autocompletion_callback',
+      'theme' => 'basic-blue.css',
+    ];
 
     // Check fields.
     $this->assertFieldByName('label', $config['label']);
@@ -82,12 +72,12 @@ class NoSelectorConfigTest extends WebTestBase {
     // Click Add new button.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'label' => $config['label'],
         'id' => $config_name,
         'selector' => $config['selector'],
-      ),
-      t('Create Autocompletion Configuration')
+      ],
+      'Create Autocompletion Configuration'
     );
 
     // ----------------------------------------------------------------------
@@ -111,6 +101,15 @@ class NoSelectorConfigTest extends WebTestBase {
     $this->assertFieldByName('source', $config['source']);
     $this->assertOptionSelected('edit-theme', $config['theme']);
 
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    $this->adminUser = $this->drupalCreateUser(['administer search autocomplete']);
+    $this->drupalLogin($this->adminUser);
   }
 
 }

@@ -8,7 +8,7 @@ use Drupal\webform\Utility\WebformElementHelper;
 /**
  * Tests for webform element definitions.
  *
- * @group Webform
+ * @group webform
  */
 class WebformElementPluginDefinitionsTest extends WebformElementBrowserTestBase {
 
@@ -24,7 +24,10 @@ class WebformElementPluginDefinitionsTest extends WebformElementBrowserTestBase 
     'taxonomy',
     'webform',
     'webform_attachment',
-    'webform_entity_print_attachment',
+    // Issue #3110478: [Webform 8.x-6.x] Track the D9 readiness state of the
+    // Webform module's (optional) dependencies
+    // @see https://www.drupal.org/project/webform/issues/3110478
+    // 'webform_entity_print_attachment',
     'webform_image_select',
     'webform_location_geocomplete',
     'webform_options_custom',
@@ -44,11 +47,20 @@ class WebformElementPluginDefinitionsTest extends WebformElementBrowserTestBase 
   public function testElementDefinitions() {
     // Comparing all element's expected and actual definitions ensures
     // that there are not unexpected changes to any element's definitions.
-    $expected_elements = $this->getExpectedElementDefinitions();
-    $actual_elements = $this->getActualElementDefinitions();
-    $this->htmlOutput('<pre>' . htmlentities(Yaml::encode($actual_elements)) . '</pre>');
-    foreach ($actual_elements as $element_key => $actual_element) {
-      $this->assertEquals($expected_elements[$element_key], $actual_element, "Expected and actual '$element_key' element definitions match.");
+    $expected_definitions = $this->getExpectedElementDefinitions();
+
+    // Issue #3110478: [Webform 8.x-6.x] Track the D9 readiness state of the
+    // Webform module's (optional) dependencies
+    // @see https://www.drupal.org/project/webform/issues/3110478
+    unset($expected_definitions['webform_entity_print_attachment:pdf']);
+
+    $actual_definitions = $this->getActualElementDefinitions();
+    $this->htmlOutput('<pre>' . htmlentities(Yaml::encode($actual_definitions)) . '</pre>');
+    foreach ($actual_definitions as $key => $actual_definition) {
+      if ($expected_definitions[$key] != $actual_definition) {
+        $this->htmlOutput('<pre>' . Yaml::encode([$key => $actual_definition]) . '</pre>');
+      }
+      $this->assertEquals($expected_definitions[$key], $actual_definition, "Expected and actual '$key' element definitions match.");
     }
   }
 
@@ -1184,7 +1196,7 @@ webform_flexbox:
   deprecated: false
   deprecated_message: ''
   id: webform_flexbox
-  api: 'http://www.w3schools.com/css/css3_flexbox.asp'
+  api: 'https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox'
   label: 'Flexbox layout'
   class: Drupal\webform\Plugin\WebformElement\WebformFlexbox
   provider: webform
@@ -1703,7 +1715,7 @@ webform_time:
   deprecated: false
   deprecated_message: ''
   id: webform_time
-  api: 'http://www.w3schools.com/tags/tag_time.asp'
+  api: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time'
   label: Time
   class: Drupal\webform\Plugin\WebformElement\WebformTime
   provider: webform
@@ -1807,6 +1819,63 @@ webform_wizard_page:
   container: true
   root: true
   multiple: false
+webform_table:
+  dependencies: {  }
+  default_key: ''
+  category: Containers
+  description: 'Provides an element to render a table.'
+  hidden: false
+  multiline: false
+  composite: false
+  states_wrapper: false
+  deprecated: false
+  deprecated_message: ''
+  id: webform_table
+  label: Table
+  class: Drupal\webform\Plugin\WebformElement\WebformTable
+  provider: webform
+  input: false
+  container: true
+  root: false
+  multiple: false
+webform_table_row:
+  dependencies: {  }
+  default_key: ''
+  category: 'Containers'
+  description: 'Provides an element to render a table row.'
+  hidden: true
+  multiline: false
+  composite: false
+  states_wrapper: false
+  deprecated: false
+  deprecated_message: ''
+  id: webform_table_row
+  label: 'Table row'
+  class: Drupal\webform\Plugin\WebformElement\WebformTableRow
+  provider: webform
+  input: false
+  container: true
+  root: false
+  multiple: false
+webform_scale:
+  dependencies: {  }
+  default_key: ''
+  category: 'Advanced elements'
+  description: 'Provides a form element for input of a numeric scale.'
+  id: webform_scale
+  label: Scale
+  class: Drupal\webform\Plugin\WebformElement\WebformScale
+  provider: webform
+  input: true
+  container: false
+  root: false
+  multiple: false
+  hidden: false
+  multiline: false
+  composite: false
+  states_wrapper: false
+  deprecated: false
+  deprecated_message: ''
 YAML;
 
     return Yaml::decode($yaml);

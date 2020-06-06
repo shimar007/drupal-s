@@ -93,7 +93,7 @@ class FieldTest extends FeedsKernelTestBase {
     $formats['medium']->setPattern('j. F Y - G:i')->save();
     $formats['short']->setPattern('Y M j - g:ia')->save();
 
-    entity_get_display('node', 'article', 'default')
+    $this->container->get('entity_display.repository')->getViewDisplay('node', 'article', 'default')
       ->setComponent('field_alpha', [
         'type' => 'text_default',
         'label' => 'above',
@@ -231,13 +231,13 @@ class FieldTest extends FeedsKernelTestBase {
     // Check for node 1 if labels are no longer shown.
     $rendered_content = $this->renderNode(Node::load(1));
     foreach ($field_labels as $label) {
-      $this->assertNotContains($label, $rendered_content);
+      $this->assertStringNotContainsString($label, $rendered_content);
     }
 
     // Check for node 2 if labels are still shown.
     $rendered_content = $this->renderNode(Node::load(2));
     foreach ($field_labels as $label) {
-      $this->assertContains($label, $rendered_content);
+      $this->assertStringContainsString($label, $rendered_content);
     }
 
     // Re-import the first file again.
@@ -269,7 +269,7 @@ class FieldTest extends FeedsKernelTestBase {
     // Check if labels for fields that should be cleared out are not shown.
     $rendered_content = $this->renderNode(Node::load(1));
     foreach ($field_labels as $label) {
-      $this->assertNotContains($label, $rendered_content);
+      $this->assertStringNotContainsString($label, $rendered_content);
     }
   }
 
@@ -407,7 +407,7 @@ class FieldTest extends FeedsKernelTestBase {
    *   The rendered content.
    */
   protected function renderNode(Node $node) {
-    $display = entity_get_display($node->getEntityTypeId(), $node->bundle(), 'default');
+    $display = \Drupal::service('entity_display.repository')->getViewDisplay($node->getEntityTypeId(), $node->bundle(), 'default');
     $content = $display->build($node);
     return (string) $this->container->get('renderer')->renderRoot($content);
   }

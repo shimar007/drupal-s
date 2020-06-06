@@ -82,6 +82,19 @@ abstract class OptionsBase extends WebformElementBase {
   /****************************************************************************/
 
   /**
+   * {@inheritdoc}
+   */
+  public function isMultiline(array $element) {
+    $items_format = $this->getItemsFormat($element);
+    if (strpos($items_format, 'checklist:') === 0) {
+      return TRUE;
+    }
+    else {
+      return parent::isMultiline($element);
+    }
+  }
+
+  /**
    * Determine if the element plugin type includes an other option text field.
    *
    * @return bool
@@ -311,7 +324,7 @@ abstract class OptionsBase extends WebformElementBase {
     $format = $this->getItemFormat($element);
     switch ($format) {
       case 'raw':
-        return Markup::create($value);
+        return $value;
 
       case 'description':
         if (isset($element['#options'])) {
@@ -415,6 +428,114 @@ abstract class OptionsBase extends WebformElementBase {
    */
   public function getItemsDefaultFormat() {
     return 'comma';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function formatHtmlItems(array &$element, WebformSubmissionInterface $webform_submission, array $options = []) {
+    $format = $this->getItemsFormat($element);
+    if (strpos($format, 'checklist:') === 0) {
+      // Get checked/unchecked icons.
+      list(, $checked_type) = explode(':', $format);
+      switch ($checked_type) {
+        case 'crosses':
+          $checked = '✖ ';
+          $unchecked = '⚬ ';
+          break;
+
+        default:
+        case 'boxes':
+          $checked = Markup::create('<span style="font-size: 1.4em; line-height: 1em">☑</span> ');
+          $unchecked = Markup::create('<span style="font-size: 1.4em; line-height: 1em">☐</span> ');
+          break;
+      }
+
+      $value = (array) $this->getValue($element, $webform_submission, $options);
+      $values = array_combine($value, $value);
+
+      // Build list of checked and unchecked options.
+      $build = [];
+      $options_description = $this->hasProperty('options_description_display');
+      foreach ($element['#options'] as $option_value => $option_text) {
+        if ($options_description && strpos($option_text, WebformOptionsHelper::DESCRIPTION_DELIMITER) !== FALSE) {
+          list($option_text) = explode(WebformOptionsHelper::DESCRIPTION_DELIMITER, $option_text);
+        }
+        $build[$option_value] = [
+          '#prefix' => isset($values[$option_value]) ? $checked : $unchecked,
+          '#markup' => $option_text,
+          '#suffix' => '<br/>',
+        ];
+        unset($values[$option_value]);
+      }
+      // Append all remaining option values.
+      foreach ($values as $value) {
+        $build[$value] = [
+          '#prefix' => $checked,
+          '#markup' => $value,
+          '#suffix' => '<br/>',
+        ];
+      }
+      return $build;
+    }
+    else {
+      return parent::formatHtmlItems($element, $webform_submission, $options);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function formatTextItems(array &$element, WebformSubmissionInterface $webform_submission, array $options = []) {
+    $format = $this->getItemsFormat($element);
+    if (strpos($format, 'checklist:') === 0) {
+      // Get checked/unchecked icons.
+      list(, $checked_type) = explode(':', $format);
+      switch ($checked_type) {
+        case 'crosses':
+          $checked = '✖';
+          $unchecked = '⚬';
+          break;
+
+        default:
+        case 'boxes':
+          $checked = '☑';
+          $unchecked = '☐';
+          break;
+      }
+
+      $value = (array) $this->getValue($element, $webform_submission, $options);
+      $values = array_combine($value, $value);
+
+      // Build list of checked and unchecked options.
+      $list = [];
+      $options_description = $this->hasProperty('options_description_display');
+      foreach ($element['#options'] as $option_value => $option_text) {
+        if ($options_description && strpos($option_text, WebformOptionsHelper::DESCRIPTION_DELIMITER) !== FALSE) {
+          list($option_text) = explode(WebformOptionsHelper::DESCRIPTION_DELIMITER, $option_text);
+        }
+        $list[] = ((isset($values[$option_value])) ? $checked : $unchecked) . ' ' . $option_text;
+        unset($values[$option_value]);
+      }
+      // Append all remaining option values.
+      foreach ($values as $value) {
+        $list[] = $checked . ' ' . $value;
+      }
+      return implode(PHP_EOL, $list);
+    }
+    else {
+        return parent::formatTextItems($element, $webform_submission, $options);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getItemsFormats() {
+    return parent::getItemsFormats() + [
+      'checklist:boxes' => $this->t('Checklist (☑/☐)'),
+      'checklist:crosses' => $this->t('Checklist (gi)'),
+    ];
   }
 
   /**
@@ -689,6 +810,11 @@ abstract class OptionsBase extends WebformElementBase {
         }
       }
       else {
+        // If the trigger is 'filled or 'empty' then return the value.
+        if ($trigger === 'filled' || $trigger === 'empty') {
+          return $value;
+        }
+
         if ($this->hasMultipleValues($element)) {
           // Return array of valid #options.
           return array_intersect($value, array_keys($options));
@@ -784,12 +910,28 @@ abstract class OptionsBase extends WebformElementBase {
       ],
     ];
 
+    // Sort options (only applies to select menus).
+    // @see template_preprocess_select()
+    // @see webform_preprocess_select()
+    $form['options']['sort_options'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Sort options'),
+      '#description' => $this->t('Sort the options by their (translated) labels.'),
+      '#return_value' => TRUE,
+    ];
+
     $form['options']['options_randomize'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Randomize options'),
       '#description' => $this->t('Randomizes the order of the options when they are displayed in the webform.'),
       '#return_value' => TRUE,
     ];
+
+    if ($this->hasProperty('options_randomize') && $this->hasProperty('sort_options')) {
+      $form['options']['options_randomize']['#states']['visible'] = [
+        ':input[name="properties[sort_options]"]' => ['checked' => FALSE],
+      ];
+    }
 
     // Other.
     $states_textfield_or_number = [
@@ -938,7 +1080,7 @@ abstract class OptionsBase extends WebformElementBase {
       '#title' => $this->t('Options properties'),
       '#description' => $this->t("Custom options properties must include the 'Option value' followed by option (element) properties prepended with a hash (#) character.") .
         "<pre>option_value:
-  '#wrapper_attributes': 
+  '#wrapper_attributes':
     class:
       - disabled
   '#disabled': true</pre>" .

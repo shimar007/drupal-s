@@ -18,10 +18,11 @@ class BasicCRUDConfigTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('block', 'node', 'search_autocomplete');
+  public static $modules = ['block', 'node', 'search_autocomplete'];
 
   /**
    * Stores a user admin.
+   *
    * @var \Drupal\user\Entity\User
    */
   public $adminUser;
@@ -30,26 +31,12 @@ class BasicCRUDConfigTest extends WebTestBase {
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Manage Autocompletion Configuration test.',
       'description' => 'Test is autocompletion configurations can be added/edited/deleted.',
       'group' => 'Search Autocomplete',
-    );
+    ];
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-    // Create admin user.
-    $this->adminUser = $this->drupalCreateUser(array('administer search autocomplete'));
-    // Log user as admin.
-    $this->drupalLogin($this->adminUser);
-    // Place the local_actions_block in content.
-    $this->drupalPlaceBlock('local_actions_block', array('region' => 'content'));
-  }
-
 
   /**
    * Check that autocompletion configurations can be added/edited/deleted.
@@ -77,31 +64,31 @@ class BasicCRUDConfigTest extends WebTestBase {
 
     // Build a configuration data.
     $config_name = 'testing_config';
-    $config = array(
-      'label'             => 'Unit testing configuration',
-      'selector'          => '#test-key',
-      'minChar'           => '3',
-      'maxSuggestions'    => '10',
-      'autoSubmit'        => TRUE,
-      'autoRedirect'      => TRUE,
-      'noResultLabel'     => 'No results found for [search-phrase]. Click to perform full search.',
-      'noResultValue'     => '[search-phrase]',
-      'noResultLink'      => '',
-      'moreResultsLabel'  => 'View all results for [search-phrase].',
-      'moreResultsValue'  => '[search-phrase]',
-      'moreResultsLink'   => '',
-      'source'            => 'autocompletion_callbacks_nodes::nodes_autocompletion_callback',
-      'theme'             => 'basic-blue.css',
-    );
+    $config = [
+      'label' => 'Unit testing configuration',
+      'selector' => '#test-key',
+      'minChar' => '3',
+      'maxSuggestions' => '10',
+      'autoSubmit' => TRUE,
+      'autoRedirect' => TRUE,
+      'noResultLabel' => 'No results found for [search-phrase]. Click to perform full search.',
+      'noResultValue' => '[search-phrase]',
+      'noResultLink' => '',
+      'moreResultsLabel' => 'View all results for [search-phrase].',
+      'moreResultsValue' => '[search-phrase]',
+      'moreResultsLink' => '',
+      'source' => 'autocompletion_callbacks_nodes::nodes_autocompletion_callback',
+      'theme' => 'basic-blue.css',
+    ];
 
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'label' => $config['label'],
         'id' => $config_name,
         'selector' => $config['selector'],
-      ),
-      t('Create Autocompletion Configuration')
+      ],
+      'Create Autocompletion Configuration'
     );
 
     // ----------------------------------------------------------------------
@@ -135,7 +122,7 @@ class BasicCRUDConfigTest extends WebTestBase {
     $this->drupalPostForm(
       NULL,
       $config,
-      t('Update')
+      'Update'
     );
 
     // ----------------------------------------------------------------------
@@ -189,31 +176,31 @@ class BasicCRUDConfigTest extends WebTestBase {
 
     // Build a configuration data.
     $config_name = 'testing_config';
-    $config = array(
-      'label'             => 'Unit testing configuration',
-      'selector'          => '',
-      'minChar'           => 3,
-      'maxSuggestions'    => 10,
-      'autoSubmit'        => TRUE,
-      'autoRedirect'      => TRUE,
-      'noResultLabel'     => 'No results found for [search-phrase]. Click to perform full search.',
-      'noResultValue'     => '[search-phrase]',
-      'noResultLink'      => '',
-      'moreResultsLabel'  => 'View all results for [search-phrase].',
-      'moreResultsValue'  => '[search-phrase]',
-      'moreResultsLink'   => '',
-      'source'            => 'autocompletion_callbacks_nodes::nodes_autocompletion_callback',
-      'theme'             => 'basic-blue.css',
-    );
+    $config = [
+      'label' => 'Unit testing configuration',
+      'selector' => '',
+      'minChar' => 3,
+      'maxSuggestions' => 10,
+      'autoSubmit' => TRUE,
+      'autoRedirect' => TRUE,
+      'noResultLabel' => 'No results found for [search-phrase]. Click to perform full search.',
+      'noResultValue' => '[search-phrase]',
+      'noResultLink' => '',
+      'moreResultsLabel' => 'View all results for [search-phrase].',
+      'moreResultsValue' => '[search-phrase]',
+      'moreResultsLink' => '',
+      'source' => 'autocompletion_callbacks_nodes::nodes_autocompletion_callback',
+      'theme' => 'basic-blue.css',
+    ];
 
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'label' => $config['label'],
         'id' => $config_name,
         'selector' => $config['selector'],
-      ),
-      t('Create Autocompletion Configuration')
+      ],
+      'Create Autocompletion Configuration'
     );
 
     // ----------------------------------------------------------------------
@@ -247,7 +234,7 @@ class BasicCRUDConfigTest extends WebTestBase {
     $this->drupalPostForm(
       NULL,
       $config,
-      t('Update')
+      'Update'
     );
 
     // ----------------------------------------------------------------------
@@ -277,8 +264,22 @@ class BasicCRUDConfigTest extends WebTestBase {
     // 6) Verify that we can delete the configuration.
     $this->drupalGet("/admin/config/search/search_autocomplete/manage/" . $config_name . "/delete");
     $this->assertText('This action cannot be undone.');
-    $this->drupalPostForm(NULL, array(), t('Delete this configuration'));
+    $this->drupalPostForm(NULL, [], 'Delete this configuration');
     $this->assertRaw('The autocompletion configuration <em class="placeholder">' . $config['label'] . '</em> is deleted.');
     $this->assertNoRaw("<td>Unit testing configuration</td>");
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    // Create admin user.
+    $this->adminUser = $this->drupalCreateUser(['administer search autocomplete']);
+    // Log user as admin.
+    $this->drupalLogin($this->adminUser);
+    // Place the local_actions_block in content.
+    $this->drupalPlaceBlock('local_actions_block', ['region' => 'content']);
+  }
+
 }

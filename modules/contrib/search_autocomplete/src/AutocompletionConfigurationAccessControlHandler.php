@@ -30,4 +30,5 @@ class AutocompletionConfigurationAccessControlHandler extends EntityAccessContro
     }
     return parent::checkAccess($entity, $operation, $account);
   }
+
 }

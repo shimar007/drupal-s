@@ -2,6 +2,7 @@
 
 namespace Drupal\search_autocomplete\Plugin\views\display;
 
+use Drupal;
 use Drupal\Component\Render\MarkupTrait;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\CacheableResponse;
@@ -12,6 +13,7 @@ use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\views\Plugin\views\display\PathPluginBase;
 use Drupal\views\Plugin\views\display\ResponseDisplayPluginInterface;
+use Drupal\views\Render\ViewsRenderPipelineMarkup;
 use Drupal\views\ViewExecutable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -106,12 +108,12 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-        $configuration,
-        $plugin_id,
-        $plugin_definition,
-        $container->get('router.route_provider'),
-        $container->get('state'),
-        $container->get('renderer')
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('router.route_provider'),
+      $container->get('state'),
+      $container->get('renderer')
     );
   }
 
@@ -122,7 +124,7 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
     $build = static::buildBasicRenderable($view_id, $display_id, $args);
 
     // @var \Drupal\Core\Render\RendererInterface $renderer.
-    $renderer = \Drupal::service('renderer');
+    $renderer = Drupal::service('renderer');
 
     $output = $renderer->renderRoot($build);
 
@@ -154,26 +156,13 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
   }
 
   /**
-   * Sets the request content type.
-   *
-   * @param string $mime_type
-   *   The response mime type. E.g. 'application/json'.
-   */
-  public function setMimeType($mime_type) {
-    $this->mimeType = $mime_type;
-  }
-
-  /**
-   * Gets the mime type.
-   *
-   * This will return any overridden mime type, otherwise returns the mime type
-   * from the request.
+   * Gets the content type.
    *
    * @return string
-   *   The response mime type. E.g. 'application/json'.
+   *   The content type machine name. E.g. 'json'.
    */
-  public function getMimeType() {
-    return $this->mimeType;
+  public function getContentType() {
+    return $this->contentType;
   }
 
   /**
@@ -187,37 +176,6 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
   }
 
   /**
-   * Gets the content type.
-   *
-   * @return string
-   *   The content type machine name. E.g. 'json'.
-   */
-  public function getContentType() {
-    return $this->contentType;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function defineOptions() {
-    $options = parent::defineOptions();
-
-    // Set the default style plugin to 'json'.
-    $options['style']['contains']['type']['default'] = 'callback_serializer';
-    $options['row']['contains']['type']['default'] = 'callback_fields';
-    $options['defaults']['default']['style'] = FALSE;
-    $options['defaults']['default']['row'] = FALSE;
-
-    // Remove css/exposed form settings,
-    // as they are not used for the data display.
-    unset($options['exposed_form']);
-    unset($options['exposed_block']);
-    unset($options['css_class']);
-
-    return $options;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function optionsSummary(&$categories, &$options) {
@@ -227,13 +185,13 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
     // Hide some settings, as they aren't useful for pure data output.
     unset($options['show_admin_links'], $options['analyze-theme']);
 
-    $categories['path'] = array(
+    $categories['path'] = [
       'title' => $this->t('Path settings'),
       'column' => 'second',
-      'build' => array(
+      'build' => [
         '#weight' => -10,
-      ),
-    );
+      ],
+    ];
 
     $options['path']['category'] = 'path';
     $options['path']['title'] = $this->t('Path');
@@ -258,9 +216,9 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
    * {@inheritdoc}
    */
   public function render() {
-    $build = array();
+    $build = [];
 
-    $build['#markup'] = $this->renderer->executeInRenderContext(new RenderContext(), function() {
+    $build['#markup'] = $this->renderer->executeInRenderContext(new RenderContext(), function () {
       return $this->view->style_plugin->render();
     });
 
@@ -275,7 +233,8 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
       $build['#markup'] = json_encode($dump, JSON_PRETTY_PRINT);
       $build['#suffix'] = '</pre>';
     }
-    elseif ($this->view->getRequest()->getFormat($this->view->element['#content_type']) !== 'html') {
+    elseif ($this->view->getRequest()
+        ->getFormat($this->view->element['#content_type']) !== 'html') {
       // This display plugin is primarily for returning non-HTML formats.
       // However, we still invoke the renderer to collect cacheability metadata.
       // Because the renderer is designed for HTML rendering, it filters
@@ -286,11 +245,34 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
       // executed by an HTML agent.
       // @todo Decide how to support non-HTML in the render API in
       //   https://www.drupal.org/node/2501313.
-      $build['#markup'] = MarkupTrait::create($build['#markup']);
+      $build['#markup'] = ViewsRenderPipelineMarkup::create($build['#markup']);
     }
 
     parent::applyDisplayCachablityMetadata($build);
     return $build;
+  }
+
+  /**
+   * Gets the mime type.
+   *
+   * This will return any overridden mime type, otherwise returns the mime type
+   * from the request.
+   *
+   * @return string
+   *   The response mime type. E.g. 'application/json'.
+   */
+  public function getMimeType() {
+    return $this->mimeType;
+  }
+
+  /**
+   * Sets the request content type.
+   *
+   * @param string $mime_type
+   *   The response mime type. E.g. 'application/json'.
+   */
+  public function setMimeType($mime_type) {
+    $this->mimeType = $mime_type;
   }
 
   /**
@@ -302,4 +284,26 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
   public function preview() {
     return $this->view->render();
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function defineOptions() {
+    $options = parent::defineOptions();
+
+    // Set the default style plugin to 'json'.
+    $options['style']['contains']['type']['default'] = 'callback_serializer';
+    $options['row']['contains']['type']['default'] = 'callback_fields';
+    $options['defaults']['default']['style'] = FALSE;
+    $options['defaults']['default']['row'] = FALSE;
+
+    // Remove css/exposed form settings,
+    // as they are not used for the data display.
+    unset($options['exposed_form']);
+    unset($options['exposed_block']);
+    unset($options['css_class']);
+
+    return $options;
+  }
+
 }

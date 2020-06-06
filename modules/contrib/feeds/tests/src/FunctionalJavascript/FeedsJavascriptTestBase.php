@@ -6,7 +6,6 @@ use Drupal\Component\Utility\Html;
 use Drupal\feeds\FeedInterface;
 use Drupal\feeds\FeedTypeInterface;
 use Drupal\feeds\Entity\FeedType;
-use Drupal\FunctionalJavascriptTests\DrupalSelenium2Driver;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\Tests\feeds\Traits\FeedCreationTrait;
 use Drupal\Tests\feeds\Traits\FeedsCommonTrait;
@@ -22,6 +21,11 @@ abstract class FeedsJavascriptTestBase extends WebDriverTestBase {
   use FeedsCommonTrait;
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Modules to enable.
    *
    * @var array
@@ -31,13 +35,6 @@ abstract class FeedsJavascriptTestBase extends WebDriverTestBase {
     'node',
     'user',
   ];
-
-  /**
-   * {@inheritdoc}
-   *
-   * Do not use PhantomJS.
-   */
-  protected $minkDefaultDriverClass = DrupalSelenium2Driver::class;
 
   /**
    * A test user with administrative privileges.

@@ -7,7 +7,7 @@ use Drupal\language\ConfigurableLanguageInterface;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\Tests\feeds\Kernel\FeedsKernelTestBase;
-use Drupal\Tests\taxonomy\Functional\TaxonomyTestTrait;
+use Drupal\Tests\taxonomy\Traits\TaxonomyTestTrait;
 
 /**
  * Test for the entity field translation.

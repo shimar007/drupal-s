@@ -1,13 +1,12 @@
 name: Search Autocomplete
 type: module
 description: Provides autocompletion feature for fields in your Drupal site. This module ships with pre-existing autocompletion configurations.
-# core: 8.x
+core: 8.x
 package: Search
 dependencies:
-  - views
+  - drupal:views
 configure: autocompletion_configuration.list
-# Information added by Drupal.org packaging script on 2016-12-17
-version: '8.x-1.1'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-06-01
+version: '8.x-1.3'
 project: 'search_autocomplete'
-datestamp: 1481975887
+datestamp: 1591039061

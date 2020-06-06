@@ -99,7 +99,10 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
     $sink = $this->fileSystem->tempnam('temporary://', 'feeds_http_fetcher');
     $sink = $this->fileSystem->realpath($sink);
 
-    $response = $this->get($feed->getSource(), $sink, $this->getCacheKey($feed));
+    // Get cache key if caching is enabled.
+    $cache_key = $this->useCache() ? $this->getCacheKey($feed) : FALSE;
+
+    $response = $this->get($feed->getSource(), $sink, $cache_key);
     // @todo Handle redirects.
     // @codingStandardsIgnoreStart
     // $feed->setSource($response->getEffectiveUrl());
@@ -164,6 +167,16 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
   }
 
   /**
+   * Returns if the cache should be used.
+   *
+   * @return bool
+   *   True if results should be cached. False otherwise.
+   */
+  protected function useCache() {
+    return !$this->configuration['always_download'];
+  }
+
+  /**
    * Returns the download cache key for a given feed.
    *
    * @param \Drupal\feeds\FeedInterface $feed
@@ -193,6 +206,7 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
       // resolved.
       'auto_detect_feeds' => FALSE,
       'use_pubsubhubbub' => FALSE,
+      'always_download' => FALSE,
       'fallback_hub' => '',
       'request_timeout' => 30,
     ];

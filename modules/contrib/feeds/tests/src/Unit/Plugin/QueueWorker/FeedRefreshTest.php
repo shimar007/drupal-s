@@ -131,7 +131,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
       throw new RuntimeException();
     });
 
-    $this->setExpectedException(RuntimeException::class);
+    $this->expectException(RuntimeException::class);
     $this->plugin->processItem([
       $this->feed,
       FeedsExecutableInterface::FETCH,
@@ -170,7 +170,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
       throw new RuntimeException();
     });
 
-    $this->setExpectedException(RuntimeException::class);
+    $this->expectException(RuntimeException::class);
     $this->plugin->processItem([
       $this->feed,
       FeedsExecutableInterface::PARSE, [
@@ -202,7 +202,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
       throw new RuntimeException();
     });
 
-    $this->setExpectedException(RuntimeException::class);
+    $this->expectException(RuntimeException::class);
     $this->plugin->processItem([
       $this->feed,
       FeedsExecutableInterface::PROCESS, [

@@ -30,7 +30,8 @@ use Drupal\search_autocomplete\SuggestionGroup;
  *    'search_autocomplete.autocompletion_configuration.xxx.yml'.
  *  - entity_keys: Specifies the class properties in which unique keys are
  *    stored for this entity type. Unique keys are properties which you know
- *    will be unique, and which the entity manager can use as unique in database
+ *    will be unique, and which the entity manager can use as unique in
+ * database
  *    queries.
  *
  * @see annotation
@@ -43,12 +44,17 @@ use Drupal\search_autocomplete\SuggestionGroup;
  *   label = @Translation("Autocompletion Configuration"),
  *   admin_permission = "administer search autocomplete",
  *   handlers = {
- *     "access" = "Drupal\search_autocomplete\AutocompletionConfigurationAccessControlHandler",
- *     "list_builder" = "Drupal\search_autocomplete\Controller\AutocompletionConfigurationListBuilder",
+ *     "access" =
+ *   "Drupal\search_autocomplete\AutocompletionConfigurationAccessControlHandler",
+ *     "list_builder" =
+ *   "Drupal\search_autocomplete\Controller\AutocompletionConfigurationListBuilder",
  *     "form" = {
- *       "add" = "Drupal\search_autocomplete\Form\AutocompletionConfigurationAddForm",
- *       "edit" = "Drupal\search_autocomplete\Form\AutocompletionConfigurationEditForm",
- *       "delete" = "Drupal\search_autocomplete\Form\AutocompletionConfigurationDeleteForm"
+ *       "add" =
+ *   "Drupal\search_autocomplete\Form\AutocompletionConfigurationAddForm",
+ *       "edit" =
+ *   "Drupal\search_autocomplete\Form\AutocompletionConfigurationEditForm",
+ *       "delete" =
+ *   "Drupal\search_autocomplete\Form\AutocompletionConfigurationDeleteForm"
  *     }
  *   },
  *   entity_keys = {
@@ -59,7 +65,8 @@ use Drupal\search_autocomplete\SuggestionGroup;
  *   links = {
  *     "edit-form" =
  *       "/examples/search_autocomplete/manage/{autocompletion_configuration}",
- *     "delete-form" = "/examples/search_autocomplete/manage/{autocompletion_configuration}/delete"
+ *     "delete-form" =
+ *   "/examples/search_autocomplete/manage/{autocompletion_configuration}/delete"
  *   }
  * )
  */
@@ -225,116 +232,15 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
-  public function getStatus() {
-    return $this->status;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getMinChar() {
-    return $this->minChar;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getMaxSuggestions() {
-    return $this->maxSuggestions;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getAutoSubmit() {
-    return $this->autoSubmit;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getAutoRedirect() {
-    return $this->autoRedirect;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getNoResultLabel() {
-    return $this->noResultLabel;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getNoResultValue() {
-    return $this->noResultValue;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getNoResultLink() {
-    return $this->noResultLink;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getMoreResultsLabel() {
-    return $this->moreResultsLabel;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getMoreResultsValue() {
-    return $this->moreResultsValue;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getMoreResultsLink() {
-    return $this->moreResultsLink;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSource() {
-    return $this->source;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getTheme() {
-    return $this->theme;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getEditable() {
-    return $this->editable;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDeletable() {
-    return $this->deletable;
-  }
-
-  /** ----------------------------- *
-   *  ---------  SETTERS  --------- */
-
-  /**
-   * {@inheritdoc}
-   */
   public function setSelector($selector) {
     $this->selector = $selector;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getStatus() {
+    return $this->status;
   }
 
   /**
@@ -347,8 +253,22 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
+  public function getMinChar() {
+    return $this->minChar;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setMinChar($min_char) {
     $this->minChar = $min_char;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getMaxSuggestions() {
+    return $this->maxSuggestions;
   }
 
   /**
@@ -361,8 +281,22 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
+  public function getAutoSubmit() {
+    return $this->autoSubmit;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setAutoSubmit($auto_submit) {
     $this->autoSubmit = $auto_submit;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAutoRedirect() {
+    return $this->autoRedirect;
   }
 
   /**
@@ -375,6 +309,13 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
+  public function getNoResultLabel() {
+    return $this->noResultLabel;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setNoResultLabel($no_result_label) {
     $this->noResultLabel = $no_result_label;
   }
@@ -382,8 +323,25 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
+  public function getNoResultValue() {
+    return $this->noResultValue;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setNoResultValue($no_result_value) {
     $this->noResultValue = $no_result_value;
+  }
+
+  /** ----------------------------- *
+   *  ---------  SETTERS  --------- */
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getNoResultLink() {
+    return $this->noResultLink;
   }
 
   /**
@@ -396,8 +354,22 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
+  public function getMoreResultsLabel() {
+    return $this->moreResultsLabel;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setMoreResultsLabel($more_results_label) {
     $this->moreResultsLabel = $more_results_label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getMoreResultsValue() {
+    return $this->moreResultsValue;
   }
 
   /**
@@ -410,8 +382,22 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
+  public function getMoreResultsLink() {
+    return $this->moreResultsLink;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setMoreResultsLink($more_results_link) {
     $this->moreResultsLink = $more_results_link;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSource() {
+    return $this->source;
   }
 
   /**
@@ -424,6 +410,13 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
+  public function getTheme() {
+    return $this->theme;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setTheme($theme) {
     $this->theme = $theme;
   }
@@ -431,8 +424,22 @@ class AutocompletionConfiguration extends ConfigEntityBase implements Autocomple
   /**
    * {@inheritdoc}
    */
+  public function getEditable() {
+    return $this->editable;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setEditable($editable) {
     $this->editable = $editable;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDeletable() {
+    return $this->deletable;
   }
 
   /**

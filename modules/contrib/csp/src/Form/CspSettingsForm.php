@@ -216,6 +216,10 @@ class CspSettingsForm extends ConfigFormBase {
           '#type' => 'checkbox',
           '#title' => $directiveName,
         ];
+        if (!empty($autoDirectives[$directiveName])) {
+          $form[$policyTypeKey]['directives'][$directiveName]['enable']['#title'] .= ' <span class="csp-directive-auto">auto</span>';
+        }
+
         if ($config->get($policyTypeKey)) {
           // Csp::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST may be an empty array,
           // so is_null() must be used instead of empty().
@@ -455,12 +459,6 @@ class CspSettingsForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
 
     foreach (['report-only', 'enforce'] as $policyTypeKey) {
-
-      // No options are saved for disabled policies, so skip validation.
-      if (!$form_state->getValue([$policyTypeKey, 'enable'])) {
-        continue;
-      }
-
       $directiveNames = $this->getConfigurableDirectives();
       foreach ($directiveNames as $directiveName) {
         if (($directiveSources = $form_state->getValue([$policyTypeKey, 'directives', $directiveName, 'sources']))) {

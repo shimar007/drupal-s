@@ -568,8 +568,7 @@ display:
         type: callback_serializer
         options:
           grouping:
-            -
-              field: type
+            - field: type
           input_label: title
           input_link: path
     cache_metadata:

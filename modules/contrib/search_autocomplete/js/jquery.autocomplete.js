@@ -93,7 +93,7 @@
     if (!(elementId in autocomplete.cache)) {
       autocomplete.cache[elementId] = {};
     }
-    
+
     // Retrieve the key for this element.
     var key = this.element.data("key");
 
@@ -120,20 +120,24 @@
      * @param {Object} data
      */
     function sourceCallbackHandler(data) {
-      
+
       // Cache the results.
       autocomplete.cache[elementId][term] = data;
-      
-      // Reduce number to limit.
-      if (key) data.slice(0, autocomplete.options.forms[key].maxSuggestions);
 
-      // Add no_result or moore_results depending on the situation.
-      // @todo: find a better way eventually ?
+      // Reduce number to limit.
+      const length = data.length;
+      if (key) {
+        data = data.slice(0, autocomplete.options.forms[key].maxSuggestions);
+      }
+
+      // Add no_result or more_results depending on the situation.
       if (key) {
         if (data.length) {
           var moreResults = replaceInObject(autocomplete.options.forms[key].moreResults, '\\[search-phrase\\]', request.term);
+          moreResults = replaceInObject(moreResults, '\\[search-count\\]', length);
           data.push(moreResults);
-        } else {
+        }
+        else {
           var noResult = replaceInObject(autocomplete.options.forms[key].noResult, '\\[search-phrase\\]', request.term);
           data.push(noResult);
         }
@@ -155,14 +159,18 @@
       var path = '';
       if (key && autocomplete.options.forms[key]) {
         path = autocomplete.options.forms[key].source;
-        $.each(autocomplete.options.forms[key].filters, function(key, value) {
-         data[value] = term;
+        $.each(autocomplete.options.forms[key].filters, function (key, value) {
+          data[value] = term;
         });
-      } else {
-    	path = this.element.attr('data-autocomplete-path');
-    	data.q = term;
       }
-      var options = $.extend({success: sourceCallbackHandler, data: data}, autocomplete.ajax);
+      else {
+        path = this.element.attr('data-autocomplete-path');
+        data.q = term;
+      }
+      var options = $.extend({
+        success: sourceCallbackHandler,
+        data: data
+      }, autocomplete.ajax);
       $.ajax(path, options);
     }
   }
@@ -188,6 +196,12 @@
     var terms = autocomplete.splitValues(event.target.value);
     // Remove the current input.
     terms.pop();
+
+    // Trick here to handle encoded characters (see #2936846).
+    const helper = document.createElement("textarea");
+    helper.innerHTML = ui.item.value;
+    ui.item.value = helper.value;
+
     // Add the selected item.
     if (ui.item.value.search(",") > 0) {
       terms.push('"' + ui.item.value + '"');
@@ -197,13 +211,24 @@
     }
     event.target.value = terms.join(', ');
     var key = $(event.target).data('key');
-    
+
     // Add our own handling on submission if needed
     if (key && autocomplete.options.forms[key].autoRedirect == 1 && ui.item.link) {
-    document.location.href = ui.item.link;
-    } else if (key && autocomplete.options.forms[key].autoSubmit == 1 && ui.item.value) {
+      document.location.href = ui.item.link;
+    }
+    else if (key && autocomplete.options.forms[key].autoSubmit == 1 && ui.item.value) {
       $(this).val(ui.item.value);
-      $(this).closest("form").submit();
+      const form = $(this).closest("form");
+      const submit = $('[type="submit"]', form);
+      // If we find a submit input click on it rather then submit the form to
+      // trigger the attached click behavior such as AJAX refresh
+      // (case of an ajax view with expose filters for instance).
+      // @see #2820337
+      if (submit.length === 1) {
+        submit.click();
+      } else {
+        form.submit();
+      }
     }
     // Return false to tell jQuery UI that we've filled in the value already.
     return false;
@@ -216,21 +241,25 @@
    * @param {Object} item
    *
    * @return {Object}
-   */   
+   */
   function renderItem(ul, item) {
     var term = this.term;
-    var first = ("group" in item)  ? 'first' : '';
+    var first = ("group" in item) ? 'first' : '';
     var innerHTML = '<div class="ui-autocomplete-fields ' + first + '">';
     var regex = new RegExp('(' + escapeRegExp(term) + ')', 'gi');
     if (item.fields) {
-      $.each(item.fields, function(key, value) {
+      var helper = document.createElement("textarea");
+      $.each(item.fields, function (key, value) {
+        helper.innerHTML = value;
+        value = helper.value;
         var output = value;
         if (value.indexOf('src=') == -1 && value.indexOf('href=') == -1) {
           output = value.replace(regex, "<span class='ui-autocomplete-field-term'>$1</span>");
         }
         innerHTML += ('<div class="ui-autocomplete-field-' + key + '">' + output + '</div>');
       });
-    } else {
+    }
+    else {
       var output = item.label;
       if (item.group && item.group.group_id != 'more_results' && item.group.group_id != 'no_results') {
         output = item.label.replace(regex, "<span class='ui-autocomplete-field-term'>$1</span>");
@@ -240,19 +269,19 @@
     innerHTML += '</div>';
 
     if ("group" in item) {
-    	var groupId = typeof(item.group.group_id) !== 'undefined' ? item.group.group_id : '';
-    	var groupName = typeof(item.group.group_name) !== 'undefined' ? item.group.group_name : '';
+      var groupId = typeof (item.group.group_id) !== 'undefined' ? item.group.group_id : '';
+      var groupName = typeof (item.group.group_name) !== 'undefined' ? item.group.group_name : '';
       $('<div class="ui-autocomplete-field-group ui-state-disabled ' + groupId + '">' + groupName + '</div>').appendTo(ul);
     }
-    var elem =  $("<li class=ui-menu-item-" + first + "></li>" )
-    .append("<a>" + innerHTML + "</a>");   
+    var elem = $("<li class=ui-menu-item-" + first + "></li>")
+    .append("<a>" + innerHTML + "</a>");
     if (item.value == '') {
-    	elem = $("<li class='ui-state-disabled ui-menu-item-" + first + " ui-menu-item'>" + item.label + "</li>");
+      elem = $("<li class='ui-state-disabled ui-menu-item-" + first + " ui-menu-item'>" + item.label + "</li>");
     }
     elem.data("item.autocomplete", item).appendTo(ul);
     return elem;
   }
-    
+
   /**
    * This methods resize the suggestion panel property.
    * Not used currently.
@@ -261,24 +290,25 @@
     var ul = this.menu.element;
     ul.outerWidth(Math.max(ul.width("").outerWidth() + 5, this.options.position.of == null ? this.element.outerWidth() : this.options.position.of.outerWidth()));
   }
-  
+
   /**
    * This methods replaces needle by replacement in stash.
    */
   function replaceInObject(stash, needle, replacement) {
-    var regex = new RegExp(needle,"g");
+    var regex = new RegExp(needle, "g");
     var input = Drupal.checkPlain(replacement);
-    var result = [];
-    $.each(stash, function(index, value) {
+    var result = {};
+    $.each(stash, function (index, value) {
       if ($.type(value) === "string") {
         result[index] = value.replace(regex, input);
-      } else {
+      }
+      else {
         result[index] = value;
       }
     });
     return result;
   }
-  
+
   /**
    * Attaches the autocomplete behavior to all required fields.
    */
@@ -287,29 +317,34 @@
       // Act on textfields with the "form-autocomplete" class.
       var $autocomplete = $(context).find('input.form-autocomplete');
       // Act also on registered fields
-      $.each(autocomplete.options.forms, function(key, value) {
-      	var elem = $(context).find(autocomplete.options.forms[key].selector).data("key", key).attr("class", "form-autocomplete").attr('data-id', key);
-  	  	$autocomplete = $.merge($autocomplete, elem);
+      $.each(autocomplete.options.forms, function (key, value) {
+        var elem = $(context).find(autocomplete.options.forms[key].selector).data("key", key).addClass('form-autocomplete').attr('data-id', key);
+        $autocomplete = $.merge($autocomplete, elem);
       });
-      
-	  	$.each($autocomplete, function(key, value) {
-	  	  value = $(value);
-	  	  
+
+      $.each($autocomplete, function (key, value) {
+        value = $(value);
+        // Retrieve the key for this element.
+        var key = value.data("key");
+
         // Run only once on found elements
-	  	  value.once('autocomplete');
+        value.once('autocomplete');
 
         // If present: autocomplete those fields
         if (value.length) {
           // Allow options to be overriden per instance.
           var blacklist = value.attr('data-autocomplete-first-character-blacklist');
+          // Append the autocomplete results to the form.
+          var formId = '#' + $(this).closest('form').attr('id');
           $.extend(autocomplete.options, {
-            firstCharacterBlacklist: (blacklist) ? blacklist : ''
+            firstCharacterBlacklist: (blacklist) ? blacklist : '',
+            minLength: (typeof key !== 'undefined') ? autocomplete.options.forms[key].minChars : autocomplete.options.minLength,
+            appendTo: (formId) ? formId : 'body',
           });
-          
-          
+
           // Use jQuery UI Autocomplete on the textfield.
           value.autocomplete(autocomplete.options)
-            .data("ui-autocomplete")
+          .data("ui-autocomplete")
             ._renderItem = autocomplete.options.renderItem;
           // Add theme id to suggestion list.
           if (value.data("key")) {
@@ -321,8 +356,8 @@
     detach: function (context, settings, trigger) {
       if (trigger === 'unload') {
         $(context).find('input.form-autocomplete')
-          .removeOnce('autocomplete')
-          .autocomplete('destroy');
+        .removeOnce('autocomplete')
+        .autocomplete('destroy');
       }
     }
   };
@@ -336,7 +371,7 @@
     splitValues: autocompleteSplitValues,
     extractLastTerm: extractLastTerm,
     // jQuery UI autocomplete options.
-    options : {
+    options: {
       source: sourceData,
       focus: focusHandler,
       search: searchHandler,

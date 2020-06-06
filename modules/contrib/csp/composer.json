@@ -3,12 +3,12 @@
   "type": "drupal-module",
   "description": "Provide Content-Security-Policy headers",
   "keywords": ["Drupal"],
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "homepage": "https://www.drupal.org/project/csp",
   "minimum-stability": "dev",
   "support": {
     "issues": "https://www.drupal.org/project/issues/csp",
-    "source": "http://cgit.drupalcode.org/csp"
+    "source": "https://git.drupalcode.org/project/csp"
   },
   "require": {
     "php": "^5.6 || >=7.0",

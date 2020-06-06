@@ -125,7 +125,7 @@ class DefaultEntityProcessorForm extends ExternalPluginFormBase implements Conta
       '#default_value' => $this->plugin->getConfiguration('expire'),
     ];
 
-    if ($entity_type->isSubclassOf(EntityOwnerInterface::class)) {
+    if ($entity_type->entityClassImplements(EntityOwnerInterface::class)) {
       $form['owner_feed_author'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Owner: Feed author'),
@@ -155,7 +155,7 @@ class DefaultEntityProcessorForm extends ExternalPluginFormBase implements Conta
       '#weight' => 10,
     ];
 
-    if ($entity_type->isSubclassOf(EntityOwnerInterface::class)) {
+    if ($entity_type->entityClassImplements(EntityOwnerInterface::class)) {
       $form['advanced']['authorize'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Authorize'),

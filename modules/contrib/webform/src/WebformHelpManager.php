@@ -89,21 +89,21 @@ class WebformHelpManager implements WebformHelpManagerInterface {
   protected $pathMatcher;
 
   /**
-   * The Webform add-ons manager.
+   * The webform add-ons manager.
    *
    * @var \Drupal\webform\WebformAddonsManagerInterface
    */
   protected $addOnsManager;
 
   /**
-   * The Webform libraries manager.
+   * The webform libraries manager.
    *
    * @var \Drupal\webform\WebformLibrariesManagerInterface
    */
   protected $librariesManager;
 
   /**
-   * Webform element manager.
+   * The webform element manager.
    *
    * @var \Drupal\webform\Plugin\WebformElementManagerInterface
    */
@@ -1290,7 +1290,18 @@ class WebformHelpManager implements WebformHelpManagerInterface {
           ],
         ],
       ],
-
+      'composites_vs_tables' => [
+        'title' => $this->t('Webform Composites vs. Tables'),
+        'content' => $this->t('This screencast walks through when to use a webform composite element and when to use a webform table.'),
+        'youtube_id' => '7cVIqySy5fs',
+        'presentation_id' => '1R13ZGkNgTkxjlN-BT05zrwW2JKhOcvGiByNYl7qtywg',
+      ],
+      'sharing' => [
+        'title' => $this->t('Sharing Webforms'),
+        'content' => $this->t('This screencast walks through how to share a webform with any website, webpage, or application.'),
+        'youtube_id' => 'oMgOprfJTWA',
+        'presentation_id' => '1ZYPW5BWh9gm7APrYKAuMdQKksFN2yWqaeN0C4iK127M',
+      ],
       'webform' => [
         'title' => $this->t('Webform: There is this for that'),
         'content' => $this->t('One of the key mantras in the Drupal is “there is a module for that, “ and Webform is the module for building forms for Drupal 8.'),
@@ -1365,7 +1376,7 @@ class WebformHelpManager implements WebformHelpManagerInterface {
             'title' => $this->t('Moving Forward with Webform in Drupal 8: Part II | WebWash'),
             'url' => 'https://www.webwash.net/moving-forward-webform-drupal-8/ ',
           ],
-        ]
+        ],
       ],
       'webwash_install' => [
         'title' => $this->t('Using Webform in Drupal 8, 1.1: Install Webform'),
@@ -1617,7 +1628,6 @@ class WebformHelpManager implements WebformHelpManagerInterface {
         'webform.addons',
       ],
     ];
-
 
     /**************************************************************************/
     // Help.
@@ -2209,7 +2219,6 @@ class WebformHelpManager implements WebformHelpManagerInterface {
     /**************************************************************************/
     // Modules.
     /**************************************************************************/
-
 
     // Webform Entity Print (PDF).
     $help['webform_entity_print'] = [

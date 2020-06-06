@@ -2,6 +2,7 @@
 
 namespace Drupal\search_autocomplete\Tests\Views;
 
+use Drupal;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Html;
 use Drupal\node\Entity\Node;
@@ -15,21 +16,30 @@ use Drupal\views\Tests\ViewTestBase;
  * @ingroup seach_auocomplete
  */
 class CallbackViewsTest extends ViewTestBase {
-  // Temporary fix suggested here: https://www.drupal.org/node/2391795
-  protected $strictConfigSchema = FALSE;
 
+  // Temporary fix suggested here: https://www.drupal.org/node/2391795
   /**
    * Modules to enable.
    *
    * @var array
    */
-  public static $modules = array('search', 'image', 'user', 'node', 'views_ui', 'search_autocomplete');
+  public static $modules = [
+    'search',
+    'image',
+    'user',
+    'node',
+    'views_ui',
+    'search_autocomplete',
+  ];
 
   /**
    * The admin user
+   *
    * @var \Drupal\user\Entity\User
    */
   public $adminUser;
+
+  protected $strictConfigSchema = FALSE;
 
   /**
    * The entity storage for nodes.
@@ -42,26 +52,11 @@ class CallbackViewsTest extends ViewTestBase {
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Callback view configurationt tests.',
       'description' => 'Tests the callback view display.',
       'group' => 'Search Autocomplete',
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-    // Log with admin permissions.
-    $this->adminUser = $this->drupalCreateUser(array('access content', 'administer views', 'administer search autocomplete'));
-    $this->drupalLogin($this->adminUser);
-
-    // Get the node manager.
-    $this->nodeStorage = $this->container->get('entity.manager')
-    ->getStorage('node');
+    ];
   }
 
   /**
@@ -87,7 +82,7 @@ class CallbackViewsTest extends ViewTestBase {
 
     // Retrieve node default view.
     $actual_json = $this->drupalGet("callback/nodes");
-    $expected = array();
+    $expected = [];
     $this->assertIdentical($actual_json, json_encode($expected), 'The expected JSON output was found.');
 
     // Create some published nodes of type article and page.
@@ -123,43 +118,63 @@ class CallbackViewsTest extends ViewTestBase {
   protected function createNodes($number, $type, &$expected) {
     $type = $this->drupalCreateContentType(['type' => $type, 'name' => $type]);
     for ($i = 1; $i < $number; $i++) {
-      $settings = array(
-        'body'      => array(array(
-          'value' => $this->randomMachineName(32),
-          'format' => filter_default_format(),
-        ),
-        ),
-        'type'    => $type->id(),
+      $settings = [
+        'body' => [
+          [
+            'value' => $this->randomMachineName(32),
+            'format' => filter_default_format(),
+          ],
+        ],
+        'type' => $type->id(),
         'created' => 123456789,
-        'title'   => $type->id() . ' ' . $i,
-        'status'  => TRUE,
+        'title' => $type->id() . ' ' . $i,
+        'status' => TRUE,
         'promote' => rand(0, 1) == 1,
-        'sticky'  => rand(0, 1) == 1,
-        'uid'       => \Drupal::currentUser()->id(),
-      );
+        'sticky' => rand(0, 1) == 1,
+        'uid' => Drupal::currentUser()->id(),
+      ];
       $node = Node::create($settings);
       $status = $node->save();
-      $this->assertEqual($status, SAVED_NEW, new FormattableMarkup('Created node %title.', array('%title' => $node->label())));
+      $this->assertEqual($status, SAVED_NEW, new FormattableMarkup('Created node %title.', ['%title' => $node->label()]));
 
-      $result = array(
+      $result = [
         'value' => $type->id() . ' ' . $i,
-        'fields'  => array(
-          'title'   => $type->id() . ' ' . $i,
+        'fields' => [
+          'title' => $type->id() . ' ' . $i,
           'created' => 'by ' . $this->adminUser->getUsername() . ' | Thu, 11/29/1973 - 21:33',
-        ),
-        'link'  => $node->toUrl('canonical', array('absolute' => TRUE))->toString(),
-      );
+        ],
+        'link' => $node->toUrl('canonical', ['absolute' => TRUE])->toString(),
+      ];
       if ($i == 1) {
-        $result += array(
-          'group' => array(
+        $result += [
+          'group' => [
             'group_id' => strtolower(Html::cleanCssIdentifier($type->label())),
             'group_name' => $type->label() . "s",
-          ),
-        );
+          ],
+        ];
       }
       $expected[] = $result;
     }
     return $expected;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp($import_test_views = TRUE) {
+    parent::setUp();
+
+    // Log with admin permissions.
+    $this->adminUser = $this->drupalCreateUser([
+      'access content',
+      'administer views',
+      'administer search autocomplete',
+    ]);
+    $this->drupalLogin($this->adminUser);
+
+    // Get the node manager.
+    $this->nodeStorage = $this->container->get('entity.manager')
+      ->getStorage('node');
   }
 
 }

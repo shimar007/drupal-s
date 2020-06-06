@@ -67,7 +67,7 @@ class WebformSubmissionStorage extends SqlContentEntityStorage implements Webfor
   protected $fileSystem;
 
   /**
-   * Webform access rules manager service.
+   * The webform access rules manager service.
    *
    * @var \Drupal\webform\WebformAccessRulesManagerInterface
    */
@@ -311,6 +311,7 @@ class WebformSubmissionStorage extends SqlContentEntityStorage implements Webfor
       ->fields('sd', ['sid'])
       ->condition('sd.webform_id', $webform->id())
       ->condition('sd.name', $element_key)
+      ->range(0, 1)
       ->execute();
     return $result->fetchAssoc() ? TRUE : FALSE;
   }
@@ -910,7 +911,7 @@ class WebformSubmissionStorage extends SqlContentEntityStorage implements Webfor
       }
     }
 
-    $source_entity_key = $key .'.' . $source_entity->getEntityTypeId() . '.' . $source_entity->id();
+    $source_entity_key = $key . '.' . $source_entity->getEntityTypeId() . '.' . $source_entity->id();
     if ($results_customize && $webform->hasUserData($source_entity_key)) {
       return $webform->getUserData($source_entity_key);
     }
@@ -1161,24 +1162,27 @@ class WebformSubmissionStorage extends SqlContentEntityStorage implements Webfor
     // @see \Drupal\webform\Plugin\WebformElement\WebformSignature
     foreach ($entities as $entity) {
       $webform = $entity->getWebform();
-      $stream_wrappers = array_keys(\Drupal::service('stream_wrapper_manager')
-        ->getNames(StreamWrapperInterface::WRITE_VISIBLE));
-      foreach ($stream_wrappers as $stream_wrapper) {
-        $file_directory = $stream_wrapper . '://webform/' . $webform->id() . '/' . $entity->id();
-        // Clear empty webform submission directory.
-        if (file_exists($file_directory)
-          && empty(file_scan_directory($file_directory, '/.*/'))) {
-          $this->fileSystem->deleteRecursive($file_directory);
+      if ($webform) {
+        $stream_wrappers = array_keys(\Drupal::service('stream_wrapper_manager')
+          ->getNames(StreamWrapperInterface::WRITE_VISIBLE));
+        foreach ($stream_wrappers as $stream_wrapper) {
+          $file_directory = $stream_wrapper . '://webform/' . $webform->id() . '/' . $entity->id();
+          // Clear empty webform submission directory.
+          if (file_exists($file_directory)
+            && empty($this->fileSystem->scanDirectory($file_directory, '/.*/'))) {
+            $this->fileSystem->deleteRecursive($file_directory);
+          }
         }
       }
     }
 
     // Log deleted.
     foreach ($entities as $entity) {
+      $webform = $entity->getWebform();
       \Drupal::logger('webform')
         ->notice('Deleted @form: Submission #@id.', [
           '@id' => $entity->id(),
-          '@form' => $entity->getWebform()->label(),
+          '@form' => ($webform) ? $webform->label() : '[' . t('Webform') . ']',
         ]);
     }
 
@@ -1194,7 +1198,9 @@ class WebformSubmissionStorage extends SqlContentEntityStorage implements Webfor
    */
   public function invokeWebformHandlers($method, WebformSubmissionInterface $webform_submission, &$context1 = NULL, &$context2 = NULL) {
     $webform = $webform_submission->getWebform();
-    return $webform->invokeHandlers($method, $webform_submission, $context1, $context2);
+    if ($webform) {
+      return $webform->invokeHandlers($method, $webform_submission, $context1, $context2);
+    }
   }
 
   /**
@@ -1202,7 +1208,9 @@ class WebformSubmissionStorage extends SqlContentEntityStorage implements Webfor
    */
   public function invokeWebformElements($method, WebformSubmissionInterface $webform_submission, &$context1 = NULL, &$context2 = NULL) {
     $webform = $webform_submission->getWebform();
-    $webform->invokeElements($method, $webform_submission, $context1, $context2);
+    if ($webform) {
+      $webform->invokeElements($method, $webform_submission, $context1, $context2);
+    }
   }
 
   /****************************************************************************/
@@ -1370,7 +1378,9 @@ class WebformSubmissionStorage extends SqlContentEntityStorage implements Webfor
         $sid = $record['sid'];
         $name = $record['name'];
 
-        $elements = $webform_submissions[$sid]->getWebform()->getElementsInitializedFlattenedAndHasValue();
+        /** @var \Drupal\webform\WebformInterface $webform */
+        $webform = $webform_submissions[$sid]->getWebform();
+        $elements = ($webform) ? $webform->getElementsInitializedFlattenedAndHasValue() : [];
         $element = (isset($elements[$name])) ? $elements[$name] : ['#webform_multiple' => FALSE, '#webform_composite' => FALSE];
 
         if ($element['#webform_composite']) {

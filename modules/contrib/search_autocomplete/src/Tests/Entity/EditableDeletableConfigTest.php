@@ -19,7 +19,7 @@ class EditableDeletableConfigTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('node', 'search_autocomplete');
+  public static $modules = ['node', 'search_autocomplete'];
 
   public $adminUser;
 
@@ -27,22 +27,12 @@ class EditableDeletableConfigTest extends WebTestBase {
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Manage Autocompletion Configuration test.',
       'description' => 'Test the access authorization for editable, deletable config.',
       'group' => 'Search Autocomplete',
-    );
+    ];
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-    $this->adminUser = $this->drupalCreateUser(array('administer search autocomplete'));
-    $this->drupalLogin($this->adminUser);
-  }
-
 
   /**
    * Check access authorizations over editable configurations.
@@ -56,7 +46,7 @@ class EditableDeletableConfigTest extends WebTestBase {
     // Verify that editable configuration can be edited on GUI.
     $this->drupalGet('/admin/config/search/search_autocomplete');
     $elements = $this->xpath('//tr[@id="' . $config_id . '"]//li[contains(@class, "edit")]');
-    $this->assertTrue(isset($elements[0]), t('Editable config has Edit operation'));
+    $this->assertTrue(isset($elements[0]), 'Editable config has Edit operation');
 
     // Check access permission to edit page for editable configurations.
     $this->drupalGet('/admin/config/search/search_autocomplete/manage/' . $config_id);
@@ -70,7 +60,7 @@ class EditableDeletableConfigTest extends WebTestBase {
     // Verify that none editable configuration cannot be edited on GUI.
     $this->drupalGet('/admin/config/search/search_autocomplete');
     $elements = $this->xpath('//tr[@id="' . $config_id . '"]//li[contains(@class, "edit")]');
-    $this->assertFalse(isset($elements[0]), t('Editable config has Edit operation'));
+    $this->assertFalse(isset($elements[0]), 'Editable config has Edit operation');
 
     // Check that none editable configurations cannot be edited.
     $this->drupalGet('/admin/config/search/search_autocomplete/manage/' . $config_id);
@@ -89,7 +79,7 @@ class EditableDeletableConfigTest extends WebTestBase {
     // Verify that default configuration search_block cannot be edited on GUI.
     $this->drupalGet('/admin/config/search/search_autocomplete');
     $elements = $this->xpath('//tr[@id="' . $config_id . '"]//li[contains(@class, "delete")]');
-    $this->assertFalse(isset($elements[0]), t('Deletable config has Delete operation'));
+    $this->assertFalse(isset($elements[0]), 'Deletable config has Delete operation');
 
     // Check access permission to delete page for none deletable configurations.
     $this->drupalGet('/admin/config/search/search_autocomplete/manage/' . $config_id . '/delete');
@@ -102,11 +92,20 @@ class EditableDeletableConfigTest extends WebTestBase {
     // Verify that deletable configuration can be deleted from GUI.
     $this->drupalGet('/admin/config/search/search_autocomplete');
     $elements = $this->xpath('//tr[@id="' . $config_id . '"]//li[contains(@class, "delete")]');
-    $this->assertTrue(isset($elements[0]), t('Deletable config has Delete operation'));
+    $this->assertTrue(isset($elements[0]), 'Deletable config has Delete operation');
 
     // Check that deletable configurations can be deleted.
     $this->drupalGet('/admin/config/search/search_autocomplete/manage/' . $config_id . '/delete');
     $this->assertResponse(200, "Deletable configuration can be deleted from GUI");
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    $this->adminUser = $this->drupalCreateUser(['administer search autocomplete']);
+    $this->drupalLogin($this->adminUser);
   }
 
 

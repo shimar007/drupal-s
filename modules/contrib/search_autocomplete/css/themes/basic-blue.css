@@ -14,12 +14,18 @@
 
 /* Suggestion menu style */
 ul[data-sa-theme="basic-blue"] {
-  box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 15px;
+  box-shadow: rgba(0, 0, 0, 0.498039) 0 0 15px;
   background: white;
   border-bottom: 1px solid #bfbfbf;
   text-align: left;
   font-family: 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif;
   min-width: 350px;
+}
+ul[data-sa-theme="basic-blue"] a.ui-menu-item-wrapper,
+ul[data-sa-theme="basic-blue"] a.ui-menu-item-wrapper.ui-state-active {
+  display: block;
+  background: none;
+  border: none;
 }
 
 /* Suggestion menu elements */
@@ -27,9 +33,9 @@ ul[data-sa-theme="basic-blue"] > *,
 ul[data-sa-theme="basic-blue"] > *.ui-state-focus,
 ul[data-sa-theme="basic-blue"] > *:hover {
   border-color: #bfbfbf;
-  border-width: 1px 0px 0 0px;
+  border-width: 1px 0 0 0;
   border-style: solid;
-  margin: 0px;
+  margin: 0;
   padding: 5px 7px;
 }
 
@@ -40,9 +46,10 @@ ul[data-sa-theme="basic-blue"] > div.ui-autocomplete-field-group {
   text-align: center;
   text-transform: uppercase;
   font-size: 0.8em;
-  background-color: #CCCCCC;
+  background-color: #ccc;
   padding: 1px 5px;
-  margin: 0px;
+  margin: 0;
+  display: block;
 }
 
 /* Suggestion menu items */
@@ -71,6 +78,7 @@ ul[data-sa-theme="basic-blue"] .ui-autocomplete-fields > * {
   font-size: 0.85em;
   line-height: 1.3em;
   color: #6f6f6f;
+  display: block;
 }
 
 /* Suggestion focused fields */
@@ -82,7 +90,7 @@ ul[data-sa-theme="basic-blue"] > li.ui-menu-item:hover .ui-autocomplete-fields >
 /* Suggestion "no result" and "more resul" customizations */
 ul[data-sa-theme="basic-blue"] > div.ui-autocomplete-field-group.no_results + li.ui-menu-item,
 ul[data-sa-theme="basic-blue"] > div.ui-autocomplete-field-group.more_results + li.ui-menu-item {
-  padding: 0px;
+  padding: 0;
 }
 ul[data-sa-theme="basic-blue"] > div.ui-autocomplete-field-group.no_results + li.ui-menu-item .ui-autocomplete-fields > *:first-child,
 ul[data-sa-theme="basic-blue"] > div.ui-autocomplete-field-group.more_results + li.ui-menu-item .ui-autocomplete-fields > *:first-child {

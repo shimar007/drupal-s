@@ -19,17 +19,17 @@ class DefaultConfigTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('node', 'search_autocomplete');
+  public static $modules = ['node', 'search_autocomplete'];
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Default Entity inclusion tests.',
       'description' => 'Test the inclusion of default configurations.',
       'group' => 'Search Autocomplete',
-    );
+    ];
   }
 
   /**
@@ -40,26 +40,26 @@ class DefaultConfigTest extends WebTestBase {
   public function testDefaultConfigEntityInclusion() {
 
     // Build a configuration data.
-    $config = array(
-      'id'                => 'search_block',
-      'label'             => 'Search Block',
-      'selector'          => '',
-      'status'            => TRUE,
-      'minChar'           => 3,
-      'maxSuggestions'    => 10,
-      'autoSubmit'        => TRUE,
-      'autoRedirect'      => TRUE,
-      'noResultLabel'     => 'No results found for [search-phrase]. Click to perform full search.',
-      'noResultValue'     => '[search-phrase]',
-      'noResultLink'      => '',
-      'moreResultsLabel'  => 'View all results for [search-phrase].',
-      'moreResultsValue'  => '[search-phrase]',
-      'moreResultsLink'   => '',
-      'source'            => 'autocompletion_callbacks_nodes::nodes_autocompletion_callback',
-      'theme'             => 'basic-blue.css',
-      'editable'          => TRUE,
-      'deletable'         => FALSE,
-    );
+    $config = [
+      'id' => 'search_block',
+      'label' => 'Search Block',
+      'selector' => '',
+      'status' => TRUE,
+      'minChar' => 3,
+      'maxSuggestions' => 10,
+      'autoSubmit' => TRUE,
+      'autoRedirect' => TRUE,
+      'noResultLabel' => 'No results found for [search-phrase]. Click to perform full search.',
+      'noResultValue' => '[search-phrase]',
+      'noResultLink' => '',
+      'moreResultsLabel' => 'View all results for [search-phrase].',
+      'moreResultsValue' => '[search-phrase]',
+      'moreResultsLink' => '',
+      'source' => 'autocompletion_callbacks_nodes::nodes_autocompletion_callback',
+      'theme' => 'basic-blue.css',
+      'editable' => TRUE,
+      'deletable' => FALSE,
+    ];
 
     // ----------------------------------------------------------------------
     // 1) Verify that the search_block default config is properly added.

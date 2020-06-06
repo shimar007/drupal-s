@@ -5,6 +5,7 @@ namespace Drupal\feeds;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityHandlerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\feeds\Event\EventDispatcherTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -17,6 +18,7 @@ abstract class FeedHandlerBase implements EntityHandlerInterface {
 
   use DependencySerializationTrait;
   use EventDispatcherTrait;
+  use MessengerTrait;
   use StringTranslationTrait;
 
   /**

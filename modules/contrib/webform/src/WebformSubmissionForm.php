@@ -27,6 +27,7 @@ use Drupal\webform\Entity\WebformSubmission;
 use Drupal\webform\Form\WebformDialogFormTrait;
 use Drupal\webform\Plugin\WebformElement\Hidden;
 use Drupal\webform\Plugin\WebformElement\OptionsBase;
+use Drupal\webform\Plugin\WebformElement\WebformCompositeBase;
 use Drupal\webform\Plugin\WebformElementEntityReferenceInterface;
 use Drupal\webform\Plugin\WebformElementManagerInterface;
 use Drupal\webform\Plugin\WebformElementOtherInterface;
@@ -76,14 +77,14 @@ class WebformSubmissionForm extends ContentEntityForm {
   protected $pathValidator;
 
   /**
-   * The webform element (plugin) manager.
+   * The webform element plugin manager.
    *
    * @var \Drupal\webform\Plugin\WebformElementManagerInterface
    */
   protected $elementManager;
 
   /**
-   * Webform request handler.
+   * The webform request handler.
    *
    * @var \Drupal\webform\WebformRequestInterface
    */
@@ -180,8 +181,6 @@ class WebformSubmissionForm extends ContentEntityForm {
    *
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
    *   The entity repository.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
    * @param \Drupal\Core\Render\RendererInterface $renderer
@@ -311,7 +310,7 @@ class WebformSubmissionForm extends ContentEntityForm {
    * {@inheritdoc}
    *
    * This is the best place to override an entity form's default settings
-   * because is is called immediately after the form object is initialized.
+   * because it is called immediately after the form object is initialized.
    *
    * @see \Drupal\Core\Entity\EntityFormBuilder::getForm
    */
@@ -496,7 +495,13 @@ class WebformSubmissionForm extends ContentEntityForm {
     // Must be called after WebformHandler::overrideSettings which resets all
     // overridden settings.
     // @see \Drupal\webform\Entity\Webform::invokeHandlers
-    if ($this->getRequest()->query->get('_webform_dialog') && !$webform->getSetting('ajax')) {
+    if ($this->getRequest()->query->get('_webform_dialog') && !$webform->getSetting('ajax', TRUE)) {
+      $webform->setSettingOverride('ajax', TRUE);
+    }
+
+    // If share page (i.e. /webform_share/{webform}), enable Ajax support
+    // when this form is embedded in an iframe.
+    if ($this->isSharePage() && !$webform->getSetting('ajax', TRUE)) {
       $webform->setSettingOverride('ajax', TRUE);
     }
   }
@@ -578,7 +583,7 @@ class WebformSubmissionForm extends ContentEntityForm {
     // Ajax: Scroll to.
     // @see \Drupal\webform\Form\WebformAjaxFormTrait::submitAjaxForm
     if ($this->isAjax()) {
-      $form['#webform_ajax_scroll_top'] = $this->getWebformSetting('ajax_scroll_top');
+      $form['#webform_ajax_scroll_top'] = $this->getWebformSetting('ajax_scroll_top', '');
     }
 
     // Alter element's form.
@@ -947,8 +952,8 @@ class WebformSubmissionForm extends ContentEntityForm {
     $webform = $this->getWebform();
     $source_entity = $this->getSourceEntity();
 
-    // Display test message.
-    if ($this->isGet() && $this->operation === 'test') {
+    // Display test message, except on share page.
+    if ($this->isGet() && $this->operation === 'test' && !$this->isSharePage()) {
       $this->getMessageManager()->display(WebformMessageManagerInterface::SUBMISSION_TEST, 'warning');
 
       // Display devel generate link for webform or source entity.
@@ -1751,41 +1756,7 @@ class WebformSubmissionForm extends ContentEntityForm {
     }
 
     // Validate file (upload) limit.
-    // @see \Drupal\webform\Plugin\WebformElement\WebformManagedFileBase::validateManagedFileLimit
-    $file_limit = $this->getWebform()->getSetting('form_file_limit')
-      ?: $this->configFactory->get('webform.settings')->get('settings.default_form_file_limit')
-      ?: '';
-    $file_limit = Bytes::toInt($file_limit);
-    if (!$file_limit) {
-      return;
-    }
-
-    // Validate file upload limit.
-    $file_names = [];
-    $total_file_size = 0;
-    $element_keys = $this->getWebform()->getElementsManagedFiles();
-    foreach ($element_keys as $element_key) {
-      $data = $this->entity->getElementData($element_key);
-      if ($data) {
-        $fids = (array) $data;
-        /** @var \Drupal\file\FileInterface[] $files */
-        $files = $this->entityTypeManager->getStorage('file')->loadMultiple($fids);
-        foreach ($files as $file) {
-          $total_file_size += (int) $file->getSize();
-          $file_names[] = $file->getFilename() . ' - ' . format_size($file->getSize(), $this->entity->language()->getId());
-        }
-      }
-    }
-    if ($total_file_size > $file_limit) {
-      $t_args = ['%quota' => format_size($file_limit)];
-      $message = [];
-      $message['content'] = ['#markup' => $this->t("This form's file upload quota of %quota has been exceeded. Please remove some files.", $t_args)];
-      $message['files'] = [
-        '#theme' => 'item_list',
-        '#items' => $file_names,
-      ];
-      $form_state->setErrorByName(NULL, $this->renderer->renderPlain($message));
-    }
+    $this->validateUploadedManagedFiles($form, $form_state);
   }
 
   /**
@@ -1828,7 +1799,7 @@ class WebformSubmissionForm extends ContentEntityForm {
       // @see \Drupal\webform\WebformSubmissionForm::setConfirmation
       if ($state === WebformSubmissionInterface::STATE_UPDATED) {
         if (!$this->getRequest()->get('destination')) {
-          $this->reset($form, $form_state);
+          $this->rebuild($form, $form_state);
         }
       }
       elseif ($confirmation_type === WebformInterface::CONFIRMATION_MESSAGE || $confirmation_type === WebformInterface::CONFIRMATION_NONE) {
@@ -1945,6 +1916,97 @@ class WebformSubmissionForm extends ContentEntityForm {
 
     // Rebuild the form.
     $this->rebuild($form, $form_state);
+  }
+
+  /****************************************************************************/
+  // Validate functions.
+  /****************************************************************************/
+
+  /**
+   * Validate uploaded managed file limits.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   *
+   * @see \Drupal\webform\Plugin\WebformElement\WebformManagedFileBase::validateManagedFileLimit
+   */
+  protected function validateUploadedManagedFiles(array $form, FormStateInterface $form_state) {
+    $file_limit = $this->getWebform()->getSetting('form_file_limit')
+      ?: $this->configFactory->get('webform.settings')->get('settings.default_form_file_limit')
+      ?: '';
+    $file_limit = Bytes::toInt($file_limit);
+    if (!$file_limit) {
+      return;
+    }
+
+    // Validate file upload limit.
+    $fids = $this->getUploadedManagedFileIds();
+    if (!$fids) {
+      return;
+    }
+    $file_names = [];
+    $total_file_size = 0;
+
+    /** @var \Drupal\file\FileInterface[] $files */
+    $files = $this->entityTypeManager->getStorage('file')->loadMultiple($fids);
+    foreach ($files as $file) {
+      $total_file_size += (int) $file->getSize();
+      $file_names[] = $file->getFilename() . ' - ' . format_size($file->getSize(), $this->entity->language()->getId());
+    }
+
+    if ($total_file_size > $file_limit) {
+      $t_args = ['%quota' => format_size($file_limit)];
+      $message = [];
+      $message['content'] = ['#markup' => $this->t("This form's file upload quota of %quota has been exceeded. Please remove some files.", $t_args)];
+      $message['files'] = [
+        '#theme' => 'item_list',
+        '#items' => $file_names,
+      ];
+      $form_state->setErrorByName(NULL, $this->renderer->renderPlain($message));
+    }
+  }
+
+  /**
+   * Get uploaded managed file ids.
+   *
+   * @return array
+   *   An array of uploaded file ids.
+   */
+  protected function getUploadedManagedFileIds() {
+    $fids = [];
+
+    $element_keys = $this->getWebform()->getElementsManagedFiles();
+    foreach ($element_keys as $element_key) {
+      $data = $this->entity->getElementData($element_key);
+      if (!$data) {
+        continue;
+      }
+
+      $element = $this->getWebform()->getElement($element_key);
+      $element_plugin = $this->elementManager->getElementInstance($element);
+      $multiple = $element_plugin->hasMultipleValues($element);
+
+      // Get fids from composite sub-elements.
+      if ($element_plugin instanceof WebformCompositeBase) {
+        $managed_file_keys = $element_plugin->getManagedFiles($element);
+        // Convert single composite value to array of multiple composite values.
+        $data = (!$multiple) ? [$data] : $data;
+        foreach ($data as $item) {
+          foreach ($managed_file_keys as $manage_file_key) {
+            if ($item[$manage_file_key]) {
+              $fids[] = $item[$manage_file_key];
+            }
+          }
+        }
+      }
+      else {
+        $fids = array_merge($fids, (array) $data);
+      }
+    }
+
+    return $fids;
   }
 
   /****************************************************************************/
@@ -2119,10 +2181,14 @@ class WebformSubmissionForm extends ContentEntityForm {
     if ($current_page == 'webform_preview') {
       // Hide all elements except 'webform_actions'.
       foreach ($form['elements'] as $element_key => $element) {
-        if (isset($element['#type']) && $element['#type'] == 'webform_actions') {
+        if (isset($element['#type']) && $element['#type'] === 'webform_actions') {
           continue;
         }
-        $form['elements'][$element_key]['#access'] = FALSE;
+
+        // Set #access to FALSE which will suppresses webform #required validation.
+        if (Element::child($element_key) && is_array($form['elements'])) {
+          WebformElementHelper::setPropertyRecursive($form['elements'][$element_key], '#access', FALSE);
+        }
       }
 
       // Display preview message.
@@ -2431,13 +2497,7 @@ class WebformSubmissionForm extends ContentEntityForm {
     }
 
     // Set prepopulate data.
-    if ($this->operation === 'test') {
-      // Query string data should override existing test data.
-      $data = $prepopulate_data + $data;
-    }
-    else {
-      $data += $prepopulate_data;
-    }
+    $data = $prepopulate_data + $data;
   }
 
   /**
@@ -2866,6 +2926,20 @@ class WebformSubmissionForm extends ContentEntityForm {
     else {
       return $default_value;
     }
+  }
+
+  /****************************************************************************/
+  // Share functions.
+  /****************************************************************************/
+
+  /**
+   * Determine if the submission form is being embedded in a share page.
+   *
+   * @return bool
+   *   TRUE the submission form is being embedded in a share page.
+   */
+  protected function isSharePage() {
+    return (strpos($this->getRouteMatch()->getRouteName(), 'entity.webform.share_page') === 0);
   }
 
   /****************************************************************************/

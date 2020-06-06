@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Drupal\search_api\Plugin\views\query\SearchApiQuery;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Drupal\Core\File\FileSystemInterface;
 
 /**
  * Provides a data export display plugin.
@@ -738,9 +739,9 @@ class DataExport extends RestExport {
       }
 
       try {
-        file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
+        $fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
         $destination = $directory . $filename;
-        $file = file_save_data('', $destination, FILE_EXISTS_REPLACE);
+        $file = file_save_data('', $destination, FileSystemInterface::EXISTS_REPLACE);
         if (!$file) {
           // Failed to create the file, abort the batch.
           unset($context['sandbox']);

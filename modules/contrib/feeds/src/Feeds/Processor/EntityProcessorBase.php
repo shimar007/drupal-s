@@ -2,7 +2,7 @@
 
 namespace Drupal\feeds\Feeds\Processor;
 
-use Doctrine\Common\Inflector\Inflector;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -262,10 +262,20 @@ abstract class EntityProcessorBase extends ProcessorBase implements EntityProces
         break;
 
       default:
-        // Apply action on entity.
-        \Drupal::service('plugin.manager.action')
-          ->createInstance($update_non_existent)
-          ->execute($entity);
+        try {
+          // Apply action on entity.
+          \Drupal::service('plugin.manager.action')
+            ->createInstance($update_non_existent)
+            ->execute($entity);
+        }
+        catch (PluginNotFoundException $e) {
+          $state->setMessage(t('Cleaning %entity failed because of non-existing action plugin %name.', [
+            '%entity' => $entity->label(),
+            '%name' => $update_non_existent,
+          ]), 'error');
+
+          throw $e;
+        }
         break;
     }
 
@@ -410,7 +420,7 @@ abstract class EntityProcessorBase extends ProcessorBase implements EntityProces
    *   The plural label of the entity type.
    */
   public function entityTypeLabelPlural() {
-    return Inflector::pluralize((string) $this->entityTypeLabel());
+    return $this->entityType->getPluralLabel();
   }
 
   /**
@@ -434,7 +444,16 @@ abstract class EntityProcessorBase extends ProcessorBase implements EntityProces
    *   The plural item label.
    */
   public function getItemLabelPlural() {
-    return Inflector::pluralize((string) $this->getItemLabel());
+    if (!$this->entityType->getKey('bundle') || !$this->entityType->getBundleEntityType()) {
+      return $this->entityTypeLabelPlural();
+    }
+    // Entity bundles do not support plural labels yet.
+    // @todo Fix after https://www.drupal.org/project/drupal/issues/2765065.
+    $storage = $this->entityTypeManager->getStorage($this->entityType->getBundleEntityType());
+    $label = $storage->load($this->configuration['values'][$this->entityType->getKey('bundle')])->label();
+    return $this->t('@label items', [
+      '@label' => $label,
+    ]);
   }
 
   /**
@@ -1019,9 +1038,18 @@ abstract class EntityProcessorBase extends ProcessorBase implements EntityProces
         break;
 
       default:
-        $definition = \Drupal::service('plugin.manager.action')->getDefinition($this->getConfiguration('update_non_existent'));
-        if (isset($definition['provider'])) {
-          $this->addDependency('module', $definition['provider']);
+        try {
+          $definition = \Drupal::service('plugin.manager.action')->getDefinition($this->getConfiguration('update_non_existent'));
+          if (isset($definition['provider'])) {
+            $this->addDependency('module', $definition['provider']);
+          }
+        }
+        catch (PluginNotFoundException $e) {
+          // It's possible that the selected action plugin no longer exists. Log
+          // an error about it.
+          \Drupal::logger('feeds')->warning('The selected option for the setting "Previously imported items" in the feed type %feed_type_id no longer exists. Please edit the feed type and select a different option for that setting.', [
+            '%feed_type_id' => $this->feedType->id(),
+          ]);
         }
         break;
     }
