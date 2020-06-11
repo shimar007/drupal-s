@@ -6,7 +6,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\geocoder\Geocoder;
 use Drupal\geocoder_field\Plugin\Field\FieldFormatter\GeocodeFormatter;
-use Geocoder\Model\AddressCollection;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;

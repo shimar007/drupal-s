@@ -3100,30 +3100,30 @@
     },
     {
         "name": "drupal/field_group",
-        "version": "3.0.0",
-        "version_normalized": "3.0.0.0",
+        "version": "3.1.0",
+        "version_normalized": "3.1.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/field_group.git",
-            "reference": "8.x-3.0"
+            "reference": "8.x-3.1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/field_group-8.x-3.0.zip",
-            "reference": "8.x-3.0",
-            "shasum": "8d87cdc4abc417aa4d411bffcaeb0a3ef1afa497"
+            "url": "https://ftp.drupal.org/files/projects/field_group-8.x-3.1.zip",
+            "reference": "8.x-3.1",
+            "shasum": "8a719eaea594f0ba874172831cb28da93c66b77a"
         },
         "require": {
-            "drupal/core": "^8 || ^9"
+            "drupal/core": "^8.8 || ^9"
+        },
+        "require-dev": {
+            "drupal/jquery_ui_accordion": "^1.0"
         },
         "type": "drupal-module",
         "extra": {
-            "branch-alias": {
-                "dev-3.x": "3.x-dev"
-            },
             "drupal": {
-                "version": "8.x-3.0",
-                "datestamp": "1580250787",
+                "version": "8.x-3.1",
+                "datestamp": "1591772567",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"
@@ -3133,7 +3133,7 @@
         "installation-source": "dist",
         "notification-url": "https://packages.drupal.org/8/downloads",
         "license": [
-            "GPL-2.0+"
+            "GPL-2.0-or-later"
         ],
         "authors": [
             {
@@ -3160,7 +3160,8 @@
         "description": "Provides the field_group module.",
         "homepage": "https://www.drupal.org/project/field_group",
         "support": {
-            "source": "https://git.drupalcode.org/project/field_group"
+            "source": "https://git.drupalcode.org/project/field_group",
+            "issues": "https://www.drupal.org/project/issues/field_group"
         }
     },
     {
@@ -3222,18 +3223,18 @@
     },
     {
         "name": "drupal/geocoder",
-        "version": "2.18.0",
-        "version_normalized": "2.18.0.0",
+        "version": "2.21.0",
+        "version_normalized": "2.21.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/geocoder.git",
-            "reference": "8.x-2.18"
+            "reference": "8.x-2.21"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/geocoder-8.x-2.18.zip",
-            "reference": "8.x-2.18",
-            "shasum": "54ea175cdb5c76c5825ff9c7c716740e8df9ab2a"
+            "url": "https://ftp.drupal.org/files/projects/geocoder-8.x-2.21.zip",
+            "reference": "8.x-2.21",
+            "shasum": "f85b94bcb86df636f38c2209b552a9334d27bff9"
         },
         "require": {
             "drupal/core": "^8",
@@ -3252,8 +3253,8 @@
         "type": "drupal-module",
         "extra": {
             "drupal": {
-                "version": "8.x-2.18",
-                "datestamp": "1591384095",
+                "version": "8.x-2.21",
+                "datestamp": "1591705986",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"
@@ -3323,28 +3324,28 @@
     },
     {
         "name": "drupal/geofield",
-        "version": "1.13.0",
-        "version_normalized": "1.13.0.0",
+        "version": "1.15.0",
+        "version_normalized": "1.15.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/geofield.git",
-            "reference": "8.x-1.13"
+            "reference": "8.x-1.15"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/geofield-8.x-1.13.zip",
-            "reference": "8.x-1.13",
-            "shasum": "e08c1d8aeb95d2ad1babb7c5a019202f02023d65"
+            "url": "https://ftp.drupal.org/files/projects/geofield-8.x-1.15.zip",
+            "reference": "8.x-1.15",
+            "shasum": "b2726d7d6cd46a8b4615c828f7944bcba1193875"
         },
         "require": {
-            "drupal/core": "^8 || ^9",
+            "drupal/core": "^8.8 || ^9",
             "phayes/geophp": "^1.2"
         },
         "type": "drupal-module",
         "extra": {
             "drupal": {
-                "version": "8.x-1.13",
-                "datestamp": "1588276833",
+                "version": "8.x-1.15",
+                "datestamp": "1591556172",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"
