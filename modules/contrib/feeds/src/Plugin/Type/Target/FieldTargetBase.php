@@ -386,7 +386,18 @@ abstract class FieldTargetBase extends TargetBase implements ConfigurableTargetI
    * {@inheritdoc}
    */
   public function getLangcode() {
-    return !empty($this->configuration['language']) ? $this->configuration['language'] : LanguageInterface::LANGCODE_DEFAULT;
+    if (!empty($this->configuration['language'])) {
+      return $this->configuration['language'];
+    }
+
+    // Get the language from the processor, if the processor has one.
+    $processor = $this->feedType->getProcessor();
+    if ($processor instanceof EntityProcessorInterface) {
+      return $processor->entityLanguage();
+    }
+
+    // Return default language.
+    return $this->getLanguageManager()->getDefaultLanguage()->getId();
   }
 
 }

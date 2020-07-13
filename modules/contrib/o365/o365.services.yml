@@ -4,7 +4,7 @@ services:
     arguments: ['@config.factory', '@user.private_tempstore', '@o365.constants', '@o365.logger']
   o365.constants:
     class: Drupal\o365\ConstantsService
-    arguments: []
+    arguments: ['@config.factory']
   o365.graph:
     class: Drupal\o365\GraphService
     arguments: ['@o365.authentication', '@o365.logger']

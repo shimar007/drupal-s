@@ -87,4 +87,11 @@ class AuthorizationCodeGrantService extends Oauth2ClientGrantServiceBase {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getGrantProvider($clientId) {
+    return $this->getProvider($clientId);
+  }
+
 }

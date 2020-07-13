@@ -9,6 +9,7 @@
   Drupal.behaviors.codesnippet = {
     attach: function (context, settings) {
       hljs.initHighlightingOnLoad();
+      $("pre code").css('overflow-x', 'auto');
     }
   };
 

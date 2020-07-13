@@ -170,7 +170,7 @@ class AuthenticationService implements AuthenticationServiceInterface {
     if (!empty($authData)) {
       $now = time();
 
-      if ($authData['expires_on'] < $now) {
+      if ($authData['expires_on'] > $now) {
         return $authData['access_token'];
       }
 

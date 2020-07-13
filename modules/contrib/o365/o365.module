@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Contains o365.module.
+ */
+
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function o365_entity_base_field_info(EntityTypeInterface $entity_type) {
+  if ($entity_type->id() == 'user') {
+    $fields['o365_id'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Office 365 user ID'))
+      ->setTranslatable(FALSE);
+
+    return $fields;
+  }
+}

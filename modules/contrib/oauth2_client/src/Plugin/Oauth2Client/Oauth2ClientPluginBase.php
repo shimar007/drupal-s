@@ -138,6 +138,28 @@ abstract class Oauth2ClientPluginBase extends PluginBase implements Oauth2Client
   /**
    * {@inheritdoc}
    */
+  public function getScopes() {
+    if (!isset($this->pluginDefinition['scopes'])) {
+      return [];
+    }
+
+    return $this->pluginDefinition['scopes'] ?: [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getScopeSeparator() {
+    if (!isset($this->pluginDefinition['scope_separator'])) {
+      return ',';
+    }
+
+    return $this->pluginDefinition['scope_separator'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getUsername() {
     $this->checkKeyDefined('username');
 

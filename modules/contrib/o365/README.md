@@ -3,22 +3,22 @@
 ## INTRODUCTION
 
 The Office 365 Connector module gives you a connector service that makes it
-possible for developers to easilly connect to the Microsoft Graph API.
+possible for developers to easily connect to the Microsoft Graph API.
 
 There are some submodules added to this module:
 
-* o365_sso: This module makes it possible for site users to login via their
+* **o365_sso**: This module makes it possible for site users to login via their
   Office 365 credentials. A "Login via SSO" link is added to the login form
   from where the user can login and is redirected back to the website. A Drupal
   user will be created (if non-existant) and logged in. This module is required
   and enabled automatically.
-* o365_onedrive: This is a example module of how to implement a basic OneDrive
+* **o365_onedrive**: This is an example module of how to implement a basic OneDrive
   page and block.
-* o365_outlook_calendar: This is a example module of how to implement a basic
+* **o365_outlook_calendar**: This is an example module of how to implement a basic
   calendar from Office 365.
-* o365_outlook_mail: This is a example module of how to implement a basic
+* **o365_outlook_mail**: This is an example module of how to implement a basic
   mail implementation.
-* o365_profile: This is a example module of how to implement a basic profile
+* **o365_profile**: This is an example module of how to implement a basic profile
   block.
 
 ### More information
@@ -45,11 +45,11 @@ This module requires the following modules (downloaded via composer.json):
 
 * Configure the user permissions in Administration » People » Permissions
 
-* Create a app in your Microsoft Portal (https://portal.azure.com/). Be sure
+* Create an app in your Microsoft Portal (https://portal.azure.com/). Be sure
   to use the url "https://www.example.com/o365/callback" as your redirect url.
   This is needed for login purposes.
 
-* Enter you app data on the API settings page: Configuration > System >
+* Enter your app data on the API settings page: Configuration > System >
   Office 365 Settings > API settings (or
   https://www.example.com/admin/config/system/o365/settings/api).
 

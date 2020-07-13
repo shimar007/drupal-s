@@ -165,6 +165,37 @@ class TranslationTest extends FeedsKernelTestBase {
   }
 
   /**
+   * Tests that the language setting on the processor is respected.
+   *
+   * In this case there's no language configured on the targets.
+   */
+  public function testImportInProcessorConfiguredLanguage() {
+    // Set language to Spanish.
+    $configuration = $this->feedType->getProcessor()->getConfiguration();
+    $configuration['langcode'] = 'es';
+    $this->feedType->getProcessor()->setConfiguration($configuration);
+
+    // Set mappings without configuring language.
+    $this->feedType->setMappings($this->getMappingsInLanguage(NULL));
+    $this->feedType->save();
+
+    // Import content.
+    $this->importContent($this->resourcesPath() . '/csv/translation/content_es.csv');
+    $this->assertNodeCount(1);
+
+    // Assert that Spanish values were created.
+    $node = Node::load(1);
+    $this->assertEquals('es', $node->language()->getId());
+    $this->assertEquals('HOLA MUNDO', $node->title->value);
+    $this->assertEquals('Este es el texto del cuerpo.', $node->field_alpha->value);
+
+    // Assert that the created term is in the Spanish language.
+    $term = Term::load(1);
+    $this->assertEquals('Termino de taxonomía', $term->name->value);
+    $this->assertEquals('es', $term->langcode->value);
+  }
+
+  /**
    * Tests importing values for two languages separately.
    *
    * This tests configures the feed type to first import the Spanish values.
@@ -381,6 +412,32 @@ class TranslationTest extends FeedsKernelTestBase {
     $term = Term::load(1);
     $this->assertEquals('Termino de taxonomía', $term->name->value);
     $this->assertEquals('es', $term->langcode->value);
+  }
+
+  /**
+   * Tests importing auto-created terms when no language is configured for it.
+   */
+  public function testAutocreatedTermDefaultLanguage() {
+    $this->feedType->addMapping([
+      'target' => 'field_tags',
+      'map' => ['target_id' => 'terms'],
+      'settings' => [
+        'reference_by' => 'name',
+        'language' => NULL,
+        'autocreate' => 1,
+      ],
+    ]);
+    $this->feedType->save();
+
+    // Import Spanish content.
+    $this->importContent($this->resourcesPath() . '/csv/translation/content_es.csv');
+    $this->assertNodeCount(1);
+
+    // Assert that the term was created in the default language.
+    $default_langcode = $this->container->get('language.default')->get()->getId();
+    $term = Term::load(1);
+    $this->assertEquals('Termino de taxonomía', $term->name->value);
+    $this->assertEquals($default_langcode, $term->langcode->value);
   }
 
   /**

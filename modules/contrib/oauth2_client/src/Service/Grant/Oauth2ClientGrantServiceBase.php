@@ -44,6 +44,13 @@ abstract class Oauth2ClientGrantServiceBase extends Oauth2ClientServiceBase impl
   protected $oauth2ClientPluginManager;
 
   /**
+   * Client provider cache
+   *
+   * @var array
+   */
+  protected $clientProviderCache;
+
+  /**
    * Construct an OAuth2Client object.
    *
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
@@ -65,6 +72,7 @@ abstract class Oauth2ClientGrantServiceBase extends Oauth2ClientServiceBase impl
     $this->state = $state;
     $this->urlGenerator = $urlGenerator;
     $this->oauth2ClientPluginManager = $oauth2ClientPluginManager;
+    $this->clientProviderCache = array();
   }
 
   /**
@@ -80,16 +88,24 @@ abstract class Oauth2ClientGrantServiceBase extends Oauth2ClientServiceBase impl
    *   Exception thrown when trying to retrieve a non-existent OAuth2 Client.
    */
   protected function getProvider($clientId) {
-    $client = $this->getClient($clientId);
+    if (isset($this->clientProviderCache[$clientId])) {
+      $provider = $this->clientProviderCache[$clientId];
+    } else {
+      $client = $this->getClient($clientId);
 
-    return new GenericProvider([
-      'clientId' => $client->getClientId(),
-      'clientSecret' => $client->getClientSecret(),
-      'redirectUri' => $this->getRedirectUri($client),
-      'urlAuthorize' => $client->getAuthorizationUri(),
-      'urlAccessToken' => $client->getTokenUri(),
-      'urlResourceOwnerDetails' => $client->getResourceUri(),
-    ]);
+      $provider = new GenericProvider([
+        'clientId' => $client->getClientId(),
+        'clientSecret' => $client->getClientSecret(),
+        'redirectUri' => $this->getRedirectUri($client),
+        'urlAuthorize' => $client->getAuthorizationUri(),
+        'urlAccessToken' => $client->getTokenUri(),
+        'urlResourceOwnerDetails' => $client->getResourceUri(),
+        'scopes' => $client->getScopes(),
+        'scopeSeparator' => $client->getScopeSeparator(),
+      ]);
+      $this->clientProviderCache[$clientId] = $provider;
+    }
+    return $provider;
   }
 
   /**

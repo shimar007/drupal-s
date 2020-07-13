@@ -35,7 +35,7 @@ such, Composer is a requirement for installing this module.
 
 This module must be installed using the following composer command:
 
-`composer require drupal/oauth2:^2.0`
+`composer require drupal/oauth2_client:^2.0`
 
 ## Usage
 
@@ -62,6 +62,8 @@ namespace Drupal\oauth2_client\Plugin\Oauth2Client;
  *   authorization_uri = "https://api.instagram.com/oauth/authorize",
  *   token_uri = "https://api.instagram.com/oauth/access_token",
  *   resource_owner_uri = "",
+ *   scopes = ["basic", "firebase", "openid"],
+ *   scope_separator = ",",
  * )
  */
 class Instagram extends Oauth2ClientPluginBase {}

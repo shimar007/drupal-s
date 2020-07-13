@@ -31,4 +31,12 @@ interface EntityProcessorInterface extends ProcessorInterface, ClearableInterfac
    */
   public function getEntityTranslation(FeedInterface $feed, TranslatableInterface $entity, $langcode);
 
+  /**
+   * Returns the current language for entities.
+   *
+   * @return string
+   *   The current language code.
+   */
+  public function entityLanguage();
+
 }

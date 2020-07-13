@@ -3,11 +3,37 @@
 namespace Drupal\o365;
 
 use Drupal;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Class ConstantsService.
  */
 class ConstantsService {
+
+  /**
+   * The config factory interface.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * The modules API config.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $apiConfig;
+
+  /**
+   * Constructs a new ConstantsService object.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   The config factory interface.
+   */
+  public function __construct(ConfigFactoryInterface $configFactory) {
+    $this->configFactory = $configFactory;
+    $this->apiConfig = $this->configFactory->get('o365.api_settings');
+  }
 
   /**
    * The url where Microsoft will redirect us too.
@@ -17,18 +43,32 @@ class ConstantsService {
   private $redirectUrl = '/o365/callback';
 
   /**
-   * The authorize endpoint.
+   * The authorize endpoint root.
    *
    * @var string
    */
-  private $authorizeUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
+  private $authorizeRoot = 'https://login.microsoftonline.com/';
 
   /**
-   * The token endpoint.
+   * The authorize endpoint path.
    *
    * @var string
    */
-  private $tokenUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+  private $authorizePath = '/oauth2/v2.0/authorize';
+
+  /**
+   * The token endpoint root.
+   *
+   * @var string
+   */
+  private $tokenRoot = 'https://login.microsoftonline.com/';
+
+  /**
+   * The token endpoint path.
+   *
+   * @var string
+   */
+  private $tokenPath = '/oauth2/v2.0/token';
 
   /**
    * The name of the temp store.
@@ -61,7 +101,9 @@ class ConstantsService {
    *   The authorize url.
    */
   public function getAuthorizeUrl() {
-    return $this->authorizeUrl;
+    $tenant = empty($this->apiConfig->get('tenant_id')) ? 'common' : $this->apiConfig->get('tenant_id');
+
+    return $this->authorizeRoot . $tenant . $this->authorizePath;
   }
 
   /**
@@ -71,7 +113,9 @@ class ConstantsService {
    *   The token url.
    */
   public function getTokenUrl() {
-    return $this->tokenUrl;
+    $tenant = empty($this->apiConfig->get('tenant_id')) ? 'common' : $this->apiConfig->get('tenant_id');
+
+    return $this->tokenRoot . $tenant . $this->tokenPath;
   }
 
   /**

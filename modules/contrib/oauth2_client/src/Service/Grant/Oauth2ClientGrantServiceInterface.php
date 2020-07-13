@@ -16,4 +16,13 @@ interface Oauth2ClientGrantServiceInterface {
    */
   public function getAccessToken($clientId);
 
+  /**
+   * Get the league/oauth2 provider.
+   *
+   * @param string $clientId
+   *   The plugin ID of the OAuth2 Client plugin for which an access token
+   *   should be retrieved.
+   * @return \League\OAuth2\Client\Provider\AbstractProvider
+   */
+  public function getGrantProvider($clientId);
 }

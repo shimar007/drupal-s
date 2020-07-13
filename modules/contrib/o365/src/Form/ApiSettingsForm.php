@@ -50,6 +50,15 @@ class ApiSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('client_secret'),
       '#required' => TRUE,
     ];
+    $form['tenant_id'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Tenant identifier'),
+      '#description' => $this->t('The directory tenant that you want to login in. This section can be a domain name or tenant object ID. If you want let users sign in with any tenant, use: common.'),
+      '#maxlength' => 255,
+      '#size' => 64,
+      '#default_value' => empty($config->get('tenant_id')) ? 'common' : $config->get('tenant_id'),
+      '#required' => TRUE,
+    ];
     $form['redirect_login'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Redirect after login URL'),
@@ -86,6 +95,7 @@ class ApiSettingsForm extends ConfigFormBase {
     $this->config('o365.api_settings')
       ->set('client_id', $form_state->getValue('client_id'))
       ->set('client_secret', $form_state->getValue('client_secret'))
+      ->set('tenant_id', $form_state->getValue('tenant_id'))
       ->set('redirect_login', $form_state->getValue('redirect_login'))
       ->set('redirect_callback', $form_state->getValue('redirect_callback'))
       ->set('auth_scopes', $form_state->getValue('auth_scopes'))

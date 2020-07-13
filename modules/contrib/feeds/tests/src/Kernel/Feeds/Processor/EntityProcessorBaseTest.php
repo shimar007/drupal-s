@@ -278,7 +278,7 @@ class EntityProcessorBaseTest extends FeedsKernelTestBase {
    * @covers ::defaultConfiguration
    */
   public function testDefaultConfiguration() {
-    $this->assertTrue(is_array($this->processor->defaultConfiguration()));
+    $this->assertIsArray($this->processor->defaultConfiguration());
   }
 
   /**
@@ -364,7 +364,7 @@ class EntityProcessorBaseTest extends FeedsKernelTestBase {
   public function testBuildAdvancedForm() {
     $form = [];
     $form_state = $this->createMock(FormStateInterface::class);
-    $this->assertTrue(is_array($this->processor->buildAdvancedForm($form, $form_state)));
+    $this->assertIsArray($this->processor->buildAdvancedForm($form, $form_state));
   }
 
   /**

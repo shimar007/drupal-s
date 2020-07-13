@@ -3,6 +3,7 @@
 namespace Drupal\o365_sso\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\o365\AuthenticationService;
 use Drupal\user\Entity\User;
@@ -35,17 +36,24 @@ class UserLoginController extends ControllerBase {
    *   The GraphService definition.
    * @param \Drupal\o365\AuthenticationService $authenticationService
    *   The AuthenticationService definition.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The EntityTypeManager definition.
    */
-  public function __construct(GraphService $o365_graph, AuthenticationService $authenticationService) {
+  public function __construct(GraphService $o365_graph, AuthenticationService $authenticationService, EntityTypeManagerInterface $entity_type_manager) {
     $this->graphService = $o365_graph;
     $this->authenticationService = $authenticationService;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('o365.graph'), $container->get('o365.authentication'));
+    return new static(
+      $container->get('o365.graph'),
+      $container->get('o365.authentication'),
+      $container->get('entity_type.manager')
+    );
   }
 
   /**
@@ -54,6 +62,8 @@ class UserLoginController extends ControllerBase {
    * @return \Drupal\Core\Routing\TrustedRedirectResponse
    *   The redirect to the set URL in config.
    *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Drupal\Core\TempStore\TempStoreException
    * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
@@ -65,22 +75,36 @@ class UserLoginController extends ControllerBase {
     // Get user data.
     $userData = $this->graphService->getGraphData('/me');
 
-    // Load the user.
-    $user = user_load_by_mail($userData['userPrincipalName']);
+    // Get user unique identifier.
+    $o365_id = $userData['id'];
+
+    // Check whether user account exists.
+    $users = $this->entityTypeManager()
+      ->getStorage('user')
+      ->loadByProperties([
+        'o365_id' => $o365_id,
+      ]);
+
+    if (!$users) {
+      if (!$user = user_load_by_mail($userData['userPrincipalName'])) {
+        // We need to create the user.
+        $user = User::create();
+        $user->setUsername($userData['userPrincipalName']);
+        $user->setEmail($userData['userPrincipalName']);
+        $user->enforceIsNew();
+        $user->set('status', 1);
+      }
+
+      $user->set('o365_id', $o365_id);
+      $user->save();
+    }
+    else {
+      $user = reset($users);
+    }
 
     // Get config and redirect url after login.
     $config = $this->config('o365.api_settings');
     $redirectUrl = $config->get('redirect_login');
-
-    if (!$user) {
-      // We need to create the user.
-      $user = User::create();
-      $user->setUsername($userData['userPrincipalName']);
-      $user->setEmail($userData['userPrincipalName']);
-      $user->enforceIsNew();
-      $user->set('status', 1);
-      $user->save();
-    }
 
     // Login the user in Drupal.
     user_login_finalize($user);

@@ -33,7 +33,7 @@ interface Oauth2ClientPluginInterface extends PluginInspectionInterface, Contain
    *   Possible values:
    *   - authorization_code
    *   - client_credentials
-   *   - refresh_toekn
+   *   - refresh_token
    *   - resource_owner
    */
   public function getGrantType();
@@ -85,6 +85,22 @@ interface Oauth2ClientPluginInterface extends PluginInspectionInterface, Contain
    *   The resource_uri of the OAuth2 server.
    */
   public function getResourceUri();
+
+  /**
+   * Get the set of scopes for the provider to use by default.
+   *
+   * @return array|string|null
+   *   The list of scopes for the provider to use.
+   */
+  public function getScopes();
+
+  /**
+   * Get the separator used to join the scopes in the OAuth2 query string.
+   *
+   * @return string|null
+   *   The scopes separator to join the list of scopes in the query string.
+   */
+  public function getScopeSeparator();
 
   /**
    * Retrieves the username for the account to authenticate with.

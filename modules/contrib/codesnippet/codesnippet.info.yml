@@ -1,13 +1,14 @@
-name: CKEditor CodeSnippet
+name: CodeSnippet
 type: module
-description: "Adds the CodeSnippet plugin to CKEditor."
-package: Other
-# core: 8.x
+description: "Adds the CodeSnippet plugin to CKEditor with syntax highlighting provided by HighlightJS."
+package: CKEditor
+core: 8.x
+core_version_requirement: ^8 || ^9
 
 dependencies:
-  - ckeditor
-# Information added by Drupal.org packaging script on 2016-09-12
-version: '8.x-1.6'
-core: '8.x'
+  - drupal:ckeditor
+
+# Information added by Drupal.org packaging script on 2020-07-03
+version: '8.x-1.7'
 project: 'codesnippet'
-datestamp: 1473688440
+datestamp: 1593798301

@@ -465,7 +465,7 @@ class FeedTest extends FeedsKernelTestBase {
         ->method('defaultFeedConfiguration')
         ->will($this->returnValue([]));
 
-      $this->assertTrue(is_array($feed->getConfigurationFor($plugin)));
+      $this->assertIsArray($feed->getConfigurationFor($plugin));
     }
   }
 

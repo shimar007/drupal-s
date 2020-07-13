@@ -613,16 +613,17 @@ abstract class EntityProcessorBase extends ProcessorBase implements EntityProces
   }
 
   /**
-   * Returns the current language for entities.
-   *
-   * This checks if the configuration value is valid.
-   *
-   * @return string
-   *   The current language code.
+   * {@inheritdoc}
    */
-  protected function entityLanguage() {
+  public function entityLanguage() {
     $langcodes = $this->languageOptions();
-    return isset($langcodes[$this->configuration['langcode']]) ? $this->configuration['langcode'] : LanguageInterface::LANGCODE_DEFAULT;
+
+    if (isset($this->configuration['langcode']) && isset($langcodes[$this->configuration['langcode']])) {
+      return $this->configuration['langcode'];
+    }
+
+    // Return default language.
+    return $this->languageManager->getDefaultLanguage()->getId();
   }
 
   /**

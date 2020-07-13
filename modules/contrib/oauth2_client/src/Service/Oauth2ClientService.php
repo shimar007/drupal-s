@@ -93,6 +93,26 @@ class Oauth2ClientService extends Oauth2ClientServiceBase {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function getProvider($clientId) {
+    $client = $this->getClient($clientId);
+    switch ($client->getGrantType()) {
+      case 'client_credentials':
+        $provider = $this->getClientCredentialsProvider($clientId);
+        break;
+      case 'resource_owner':
+        $provider = $this->getResourceOwnersCredentialsProvider($clientId);
+        break;
+      case 'authorization_code':
+      default:
+        $provider = $this->getAuthorizationCodeProvider($clientId);
+        break;
+    }
+    return $provider;
+  }
+
+  /**
    * Retrieves an access token for the 'authorization_code' grant type.
    *
    * @return \League\OAuth2\Client\Token\AccessTokenInterface
@@ -102,17 +122,34 @@ class Oauth2ClientService extends Oauth2ClientServiceBase {
     $stored_token = $this->retrieveAccessToken($clientId);
     if ($stored_token) {
       if ($stored_token->getExpires() && $stored_token->hasExpired()) {
-        $access_token = $this->grantServices['refresh_token']->getAccessToken($clientId);
+        if (empty($stored_token->getRefreshToken())) {
+          # Token is expired but we have no refresh_token. Just get a new one.
+          $access_token = NULL;
+        }
+        else {
+          $access_token = $this->grantServices['refresh_token']->getAccessToken($clientId);
+        }
       }
       else {
         $access_token = $stored_token;
       }
     }
-    else {
+    if (empty($access_token)) {
       $access_token = $this->grantServices['authorization_code']->getAccessToken($clientId);
     }
 
     return $access_token;
+  }
+
+  /**
+   * Retrieves the league/oauth2-client provider for the 'authorization_code'
+   * grant type.
+   *
+   * @return \League\OAuth2\Client\Provider\AbstractProvider
+   *   The Provider for the given client ID.
+   */
+  private function getAuthorizationCodeProvider($clientId) {
+    return $this->grantServices['authorization_code']->getGrantProvider($clientId);
   }
 
   /**
@@ -132,6 +169,17 @@ class Oauth2ClientService extends Oauth2ClientServiceBase {
   }
 
   /**
+   * Retrieves the league/oauth2-client provider for the 'client_credentials'
+   * grant type.
+   *
+   * @return \League\OAuth2\Client\Provider\AbstractProvider
+   *   The Provider for the given client ID.
+   */
+  private function getClientCredentialsProvider($clientId) {
+    return $this->grantServices['client_credentials']->getGrantProvider($clientId);
+  }
+
+  /**
    * Retrieves an access token for the 'resource_owner' grant type.
    *
    * @return \League\OAuth2\Client\Token\AccessTokenInterface
@@ -145,6 +193,17 @@ class Oauth2ClientService extends Oauth2ClientServiceBase {
     }
 
     return $access_token;
+  }
+
+  /**
+   * Retrieves the league/oauth2-client provider for the 'resource_owner' grant
+   * type.
+   *
+   * @return \League\OAuth2\Client\Provider\AbstractProvider
+   *   The Provider for the given client ID.
+   */
+  private function getResourceOwnersCredentialsProvider($clientId) {
+    return $this->grantServices['resource_owner']->getGrantProvider($clientId);
   }
 
 }

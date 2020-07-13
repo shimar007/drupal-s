@@ -1,16 +1,15 @@
-# OpenID Connect Windows AAD Module.
 name: OpenID Connect Windows Azure Active Directory
-description: A CTools plugin that adds a Windows Azure AD client to OpenID Connect.
+description: This module adds a Windows Azure AD client to OpenID Connect.
 package: Other
 
 dependencies:
   - openid_connect:openid_connect
   
 type: module
-# core: 8.x
+core: 8.x
+core_version_requirement: ^8 || ^9
 
-# Information added by Drupal.org packaging script on 2019-01-03
-version: '8.x-1.1'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-06-19
+version: '8.x-1.3'
 project: 'openid_connect_windows_aad'
-datestamp: 1546529284
+datestamp: 1592556551

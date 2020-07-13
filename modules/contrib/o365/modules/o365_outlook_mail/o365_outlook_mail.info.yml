@@ -1,12 +1,12 @@
 name: 'Office 365 - Outlook Mail example'
 type: module
 description: 'Outlook mail connector for the Office 365 Connector module'
-core: 8.x
+core_version_requirement: ^8 || ^9
 package: 'Microsoft Office'
 dependencies:
   - o365:o365
 
-# Information added by Drupal.org packaging script on 2019-11-07
-version: '8.x-1.0-beta2'
+# Information added by Drupal.org packaging script on 2020-06-23
+version: '8.x-1.0-beta3'
 project: 'o365'
-datestamp: 1573125494
+datestamp: 1592906720

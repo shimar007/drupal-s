@@ -26,7 +26,7 @@ class HttpFetcherFormTest extends FeedsUnitTestCase {
     $form_object->setStringTranslation($this->getStringTranslationStub());
 
     $form = $form_object->buildConfigurationForm([], new FormState());
-    $this->assertTrue(is_array($form));
+    $this->assertIsArray($form);
     $this->assertNotEmpty($form);
   }
 

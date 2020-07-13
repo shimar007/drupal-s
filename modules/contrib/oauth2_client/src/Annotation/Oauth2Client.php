@@ -83,6 +83,20 @@ class Oauth2Client extends Plugin {
   public $resource_owner_uri;
 
   /**
+   * The set of scopes for the provider to use by default.
+   *
+   * @var array|string|null
+   */
+  public $scopes;
+
+  /**
+   * The separator used to join the scopes in the OAuth2 query string.
+   *
+   * @var string|null
+   */
+  public $scope_separator;
+
+  /**
    * The username of the account being authenticated.
    *
    * Note: Used only when the grant_type is set to resource_owner.

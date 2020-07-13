@@ -8,38 +8,35 @@
 (function ($, Drupal, drupalSettings) {
 
   Drupal.behaviors.masonry = {
-    attach: function(context, settings) {
+    attach: function (context, settings) {
 
       // Apply Masonry on the page.
-      applyMasonry(false);
+      applyMasonry();
 
       // Hack for tabs: when the tab is open, it takes to reload Masonry.
-      // @todo: what is the effect of this on performance ?
-      $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
-        applyMasonry(true);
+      $('a[data-toggle="tab"]', context).on('shown.bs.tab', function () {
+        applyMasonry();
       });
 
       /**
-       * Apply Masonry
-       * @param forceInit (boolean)
-       *   Force the initialisation of Masonry display (necessary hack for tabs).
+       * Apply Masonry.
        */
-      function applyMasonry(forceInit) {
+      function applyMasonry() {
 
-        // Iterate through all Masonry instances
+        // Iterate through all Masonry instances.
         $.each(drupalSettings.masonry, function (container, settings) {
-          // Set container
-          var $container = $(container);
-          $(container).addClass('masonry-layout');
 
-          // Set options
-          var $options = new Object();
+          // Set container.
+          var $container = $(container);
+
+          // Set options.
+          var $options = {};
 
           // Sets the item selector.
           if (settings.item_selector) {
             $options.itemSelector = settings.item_selector;
             // Add custom class to all items.
-            $(settings.item_selector).addClass('masonry-item');
+            $(settings.item_selector, $container).addClass('masonry-item');
           }
 
           // Apply column width units accordingly.
@@ -48,7 +45,7 @@
               $options.columnWidth = parseInt(settings.column_width);
             }
             else if (settings.column_width_units == '%') {
-              $options.columnWidth = ($container.width() * (settings.column_width / 100)) - settings.gutter_width ;
+              $options.columnWidth = ($container.width() * (settings.column_width / 100)) - settings.gutter_width;
             }
             else {
               $options.columnWidth = settings.column_width;
@@ -73,42 +70,42 @@
           else {
             $options.transitionDuration = 0;
           }
-          if(settings.percent_position){
+          if (settings.percent_position) {
             $options.percentPosition = true;
           }
 
+          // Include the extra options.
+          $.each(settings.extra_options, function (option, value) {
+            $options[option] = value;
+          });
+
           /**
-           * Apply Masonry to container
+           * Apply Masonry to container.
            */
 
           // Load images first if necessary.
           if (settings.images_first) {
             $container.imagesLoaded(function () {
-              if (forceInit) {
-                $container.masonry($options);
+              if ($container.findOnce('masonry').length === 0) {
+                $container.once('masonry').addClass('masonry').masonry($options);
+                $(window).resize(function () {
+                  $container.findOnce('masonry').masonry('bindResize')
+                });
               }
-              else if ($container.hasClass('masonry-processed')) {
-                $container.masonry('reloadItems').masonry('layout');
-              }
-              else {
-                $container.once('masonry').masonry($options);
-              }
+              $container.masonry('reloadItems').masonry('layout');
             });
           }
 
           // Apply without loading images first otherwise.
           else {
-            if (forceInit) {
-              $container.masonry($options);
+            if ($container.findOnce('masonry').length === 0) {
+              $container.once('masonry').addClass('masonry').masonry($options);
+              $(window).resize(function () {
+                $container.findOnce('masonry').masonry('bindResize')
+              });
             }
-            else if (!forceInit && $container.hasClass('masonry-processed')) {
-              $container.masonry('reloadItems').masonry('layout');
-            }
-            else {
-              $container.once('masonry').masonry($options);
-            }
+            $container.masonry('reloadItems').masonry('layout');
           }
-
         });
       }
     }
