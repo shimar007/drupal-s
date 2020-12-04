@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,14 +20,14 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class Group extends DirectoryObject
 {
 
      /** 
      * Gets the assignedLabels
+    * The list of sensitivity label pairs (label ID, label name) associated with an Microsoft 365 group. Returned only on $select. Read-only.
      *
      * @return array The assignedLabels
      */
@@ -43,6 +42,7 @@ class Group extends DirectoryObject
     
     /** 
     * Sets the assignedLabels
+    * The list of sensitivity label pairs (label ID, label name) associated with an Microsoft 365 group. Returned only on $select. Read-only.
     *
     * @param AssignedLabel $val The assignedLabels
     *
@@ -206,6 +206,7 @@ class Group extends DirectoryObject
     
     /**
     * Gets the expirationDateTime
+    * Timestamp of when the group is set to expire. The value cannot be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'. Returned by default. Read-only.
     *
     * @return \DateTime The expirationDateTime
     */
@@ -224,6 +225,7 @@ class Group extends DirectoryObject
     
     /**
     * Sets the expirationDateTime
+    * Timestamp of when the group is set to expire. The value cannot be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'. Returned by default. Read-only.
     *
     * @param \DateTime $val The expirationDateTime
     *
@@ -232,6 +234,35 @@ class Group extends DirectoryObject
     public function setExpirationDateTime($val)
     {
         $this->_propDict["expirationDateTime"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the groupTypes
+    * Specifies the group type and its membership.  If the collection contains Unified, the group is a Microsoft 365 group; otherwise, it's either a security group or distribution group. For details, see groups overview.If the collection includes DynamicMembership, the group has dynamic membership; otherwise, membership is static.  Returned by default. Supports $filter.
+    *
+    * @return string The groupTypes
+    */
+    public function getGroupTypes()
+    {
+        if (array_key_exists("groupTypes", $this->_propDict)) {
+            return $this->_propDict["groupTypes"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the groupTypes
+    * Specifies the group type and its membership.  If the collection contains Unified, the group is a Microsoft 365 group; otherwise, it's either a security group or distribution group. For details, see groups overview.If the collection includes DynamicMembership, the group has dynamic membership; otherwise, membership is static.  Returned by default. Supports $filter.
+    *
+    * @param string $val The groupTypes
+    *
+    * @return Group
+    */
+    public function setGroupTypes($val)
+    {
+        $this->_propDict["groupTypes"] = $val;
         return $this;
     }
     
@@ -261,35 +292,6 @@ class Group extends DirectoryObject
     public function setHasMembersWithLicenseErrors($val)
     {
         $this->_propDict["hasMembersWithLicenseErrors"] = boolval($val);
-        return $this;
-    }
-    
-    /**
-    * Gets the groupTypes
-    * Specifies the group type and its membership.  If the collection contains Unified then the group is an Office 365 group; otherwise it's a security group.  If the collection includes DynamicMembership, the group has dynamic membership; otherwise, membership is static.  Returned by default. Supports $filter.
-    *
-    * @return string The groupTypes
-    */
-    public function getGroupTypes()
-    {
-        if (array_key_exists("groupTypes", $this->_propDict)) {
-            return $this->_propDict["groupTypes"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the groupTypes
-    * Specifies the group type and its membership.  If the collection contains Unified then the group is an Office 365 group; otherwise it's a security group.  If the collection includes DynamicMembership, the group has dynamic membership; otherwise, membership is static.  Returned by default. Supports $filter.
-    *
-    * @param string $val The groupTypes
-    *
-    * @return Group
-    */
-    public function setGroupTypes($val)
-    {
-        $this->_propDict["groupTypes"] = $val;
         return $this;
     }
     
@@ -386,7 +388,6 @@ class Group extends DirectoryObject
     
     /**
     * Gets the mailNickname
-    * The mail alias for the group, unique in the organization. This property must be specified when a group is created. Returned by default. Supports $filter.
     *
     * @return string The mailNickname
     */
@@ -401,7 +402,6 @@ class Group extends DirectoryObject
     
     /**
     * Sets the mailNickname
-    * The mail alias for the group, unique in the organization. This property must be specified when a group is created. Returned by default. Supports $filter.
     *
     * @param string $val The mailNickname
     *
@@ -415,6 +415,7 @@ class Group extends DirectoryObject
     
     /**
     * Gets the membershipRule
+    * The rule that determines members for this group if the group is a dynamic group (groupTypes contains DynamicMembership). For more information about the syntax of the membership rule, see Membership Rules syntax. Returned by default.
     *
     * @return string The membershipRule
     */
@@ -429,6 +430,7 @@ class Group extends DirectoryObject
     
     /**
     * Sets the membershipRule
+    * The rule that determines members for this group if the group is a dynamic group (groupTypes contains DynamicMembership). For more information about the syntax of the membership rule, see Membership Rules syntax. Returned by default.
     *
     * @param string $val The membershipRule
     *
@@ -442,6 +444,7 @@ class Group extends DirectoryObject
     
     /**
     * Gets the membershipRuleProcessingState
+    * Indicates whether the dynamic membership processing is on or paused. Possible values are 'On' or 'Paused'. Returned by default.
     *
     * @return string The membershipRuleProcessingState
     */
@@ -456,6 +459,7 @@ class Group extends DirectoryObject
     
     /**
     * Sets the membershipRuleProcessingState
+    * Indicates whether the dynamic membership processing is on or paused. Possible values are 'On' or 'Paused'. Returned by default.
     *
     * @param string $val The membershipRuleProcessingState
     *
@@ -469,7 +473,6 @@ class Group extends DirectoryObject
     
     /**
     * Gets the onPremisesDomainName
-    * Contains the on-premises domain FQDN, also called dnsDomainName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Azure Active Directory via Azure AD Connect.Returned by default. Read-only.
     *
     * @return string The onPremisesDomainName
     */
@@ -484,7 +487,6 @@ class Group extends DirectoryObject
     
     /**
     * Sets the onPremisesDomainName
-    * Contains the on-premises domain FQDN, also called dnsDomainName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Azure Active Directory via Azure AD Connect.Returned by default. Read-only.
     *
     * @param string $val The onPremisesDomainName
     *
@@ -498,7 +500,6 @@ class Group extends DirectoryObject
     
     /**
     * Gets the onPremisesLastSyncDateTime
-    * Indicates the last time at which the group was synced with the on-premises directory.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'. Returned by default. Read-only. Supports $filter.
     *
     * @return \DateTime The onPremisesLastSyncDateTime
     */
@@ -517,7 +518,6 @@ class Group extends DirectoryObject
     
     /**
     * Sets the onPremisesLastSyncDateTime
-    * Indicates the last time at which the group was synced with the on-premises directory.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'. Returned by default. Read-only. Supports $filter.
     *
     * @param \DateTime $val The onPremisesLastSyncDateTime
     *
@@ -531,7 +531,6 @@ class Group extends DirectoryObject
     
     /**
     * Gets the onPremisesNetBiosName
-    * Contains the on-premises netBios name synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Azure Active Directory via Azure AD Connect.Returned by default. Read-only.
     *
     * @return string The onPremisesNetBiosName
     */
@@ -546,7 +545,6 @@ class Group extends DirectoryObject
     
     /**
     * Sets the onPremisesNetBiosName
-    * Contains the on-premises netBios name synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Azure Active Directory via Azure AD Connect.Returned by default. Read-only.
     *
     * @param string $val The onPremisesNetBiosName
     *
@@ -561,7 +559,6 @@ class Group extends DirectoryObject
 
      /** 
      * Gets the onPremisesProvisioningErrors
-    * Errors when using Microsoft synchronization product during provisioning. Returned by default.
      *
      * @return array The onPremisesProvisioningErrors
      */
@@ -576,7 +573,6 @@ class Group extends DirectoryObject
     
     /** 
     * Sets the onPremisesProvisioningErrors
-    * Errors when using Microsoft synchronization product during provisioning. Returned by default.
     *
     * @param OnPremisesProvisioningError $val The onPremisesProvisioningErrors
     *
@@ -706,6 +702,7 @@ class Group extends DirectoryObject
     
     /**
     * Gets the preferredLanguage
+    * The preferred language for an Microsoft 365 group. Should follow ISO 639-1 Code; for example 'en-US'. Returned by default.
     *
     * @return string The preferredLanguage
     */
@@ -720,6 +717,7 @@ class Group extends DirectoryObject
     
     /**
     * Sets the preferredLanguage
+    * The preferred language for an Microsoft 365 group. Should follow ISO 639-1 Code; for example 'en-US'. Returned by default.
     *
     * @param string $val The preferredLanguage
     *
@@ -853,6 +851,7 @@ class Group extends DirectoryObject
     
     /**
     * Gets the theme
+    * Specifies an Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange or Red. Returned by default.
     *
     * @return string The theme
     */
@@ -867,6 +866,7 @@ class Group extends DirectoryObject
     
     /**
     * Sets the theme
+    * Specifies an Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange or Red. Returned by default.
     *
     * @param string $val The theme
     *
@@ -880,7 +880,7 @@ class Group extends DirectoryObject
     
     /**
     * Gets the visibility
-    * Specifies the visibility of an Office 365 group. Possible values are: Private, Public, or Hiddenmembership; blank values are treated as public.  See group visibility options to learn more.Visibility can be set only when a group is created; it is not editable.Visibility is supported only for unified groups; it is not supported for security groups. Returned by default.
+    * Specifies the visibility of a Microsoft 365 group. Possible values are: Private, Public, or Hiddenmembership; blank values are treated as public.  See group visibility options to learn more.Visibility can be set only when a group is created; it is not editable.Visibility is supported only for unified groups; it is not supported for security groups. Returned by default.
     *
     * @return string The visibility
     */
@@ -895,7 +895,7 @@ class Group extends DirectoryObject
     
     /**
     * Sets the visibility
-    * Specifies the visibility of an Office 365 group. Possible values are: Private, Public, or Hiddenmembership; blank values are treated as public.  See group visibility options to learn more.Visibility can be set only when a group is created; it is not editable.Visibility is supported only for unified groups; it is not supported for security groups. Returned by default.
+    * Specifies the visibility of a Microsoft 365 group. Possible values are: Private, Public, or Hiddenmembership; blank values are treated as public.  See group visibility options to learn more.Visibility can be set only when a group is created; it is not editable.Visibility is supported only for unified groups; it is not supported for security groups. Returned by default.
     *
     * @param string $val The visibility
     *
@@ -966,6 +966,64 @@ class Group extends DirectoryObject
     }
     
     /**
+    * Gets the hideFromAddressLists
+    * True if the group is not displayed in certain parts of the Outlook UI: the Address Book, address lists for selecting message recipients, and the Browse Groups dialog for searching groups; otherwise, false. Default value is false. Returned only on $select.
+    *
+    * @return bool The hideFromAddressLists
+    */
+    public function getHideFromAddressLists()
+    {
+        if (array_key_exists("hideFromAddressLists", $this->_propDict)) {
+            return $this->_propDict["hideFromAddressLists"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the hideFromAddressLists
+    * True if the group is not displayed in certain parts of the Outlook UI: the Address Book, address lists for selecting message recipients, and the Browse Groups dialog for searching groups; otherwise, false. Default value is false. Returned only on $select.
+    *
+    * @param bool $val The hideFromAddressLists
+    *
+    * @return Group
+    */
+    public function setHideFromAddressLists($val)
+    {
+        $this->_propDict["hideFromAddressLists"] = boolval($val);
+        return $this;
+    }
+    
+    /**
+    * Gets the hideFromOutlookClients
+    * True if the group is not displayed in Outlook clients, such as Outlook for Windows and Outlook on the web; otherwise, false. Default value is false. Returned only on $select.
+    *
+    * @return bool The hideFromOutlookClients
+    */
+    public function getHideFromOutlookClients()
+    {
+        if (array_key_exists("hideFromOutlookClients", $this->_propDict)) {
+            return $this->_propDict["hideFromOutlookClients"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the hideFromOutlookClients
+    * True if the group is not displayed in Outlook clients, such as Outlook for Windows and Outlook on the web; otherwise, false. Default value is false. Returned only on $select.
+    *
+    * @param bool $val The hideFromOutlookClients
+    *
+    * @return Group
+    */
+    public function setHideFromOutlookClients($val)
+    {
+        $this->_propDict["hideFromOutlookClients"] = boolval($val);
+        return $this;
+    }
+    
+    /**
     * Gets the isSubscribedByMail
     * Indicates whether the signed-in user is subscribed to receive email conversations. Default value is true. Returned only on $select.
     *
@@ -1024,64 +1082,6 @@ class Group extends DirectoryObject
     }
     
     /**
-    * Gets the hideFromOutlookClients
-    * True if the group is not displayed in Outlook clients, such as Outlook for Windows and Outlook on the web; otherwise, false. Default value is false. Returned only on $select.
-    *
-    * @return bool The hideFromOutlookClients
-    */
-    public function getHideFromOutlookClients()
-    {
-        if (array_key_exists("hideFromOutlookClients", $this->_propDict)) {
-            return $this->_propDict["hideFromOutlookClients"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the hideFromOutlookClients
-    * True if the group is not displayed in Outlook clients, such as Outlook for Windows and Outlook on the web; otherwise, false. Default value is false. Returned only on $select.
-    *
-    * @param bool $val The hideFromOutlookClients
-    *
-    * @return Group
-    */
-    public function setHideFromOutlookClients($val)
-    {
-        $this->_propDict["hideFromOutlookClients"] = boolval($val);
-        return $this;
-    }
-    
-    /**
-    * Gets the hideFromAddressLists
-    * True if the group is not displayed in certain parts of the Outlook UI: the Address Book, address lists for selecting message recipients, and the Browse Groups dialog for searching groups; otherwise, false. Default value is false. Returned only on $select.
-    *
-    * @return bool The hideFromAddressLists
-    */
-    public function getHideFromAddressLists()
-    {
-        if (array_key_exists("hideFromAddressLists", $this->_propDict)) {
-            return $this->_propDict["hideFromAddressLists"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the hideFromAddressLists
-    * True if the group is not displayed in certain parts of the Outlook UI: the Address Book, address lists for selecting message recipients, and the Browse Groups dialog for searching groups; otherwise, false. Default value is false. Returned only on $select.
-    *
-    * @param bool $val The hideFromAddressLists
-    *
-    * @return Group
-    */
-    public function setHideFromAddressLists($val)
-    {
-        $this->_propDict["hideFromAddressLists"] = boolval($val);
-        return $this;
-    }
-    
-    /**
     * Gets the isArchived
     *
     * @return bool The isArchived
@@ -1136,152 +1136,6 @@ class Group extends DirectoryObject
         return $this;
     }
     
-
-     /** 
-     * Gets the members
-    * Users and groups that are members of this group. HTTP Methods: GET (supported for all groups), POST (supported for Office 365 groups, security groups and mail-enabled security groups), DELETE (supported for Office 365 groups and security groups) Nullable.
-     *
-     * @return array The members
-     */
-    public function getMembers()
-    {
-        if (array_key_exists("members", $this->_propDict)) {
-           return $this->_propDict["members"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the members
-    * Users and groups that are members of this group. HTTP Methods: GET (supported for all groups), POST (supported for Office 365 groups, security groups and mail-enabled security groups), DELETE (supported for Office 365 groups and security groups) Nullable.
-    *
-    * @param DirectoryObject $val The members
-    *
-    * @return Group
-    */
-    public function setMembers($val)
-    {
-		$this->_propDict["members"] = $val;
-        return $this;
-    }
-    
-
-     /** 
-     * Gets the memberOf
-    * Groups that this group is a member of. HTTP Methods: GET (supported for all groups). Read-only. Nullable.
-     *
-     * @return array The memberOf
-     */
-    public function getMemberOf()
-    {
-        if (array_key_exists("memberOf", $this->_propDict)) {
-           return $this->_propDict["memberOf"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the memberOf
-    * Groups that this group is a member of. HTTP Methods: GET (supported for all groups). Read-only. Nullable.
-    *
-    * @param DirectoryObject $val The memberOf
-    *
-    * @return Group
-    */
-    public function setMemberOf($val)
-    {
-		$this->_propDict["memberOf"] = $val;
-        return $this;
-    }
-    
-
-     /** 
-     * Gets the membersWithLicenseErrors
-    * A list of group members with license errors from this group-based license assignment. Read-only.
-     *
-     * @return array The membersWithLicenseErrors
-     */
-    public function getMembersWithLicenseErrors()
-    {
-        if (array_key_exists("membersWithLicenseErrors", $this->_propDict)) {
-           return $this->_propDict["membersWithLicenseErrors"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the membersWithLicenseErrors
-    * A list of group members with license errors from this group-based license assignment. Read-only.
-    *
-    * @param DirectoryObject $val The membersWithLicenseErrors
-    *
-    * @return Group
-    */
-    public function setMembersWithLicenseErrors($val)
-    {
-		$this->_propDict["membersWithLicenseErrors"] = $val;
-        return $this;
-    }
-    
-
-     /** 
-     * Gets the transitiveMembers
-     *
-     * @return array The transitiveMembers
-     */
-    public function getTransitiveMembers()
-    {
-        if (array_key_exists("transitiveMembers", $this->_propDict)) {
-           return $this->_propDict["transitiveMembers"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the transitiveMembers
-    *
-    * @param DirectoryObject $val The transitiveMembers
-    *
-    * @return Group
-    */
-    public function setTransitiveMembers($val)
-    {
-		$this->_propDict["transitiveMembers"] = $val;
-        return $this;
-    }
-    
-
-     /** 
-     * Gets the transitiveMemberOf
-     *
-     * @return array The transitiveMemberOf
-     */
-    public function getTransitiveMemberOf()
-    {
-        if (array_key_exists("transitiveMemberOf", $this->_propDict)) {
-           return $this->_propDict["transitiveMemberOf"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the transitiveMemberOf
-    *
-    * @param DirectoryObject $val The transitiveMemberOf
-    *
-    * @return Group
-    */
-    public function setTransitiveMemberOf($val)
-    {
-		$this->_propDict["transitiveMemberOf"] = $val;
-        return $this;
-    }
-    
     /**
     * Gets the createdOnBehalfOf
     * The user (or application) that created the group. NOTE: This is not set if the user is an administrator. Read-only.
@@ -1317,8 +1171,98 @@ class Group extends DirectoryObject
     
 
      /** 
+     * Gets the memberOf
+    * Groups that this group is a member of. HTTP Methods: GET (supported for all groups). Read-only. Nullable.
+     *
+     * @return array The memberOf
+     */
+    public function getMemberOf()
+    {
+        if (array_key_exists("memberOf", $this->_propDict)) {
+           return $this->_propDict["memberOf"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the memberOf
+    * Groups that this group is a member of. HTTP Methods: GET (supported for all groups). Read-only. Nullable.
+    *
+    * @param DirectoryObject $val The memberOf
+    *
+    * @return Group
+    */
+    public function setMemberOf($val)
+    {
+		$this->_propDict["memberOf"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the members
+    * Users and groups that are members of this group. HTTP Methods: GET (supported for all groups), POST (supported for Microsoft 365 groups, security groups and mail-enabled security groups), DELETE (supported for Microsoft 365 groups and security groups) Nullable.
+     *
+     * @return array The members
+     */
+    public function getMembers()
+    {
+        if (array_key_exists("members", $this->_propDict)) {
+           return $this->_propDict["members"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the members
+    * Users and groups that are members of this group. HTTP Methods: GET (supported for all groups), POST (supported for Microsoft 365 groups, security groups and mail-enabled security groups), DELETE (supported for Microsoft 365 groups and security groups) Nullable.
+    *
+    * @param DirectoryObject $val The members
+    *
+    * @return Group
+    */
+    public function setMembers($val)
+    {
+		$this->_propDict["members"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the membersWithLicenseErrors
+    * A list of group members with license errors from this group-based license assignment. Read-only.
+     *
+     * @return array The membersWithLicenseErrors
+     */
+    public function getMembersWithLicenseErrors()
+    {
+        if (array_key_exists("membersWithLicenseErrors", $this->_propDict)) {
+           return $this->_propDict["membersWithLicenseErrors"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the membersWithLicenseErrors
+    * A list of group members with license errors from this group-based license assignment. Read-only.
+    *
+    * @param DirectoryObject $val The membersWithLicenseErrors
+    *
+    * @return Group
+    */
+    public function setMembersWithLicenseErrors($val)
+    {
+		$this->_propDict["membersWithLicenseErrors"] = $val;
+        return $this;
+    }
+    
+
+     /** 
      * Gets the owners
-    * The owners of the group. The owners are a set of non-admin users who are allowed to modify this object. Limited to 100 owners. HTTP Methods: GET (supported for all groups), POST (supported for Office 365 groups, security groups and mail-enabled security groups), DELETE (supported for Office 365 groups and security groups). Nullable.
+    * The owners of the group. The owners are a set of non-admin users who are allowed to modify this object. Limited to 100 owners. HTTP Methods: GET (supported for all groups), POST (supported for Microsoft 365 groups, security groups and mail-enabled security groups), DELETE (supported for Microsoft 365 groups and security groups). Nullable.
      *
      * @return array The owners
      */
@@ -1333,7 +1277,7 @@ class Group extends DirectoryObject
     
     /** 
     * Sets the owners
-    * The owners of the group. The owners are a set of non-admin users who are allowed to modify this object. Limited to 100 owners. HTTP Methods: GET (supported for all groups), POST (supported for Office 365 groups, security groups and mail-enabled security groups), DELETE (supported for Office 365 groups and security groups). Nullable.
+    * The owners of the group. The owners are a set of non-admin users who are allowed to modify this object. Limited to 100 owners. HTTP Methods: GET (supported for all groups), POST (supported for Microsoft 365 groups, security groups and mail-enabled security groups), DELETE (supported for Microsoft 365 groups and security groups). Nullable.
     *
     * @param DirectoryObject $val The owners
     *
@@ -1342,6 +1286,34 @@ class Group extends DirectoryObject
     public function setOwners($val)
     {
 		$this->_propDict["owners"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the permissionGrants
+     *
+     * @return array The permissionGrants
+     */
+    public function getPermissionGrants()
+    {
+        if (array_key_exists("permissionGrants", $this->_propDict)) {
+           return $this->_propDict["permissionGrants"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the permissionGrants
+    *
+    * @param ResourceSpecificPermissionGrant $val The permissionGrants
+    *
+    * @return Group
+    */
+    public function setPermissionGrants($val)
+    {
+		$this->_propDict["permissionGrants"] = $val;
         return $this;
     }
     
@@ -1377,61 +1349,57 @@ class Group extends DirectoryObject
     
 
      /** 
-     * Gets the conversations
-    * The group's conversations.
+     * Gets the transitiveMemberOf
      *
-     * @return array The conversations
+     * @return array The transitiveMemberOf
      */
-    public function getConversations()
+    public function getTransitiveMemberOf()
     {
-        if (array_key_exists("conversations", $this->_propDict)) {
-           return $this->_propDict["conversations"];
+        if (array_key_exists("transitiveMemberOf", $this->_propDict)) {
+           return $this->_propDict["transitiveMemberOf"];
         } else {
             return null;
         }
     }
     
     /** 
-    * Sets the conversations
-    * The group's conversations.
+    * Sets the transitiveMemberOf
     *
-    * @param Conversation $val The conversations
+    * @param DirectoryObject $val The transitiveMemberOf
     *
     * @return Group
     */
-    public function setConversations($val)
+    public function setTransitiveMemberOf($val)
     {
-		$this->_propDict["conversations"] = $val;
+		$this->_propDict["transitiveMemberOf"] = $val;
         return $this;
     }
     
 
      /** 
-     * Gets the photos
-    * The profile photos owned by the group. Read-only. Nullable.
+     * Gets the transitiveMembers
      *
-     * @return array The photos
+     * @return array The transitiveMembers
      */
-    public function getPhotos()
+    public function getTransitiveMembers()
     {
-        if (array_key_exists("photos", $this->_propDict)) {
-           return $this->_propDict["photos"];
+        if (array_key_exists("transitiveMembers", $this->_propDict)) {
+           return $this->_propDict["transitiveMembers"];
         } else {
             return null;
         }
     }
     
     /** 
-    * Sets the photos
-    * The profile photos owned by the group. Read-only. Nullable.
+    * Sets the transitiveMembers
     *
-    * @param ProfilePhoto $val The photos
+    * @param DirectoryObject $val The transitiveMembers
     *
     * @return Group
     */
-    public function setPhotos($val)
+    public function setTransitiveMembers($val)
     {
-		$this->_propDict["photos"] = $val;
+		$this->_propDict["transitiveMembers"] = $val;
         return $this;
     }
     
@@ -1462,66 +1430,6 @@ class Group extends DirectoryObject
     public function setAcceptedSenders($val)
     {
 		$this->_propDict["acceptedSenders"] = $val;
-        return $this;
-    }
-    
-
-     /** 
-     * Gets the rejectedSenders
-    * The list of users or groups that are not allowed to create posts or calendar events in this group. Nullable
-     *
-     * @return array The rejectedSenders
-     */
-    public function getRejectedSenders()
-    {
-        if (array_key_exists("rejectedSenders", $this->_propDict)) {
-           return $this->_propDict["rejectedSenders"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the rejectedSenders
-    * The list of users or groups that are not allowed to create posts or calendar events in this group. Nullable
-    *
-    * @param DirectoryObject $val The rejectedSenders
-    *
-    * @return Group
-    */
-    public function setRejectedSenders($val)
-    {
-		$this->_propDict["rejectedSenders"] = $val;
-        return $this;
-    }
-    
-
-     /** 
-     * Gets the threads
-    * The group's conversation threads. Nullable.
-     *
-     * @return array The threads
-     */
-    public function getThreads()
-    {
-        if (array_key_exists("threads", $this->_propDict)) {
-           return $this->_propDict["threads"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the threads
-    * The group's conversation threads. Nullable.
-    *
-    * @param ConversationThread $val The threads
-    *
-    * @return Group
-    */
-    public function setThreads($val)
-    {
-		$this->_propDict["threads"] = $val;
         return $this;
     }
     
@@ -1590,6 +1498,36 @@ class Group extends DirectoryObject
     
 
      /** 
+     * Gets the conversations
+    * The group's conversations.
+     *
+     * @return array The conversations
+     */
+    public function getConversations()
+    {
+        if (array_key_exists("conversations", $this->_propDict)) {
+           return $this->_propDict["conversations"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the conversations
+    * The group's conversations.
+    *
+    * @param Conversation $val The conversations
+    *
+    * @return Group
+    */
+    public function setConversations($val)
+    {
+		$this->_propDict["conversations"] = $val;
+        return $this;
+    }
+    
+
+     /** 
      * Gets the events
     * The group's calendar events.
      *
@@ -1648,6 +1586,96 @@ class Group extends DirectoryObject
     public function setPhoto($val)
     {
         $this->_propDict["photo"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the photos
+    * The profile photos owned by the group. Read-only. Nullable.
+     *
+     * @return array The photos
+     */
+    public function getPhotos()
+    {
+        if (array_key_exists("photos", $this->_propDict)) {
+           return $this->_propDict["photos"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the photos
+    * The profile photos owned by the group. Read-only. Nullable.
+    *
+    * @param ProfilePhoto $val The photos
+    *
+    * @return Group
+    */
+    public function setPhotos($val)
+    {
+		$this->_propDict["photos"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the rejectedSenders
+    * The list of users or groups that are not allowed to create posts or calendar events in this group. Nullable
+     *
+     * @return array The rejectedSenders
+     */
+    public function getRejectedSenders()
+    {
+        if (array_key_exists("rejectedSenders", $this->_propDict)) {
+           return $this->_propDict["rejectedSenders"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the rejectedSenders
+    * The list of users or groups that are not allowed to create posts or calendar events in this group. Nullable
+    *
+    * @param DirectoryObject $val The rejectedSenders
+    *
+    * @return Group
+    */
+    public function setRejectedSenders($val)
+    {
+		$this->_propDict["rejectedSenders"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the threads
+    * The group's conversation threads. Nullable.
+     *
+     * @return array The threads
+     */
+    public function getThreads()
+    {
+        if (array_key_exists("threads", $this->_propDict)) {
+           return $this->_propDict["threads"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the threads
+    * The group's conversation threads. Nullable.
+    *
+    * @param ConversationThread $val The threads
+    *
+    * @return Group
+    */
+    public function setThreads($val)
+    {
+		$this->_propDict["threads"] = $val;
         return $this;
     }
     

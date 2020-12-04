@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,44 +20,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class TimeOff extends ChangeTrackedEntity
 {
-    /**
-    * Gets the sharedTimeOff
-    * The shared version of this timeOff that is viewable by both employees and managers. Required.
-    *
-    * @return TimeOffItem The sharedTimeOff
-    */
-    public function getSharedTimeOff()
-    {
-        if (array_key_exists("sharedTimeOff", $this->_propDict)) {
-            if (is_a($this->_propDict["sharedTimeOff"], "Microsoft\Graph\Model\TimeOffItem")) {
-                return $this->_propDict["sharedTimeOff"];
-            } else {
-                $this->_propDict["sharedTimeOff"] = new TimeOffItem($this->_propDict["sharedTimeOff"]);
-                return $this->_propDict["sharedTimeOff"];
-            }
-        }
-        return null;
-    }
-    
-    /**
-    * Sets the sharedTimeOff
-    * The shared version of this timeOff that is viewable by both employees and managers. Required.
-    *
-    * @param TimeOffItem $val The sharedTimeOff
-    *
-    * @return TimeOff
-    */
-    public function setSharedTimeOff($val)
-    {
-        $this->_propDict["sharedTimeOff"] = $val;
-        return $this;
-    }
-    
     /**
     * Gets the draftTimeOff
     * The draft version of this timeOff that is viewable by managers. Required.
@@ -89,6 +54,39 @@ class TimeOff extends ChangeTrackedEntity
     public function setDraftTimeOff($val)
     {
         $this->_propDict["draftTimeOff"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the sharedTimeOff
+    * The shared version of this timeOff that is viewable by both employees and managers. Required.
+    *
+    * @return TimeOffItem The sharedTimeOff
+    */
+    public function getSharedTimeOff()
+    {
+        if (array_key_exists("sharedTimeOff", $this->_propDict)) {
+            if (is_a($this->_propDict["sharedTimeOff"], "Microsoft\Graph\Model\TimeOffItem")) {
+                return $this->_propDict["sharedTimeOff"];
+            } else {
+                $this->_propDict["sharedTimeOff"] = new TimeOffItem($this->_propDict["sharedTimeOff"]);
+                return $this->_propDict["sharedTimeOff"];
+            }
+        }
+        return null;
+    }
+    
+    /**
+    * Sets the sharedTimeOff
+    * The shared version of this timeOff that is viewable by both employees and managers. Required.
+    *
+    * @param TimeOffItem $val The sharedTimeOff
+    *
+    * @return TimeOff
+    */
+    public function setSharedTimeOff($val)
+    {
+        $this->_propDict["sharedTimeOff"] = $val;
         return $this;
     }
     

@@ -46,4 +46,11 @@ class AdsenseAd extends Plugin {
    */
   public $needsSlot;
 
+  /**
+   * Version of the plugin to use.
+   *
+   * @var int
+   */
+  public $version = 1;
+
 }

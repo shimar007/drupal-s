@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,11 +20,43 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class Place extends Entity
 {
+    /**
+    * Gets the address
+    * The street address of the place.
+    *
+    * @return PhysicalAddress The address
+    */
+    public function getAddress()
+    {
+        if (array_key_exists("address", $this->_propDict)) {
+            if (is_a($this->_propDict["address"], "Microsoft\Graph\Model\PhysicalAddress")) {
+                return $this->_propDict["address"];
+            } else {
+                $this->_propDict["address"] = new PhysicalAddress($this->_propDict["address"]);
+                return $this->_propDict["address"];
+            }
+        }
+        return null;
+    }
+    
+    /**
+    * Sets the address
+    * The street address of the place.
+    *
+    * @param PhysicalAddress $val The address
+    *
+    * @return Place
+    */
+    public function setAddress($val)
+    {
+        $this->_propDict["address"] = $val;
+        return $this;
+    }
+    
     /**
     * Gets the displayName
     * The name associated with the place.
@@ -114,39 +145,6 @@ class Place extends Entity
     public function setPhone($val)
     {
         $this->_propDict["phone"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the address
-    * The street address of the place.
-    *
-    * @return PhysicalAddress The address
-    */
-    public function getAddress()
-    {
-        if (array_key_exists("address", $this->_propDict)) {
-            if (is_a($this->_propDict["address"], "Microsoft\Graph\Model\PhysicalAddress")) {
-                return $this->_propDict["address"];
-            } else {
-                $this->_propDict["address"] = new PhysicalAddress($this->_propDict["address"]);
-                return $this->_propDict["address"];
-            }
-        }
-        return null;
-    }
-    
-    /**
-    * Sets the address
-    * The street address of the place.
-    *
-    * @param PhysicalAddress $val The address
-    *
-    * @return Place
-    */
-    public function setAddress($val)
-    {
-        $this->_propDict["address"] = $val;
         return $this;
     }
     

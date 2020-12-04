@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class AudioConferencing extends Entity
 {
@@ -52,31 +50,31 @@ class AudioConferencing extends Entity
         return $this;
     }
     /**
-    * Gets the tollNumber
-    * The toll number that connects to the Audio Conference Provider.
+    * Gets the dialinUrl
+    * A URL to the externally-accessible web page that contains dial-in information.
     *
-    * @return string The tollNumber
+    * @return string The dialinUrl
     */
-    public function getTollNumber()
+    public function getDialinUrl()
     {
-        if (array_key_exists("tollNumber", $this->_propDict)) {
-            return $this->_propDict["tollNumber"];
+        if (array_key_exists("dialinUrl", $this->_propDict)) {
+            return $this->_propDict["dialinUrl"];
         } else {
             return null;
         }
     }
 
     /**
-    * Sets the tollNumber
-    * The toll number that connects to the Audio Conference Provider.
+    * Sets the dialinUrl
+    * A URL to the externally-accessible web page that contains dial-in information.
     *
-    * @param string $val The value of the tollNumber
+    * @param string $val The value of the dialinUrl
     *
     * @return AudioConferencing
     */
-    public function setTollNumber($val)
+    public function setDialinUrl($val)
     {
-        $this->_propDict["tollNumber"] = $val;
+        $this->_propDict["dialinUrl"] = $val;
         return $this;
     }
     /**
@@ -108,31 +106,31 @@ class AudioConferencing extends Entity
         return $this;
     }
     /**
-    * Gets the dialinUrl
-    * A URL to the externally-accessible web page that contains dial-in information.
+    * Gets the tollNumber
+    * The toll number that connects to the Audio Conference Provider.
     *
-    * @return string The dialinUrl
+    * @return string The tollNumber
     */
-    public function getDialinUrl()
+    public function getTollNumber()
     {
-        if (array_key_exists("dialinUrl", $this->_propDict)) {
-            return $this->_propDict["dialinUrl"];
+        if (array_key_exists("tollNumber", $this->_propDict)) {
+            return $this->_propDict["tollNumber"];
         } else {
             return null;
         }
     }
 
     /**
-    * Sets the dialinUrl
-    * A URL to the externally-accessible web page that contains dial-in information.
+    * Sets the tollNumber
+    * The toll number that connects to the Audio Conference Provider.
     *
-    * @param string $val The value of the dialinUrl
+    * @param string $val The value of the tollNumber
     *
     * @return AudioConferencing
     */
-    public function setDialinUrl($val)
+    public function setTollNumber($val)
     {
-        $this->_propDict["dialinUrl"] = $val;
+        $this->_propDict["tollNumber"] = $val;
         return $this;
     }
 }

@@ -37,6 +37,11 @@ class MenuItemExtrasUninstallTest extends BrowserTestBase {
   protected $menu;
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Tests module install and uninstall processes.
    */
   public function testMenuItemExtrasInstallUninstall() {
@@ -66,7 +71,13 @@ class MenuItemExtrasUninstallTest extends BrowserTestBase {
     $module_installer = \Drupal::service('module_installer');
 
     $module_installer->install(['menu_item_extras']);
-
+    $this->drupalLogin($this->rootUser);
+    $url = Url::fromRoute('entity.menu_link_content.edit_form', ['menu_link_content' => $link->id()]);
+    $this->drupalGet($url);
+    $this->assertSame(200, $this->getSession()->getStatusCode(), 'Unexpected error on the menu item edit page.');
+    $this->drupalPostForm($url, [], 'Save');
+    $this->assertNotSame(500, $this->getSession()->getStatusCode(), "Unexpected error on the menu item edit page.");
+    $this->drupalLogout();
     FieldStorageConfig::create([
       'field_name' => 'field_test',
       'langcode' => 'en',

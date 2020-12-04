@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class Organization extends DirectoryObject
 {
@@ -584,6 +582,33 @@ class Organization extends DirectoryObject
     public function setTechnicalNotificationMails($val)
     {
         $this->_propDict["technicalNotificationMails"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the tenantType
+    *
+    * @return string The tenantType
+    */
+    public function getTenantType()
+    {
+        if (array_key_exists("tenantType", $this->_propDict)) {
+            return $this->_propDict["tenantType"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the tenantType
+    *
+    * @param string $val The tenantType
+    *
+    * @return Organization
+    */
+    public function setTenantType($val)
+    {
+        $this->_propDict["tenantType"] = $val;
         return $this;
     }
     

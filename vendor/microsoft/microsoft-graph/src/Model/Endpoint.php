@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class Endpoint extends DirectoryObject
 {
@@ -114,6 +112,35 @@ class Endpoint extends DirectoryObject
     }
     
     /**
+    * Gets the providerResourceId
+    * For Microsoft 365 groups, this is set to a well-known name for the resource (e.g. Yammer.FeedURL etc.). Not nullable. Read-only.
+    *
+    * @return string The providerResourceId
+    */
+    public function getProviderResourceId()
+    {
+        if (array_key_exists("providerResourceId", $this->_propDict)) {
+            return $this->_propDict["providerResourceId"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the providerResourceId
+    * For Microsoft 365 groups, this is set to a well-known name for the resource (e.g. Yammer.FeedURL etc.). Not nullable. Read-only.
+    *
+    * @param string $val The providerResourceId
+    *
+    * @return Endpoint
+    */
+    public function setProviderResourceId($val)
+    {
+        $this->_propDict["providerResourceId"] = $val;
+        return $this;
+    }
+    
+    /**
     * Gets the uri
     * URL of the published resource. Not nullable. Read-only.
     *
@@ -139,35 +166,6 @@ class Endpoint extends DirectoryObject
     public function setUri($val)
     {
         $this->_propDict["uri"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the providerResourceId
-    * For Office 365 groups, this is set to a well-known name for the resource (e.g. Yammer.FeedURL etc.). Not nullable. Read-only.
-    *
-    * @return string The providerResourceId
-    */
-    public function getProviderResourceId()
-    {
-        if (array_key_exists("providerResourceId", $this->_propDict)) {
-            return $this->_propDict["providerResourceId"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the providerResourceId
-    * For Office 365 groups, this is set to a well-known name for the resource (e.g. Yammer.FeedURL etc.). Not nullable. Read-only.
-    *
-    * @param string $val The providerResourceId
-    *
-    * @return Endpoint
-    */
-    public function setProviderResourceId($val)
-    {
-        $this->_propDict["providerResourceId"] = $val;
         return $this;
     }
     

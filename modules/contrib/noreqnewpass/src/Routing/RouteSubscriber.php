@@ -1,8 +1,4 @@
 <?php
-/**
-* @file
-* Contains \Drupal\noreqnewpass\Routing\RouteSubscriber.
-*/
 
 namespace Drupal\noreqnewpass\Routing;
 
@@ -15,8 +11,8 @@ use Symfony\Component\Routing\RouteCollection;
 class RouteSubscriber extends RouteSubscriberBase {
 
   /**
-  * {@inheritdoc}
-  */
+   * {@inheritdoc}
+   */
   public function alterRoutes(RouteCollection $collection) {
     // Always deny access to '/user/logout'.
     // Note that the second parameter of setRequirement() is a string.
@@ -27,4 +23,5 @@ class RouteSubscriber extends RouteSubscriberBase {
       }
     }
   }
+
 }

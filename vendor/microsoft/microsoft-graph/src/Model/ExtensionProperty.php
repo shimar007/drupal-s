@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ExtensionProperty extends DirectoryObject
 {
@@ -52,35 +50,6 @@ class ExtensionProperty extends DirectoryObject
     public function setAppDisplayName($val)
     {
         $this->_propDict["appDisplayName"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the name
-    * Name of the extension property. Not nullable.
-    *
-    * @return string The name
-    */
-    public function getName()
-    {
-        if (array_key_exists("name", $this->_propDict)) {
-            return $this->_propDict["name"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the name
-    * Name of the extension property. Not nullable.
-    *
-    * @param string $val The name
-    *
-    * @return ExtensionProperty
-    */
-    public function setName($val)
-    {
-        $this->_propDict["name"] = $val;
         return $this;
     }
     
@@ -139,6 +108,35 @@ class ExtensionProperty extends DirectoryObject
     public function setIsSyncedFromOnPremises($val)
     {
         $this->_propDict["isSyncedFromOnPremises"] = boolval($val);
+        return $this;
+    }
+    
+    /**
+    * Gets the name
+    * Name of the extension property. Not nullable.
+    *
+    * @return string The name
+    */
+    public function getName()
+    {
+        if (array_key_exists("name", $this->_propDict)) {
+            return $this->_propDict["name"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the name
+    * Name of the extension property. Not nullable.
+    *
+    * @param string $val The name
+    *
+    * @return ExtensionProperty
+    */
+    public function setName($val)
+    {
+        $this->_propDict["name"] = $val;
         return $this;
     }
     

@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,44 +19,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class TimeRange extends Entity
 {
-
-    /**
-    * Gets the startTime
-    * Start time for the time range.
-    *
-    * @return TimeOfDay The startTime
-    */
-    public function getStartTime()
-    {
-        if (array_key_exists("startTime", $this->_propDict)) {
-            if (is_a($this->_propDict["startTime"], "Microsoft\Graph\Model\TimeOfDay")) {
-                return $this->_propDict["startTime"];
-            } else {
-                $this->_propDict["startTime"] = new TimeOfDay($this->_propDict["startTime"]);
-                return $this->_propDict["startTime"];
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Sets the startTime
-    * Start time for the time range.
-    *
-    * @param TimeOfDay $val The value to assign to the startTime
-    *
-    * @return TimeRange The TimeRange
-    */
-    public function setStartTime($val)
-    {
-        $this->_propDict["startTime"] = $val;
-         return $this;
-    }
 
     /**
     * Gets the endTime
@@ -89,6 +54,39 @@ class TimeRange extends Entity
     public function setEndTime($val)
     {
         $this->_propDict["endTime"] = $val;
+         return $this;
+    }
+
+    /**
+    * Gets the startTime
+    * Start time for the time range.
+    *
+    * @return TimeOfDay The startTime
+    */
+    public function getStartTime()
+    {
+        if (array_key_exists("startTime", $this->_propDict)) {
+            if (is_a($this->_propDict["startTime"], "Microsoft\Graph\Model\TimeOfDay")) {
+                return $this->_propDict["startTime"];
+            } else {
+                $this->_propDict["startTime"] = new TimeOfDay($this->_propDict["startTime"]);
+                return $this->_propDict["startTime"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the startTime
+    * Start time for the time range.
+    *
+    * @param TimeOfDay $val The value to assign to the startTime
+    *
+    * @return TimeRange The TimeRange
+    */
+    public function setStartTime($val)
+    {
+        $this->_propDict["startTime"] = $val;
          return $this;
     }
 }

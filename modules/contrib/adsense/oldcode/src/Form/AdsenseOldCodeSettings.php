@@ -59,7 +59,7 @@ class AdsenseOldCodeSettings extends ConfigFormBase {
         '#type' => 'radios',
         '#title' => $this->t('Ad type'),
         '#default_value' => $config->get('adsense_ad_type_' . $style),
-        '#options' => [t('Text'), $this->t('Image'), $this->t('Both')],
+        '#options' => [$this->t('Text'), $this->t('Image'), $this->t('Both')],
       ];
 
       // Add Farbtastic color picker.
@@ -143,9 +143,9 @@ class AdsenseOldCodeSettings extends ConfigFormBase {
         '#title' => $this->t('Rounded corners'),
         '#default_value' => $config->get('adsense_ui_features_' . $style),
         '#options' => [
-          'rc:0' => 'Square',
-          'rc:6' => 'Slightly rounded',
-          'rc:10' => 'Very rounded',
+          'rc:0' => $this->t('Square'),
+          'rc:6' => $this->t('Slightly rounded'),
+          'rc:10' => $this->t('Very rounded'),
         ],
         '#description' => $this->t('Choose type of round corners'),
       ];
@@ -186,6 +186,8 @@ class AdsenseOldCodeSettings extends ConfigFormBase {
       $config->set($key, Html::escape($value));
     }
     $config->save();
+
+    parent::submitForm($form, $form_state);
   }
 
 }

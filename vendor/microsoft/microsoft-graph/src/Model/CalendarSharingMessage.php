@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class CalendarSharingMessage extends Message
 {
@@ -50,33 +48,6 @@ class CalendarSharingMessage extends Message
     public function setCanAccept($val)
     {
         $this->_propDict["canAccept"] = boolval($val);
-        return $this;
-    }
-    
-    /**
-    * Gets the suggestedCalendarName
-    *
-    * @return string The suggestedCalendarName
-    */
-    public function getSuggestedCalendarName()
-    {
-        if (array_key_exists("suggestedCalendarName", $this->_propDict)) {
-            return $this->_propDict["suggestedCalendarName"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the suggestedCalendarName
-    *
-    * @param string $val The suggestedCalendarName
-    *
-    * @return CalendarSharingMessage
-    */
-    public function setSuggestedCalendarName($val)
-    {
-        $this->_propDict["suggestedCalendarName"] = $val;
         return $this;
     }
     
@@ -136,6 +107,33 @@ class CalendarSharingMessage extends Message
     public function setSharingMessageActions($val)
     {
 		$this->_propDict["sharingMessageActions"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the suggestedCalendarName
+    *
+    * @return string The suggestedCalendarName
+    */
+    public function getSuggestedCalendarName()
+    {
+        if (array_key_exists("suggestedCalendarName", $this->_propDict)) {
+            return $this->_propDict["suggestedCalendarName"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the suggestedCalendarName
+    *
+    * @param string $val The suggestedCalendarName
+    *
+    * @return CalendarSharingMessage
+    */
+    public function setSuggestedCalendarName($val)
+    {
+        $this->_propDict["suggestedCalendarName"] = $val;
         return $this;
     }
     

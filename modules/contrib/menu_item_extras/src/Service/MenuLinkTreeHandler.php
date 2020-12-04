@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Menu\MenuLinkInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
 /**
  * Class MenuLinkTreeHandler.
@@ -88,7 +89,10 @@ class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
     else {
       $view_mode = 'default';
     }
-    $render_output = $view_builder->view($entity, $view_mode);
+    $render_output = array_merge(
+      $view_builder->view($entity, $view_mode),
+      EntityViewDisplay::collectRenderDisplay($entity, $view_mode)->build($entity)
+    );
     unset($render_output['#cache']);
     $render_output['#show_item_link'] = $show_item_link;
 

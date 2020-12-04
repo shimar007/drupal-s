@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ThreatAssessmentResult extends Entity
 {
@@ -60,6 +58,35 @@ class ThreatAssessmentResult extends Entity
     }
     
     /**
+    * Gets the message
+    * The result message for each threat assessment.
+    *
+    * @return string The message
+    */
+    public function getMessage()
+    {
+        if (array_key_exists("message", $this->_propDict)) {
+            return $this->_propDict["message"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the message
+    * The result message for each threat assessment.
+    *
+    * @param string $val The message
+    *
+    * @return ThreatAssessmentResult
+    */
+    public function setMessage($val)
+    {
+        $this->_propDict["message"] = $val;
+        return $this;
+    }
+    
+    /**
     * Gets the resultType
     * The threat assessment result type. Possible values are: checkPolicy, rescan.
     *
@@ -89,35 +116,6 @@ class ThreatAssessmentResult extends Entity
     public function setResultType($val)
     {
         $this->_propDict["resultType"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the message
-    * The result message for each threat assessment.
-    *
-    * @return string The message
-    */
-    public function getMessage()
-    {
-        if (array_key_exists("message", $this->_propDict)) {
-            return $this->_propDict["message"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the message
-    * The result message for each threat assessment.
-    *
-    * @param string $val The message
-    *
-    * @return ThreatAssessmentResult
-    */
-    public function setMessage($val)
-    {
-        $this->_propDict["message"] = $val;
         return $this;
     }
     

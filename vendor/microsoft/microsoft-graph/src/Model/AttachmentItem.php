@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class AttachmentItem extends Entity
 {
@@ -57,62 +55,6 @@ class AttachmentItem extends Entity
     {
         $this->_propDict["attachmentType"] = $val;
          return $this;
-    }
-    /**
-    * Gets the name
-    * The display name of the attachment. This can be a descriptive string and does not have to be the actual file name. Required.
-    *
-    * @return string The name
-    */
-    public function getName()
-    {
-        if (array_key_exists("name", $this->_propDict)) {
-            return $this->_propDict["name"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the name
-    * The display name of the attachment. This can be a descriptive string and does not have to be the actual file name. Required.
-    *
-    * @param string $val The value of the name
-    *
-    * @return AttachmentItem
-    */
-    public function setName($val)
-    {
-        $this->_propDict["name"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the size
-    * The length of the attachment in bytes. Required.
-    *
-    * @return int The size
-    */
-    public function getSize()
-    {
-        if (array_key_exists("size", $this->_propDict)) {
-            return $this->_propDict["size"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the size
-    * The length of the attachment in bytes. Required.
-    *
-    * @param int $val The value of the size
-    *
-    * @return AttachmentItem
-    */
-    public function setSize($val)
-    {
-        $this->_propDict["size"] = $val;
-        return $this;
     }
     /**
     * Gets the contentType
@@ -168,6 +110,62 @@ class AttachmentItem extends Entity
     public function setIsInline($val)
     {
         $this->_propDict["isInline"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the name
+    * The display name of the attachment. This can be a descriptive string and does not have to be the actual file name. Required.
+    *
+    * @return string The name
+    */
+    public function getName()
+    {
+        if (array_key_exists("name", $this->_propDict)) {
+            return $this->_propDict["name"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the name
+    * The display name of the attachment. This can be a descriptive string and does not have to be the actual file name. Required.
+    *
+    * @param string $val The value of the name
+    *
+    * @return AttachmentItem
+    */
+    public function setName($val)
+    {
+        $this->_propDict["name"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the size
+    * The length of the attachment in bytes. Required.
+    *
+    * @return int The size
+    */
+    public function getSize()
+    {
+        if (array_key_exists("size", $this->_propDict)) {
+            return $this->_propDict["size"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the size
+    * The length of the attachment in bytes. Required.
+    *
+    * @param int $val The value of the size
+    *
+    * @return AttachmentItem
+    */
+    public function setSize($val)
+    {
+        $this->_propDict["size"] = $val;
         return $this;
     }
 }

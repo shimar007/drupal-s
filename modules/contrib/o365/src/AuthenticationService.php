@@ -281,7 +281,7 @@ class AuthenticationService implements AuthenticationServiceInterface {
     $this->authValues = [
       'access_token' => $accessToken->getToken(),
       'refresh_token' => $accessToken->getRefreshToken(),
-      'expires_on' => time() + $accessToken->getExpires(),
+      'expires_on' => $accessToken->getExpires(),
     ];
 
     if ($this->debug) {

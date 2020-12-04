@@ -45,7 +45,7 @@ class OldCodeAd extends ContentAdBase {
       $st = 1;
     }
 
-    if (($fo != 'Search Box') && !empty($fo)) {
+    if ((substr($fo, 0, 10) != 'Search Box') && !empty($fo)) {
       $this->format = $fo;
       $this->style = $st;
       $this->channel = $ch;

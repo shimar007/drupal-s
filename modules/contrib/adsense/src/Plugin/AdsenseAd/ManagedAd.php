@@ -48,7 +48,7 @@ class ManagedAd extends ContentAdBase {
     $sh = (!empty($configuration['shape'])) ? $configuration['shape'] : ['auto'];
     $lk = (!empty($configuration['layout_key'])) ? $configuration['layout_key'] : '';
 
-    if (($fo != 'Search Box') && !empty($fo) && !empty($sl)) {
+    if ((substr($fo, 0, 10) != 'Search Box') && !empty($fo) && !empty($sl)) {
       $this->format = $fo;
       $this->slot = $sl;
       $this->shape = $sh;

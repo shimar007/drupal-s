@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class PlannerChecklistItem extends Entity
 {
@@ -51,62 +49,6 @@ class PlannerChecklistItem extends Entity
     public function setIsChecked($val)
     {
         $this->_propDict["isChecked"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the title
-    * Title of the checklist item
-    *
-    * @return string The title
-    */
-    public function getTitle()
-    {
-        if (array_key_exists("title", $this->_propDict)) {
-            return $this->_propDict["title"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the title
-    * Title of the checklist item
-    *
-    * @param string $val The value of the title
-    *
-    * @return PlannerChecklistItem
-    */
-    public function setTitle($val)
-    {
-        $this->_propDict["title"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the orderHint
-    * Used to set the relative order of items in the checklist. The format is defined as outlined here.
-    *
-    * @return string The orderHint
-    */
-    public function getOrderHint()
-    {
-        if (array_key_exists("orderHint", $this->_propDict)) {
-            return $this->_propDict["orderHint"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the orderHint
-    * Used to set the relative order of items in the checklist. The format is defined as outlined here.
-    *
-    * @param string $val The value of the orderHint
-    *
-    * @return PlannerChecklistItem
-    */
-    public function setOrderHint($val)
-    {
-        $this->_propDict["orderHint"] = $val;
         return $this;
     }
 
@@ -152,7 +94,7 @@ class PlannerChecklistItem extends Entity
     public function getLastModifiedDateTime()
     {
         if (array_key_exists("lastModifiedDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["lastModifiedDateTime"], "Microsoft\Graph\Model\\DateTime")) {
+            if (is_a($this->_propDict["lastModifiedDateTime"], "\DateTime")) {
                 return $this->_propDict["lastModifiedDateTime"];
             } else {
                 $this->_propDict["lastModifiedDateTime"] = new \DateTime($this->_propDict["lastModifiedDateTime"]);
@@ -174,5 +116,61 @@ class PlannerChecklistItem extends Entity
     {
         $this->_propDict["lastModifiedDateTime"] = $val;
          return $this;
+    }
+    /**
+    * Gets the orderHint
+    * Used to set the relative order of items in the checklist. The format is defined as outlined here.
+    *
+    * @return string The orderHint
+    */
+    public function getOrderHint()
+    {
+        if (array_key_exists("orderHint", $this->_propDict)) {
+            return $this->_propDict["orderHint"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the orderHint
+    * Used to set the relative order of items in the checklist. The format is defined as outlined here.
+    *
+    * @param string $val The value of the orderHint
+    *
+    * @return PlannerChecklistItem
+    */
+    public function setOrderHint($val)
+    {
+        $this->_propDict["orderHint"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the title
+    * Title of the checklist item
+    *
+    * @return string The title
+    */
+    public function getTitle()
+    {
+        if (array_key_exists("title", $this->_propDict)) {
+            return $this->_propDict["title"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the title
+    * Title of the checklist item
+    *
+    * @param string $val The value of the title
+    *
+    * @return PlannerChecklistItem
+    */
+    public function setTitle($val)
+    {
+        $this->_propDict["title"] = $val;
+        return $this;
     }
 }

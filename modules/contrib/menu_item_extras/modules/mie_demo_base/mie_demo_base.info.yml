@@ -4,6 +4,7 @@ type: module
 package: Menu
 hidden: false
 core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - drupal:menu_item_extras
   - drupal:taxonomy
@@ -11,7 +12,7 @@ dependencies:
   - drupal:path
   - drupal:ckeditor
 
-# Information added by Drupal.org packaging script on 2020-03-28
-version: '8.x-2.11'
+# Information added by Drupal.org packaging script on 2020-11-22
+version: '8.x-2.13'
 project: 'menu_item_extras'
-datestamp: 1585397141
+datestamp: 1606037927

@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,41 +20,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class OfficeGraphInsights extends Entity
 {
-
-     /** 
-     * Gets the trending
-    * Calculated relationship identifying documents trending around a user. Trending documents are calculated based on activity of the user's closest network of people and include files stored in OneDrive for Business and SharePoint. Trending insights help the user to discover potentially useful content that the user has access to, but has never viewed before.
-     *
-     * @return array The trending
-     */
-    public function getTrending()
-    {
-        if (array_key_exists("trending", $this->_propDict)) {
-           return $this->_propDict["trending"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the trending
-    * Calculated relationship identifying documents trending around a user. Trending documents are calculated based on activity of the user's closest network of people and include files stored in OneDrive for Business and SharePoint. Trending insights help the user to discover potentially useful content that the user has access to, but has never viewed before.
-    *
-    * @param Trending $val The trending
-    *
-    * @return OfficeGraphInsights
-    */
-    public function setTrending($val)
-    {
-		$this->_propDict["trending"] = $val;
-        return $this;
-    }
-    
 
      /** 
      * Gets the shared
@@ -83,6 +51,36 @@ class OfficeGraphInsights extends Entity
     public function setShared($val)
     {
 		$this->_propDict["shared"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the trending
+    * Calculated relationship identifying documents trending around a user. Trending documents are calculated based on activity of the user's closest network of people and include files stored in OneDrive for Business and SharePoint. Trending insights help the user to discover potentially useful content that the user has access to, but has never viewed before.
+     *
+     * @return array The trending
+     */
+    public function getTrending()
+    {
+        if (array_key_exists("trending", $this->_propDict)) {
+           return $this->_propDict["trending"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the trending
+    * Calculated relationship identifying documents trending around a user. Trending documents are calculated based on activity of the user's closest network of people and include files stored in OneDrive for Business and SharePoint. Trending insights help the user to discover potentially useful content that the user has access to, but has never viewed before.
+    *
+    * @param Trending $val The trending
+    *
+    * @return OfficeGraphInsights
+    */
+    public function setTrending($val)
+    {
+		$this->_propDict["trending"] = $val;
         return $this;
     }
     

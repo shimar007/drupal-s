@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,39 +19,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ChatInfo extends Entity
 {
-    /**
-    * Gets the threadId
-    * The unique identifier for a thread in Microsoft Teams.
-    *
-    * @return string The threadId
-    */
-    public function getThreadId()
-    {
-        if (array_key_exists("threadId", $this->_propDict)) {
-            return $this->_propDict["threadId"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the threadId
-    * The unique identifier for a thread in Microsoft Teams.
-    *
-    * @param string $val The value of the threadId
-    *
-    * @return ChatInfo
-    */
-    public function setThreadId($val)
-    {
-        $this->_propDict["threadId"] = $val;
-        return $this;
-    }
     /**
     * Gets the messageId
     * The unique identifier of a message in a Microsoft Teams channel.
@@ -107,6 +77,34 @@ class ChatInfo extends Entity
     public function setReplyChainMessageId($val)
     {
         $this->_propDict["replyChainMessageId"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the threadId
+    * The unique identifier for a thread in Microsoft Teams.
+    *
+    * @return string The threadId
+    */
+    public function getThreadId()
+    {
+        if (array_key_exists("threadId", $this->_propDict)) {
+            return $this->_propDict["threadId"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the threadId
+    * The unique identifier for a thread in Microsoft Teams.
+    *
+    * @param string $val The value of the threadId
+    *
+    * @return ChatInfo
+    */
+    public function setThreadId($val)
+    {
+        $this->_propDict["threadId"] = $val;
         return $this;
     }
 }

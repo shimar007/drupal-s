@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ChatMessageMention extends Entity
 {
@@ -51,34 +49,6 @@ class ChatMessageMention extends Entity
     public function setId($val)
     {
         $this->_propDict["id"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the mentionText
-    * String used to represent the mention. For example, a user's display name, a team name.
-    *
-    * @return string The mentionText
-    */
-    public function getMentionText()
-    {
-        if (array_key_exists("mentionText", $this->_propDict)) {
-            return $this->_propDict["mentionText"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the mentionText
-    * String used to represent the mention. For example, a user's display name, a team name.
-    *
-    * @param string $val The value of the mentionText
-    *
-    * @return ChatMessageMention
-    */
-    public function setMentionText($val)
-    {
-        $this->_propDict["mentionText"] = $val;
         return $this;
     }
 
@@ -113,5 +83,33 @@ class ChatMessageMention extends Entity
     {
         $this->_propDict["mentioned"] = $val;
          return $this;
+    }
+    /**
+    * Gets the mentionText
+    * String used to represent the mention. For example, a user's display name, a team name.
+    *
+    * @return string The mentionText
+    */
+    public function getMentionText()
+    {
+        if (array_key_exists("mentionText", $this->_propDict)) {
+            return $this->_propDict["mentionText"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the mentionText
+    * String used to represent the mention. For example, a user's display name, a team name.
+    *
+    * @param string $val The value of the mentionText
+    *
+    * @return ChatMessageMention
+    */
+    public function setMentionText($val)
+    {
+        $this->_propDict["mentionText"] = $val;
+        return $this;
     }
 }

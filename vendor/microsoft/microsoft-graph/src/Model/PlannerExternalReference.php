@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class PlannerExternalReference extends Entity
 {
@@ -51,62 +49,6 @@ class PlannerExternalReference extends Entity
     public function setAlias($val)
     {
         $this->_propDict["alias"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the type
-    * Used to describe the type of the reference. Types include: PowerPoint, Word, Excel, Other.
-    *
-    * @return string The type
-    */
-    public function getType()
-    {
-        if (array_key_exists("type", $this->_propDict)) {
-            return $this->_propDict["type"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the type
-    * Used to describe the type of the reference. Types include: PowerPoint, Word, Excel, Other.
-    *
-    * @param string $val The value of the type
-    *
-    * @return PlannerExternalReference
-    */
-    public function setType($val)
-    {
-        $this->_propDict["type"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the previewPriority
-    * Used to set the relative priority order in which the reference will be shown as a preview on the task.
-    *
-    * @return string The previewPriority
-    */
-    public function getPreviewPriority()
-    {
-        if (array_key_exists("previewPriority", $this->_propDict)) {
-            return $this->_propDict["previewPriority"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the previewPriority
-    * Used to set the relative priority order in which the reference will be shown as a preview on the task.
-    *
-    * @param string $val The value of the previewPriority
-    *
-    * @return PlannerExternalReference
-    */
-    public function setPreviewPriority($val)
-    {
-        $this->_propDict["previewPriority"] = $val;
         return $this;
     }
 
@@ -152,7 +94,7 @@ class PlannerExternalReference extends Entity
     public function getLastModifiedDateTime()
     {
         if (array_key_exists("lastModifiedDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["lastModifiedDateTime"], "Microsoft\Graph\Model\\DateTime")) {
+            if (is_a($this->_propDict["lastModifiedDateTime"], "\DateTime")) {
                 return $this->_propDict["lastModifiedDateTime"];
             } else {
                 $this->_propDict["lastModifiedDateTime"] = new \DateTime($this->_propDict["lastModifiedDateTime"]);
@@ -174,5 +116,61 @@ class PlannerExternalReference extends Entity
     {
         $this->_propDict["lastModifiedDateTime"] = $val;
          return $this;
+    }
+    /**
+    * Gets the previewPriority
+    * Used to set the relative priority order in which the reference will be shown as a preview on the task.
+    *
+    * @return string The previewPriority
+    */
+    public function getPreviewPriority()
+    {
+        if (array_key_exists("previewPriority", $this->_propDict)) {
+            return $this->_propDict["previewPriority"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the previewPriority
+    * Used to set the relative priority order in which the reference will be shown as a preview on the task.
+    *
+    * @param string $val The value of the previewPriority
+    *
+    * @return PlannerExternalReference
+    */
+    public function setPreviewPriority($val)
+    {
+        $this->_propDict["previewPriority"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the type
+    * Used to describe the type of the reference. Types include: PowerPoint, Word, Excel, Other.
+    *
+    * @return string The type
+    */
+    public function getType()
+    {
+        if (array_key_exists("type", $this->_propDict)) {
+            return $this->_propDict["type"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the type
+    * Used to describe the type of the reference. Types include: PowerPoint, Word, Excel, Other.
+    *
+    * @param string $val The value of the type
+    *
+    * @return PlannerExternalReference
+    */
+    public function setType($val)
+    {
+        $this->_propDict["type"] = $val;
+        return $this;
     }
 }

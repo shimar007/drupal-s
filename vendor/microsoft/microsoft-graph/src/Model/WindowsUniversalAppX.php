@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class WindowsUniversalAppX extends MobileLobApp
 {
@@ -180,6 +178,35 @@ class WindowsUniversalAppX extends MobileLobApp
     }
     
     /**
+    * Gets the identityVersion
+    * The identity version.
+    *
+    * @return string The identityVersion
+    */
+    public function getIdentityVersion()
+    {
+        if (array_key_exists("identityVersion", $this->_propDict)) {
+            return $this->_propDict["identityVersion"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the identityVersion
+    * The identity version.
+    *
+    * @param string $val The identityVersion
+    *
+    * @return WindowsUniversalAppX
+    */
+    public function setIdentityVersion($val)
+    {
+        $this->_propDict["identityVersion"] = $val;
+        return $this;
+    }
+    
+    /**
     * Gets the isBundle
     * Whether or not the app is a bundle.
     *
@@ -238,35 +265,6 @@ class WindowsUniversalAppX extends MobileLobApp
     public function setMinimumSupportedOperatingSystem($val)
     {
         $this->_propDict["minimumSupportedOperatingSystem"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the identityVersion
-    * The identity version.
-    *
-    * @return string The identityVersion
-    */
-    public function getIdentityVersion()
-    {
-        if (array_key_exists("identityVersion", $this->_propDict)) {
-            return $this->_propDict["identityVersion"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the identityVersion
-    * The identity version.
-    *
-    * @param string $val The identityVersion
-    *
-    * @return WindowsUniversalAppX
-    */
-    public function setIdentityVersion($val)
-    {
-        $this->_propDict["identityVersion"] = $val;
         return $this;
     }
     

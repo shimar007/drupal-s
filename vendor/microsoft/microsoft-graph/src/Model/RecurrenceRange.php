@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,11 +19,132 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class RecurrenceRange extends Entity
 {
+
+    /**
+    * Gets the endDate
+    * The date to stop applying the recurrence pattern. Depending on the recurrence pattern of the event, the last occurrence of the meeting may not be this date. Required if type is endDate.
+    *
+    * @return \DateTime The endDate
+    */
+    public function getEndDate()
+    {
+        if (array_key_exists("endDate", $this->_propDict)) {
+            if (is_a($this->_propDict["endDate"], "\DateTime")) {
+                return $this->_propDict["endDate"];
+            } else {
+                $this->_propDict["endDate"] = new \DateTime($this->_propDict["endDate"]);
+                return $this->_propDict["endDate"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the endDate
+    * The date to stop applying the recurrence pattern. Depending on the recurrence pattern of the event, the last occurrence of the meeting may not be this date. Required if type is endDate.
+    *
+    * @param \DateTime $val The value to assign to the endDate
+    *
+    * @return RecurrenceRange The RecurrenceRange
+    */
+    public function setEndDate($val)
+    {
+        $this->_propDict["endDate"] = $val;
+         return $this;
+    }
+    /**
+    * Gets the numberOfOccurrences
+    * The number of times to repeat the event. Required and must be positive if type is numbered.
+    *
+    * @return int The numberOfOccurrences
+    */
+    public function getNumberOfOccurrences()
+    {
+        if (array_key_exists("numberOfOccurrences", $this->_propDict)) {
+            return $this->_propDict["numberOfOccurrences"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the numberOfOccurrences
+    * The number of times to repeat the event. Required and must be positive if type is numbered.
+    *
+    * @param int $val The value of the numberOfOccurrences
+    *
+    * @return RecurrenceRange
+    */
+    public function setNumberOfOccurrences($val)
+    {
+        $this->_propDict["numberOfOccurrences"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the recurrenceTimeZone
+    * Time zone for the startDate and endDate properties. Optional. If not specified, the time zone of the event is used.
+    *
+    * @return string The recurrenceTimeZone
+    */
+    public function getRecurrenceTimeZone()
+    {
+        if (array_key_exists("recurrenceTimeZone", $this->_propDict)) {
+            return $this->_propDict["recurrenceTimeZone"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the recurrenceTimeZone
+    * Time zone for the startDate and endDate properties. Optional. If not specified, the time zone of the event is used.
+    *
+    * @param string $val The value of the recurrenceTimeZone
+    *
+    * @return RecurrenceRange
+    */
+    public function setRecurrenceTimeZone($val)
+    {
+        $this->_propDict["recurrenceTimeZone"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the startDate
+    * The date to start applying the recurrence pattern. The first occurrence of the meeting may be this date or later, depending on the recurrence pattern of the event. Must be the same value as the start property of the recurring event. Required.
+    *
+    * @return \DateTime The startDate
+    */
+    public function getStartDate()
+    {
+        if (array_key_exists("startDate", $this->_propDict)) {
+            if (is_a($this->_propDict["startDate"], "\DateTime")) {
+                return $this->_propDict["startDate"];
+            } else {
+                $this->_propDict["startDate"] = new \DateTime($this->_propDict["startDate"]);
+                return $this->_propDict["startDate"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the startDate
+    * The date to start applying the recurrence pattern. The first occurrence of the meeting may be this date or later, depending on the recurrence pattern of the event. Must be the same value as the start property of the recurring event. Required.
+    *
+    * @param \DateTime $val The value to assign to the startDate
+    *
+    * @return RecurrenceRange The RecurrenceRange
+    */
+    public function setStartDate($val)
+    {
+        $this->_propDict["startDate"] = $val;
+         return $this;
+    }
 
     /**
     * Gets the type
@@ -57,127 +177,5 @@ class RecurrenceRange extends Entity
     {
         $this->_propDict["type"] = $val;
          return $this;
-    }
-
-    /**
-    * Gets the startDate
-    * The date to start applying the recurrence pattern. The first occurrence of the meeting may be this date or later, depending on the recurrence pattern of the event. Must be the same value as the start property of the recurring event. Required.
-    *
-    * @return \DateTime The startDate
-    */
-    public function getStartDate()
-    {
-        if (array_key_exists("startDate", $this->_propDict)) {
-            if (is_a($this->_propDict["startDate"], "Microsoft\Graph\Model\\DateTime")) {
-                return $this->_propDict["startDate"];
-            } else {
-                $this->_propDict["startDate"] = new \DateTime($this->_propDict["startDate"]);
-                return $this->_propDict["startDate"];
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Sets the startDate
-    * The date to start applying the recurrence pattern. The first occurrence of the meeting may be this date or later, depending on the recurrence pattern of the event. Must be the same value as the start property of the recurring event. Required.
-    *
-    * @param \DateTime $val The value to assign to the startDate
-    *
-    * @return RecurrenceRange The RecurrenceRange
-    */
-    public function setStartDate($val)
-    {
-        $this->_propDict["startDate"] = $val;
-         return $this;
-    }
-
-    /**
-    * Gets the endDate
-    * The date to stop applying the recurrence pattern. Depending on the recurrence pattern of the event, the last occurrence of the meeting may not be this date. Required if type is endDate.
-    *
-    * @return \DateTime The endDate
-    */
-    public function getEndDate()
-    {
-        if (array_key_exists("endDate", $this->_propDict)) {
-            if (is_a($this->_propDict["endDate"], "Microsoft\Graph\Model\\DateTime")) {
-                return $this->_propDict["endDate"];
-            } else {
-                $this->_propDict["endDate"] = new \DateTime($this->_propDict["endDate"]);
-                return $this->_propDict["endDate"];
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Sets the endDate
-    * The date to stop applying the recurrence pattern. Depending on the recurrence pattern of the event, the last occurrence of the meeting may not be this date. Required if type is endDate.
-    *
-    * @param \DateTime $val The value to assign to the endDate
-    *
-    * @return RecurrenceRange The RecurrenceRange
-    */
-    public function setEndDate($val)
-    {
-        $this->_propDict["endDate"] = $val;
-         return $this;
-    }
-    /**
-    * Gets the recurrenceTimeZone
-    * Time zone for the startDate and endDate properties. Optional. If not specified, the time zone of the event is used.
-    *
-    * @return string The recurrenceTimeZone
-    */
-    public function getRecurrenceTimeZone()
-    {
-        if (array_key_exists("recurrenceTimeZone", $this->_propDict)) {
-            return $this->_propDict["recurrenceTimeZone"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the recurrenceTimeZone
-    * Time zone for the startDate and endDate properties. Optional. If not specified, the time zone of the event is used.
-    *
-    * @param string $val The value of the recurrenceTimeZone
-    *
-    * @return RecurrenceRange
-    */
-    public function setRecurrenceTimeZone($val)
-    {
-        $this->_propDict["recurrenceTimeZone"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the numberOfOccurrences
-    * The number of times to repeat the event. Required and must be positive if type is numbered.
-    *
-    * @return int The numberOfOccurrences
-    */
-    public function getNumberOfOccurrences()
-    {
-        if (array_key_exists("numberOfOccurrences", $this->_propDict)) {
-            return $this->_propDict["numberOfOccurrences"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the numberOfOccurrences
-    * The number of times to repeat the event. Required and must be positive if type is numbered.
-    *
-    * @param int $val The value of the numberOfOccurrences
-    *
-    * @return RecurrenceRange
-    */
-    public function setNumberOfOccurrences($val)
-    {
-        $this->_propDict["numberOfOccurrences"] = $val;
-        return $this;
     }
 }

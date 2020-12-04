@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,69 +20,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class OnenoteOperation extends Operation
 {
-    /**
-    * Gets the resourceLocation
-    * The resource URI for the object. For example, the resource URI for a copied page or section.
-    *
-    * @return string The resourceLocation
-    */
-    public function getResourceLocation()
-    {
-        if (array_key_exists("resourceLocation", $this->_propDict)) {
-            return $this->_propDict["resourceLocation"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the resourceLocation
-    * The resource URI for the object. For example, the resource URI for a copied page or section.
-    *
-    * @param string $val The resourceLocation
-    *
-    * @return OnenoteOperation
-    */
-    public function setResourceLocation($val)
-    {
-        $this->_propDict["resourceLocation"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the resourceId
-    * The resource id.
-    *
-    * @return string The resourceId
-    */
-    public function getResourceId()
-    {
-        if (array_key_exists("resourceId", $this->_propDict)) {
-            return $this->_propDict["resourceId"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the resourceId
-    * The resource id.
-    *
-    * @param string $val The resourceId
-    *
-    * @return OnenoteOperation
-    */
-    public function setResourceId($val)
-    {
-        $this->_propDict["resourceId"] = $val;
-        return $this;
-    }
-    
     /**
     * Gets the error
     * The error returned by the operation.
@@ -143,6 +83,64 @@ class OnenoteOperation extends Operation
     public function setPercentComplete($val)
     {
         $this->_propDict["percentComplete"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the resourceId
+    * The resource id.
+    *
+    * @return string The resourceId
+    */
+    public function getResourceId()
+    {
+        if (array_key_exists("resourceId", $this->_propDict)) {
+            return $this->_propDict["resourceId"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the resourceId
+    * The resource id.
+    *
+    * @param string $val The resourceId
+    *
+    * @return OnenoteOperation
+    */
+    public function setResourceId($val)
+    {
+        $this->_propDict["resourceId"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the resourceLocation
+    * The resource URI for the object. For example, the resource URI for a copied page or section.
+    *
+    * @return string The resourceLocation
+    */
+    public function getResourceLocation()
+    {
+        if (array_key_exists("resourceLocation", $this->_propDict)) {
+            return $this->_propDict["resourceLocation"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the resourceLocation
+    * The resource URI for the object. For example, the resource URI for a copied page or section.
+    *
+    * @param string $val The resourceLocation
+    *
+    * @return OnenoteOperation
+    */
+    public function setResourceLocation($val)
+    {
+        $this->_propDict["resourceLocation"] = $val;
         return $this;
     }
     

@@ -5,6 +5,7 @@ namespace Drupal\adsense;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Traversable;
 
 /**
  * Adsense plugin manager.
@@ -22,7 +23,7 @@ class AdsenseAdManager extends DefaultPluginManager {
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler to invoke the alter hook with.
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
+  public function __construct(Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
     parent::__construct('Plugin/AdsenseAd', $namespaces, $module_handler, 'Drupal\adsense\AdsenseAdInterface', 'Drupal\adsense\Annotation\AdsenseAd');
 
     $this->alterInfo('adsense_ad_info');

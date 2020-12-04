@@ -147,6 +147,8 @@ class AdsenseMainSettings extends ConfigFormBase {
       $config->set($key, Html::escape($value));
     }
     $config->save();
+
+    parent::submitForm($form, $form_state);
   }
 
   /**

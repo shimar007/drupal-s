@@ -12,9 +12,10 @@ use Drupal\adsense\PublisherId;
  *
  * @AdsenseAd(
  *   id = "cse",
- *   name = @Translation("CSE Search"),
+ *   name = @Translation("CSE V1 Search"),
  *   isSearch = TRUE,
- *   needsSlot = TRUE
+ *   needsSlot = TRUE,
+ *   version = 1
  * )
  */
 class CustomSearchAd extends SearchAdBase {
@@ -41,7 +42,7 @@ class CustomSearchAd extends SearchAdBase {
     if (!empty($this->slot)) {
       $client = PublisherId::get();
 
-      $content = "CSE\ncx = partner-$client:{$this->slot}";
+      $content = "CSE v1\ncx = partner-$client:{$this->slot}";
 
       return [
         '#content' => ['#markup' => nl2br($content)],
@@ -83,8 +84,6 @@ class CustomSearchAd extends SearchAdBase {
       }
 
       if ($branding == 'adsense_cse_branding_watermark') {
-        global $base_url;
-
         // When using a watermark, code is not reusable due to indentation.
         $content = [
           '#theme' => 'adsense_cse_watermark',
@@ -96,9 +95,6 @@ class CustomSearchAd extends SearchAdBase {
           '#encoding' => $cse_config->get('adsense_cse_encoding'),
           '#qsize' => $cse_config->get('adsense_cse_textbox_length'),
           '#search' => $this->t('Search'),
-          // Since we use as_q, we must use a modified copy of
-          // Google's Javascript.
-          '#script' => $base_url . '/' . drupal_get_path('module', 'adsense') . '/js/adsense_cse-v1.js',
         ];
       }
       else {

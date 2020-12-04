@@ -194,9 +194,9 @@ class CoreExtension extends AbstractExtension
             new TwigFilter('sort', 'twig_sort_filter'),
             new TwigFilter('merge', 'twig_array_merge'),
             new TwigFilter('batch', 'twig_array_batch'),
-            new TwigFilter('filter', 'twig_array_filter'),
-            new TwigFilter('map', 'twig_array_map'),
-            new TwigFilter('reduce', 'twig_array_reduce'),
+            new TwigFilter('filter', 'twig_array_filter', ['needs_environment' => true]),
+            new TwigFilter('map', 'twig_array_map', ['needs_environment' => true]),
+            new TwigFilter('reduce', 'twig_array_reduce', ['needs_environment' => true]),
 
             // string/array filters
             new TwigFilter('reverse', 'twig_reverse_filter', ['needs_environment' => true]),
@@ -244,11 +244,11 @@ class CoreExtension extends AbstractExtension
             new TwigTest('odd', null, ['node_class' => '\Twig\Node\Expression\Test\OddTest']),
             new TwigTest('defined', null, ['node_class' => '\Twig\Node\Expression\Test\DefinedTest']),
             new TwigTest('sameas', null, ['node_class' => '\Twig\Node\Expression\Test\SameasTest', 'deprecated' => '1.21', 'alternative' => 'same as']),
-            new TwigTest('same as', null, ['node_class' => '\Twig\Node\Expression\Test\SameasTest']),
+            new TwigTest('same as', null, ['node_class' => '\Twig\Node\Expression\Test\SameasTest', 'one_mandatory_argument' => true]),
             new TwigTest('none', null, ['node_class' => '\Twig\Node\Expression\Test\NullTest']),
             new TwigTest('null', null, ['node_class' => '\Twig\Node\Expression\Test\NullTest']),
             new TwigTest('divisibleby', null, ['node_class' => '\Twig\Node\Expression\Test\DivisiblebyTest', 'deprecated' => '1.21', 'alternative' => 'divisible by']),
-            new TwigTest('divisible by', null, ['node_class' => '\Twig\Node\Expression\Test\DivisiblebyTest']),
+            new TwigTest('divisible by', null, ['node_class' => '\Twig\Node\Expression\Test\DivisiblebyTest', 'one_mandatory_argument' => true]),
             new TwigTest('constant', null, ['node_class' => '\Twig\Node\Expression\Test\ConstantTest']),
             new TwigTest('empty', 'twig_test_empty'),
             new TwigTest('iterable', 'twig_test_iterable'),
@@ -313,6 +313,8 @@ use Twig\Loader\SourceContextLoaderInterface;
 use Twig\Markup;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Node;
+use Twig\Template;
+use Twig\TemplateWrapper;
 
 /**
  * Cycles over a value.
@@ -547,7 +549,7 @@ function twig_round($value, $precision = 0, $method = 'common')
         throw new RuntimeError('The round filter only supports the "common", "ceil", and "floor" methods.');
     }
 
-    return $method($value * pow(10, $precision)) / pow(10, $precision);
+    return $method($value * 10 ** $precision) / 10 ** $precision;
 }
 
 /**
@@ -1231,15 +1233,18 @@ function _twig_escape_js_callback($matches)
         return $shortMap[$char];
     }
 
-    // \uHHHH
-    $char = twig_convert_encoding($char, 'UTF-16BE', 'UTF-8');
-    $char = strtoupper(bin2hex($char));
-
-    if (4 >= \strlen($char)) {
-        return sprintf('\u%04s', $char);
+    $codepoint = mb_ord($char);
+    if (0x10000 > $codepoint) {
+        return sprintf('\u%04X', $codepoint);
     }
 
-    return sprintf('\u%04s\u%04s', substr($char, 0, -4), substr($char, -4));
+    // Split characters outside the BMP into surrogate pairs
+    // https://tools.ietf.org/html/rfc2781.html#section-2.1
+    $u = $codepoint - 0x10000;
+    $high = 0xD800 | ($u >> 10);
+    $low = 0xDC00 | ($u & 0x3FF);
+
+    return sprintf('\u%04X\u%04X', $high, $low);
 }
 
 function _twig_escape_css_callback($matches)
@@ -1560,6 +1565,13 @@ function twig_include(Environment $env, $context, $template, $variables = [], $w
         if (!$alreadySandboxed = $sandbox->isSandboxed()) {
             $sandbox->enableSandbox();
         }
+
+        foreach ((\is_array($template) ? $template : [$template]) as $name) {
+            // if a Template instance is passed, it might have been instantiated outside of a sandbox, check security
+            if ($name instanceof TemplateWrapper || $name instanceof Template) {
+                $name->unwrap()->checkSecurity();
+            }
+        }
     }
 
     $loaded = null;
@@ -1693,10 +1705,14 @@ function twig_array_batch($items, $size, $fill = null, $preserveKeys = true)
     return $result;
 }
 
-function twig_array_filter($array, $arrow)
+function twig_array_filter(Environment $env, $array, $arrow)
 {
     if (!twig_test_iterable($array)) {
         throw new RuntimeError(sprintf('The "filter" filter expects an array or "Traversable", got "%s".', \is_object($array) ? \get_class($array) : \gettype($array)));
+    }
+
+    if (!$arrow instanceof Closure && $env->hasExtension('\Twig\Extension\SandboxExtension') && $env->getExtension('\Twig\Extension\SandboxExtension')->isSandboxed()) {
+        throw new RuntimeError('The callable passed to "filter" filter must be a Closure in sandbox mode.');
     }
 
     if (\is_array($array)) {
@@ -1711,8 +1727,12 @@ function twig_array_filter($array, $arrow)
     return new \CallbackFilterIterator(new \IteratorIterator($array), $arrow);
 }
 
-function twig_array_map($array, $arrow)
+function twig_array_map(Environment $env, $array, $arrow)
 {
+    if (!$arrow instanceof Closure && $env->hasExtension('\Twig\Extension\SandboxExtension') && $env->getExtension('\Twig\Extension\SandboxExtension')->isSandboxed()) {
+        throw new RuntimeError('The callable passed to the "map" filter must be a Closure in sandbox mode.');
+    }
+
     $r = [];
     foreach ($array as $k => $v) {
         $r[$k] = $arrow($v, $k);
@@ -1721,9 +1741,17 @@ function twig_array_map($array, $arrow)
     return $r;
 }
 
-function twig_array_reduce($array, $arrow, $initial = null)
+function twig_array_reduce(Environment $env, $array, $arrow, $initial = null)
 {
+    if (!$arrow instanceof Closure && $env->hasExtension('\Twig\Extension\SandboxExtension') && $env->getExtension('\Twig\Extension\SandboxExtension')->isSandboxed()) {
+        throw new RuntimeError('The callable passed to the "reduce" filter must be a Closure in sandbox mode.');
+    }
+
     if (!\is_array($array)) {
+        if (!$array instanceof \Traversable) {
+            throw new RuntimeError(sprintf('The "reduce" filter only works with arrays or "Traversable", got "%s" as first argument.', \gettype($array)));
+        }
+
         $array = iterator_to_array($array);
     }
 

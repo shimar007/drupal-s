@@ -6,7 +6,7 @@ package: 'Microsoft Office'
 dependencies:
   - o365:o365
 
-# Information added by Drupal.org packaging script on 2020-06-23
-version: '8.x-1.0-beta3'
+# Information added by Drupal.org packaging script on 2020-10-05
+version: '8.x-1.0-beta5'
 project: 'o365'
-datestamp: 1592906720
+datestamp: 1601908504

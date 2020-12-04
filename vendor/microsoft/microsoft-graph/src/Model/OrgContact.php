@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class OrgContact extends DirectoryObject
 {
@@ -244,33 +242,6 @@ class OrgContact extends DirectoryObject
     }
     
     /**
-    * Gets the onPremisesSyncEnabled
-    *
-    * @return bool The onPremisesSyncEnabled
-    */
-    public function getOnPremisesSyncEnabled()
-    {
-        if (array_key_exists("onPremisesSyncEnabled", $this->_propDict)) {
-            return $this->_propDict["onPremisesSyncEnabled"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the onPremisesSyncEnabled
-    *
-    * @param bool $val The onPremisesSyncEnabled
-    *
-    * @return OrgContact
-    */
-    public function setOnPremisesSyncEnabled($val)
-    {
-        $this->_propDict["onPremisesSyncEnabled"] = boolval($val);
-        return $this;
-    }
-    
-    /**
     * Gets the onPremisesLastSyncDateTime
     *
     * @return \DateTime The onPremisesLastSyncDateTime
@@ -326,6 +297,33 @@ class OrgContact extends DirectoryObject
     public function setOnPremisesProvisioningErrors($val)
     {
 		$this->_propDict["onPremisesProvisioningErrors"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the onPremisesSyncEnabled
+    *
+    * @return bool The onPremisesSyncEnabled
+    */
+    public function getOnPremisesSyncEnabled()
+    {
+        if (array_key_exists("onPremisesSyncEnabled", $this->_propDict)) {
+            return $this->_propDict["onPremisesSyncEnabled"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the onPremisesSyncEnabled
+    *
+    * @param bool $val The onPremisesSyncEnabled
+    *
+    * @return OrgContact
+    */
+    public function setOnPremisesSyncEnabled($val)
+    {
+        $this->_propDict["onPremisesSyncEnabled"] = boolval($val);
         return $this;
     }
     
@@ -411,6 +409,34 @@ class OrgContact extends DirectoryObject
         return $this;
     }
     
+
+     /** 
+     * Gets the directReports
+     *
+     * @return array The directReports
+     */
+    public function getDirectReports()
+    {
+        if (array_key_exists("directReports", $this->_propDict)) {
+           return $this->_propDict["directReports"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the directReports
+    *
+    * @param DirectoryObject $val The directReports
+    *
+    * @return OrgContact
+    */
+    public function setDirectReports($val)
+    {
+		$this->_propDict["directReports"] = $val;
+        return $this;
+    }
+    
     /**
     * Gets the manager
     *
@@ -439,34 +465,6 @@ class OrgContact extends DirectoryObject
     public function setManager($val)
     {
         $this->_propDict["manager"] = $val;
-        return $this;
-    }
-    
-
-     /** 
-     * Gets the directReports
-     *
-     * @return array The directReports
-     */
-    public function getDirectReports()
-    {
-        if (array_key_exists("directReports", $this->_propDict)) {
-           return $this->_propDict["directReports"];
-        } else {
-            return null;
-        }
-    }
-    
-    /** 
-    * Sets the directReports
-    *
-    * @param DirectoryObject $val The directReports
-    *
-    * @return OrgContact
-    */
-    public function setDirectReports($val)
-    {
-		$this->_propDict["directReports"] = $val;
         return $this;
     }
     

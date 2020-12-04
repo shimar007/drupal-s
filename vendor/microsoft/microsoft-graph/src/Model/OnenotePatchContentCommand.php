@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class OnenotePatchContentCommand extends Entity
 {
@@ -57,34 +55,6 @@ class OnenotePatchContentCommand extends Entity
     {
         $this->_propDict["action"] = $val;
          return $this;
-    }
-    /**
-    * Gets the target
-    * The element to update. Must be the #&amp;lt;data-id&amp;gt; or the generated &amp;lt;id&amp;gt; of the element, or the body or title keyword.
-    *
-    * @return string The target
-    */
-    public function getTarget()
-    {
-        if (array_key_exists("target", $this->_propDict)) {
-            return $this->_propDict["target"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the target
-    * The element to update. Must be the #&amp;lt;data-id&amp;gt; or the generated &amp;lt;id&amp;gt; of the element, or the body or title keyword.
-    *
-    * @param string $val The value of the target
-    *
-    * @return OnenotePatchContentCommand
-    */
-    public function setTarget($val)
-    {
-        $this->_propDict["target"] = $val;
-        return $this;
     }
     /**
     * Gets the content
@@ -146,5 +116,33 @@ class OnenotePatchContentCommand extends Entity
     {
         $this->_propDict["position"] = $val;
          return $this;
+    }
+    /**
+    * Gets the target
+    * The element to update. Must be the #&amp;lt;data-id&amp;gt; or the generated &amp;lt;id&amp;gt; of the element, or the body or title keyword.
+    *
+    * @return string The target
+    */
+    public function getTarget()
+    {
+        if (array_key_exists("target", $this->_propDict)) {
+            return $this->_propDict["target"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the target
+    * The element to update. Must be the #&amp;lt;data-id&amp;gt; or the generated &amp;lt;id&amp;gt; of the element, or the body or title keyword.
+    *
+    * @param string $val The value of the target
+    *
+    * @return OnenotePatchContentCommand
+    */
+    public function setTarget($val)
+    {
+        $this->_propDict["target"] = $val;
+        return $this;
     }
 }

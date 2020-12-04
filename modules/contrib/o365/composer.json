@@ -12,8 +12,7 @@
     },
     "require": {
         "microsoft/microsoft-graph": "^1.5",
-        "drupal/oauth2_client": "^2.0@beta",
-        "oomphinc/composer-installers-extender": "^1.1"
+        "drupal/oauth2_client": "^2.0@beta"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master"

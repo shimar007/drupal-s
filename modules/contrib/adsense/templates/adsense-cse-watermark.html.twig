@@ -1,7 +1,7 @@
 {#
 /**
  * @file
- * AdSense CSE (with watermark) form HTML code.
+ * AdSense CSE v1 (with watermark) search box HTML code.
  */
 #}
 <script type="text/javascript">
@@ -14,11 +14,8 @@ drupal_adsense_cse_lang = '{{ language }}';
     <input type="hidden" name="cx" value="partner-{{ client }}:{{ slot }}" />
     <input type="hidden" name="cof" value="FORID:{{ forid }}" />
     <input type="hidden" name="ie" value="{{ encoding }}" />
-    <input type="text" name="as_q" size="{{ qsize }}" />
+    <input type="text" name="q" size="{{ qsize }}" />
     <input type="submit" name="sa" value="{{ search }}" />
   </div>
 </form>
-<script type="text/javascript" src="{{ script }}"></script>
-{#
-<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en">
-#}
+<script type="text/javascript" src="https://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang={{ language }}">

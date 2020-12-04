@@ -2,6 +2,7 @@
 
 namespace Drupal\adsense;
 
+use Drupal;
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -78,16 +79,28 @@ abstract class AdsenseAdBase extends PluginBase implements AdsenseAdInterface, C
    * {@inheritdoc}
    */
   public static function createAd(array $args) {
-    $is_search = (!empty($args['format']) && ($args['format'] == 'Search Box'));
+    $version = 1;
+    if (!empty($args['format']) && (substr($args['format'], 0, 10) == 'Search Box')) {
+      $is_search = TRUE;
+      switch ($args['format']) {
+        case 'Search Box':
+          $version = 1;
+          break;
+
+        case 'Search Box v2':
+          $version = 2;
+          break;
+      }
+    }
     $needs_slot = !empty($args['slot']);
 
     // Search for the AdsenseAd plugins.
-    /** @var AdsenseAdManager $manager */
-    $manager = \Drupal::service('plugin.manager.adsensead');
+    /** @var \Drupal\adsense\AdsenseAdManager $manager */
+    $manager = Drupal::service('plugin.manager.adsensead');
     $plugins = $manager->getDefinitions();
 
     foreach ($plugins as $plugin) {
-      if (($plugin['isSearch'] == $is_search) && ($plugin['needsSlot'] == $needs_slot)) {
+      if (($plugin['isSearch'] == $is_search) && ($plugin['needsSlot'] == $needs_slot) && ($plugin['version'] == $version)) {
         // Return an ad created by the compatible plugin.
         return $manager->createInstance($plugin['id'], $args);
       }
@@ -144,7 +157,7 @@ abstract class AdsenseAdBase extends PluginBase implements AdsenseAdInterface, C
         '#content' => $content,
         '#width' => isset($content['#width']) ? $content['#width'] : NULL,
         '#height' => isset($content['#height']) ? $content['#height'] : NULL,
-        '#format' => $content['#format'],
+        '#format' => isset($content['#format']) ? $content['#format'] : NULL,
         '#classes' => $classes,
         '#attached' => ['library' => $libraries],
       ];
@@ -161,8 +174,8 @@ abstract class AdsenseAdBase extends PluginBase implements AdsenseAdInterface, C
    *   TRUE if ads are disabled.
    */
   public static function isDisabled(&$text = '') {
-    $account = \Drupal::currentUser();
-    $config = \Drupal::config('adsense.settings');
+    $account = Drupal::currentUser();
+    $config = Drupal::config('adsense.settings');
 
     if (!$config->get('adsense_basic_id')) {
       $text = 'no publisher id configured.';

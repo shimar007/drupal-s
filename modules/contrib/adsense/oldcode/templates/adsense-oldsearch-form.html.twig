@@ -26,7 +26,7 @@
 {% endif %}
 <input type="hidden" name="domains" value="{{ domain }}"></input>
 <label for="sbi" style="display: none">Enter your search terms</label>
-<input type="text" name="as_q" size="{{ qsize }}" maxlength="255" value="" id="sbi"></input>
+<input type="text" name="q" size="{{ qsize }}" maxlength="255" value="" id="sbi"></input>
 {% if not search_button %}
 <label for="sbb" style="display: none">Submit search form</label>
 <input type="submit" name="sa" value="{{ btn }}" id="sbb"></input>

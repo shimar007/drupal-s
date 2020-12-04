@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,39 +19,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class RequiredResourceAccess extends Entity
 {
-    /**
-    * Gets the resourceAppId
-    * The unique identifier for the resource that the application requires access to.  This should be equal to the appId declared on the target resource application.
-    *
-    * @return string The resourceAppId
-    */
-    public function getResourceAppId()
-    {
-        if (array_key_exists("resourceAppId", $this->_propDict)) {
-            return $this->_propDict["resourceAppId"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the resourceAppId
-    * The unique identifier for the resource that the application requires access to.  This should be equal to the appId declared on the target resource application.
-    *
-    * @param string $val The value of the resourceAppId
-    *
-    * @return RequiredResourceAccess
-    */
-    public function setResourceAppId($val)
-    {
-        $this->_propDict["resourceAppId"] = $val;
-        return $this;
-    }
 
     /**
     * Gets the resourceAccess
@@ -85,5 +55,33 @@ class RequiredResourceAccess extends Entity
     {
         $this->_propDict["resourceAccess"] = $val;
          return $this;
+    }
+    /**
+    * Gets the resourceAppId
+    * The unique identifier for the resource that the application requires access to.  This should be equal to the appId declared on the target resource application.
+    *
+    * @return string The resourceAppId
+    */
+    public function getResourceAppId()
+    {
+        if (array_key_exists("resourceAppId", $this->_propDict)) {
+            return $this->_propDict["resourceAppId"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the resourceAppId
+    * The unique identifier for the resource that the application requires access to.  This should be equal to the appId declared on the target resource application.
+    *
+    * @param string $val The value of the resourceAppId
+    *
+    * @return RequiredResourceAccess
+    */
+    public function setResourceAppId($val)
+    {
+        $this->_propDict["resourceAppId"] = $val;
+        return $this;
     }
 }

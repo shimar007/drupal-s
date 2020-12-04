@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class WebApplication extends Entity
 {
@@ -51,62 +49,6 @@ class WebApplication extends Entity
     public function setHomePageUrl($val)
     {
         $this->_propDict["homePageUrl"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the redirectUris
-    * Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.
-    *
-    * @return string The redirectUris
-    */
-    public function getRedirectUris()
-    {
-        if (array_key_exists("redirectUris", $this->_propDict)) {
-            return $this->_propDict["redirectUris"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the redirectUris
-    * Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.
-    *
-    * @param string $val The value of the redirectUris
-    *
-    * @return WebApplication
-    */
-    public function setRedirectUris($val)
-    {
-        $this->_propDict["redirectUris"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the logoutUrl
-    * Specifies the URL that will be used by Microsoft's authorization service to logout an user using front-channel, back-channel or SAML logout protocols.
-    *
-    * @return string The logoutUrl
-    */
-    public function getLogoutUrl()
-    {
-        if (array_key_exists("logoutUrl", $this->_propDict)) {
-            return $this->_propDict["logoutUrl"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the logoutUrl
-    * Specifies the URL that will be used by Microsoft's authorization service to logout an user using front-channel, back-channel or SAML logout protocols.
-    *
-    * @param string $val The value of the logoutUrl
-    *
-    * @return WebApplication
-    */
-    public function setLogoutUrl($val)
-    {
-        $this->_propDict["logoutUrl"] = $val;
         return $this;
     }
 
@@ -141,5 +83,61 @@ class WebApplication extends Entity
     {
         $this->_propDict["implicitGrantSettings"] = $val;
          return $this;
+    }
+    /**
+    * Gets the logoutUrl
+    * Specifies the URL that will be used by Microsoft's authorization service to logout an user using front-channel, back-channel or SAML logout protocols.
+    *
+    * @return string The logoutUrl
+    */
+    public function getLogoutUrl()
+    {
+        if (array_key_exists("logoutUrl", $this->_propDict)) {
+            return $this->_propDict["logoutUrl"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the logoutUrl
+    * Specifies the URL that will be used by Microsoft's authorization service to logout an user using front-channel, back-channel or SAML logout protocols.
+    *
+    * @param string $val The value of the logoutUrl
+    *
+    * @return WebApplication
+    */
+    public function setLogoutUrl($val)
+    {
+        $this->_propDict["logoutUrl"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the redirectUris
+    * Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.
+    *
+    * @return string The redirectUris
+    */
+    public function getRedirectUris()
+    {
+        if (array_key_exists("redirectUris", $this->_propDict)) {
+            return $this->_propDict["redirectUris"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the redirectUris
+    * Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.
+    *
+    * @param string $val The value of the redirectUris
+    *
+    * @return WebApplication
+    */
+    public function setRedirectUris($val)
+    {
+        $this->_propDict["redirectUris"] = $val;
+        return $this;
     }
 }

@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,100 +19,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class MediaStream extends Entity
 {
-
-    /**
-    * Gets the mediaType
-    * The media type. The possible value are unknown, audio, video, videoBasedScreenSharing, data.
-    *
-    * @return Modality The mediaType
-    */
-    public function getMediaType()
-    {
-        if (array_key_exists("mediaType", $this->_propDict)) {
-            if (is_a($this->_propDict["mediaType"], "Microsoft\Graph\Model\Modality")) {
-                return $this->_propDict["mediaType"];
-            } else {
-                $this->_propDict["mediaType"] = new Modality($this->_propDict["mediaType"]);
-                return $this->_propDict["mediaType"];
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Sets the mediaType
-    * The media type. The possible value are unknown, audio, video, videoBasedScreenSharing, data.
-    *
-    * @param Modality $val The value to assign to the mediaType
-    *
-    * @return MediaStream The MediaStream
-    */
-    public function setMediaType($val)
-    {
-        $this->_propDict["mediaType"] = $val;
-         return $this;
-    }
-    /**
-    * Gets the label
-    * The media stream label.
-    *
-    * @return string The label
-    */
-    public function getLabel()
-    {
-        if (array_key_exists("label", $this->_propDict)) {
-            return $this->_propDict["label"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the label
-    * The media stream label.
-    *
-    * @param string $val The value of the label
-    *
-    * @return MediaStream
-    */
-    public function setLabel($val)
-    {
-        $this->_propDict["label"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the sourceId
-    * The source ID.
-    *
-    * @return string The sourceId
-    */
-    public function getSourceId()
-    {
-        if (array_key_exists("sourceId", $this->_propDict)) {
-            return $this->_propDict["sourceId"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the sourceId
-    * The source ID.
-    *
-    * @param string $val The value of the sourceId
-    *
-    * @return MediaStream
-    */
-    public function setSourceId($val)
-    {
-        $this->_propDict["sourceId"] = $val;
-        return $this;
-    }
 
     /**
     * Gets the direction
@@ -148,6 +57,67 @@ class MediaStream extends Entity
          return $this;
     }
     /**
+    * Gets the label
+    * The media stream label.
+    *
+    * @return string The label
+    */
+    public function getLabel()
+    {
+        if (array_key_exists("label", $this->_propDict)) {
+            return $this->_propDict["label"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the label
+    * The media stream label.
+    *
+    * @param string $val The value of the label
+    *
+    * @return MediaStream
+    */
+    public function setLabel($val)
+    {
+        $this->_propDict["label"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the mediaType
+    * The media type. The possible value are unknown, audio, video, videoBasedScreenSharing, data.
+    *
+    * @return Modality The mediaType
+    */
+    public function getMediaType()
+    {
+        if (array_key_exists("mediaType", $this->_propDict)) {
+            if (is_a($this->_propDict["mediaType"], "Microsoft\Graph\Model\Modality")) {
+                return $this->_propDict["mediaType"];
+            } else {
+                $this->_propDict["mediaType"] = new Modality($this->_propDict["mediaType"]);
+                return $this->_propDict["mediaType"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the mediaType
+    * The media type. The possible value are unknown, audio, video, videoBasedScreenSharing, data.
+    *
+    * @param Modality $val The value to assign to the mediaType
+    *
+    * @return MediaStream The MediaStream
+    */
+    public function setMediaType($val)
+    {
+        $this->_propDict["mediaType"] = $val;
+         return $this;
+    }
+    /**
     * Gets the serverMuted
     * If the media is muted by the server.
     *
@@ -173,6 +143,34 @@ class MediaStream extends Entity
     public function setServerMuted($val)
     {
         $this->_propDict["serverMuted"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the sourceId
+    * The source ID.
+    *
+    * @return string The sourceId
+    */
+    public function getSourceId()
+    {
+        if (array_key_exists("sourceId", $this->_propDict)) {
+            return $this->_propDict["sourceId"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the sourceId
+    * The source ID.
+    *
+    * @param string $val The value of the sourceId
+    *
+    * @return MediaStream
+    */
+    public function setSourceId($val)
+    {
+        $this->_propDict["sourceId"] = $val;
         return $this;
     }
 }

@@ -84,4 +84,55 @@ class GraphService {
     return FALSE;
   }
 
+  /**
+   * Send data to the MS GraphAPI.
+   *
+   * @param string $endpoint
+   *   The graph endpoint we want data from.
+   * @param array $data
+   *   Sent data.
+   * @param string $type
+   *   The type of request we want to do.
+   * @param bool $raw
+   *   This determines if we want a raw body or not.
+   * @param string|bool $version
+   *   The version of the graph api that is used.
+   *
+   * @return mixed
+   *   The data retrieved from the Graph API.
+   *
+   * @throws \Drupal\Core\TempStore\TempStoreException
+   * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+   */
+  public function sendGraphData($endpoint, $data = [], $type = 'POST', $raw = FALSE, $version = FALSE) {
+    try {
+      $accessToken = $this->authService->getAccessToken();
+
+      $graph = new Graph();
+
+      if ($version) {
+        $graph->setApiVersion($version);
+      }
+
+      $graph->setAccessToken($accessToken);
+
+      /** @var \Microsoft\Graph\Http\GraphResponse $request */
+      $request = $graph->createRequest($type, $endpoint)
+        ->attachBody($data)
+        ->execute();
+
+      if ($raw) {
+        return $request->getRawBody();
+      }
+
+      return $request->getBody();
+    }
+    catch (GraphException $e) {
+      $message = t('Something went wrong: @error', ['@error' => $e->getMessage()]);
+      $this->messenger->log($message, 'error');
+    }
+
+    return FALSE;
+  }
+
 }

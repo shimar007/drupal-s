@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,75 +20,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class EventMessage extends Message
 {
-    /**
-    * Gets the meetingMessageType
-    * The type of event message: none, meetingRequest, meetingCancelled, meetingAccepted, meetingTenativelyAccepted, meetingDeclined.
-    *
-    * @return MeetingMessageType The meetingMessageType
-    */
-    public function getMeetingMessageType()
-    {
-        if (array_key_exists("meetingMessageType", $this->_propDict)) {
-            if (is_a($this->_propDict["meetingMessageType"], "Microsoft\Graph\Model\MeetingMessageType")) {
-                return $this->_propDict["meetingMessageType"];
-            } else {
-                $this->_propDict["meetingMessageType"] = new MeetingMessageType($this->_propDict["meetingMessageType"]);
-                return $this->_propDict["meetingMessageType"];
-            }
-        }
-        return null;
-    }
-    
-    /**
-    * Sets the meetingMessageType
-    * The type of event message: none, meetingRequest, meetingCancelled, meetingAccepted, meetingTenativelyAccepted, meetingDeclined.
-    *
-    * @param MeetingMessageType $val The meetingMessageType
-    *
-    * @return EventMessage
-    */
-    public function setMeetingMessageType($val)
-    {
-        $this->_propDict["meetingMessageType"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the startDateTime
-    *
-    * @return DateTimeTimeZone The startDateTime
-    */
-    public function getStartDateTime()
-    {
-        if (array_key_exists("startDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["startDateTime"], "Microsoft\Graph\Model\DateTimeTimeZone")) {
-                return $this->_propDict["startDateTime"];
-            } else {
-                $this->_propDict["startDateTime"] = new DateTimeTimeZone($this->_propDict["startDateTime"]);
-                return $this->_propDict["startDateTime"];
-            }
-        }
-        return null;
-    }
-    
-    /**
-    * Sets the startDateTime
-    *
-    * @param DateTimeTimeZone $val The startDateTime
-    *
-    * @return EventMessage
-    */
-    public function setStartDateTime($val)
-    {
-        $this->_propDict["startDateTime"] = $val;
-        return $this;
-    }
-    
     /**
     * Gets the endDateTime
     *
@@ -118,6 +52,89 @@ class EventMessage extends Message
     public function setEndDateTime($val)
     {
         $this->_propDict["endDateTime"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the isAllDay
+    *
+    * @return bool The isAllDay
+    */
+    public function getIsAllDay()
+    {
+        if (array_key_exists("isAllDay", $this->_propDict)) {
+            return $this->_propDict["isAllDay"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the isAllDay
+    *
+    * @param bool $val The isAllDay
+    *
+    * @return EventMessage
+    */
+    public function setIsAllDay($val)
+    {
+        $this->_propDict["isAllDay"] = boolval($val);
+        return $this;
+    }
+    
+    /**
+    * Gets the isDelegated
+    * True if this meeting request is accessible to a delegate, false otherwise. Default is false.
+    *
+    * @return bool The isDelegated
+    */
+    public function getIsDelegated()
+    {
+        if (array_key_exists("isDelegated", $this->_propDict)) {
+            return $this->_propDict["isDelegated"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the isDelegated
+    * True if this meeting request is accessible to a delegate, false otherwise. Default is false.
+    *
+    * @param bool $val The isDelegated
+    *
+    * @return EventMessage
+    */
+    public function setIsDelegated($val)
+    {
+        $this->_propDict["isDelegated"] = boolval($val);
+        return $this;
+    }
+    
+    /**
+    * Gets the isOutOfDate
+    *
+    * @return bool The isOutOfDate
+    */
+    public function getIsOutOfDate()
+    {
+        if (array_key_exists("isOutOfDate", $this->_propDict)) {
+            return $this->_propDict["isOutOfDate"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the isOutOfDate
+    *
+    * @param bool $val The isOutOfDate
+    *
+    * @return EventMessage
+    */
+    public function setIsOutOfDate($val)
+    {
+        $this->_propDict["isOutOfDate"] = boolval($val);
         return $this;
     }
     
@@ -153,33 +170,35 @@ class EventMessage extends Message
     }
     
     /**
-    * Gets the type
+    * Gets the meetingMessageType
+    * The type of event message: none, meetingRequest, meetingCancelled, meetingAccepted, meetingTenativelyAccepted, meetingDeclined.
     *
-    * @return EventType The type
+    * @return MeetingMessageType The meetingMessageType
     */
-    public function getType()
+    public function getMeetingMessageType()
     {
-        if (array_key_exists("type", $this->_propDict)) {
-            if (is_a($this->_propDict["type"], "Microsoft\Graph\Model\EventType")) {
-                return $this->_propDict["type"];
+        if (array_key_exists("meetingMessageType", $this->_propDict)) {
+            if (is_a($this->_propDict["meetingMessageType"], "Microsoft\Graph\Model\MeetingMessageType")) {
+                return $this->_propDict["meetingMessageType"];
             } else {
-                $this->_propDict["type"] = new EventType($this->_propDict["type"]);
-                return $this->_propDict["type"];
+                $this->_propDict["meetingMessageType"] = new MeetingMessageType($this->_propDict["meetingMessageType"]);
+                return $this->_propDict["meetingMessageType"];
             }
         }
         return null;
     }
     
     /**
-    * Sets the type
+    * Sets the meetingMessageType
+    * The type of event message: none, meetingRequest, meetingCancelled, meetingAccepted, meetingTenativelyAccepted, meetingDeclined.
     *
-    * @param EventType $val The type
+    * @param MeetingMessageType $val The meetingMessageType
     *
     * @return EventMessage
     */
-    public function setType($val)
+    public function setMeetingMessageType($val)
     {
-        $this->_propDict["type"] = $val;
+        $this->_propDict["meetingMessageType"] = $val;
         return $this;
     }
     
@@ -215,83 +234,64 @@ class EventMessage extends Message
     }
     
     /**
-    * Gets the isOutOfDate
+    * Gets the startDateTime
     *
-    * @return bool The isOutOfDate
+    * @return DateTimeTimeZone The startDateTime
     */
-    public function getIsOutOfDate()
+    public function getStartDateTime()
     {
-        if (array_key_exists("isOutOfDate", $this->_propDict)) {
-            return $this->_propDict["isOutOfDate"];
-        } else {
-            return null;
+        if (array_key_exists("startDateTime", $this->_propDict)) {
+            if (is_a($this->_propDict["startDateTime"], "Microsoft\Graph\Model\DateTimeTimeZone")) {
+                return $this->_propDict["startDateTime"];
+            } else {
+                $this->_propDict["startDateTime"] = new DateTimeTimeZone($this->_propDict["startDateTime"]);
+                return $this->_propDict["startDateTime"];
+            }
         }
+        return null;
     }
     
     /**
-    * Sets the isOutOfDate
+    * Sets the startDateTime
     *
-    * @param bool $val The isOutOfDate
+    * @param DateTimeTimeZone $val The startDateTime
     *
     * @return EventMessage
     */
-    public function setIsOutOfDate($val)
+    public function setStartDateTime($val)
     {
-        $this->_propDict["isOutOfDate"] = boolval($val);
+        $this->_propDict["startDateTime"] = $val;
         return $this;
     }
     
     /**
-    * Gets the isAllDay
+    * Gets the type
     *
-    * @return bool The isAllDay
+    * @return EventType The type
     */
-    public function getIsAllDay()
+    public function getType()
     {
-        if (array_key_exists("isAllDay", $this->_propDict)) {
-            return $this->_propDict["isAllDay"];
-        } else {
-            return null;
+        if (array_key_exists("type", $this->_propDict)) {
+            if (is_a($this->_propDict["type"], "Microsoft\Graph\Model\EventType")) {
+                return $this->_propDict["type"];
+            } else {
+                $this->_propDict["type"] = new EventType($this->_propDict["type"]);
+                return $this->_propDict["type"];
+            }
         }
+        return null;
     }
     
     /**
-    * Sets the isAllDay
+    * Sets the type
     *
-    * @param bool $val The isAllDay
+    * @param EventType $val The type
     *
     * @return EventMessage
     */
-    public function setIsAllDay($val)
+    public function setType($val)
     {
-        $this->_propDict["isAllDay"] = boolval($val);
-        return $this;
-    }
-    
-    /**
-    * Gets the isDelegated
-    *
-    * @return bool The isDelegated
-    */
-    public function getIsDelegated()
-    {
-        if (array_key_exists("isDelegated", $this->_propDict)) {
-            return $this->_propDict["isDelegated"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the isDelegated
-    *
-    * @param bool $val The isDelegated
-    *
-    * @return EventMessage
-    */
-    public function setIsDelegated($val)
-    {
-        $this->_propDict["isDelegated"] = boolval($val);
+        $this->_propDict["type"] = $val;
         return $this;
     }
     

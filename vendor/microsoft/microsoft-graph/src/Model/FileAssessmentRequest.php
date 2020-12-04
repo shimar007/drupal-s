@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,40 +20,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class FileAssessmentRequest extends ThreatAssessmentRequest
 {
-    /**
-    * Gets the fileName
-    * The file name.
-    *
-    * @return string The fileName
-    */
-    public function getFileName()
-    {
-        if (array_key_exists("fileName", $this->_propDict)) {
-            return $this->_propDict["fileName"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the fileName
-    * The file name.
-    *
-    * @param string $val The fileName
-    *
-    * @return FileAssessmentRequest
-    */
-    public function setFileName($val)
-    {
-        $this->_propDict["fileName"] = $val;
-        return $this;
-    }
-    
     /**
     * Gets the contentData
     * Base64 encoded file content. The file content cannot fetch back because it isn't stored.
@@ -81,6 +50,35 @@ class FileAssessmentRequest extends ThreatAssessmentRequest
     public function setContentData($val)
     {
         $this->_propDict["contentData"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the fileName
+    * The file name.
+    *
+    * @return string The fileName
+    */
+    public function getFileName()
+    {
+        if (array_key_exists("fileName", $this->_propDict)) {
+            return $this->_propDict["fileName"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the fileName
+    * The file name.
+    *
+    * @param string $val The fileName
+    *
+    * @return FileAssessmentRequest
+    */
+    public function setFileName($val)
+    {
+        $this->_propDict["fileName"] = $val;
         return $this;
     }
     

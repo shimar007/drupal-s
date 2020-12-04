@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,11 +19,38 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class WindowsMinimumOperatingSystem extends Entity
 {
+    /**
+    * Gets the v10_0
+    * Windows version 10.0 or later.
+    *
+    * @return bool The v10_0
+    */
+    public function getV10_0()
+    {
+        if (array_key_exists("v100", $this->_propDict)) {
+            return $this->_propDict["v100"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the v10_0
+    * Windows version 10.0 or later.
+    *
+    * @param bool $val The value of the v10_0
+    *
+    * @return WindowsMinimumOperatingSystem
+    */
+    public function setV10_0($val)
+    {
+        $this->_propDict["v100"] = $val;
+        return $this;
+    }
     /**
     * Gets the v8_0
     * Windows version 8.0 or later.
@@ -79,34 +105,6 @@ class WindowsMinimumOperatingSystem extends Entity
     public function setV8_1($val)
     {
         $this->_propDict["v81"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the v10_0
-    * Windows version 10.0 or later.
-    *
-    * @return bool The v10_0
-    */
-    public function getV10_0()
-    {
-        if (array_key_exists("v100", $this->_propDict)) {
-            return $this->_propDict["v100"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the v10_0
-    * Windows version 10.0 or later.
-    *
-    * @param bool $val The value of the v10_0
-    *
-    * @return WindowsMinimumOperatingSystem
-    */
-    public function setV10_0($val)
-    {
-        $this->_propDict["v100"] = $val;
         return $this;
     }
 }

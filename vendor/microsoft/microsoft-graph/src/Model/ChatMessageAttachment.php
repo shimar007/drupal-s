@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,37 +19,36 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ChatMessageAttachment extends Entity
 {
     /**
-    * Gets the id
-    * Read-only. Unique id of the attachment.
+    * Gets the content
+    * The content of the attachment. If the attachment is a rich card, set the property to the rich card object. This property and contentUrl are mutually exclusive.
     *
-    * @return string The id
+    * @return string The content
     */
-    public function getId()
+    public function getContent()
     {
-        if (array_key_exists("id", $this->_propDict)) {
-            return $this->_propDict["id"];
+        if (array_key_exists("content", $this->_propDict)) {
+            return $this->_propDict["content"];
         } else {
             return null;
         }
     }
 
     /**
-    * Sets the id
-    * Read-only. Unique id of the attachment.
+    * Sets the content
+    * The content of the attachment. If the attachment is a rich card, set the property to the rich card object. This property and contentUrl are mutually exclusive.
     *
-    * @param string $val The value of the id
+    * @param string $val The value of the content
     *
     * @return ChatMessageAttachment
     */
-    public function setId($val)
+    public function setContent($val)
     {
-        $this->_propDict["id"] = $val;
+        $this->_propDict["content"] = $val;
         return $this;
     }
     /**
@@ -110,31 +108,31 @@ class ChatMessageAttachment extends Entity
         return $this;
     }
     /**
-    * Gets the content
-    * The content of the attachment. If the attachment is a rich card, set the property to the rich card object. This property and contentUrl are mutually exclusive.
+    * Gets the id
+    * Read-only. Unique id of the attachment.
     *
-    * @return string The content
+    * @return string The id
     */
-    public function getContent()
+    public function getId()
     {
-        if (array_key_exists("content", $this->_propDict)) {
-            return $this->_propDict["content"];
+        if (array_key_exists("id", $this->_propDict)) {
+            return $this->_propDict["id"];
         } else {
             return null;
         }
     }
 
     /**
-    * Sets the content
-    * The content of the attachment. If the attachment is a rich card, set the property to the rich card object. This property and contentUrl are mutually exclusive.
+    * Sets the id
+    * Read-only. Unique id of the attachment.
     *
-    * @param string $val The value of the content
+    * @param string $val The value of the id
     *
     * @return ChatMessageAttachment
     */
-    public function setContent($val)
+    public function setId($val)
     {
-        $this->_propDict["content"] = $val;
+        $this->_propDict["id"] = $val;
         return $this;
     }
     /**

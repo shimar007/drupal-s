@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,39 +19,13 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ChatMessagePolicyViolationPolicyTip extends Entity
 {
     /**
-    * Gets the generalText
-    *
-    * @return string The generalText
-    */
-    public function getGeneralText()
-    {
-        if (array_key_exists("generalText", $this->_propDict)) {
-            return $this->_propDict["generalText"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the generalText
-    *
-    * @param string $val The value of the generalText
-    *
-    * @return ChatMessagePolicyViolationPolicyTip
-    */
-    public function setGeneralText($val)
-    {
-        $this->_propDict["generalText"] = $val;
-        return $this;
-    }
-    /**
     * Gets the complianceUrl
+    * The URL a user can visit to read about the data loss prevention policies for the organization. (ie, policies about what users shouldn't say in chats)
     *
     * @return string The complianceUrl
     */
@@ -67,6 +40,7 @@ class ChatMessagePolicyViolationPolicyTip extends Entity
 
     /**
     * Sets the complianceUrl
+    * The URL a user can visit to read about the data loss prevention policies for the organization. (ie, policies about what users shouldn't say in chats)
     *
     * @param string $val The value of the complianceUrl
     *
@@ -78,7 +52,36 @@ class ChatMessagePolicyViolationPolicyTip extends Entity
         return $this;
     }
     /**
+    * Gets the generalText
+    * Explanatory text shown to the sender of the message.
+    *
+    * @return string The generalText
+    */
+    public function getGeneralText()
+    {
+        if (array_key_exists("generalText", $this->_propDict)) {
+            return $this->_propDict["generalText"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the generalText
+    * Explanatory text shown to the sender of the message.
+    *
+    * @param string $val The value of the generalText
+    *
+    * @return ChatMessagePolicyViolationPolicyTip
+    */
+    public function setGeneralText($val)
+    {
+        $this->_propDict["generalText"] = $val;
+        return $this;
+    }
+    /**
     * Gets the matchedConditionDescriptions
+    * The list of improper data in the message that was detected by the data loss prevention app. Each DLP app defines its own conditions, examples include 'Credit Card Number' and 'Social Security Number'.
     *
     * @return string The matchedConditionDescriptions
     */
@@ -93,6 +96,7 @@ class ChatMessagePolicyViolationPolicyTip extends Entity
 
     /**
     * Sets the matchedConditionDescriptions
+    * The list of improper data in the message that was detected by the data loss prevention app. Each DLP app defines its own conditions, examples include 'Credit Card Number' and 'Social Security Number'.
     *
     * @param string $val The value of the matchedConditionDescriptions
     *

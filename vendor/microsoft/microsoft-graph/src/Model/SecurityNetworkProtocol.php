@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -23,8 +22,7 @@ use Microsoft\Graph\Core\Enum;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class SecurityNetworkProtocol extends Enum
 {
@@ -33,6 +31,7 @@ class SecurityNetworkProtocol extends Enum
     */
     const IP = "ip";
     const ICMP = "icmp";
+    const UNKNOWN = "unknown";
     const IGMP = "igmp";
     const GGP = "ggp";
     const IPV4 = "ipv4";
@@ -54,5 +53,4 @@ class SecurityNetworkProtocol extends Enum
     const SPX = "spx";
     const SPX_II = "spxII";
     const UNKNOWN_FUTURE_VALUE = "unknownFutureValue";
-    const UNKNOWN = "unknown";
 }

@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,11 +19,38 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ManagedAppPolicyDeploymentSummaryPerApp extends Entity
 {
+    /**
+    * Gets the configurationAppliedUserCount
+    * Number of users the policy is applied.
+    *
+    * @return int The configurationAppliedUserCount
+    */
+    public function getConfigurationAppliedUserCount()
+    {
+        if (array_key_exists("configurationAppliedUserCount", $this->_propDict)) {
+            return $this->_propDict["configurationAppliedUserCount"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the configurationAppliedUserCount
+    * Number of users the policy is applied.
+    *
+    * @param int $val The value of the configurationAppliedUserCount
+    *
+    * @return ManagedAppPolicyDeploymentSummaryPerApp
+    */
+    public function setConfigurationAppliedUserCount($val)
+    {
+        $this->_propDict["configurationAppliedUserCount"] = $val;
+        return $this;
+    }
 
     /**
     * Gets the mobileAppIdentifier
@@ -57,33 +83,5 @@ class ManagedAppPolicyDeploymentSummaryPerApp extends Entity
     {
         $this->_propDict["mobileAppIdentifier"] = $val;
          return $this;
-    }
-    /**
-    * Gets the configurationAppliedUserCount
-    * Number of users the policy is applied.
-    *
-    * @return int The configurationAppliedUserCount
-    */
-    public function getConfigurationAppliedUserCount()
-    {
-        if (array_key_exists("configurationAppliedUserCount", $this->_propDict)) {
-            return $this->_propDict["configurationAppliedUserCount"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the configurationAppliedUserCount
-    * Number of users the policy is applied.
-    *
-    * @param int $val The value of the configurationAppliedUserCount
-    *
-    * @return ManagedAppPolicyDeploymentSummaryPerApp
-    */
-    public function setConfigurationAppliedUserCount($val)
-    {
-        $this->_propDict["configurationAppliedUserCount"] = $val;
-        return $this;
     }
 }

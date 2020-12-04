@@ -4,6 +4,7 @@ namespace Drupal\adsense\Plugin\Block;
 
 use Drupal\adsense\AdBlockInterface;
 use Drupal\adsense\Plugin\AdsenseAd\CustomSearchAd;
+use Drupal\adsense\Plugin\AdsenseAd\CustomSearchV2Ad;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
@@ -26,6 +27,7 @@ class CustomSearchAdBlock extends BlockBase implements AdBlockInterface {
   public function defaultConfiguration() {
     return [
       'ad_slot' => '',
+      'version' => '',
     ];
   }
 
@@ -33,9 +35,16 @@ class CustomSearchAdBlock extends BlockBase implements AdBlockInterface {
    * {@inheritdoc}
    */
   public function createAd() {
-    return new CustomSearchAd([
-      'slot' => $this->configuration['ad_slot'],
-    ]);
+    $configuration = ['slot' => $this->configuration['ad_slot']];
+
+    switch ($this->configuration['version']) {
+      case '1':
+        return new CustomSearchAd($configuration);
+
+      case '2':
+      default:
+        return new CustomSearchV2Ad($configuration);
+    }
   }
 
   /**
@@ -63,6 +72,25 @@ class CustomSearchAdBlock extends BlockBase implements AdBlockInterface {
       '#required' => TRUE,
     ];
 
+    $default = $this->configuration['version'];
+    if (empty($this->configuration['version'])) {
+      // If the block has already been saved, but the version is not set, that
+      // means it's a version 1, otherwise set to the latest version (2).
+      $default = empty($this->configuration['ad_slot']) ? '2' : '1';
+    }
+
+    $form['version'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('CSE Version'),
+      '#default_value' => $default,
+      '#options' => [
+        '1' => $this->t('Version 1'),
+        '2' => $this->t('Version 2'),
+      ],
+      '#description' => $this->t('CSE version. If unsure, choose %default.', ['%default' => 'Version 2']),
+      '#required' => TRUE,
+    ];
+
     return $form;
   }
 
@@ -71,6 +99,7 @@ class CustomSearchAdBlock extends BlockBase implements AdBlockInterface {
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->configuration['ad_slot'] = $form_state->getValue('ad_slot');
+    $this->configuration['version'] = $form_state->getValue('version');
   }
 
   /**

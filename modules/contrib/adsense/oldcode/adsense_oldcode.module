@@ -8,6 +8,7 @@
  * seem to work, their use is not recommended.
  */
 
+// @codingStandardsIgnoreStart DrupalPractice.Constants.GlobalDefine.GlobalConstant
 // Ad channel defaults.
 define('ADSENSE_OLDCODE_MAX_CHANNELS', 10);
 define('ADSENSE_OLDCODE_MAX_GROUPS', 5);
@@ -16,6 +17,7 @@ define('ADSENSE_OLDCODE_AD_CHANNEL_DEFAULT', '');
 // Ad types, link or ad.
 define('ADSENSE_OLDCODE_TYPE_LINK', 1);
 define('ADSENSE_OLDCODE_TYPE_AD', 2);
+// @codingStandardsIgnoreEnd
 
 /**
  * Implements hook_theme().
@@ -73,4 +75,16 @@ function adsense_oldcode_theme() {
       ],
     ],
   ];
+}
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function adsense_oldcode_preprocess_block(&$variables) {
+  // Remove adsense from the block id and classes to bypass adblock rules.
+  if (($variables['configuration']['provider'] == 'adsense_oldcode') &&
+      \Drupal::config('adsense.settings')->get('adsense_unblock_ads')) {
+    $variables['plugin_id'] = str_replace('adsense', '', $variables['plugin_id']);
+    $variables['configuration']['provider'] = '';
+  }
 }

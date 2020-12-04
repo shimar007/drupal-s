@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,40 +20,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class MailAssessmentRequest extends ThreatAssessmentRequest
 {
-    /**
-    * Gets the recipientEmail
-    * The mail recipient whose policies are used to assess the mail.
-    *
-    * @return string The recipientEmail
-    */
-    public function getRecipientEmail()
-    {
-        if (array_key_exists("recipientEmail", $this->_propDict)) {
-            return $this->_propDict["recipientEmail"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the recipientEmail
-    * The mail recipient whose policies are used to assess the mail.
-    *
-    * @param string $val The recipientEmail
-    *
-    * @return MailAssessmentRequest
-    */
-    public function setRecipientEmail($val)
-    {
-        $this->_propDict["recipientEmail"] = $val;
-        return $this;
-    }
-    
     /**
     * Gets the destinationRoutingReason
     * The reason for mail routed to its destination. Possible values are: none, mailFlowRule, safeSender, blockedSender, advancedSpamFiltering, domainAllowList, domainBlockList, notInAddressBook, firstTimeSender, autoPurgeToInbox, autoPurgeToJunk, autoPurgeToDeleted, outbound, notJunk, junk.
@@ -114,6 +83,35 @@ class MailAssessmentRequest extends ThreatAssessmentRequest
     public function setMessageUri($val)
     {
         $this->_propDict["messageUri"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the recipientEmail
+    * The mail recipient whose policies are used to assess the mail.
+    *
+    * @return string The recipientEmail
+    */
+    public function getRecipientEmail()
+    {
+        if (array_key_exists("recipientEmail", $this->_propDict)) {
+            return $this->_propDict["recipientEmail"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the recipientEmail
+    * The mail recipient whose policies are used to assess the mail.
+    *
+    * @param string $val The recipientEmail
+    *
+    * @return MailAssessmentRequest
+    */
+    public function setRecipientEmail($val)
+    {
+        $this->_propDict["recipientEmail"] = $val;
         return $this;
     }
     

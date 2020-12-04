@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class PolicyRoot extends Entity
 {
@@ -112,6 +110,34 @@ class PolicyRoot extends Entity
     
 
      /** 
+     * Gets the permissionGrantPolicies
+     *
+     * @return array The permissionGrantPolicies
+     */
+    public function getPermissionGrantPolicies()
+    {
+        if (array_key_exists("permissionGrantPolicies", $this->_propDict)) {
+           return $this->_propDict["permissionGrantPolicies"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the permissionGrantPolicies
+    *
+    * @param PermissionGrantPolicy $val The permissionGrantPolicies
+    *
+    * @return PolicyRoot
+    */
+    public function setPermissionGrantPolicies($val)
+    {
+		$this->_propDict["permissionGrantPolicies"] = $val;
+        return $this;
+    }
+    
+
+     /** 
      * Gets the tokenIssuancePolicies
      *
      * @return array The tokenIssuancePolicies
@@ -163,6 +189,65 @@ class PolicyRoot extends Entity
     public function setTokenLifetimePolicies($val)
     {
 		$this->_propDict["tokenLifetimePolicies"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the conditionalAccessPolicies
+     *
+     * @return array The conditionalAccessPolicies
+     */
+    public function getConditionalAccessPolicies()
+    {
+        if (array_key_exists("conditionalAccessPolicies", $this->_propDict)) {
+           return $this->_propDict["conditionalAccessPolicies"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the conditionalAccessPolicies
+    *
+    * @param ConditionalAccessPolicy $val The conditionalAccessPolicies
+    *
+    * @return PolicyRoot
+    */
+    public function setConditionalAccessPolicies($val)
+    {
+		$this->_propDict["conditionalAccessPolicies"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the identitySecurityDefaultsEnforcementPolicy
+    *
+    * @return IdentitySecurityDefaultsEnforcementPolicy The identitySecurityDefaultsEnforcementPolicy
+    */
+    public function getIdentitySecurityDefaultsEnforcementPolicy()
+    {
+        if (array_key_exists("identitySecurityDefaultsEnforcementPolicy", $this->_propDict)) {
+            if (is_a($this->_propDict["identitySecurityDefaultsEnforcementPolicy"], "Microsoft\Graph\Model\IdentitySecurityDefaultsEnforcementPolicy")) {
+                return $this->_propDict["identitySecurityDefaultsEnforcementPolicy"];
+            } else {
+                $this->_propDict["identitySecurityDefaultsEnforcementPolicy"] = new IdentitySecurityDefaultsEnforcementPolicy($this->_propDict["identitySecurityDefaultsEnforcementPolicy"]);
+                return $this->_propDict["identitySecurityDefaultsEnforcementPolicy"];
+            }
+        }
+        return null;
+    }
+    
+    /**
+    * Sets the identitySecurityDefaultsEnforcementPolicy
+    *
+    * @param IdentitySecurityDefaultsEnforcementPolicy $val The identitySecurityDefaultsEnforcementPolicy
+    *
+    * @return PolicyRoot
+    */
+    public function setIdentitySecurityDefaultsEnforcementPolicy($val)
+    {
+        $this->_propDict["identitySecurityDefaultsEnforcementPolicy"] = $val;
         return $this;
     }
     

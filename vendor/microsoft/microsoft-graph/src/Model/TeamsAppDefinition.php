@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,40 +20,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class TeamsAppDefinition extends Entity
 {
-    /**
-    * Gets the teamsAppId
-    * The id from the Teams App manifest.
-    *
-    * @return string The teamsAppId
-    */
-    public function getTeamsAppId()
-    {
-        if (array_key_exists("teamsAppId", $this->_propDict)) {
-            return $this->_propDict["teamsAppId"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the teamsAppId
-    * The id from the Teams App manifest.
-    *
-    * @param string $val The teamsAppId
-    *
-    * @return TeamsAppDefinition
-    */
-    public function setTeamsAppId($val)
-    {
-        $this->_propDict["teamsAppId"] = $val;
-        return $this;
-    }
-    
     /**
     * Gets the displayName
     * The name of the app provided by the app developer.
@@ -81,6 +50,35 @@ class TeamsAppDefinition extends Entity
     public function setDisplayName($val)
     {
         $this->_propDict["displayName"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the teamsAppId
+    * The ID from the Teams app manifest.
+    *
+    * @return string The teamsAppId
+    */
+    public function getTeamsAppId()
+    {
+        if (array_key_exists("teamsAppId", $this->_propDict)) {
+            return $this->_propDict["teamsAppId"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the teamsAppId
+    * The ID from the Teams app manifest.
+    *
+    * @param string $val The teamsAppId
+    *
+    * @return TeamsAppDefinition
+    */
+    public function setTeamsAppId($val)
+    {
+        $this->_propDict["teamsAppId"] = $val;
         return $this;
     }
     

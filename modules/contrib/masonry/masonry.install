@@ -57,3 +57,9 @@ function masonry_requirements($phase) {
   return $requirements;
 }
 
+/**
+ * Cache rebuild for new masonry service new injected dependencies.
+ */
+function masonry_update_8001(&$sandbox) {
+  // Empty update to cause a cache rebuild.
+}

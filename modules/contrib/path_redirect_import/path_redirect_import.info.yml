@@ -8,7 +8,7 @@ configure: redirect.import
 dependencies:
   - redirect:redirect
 
-# Information added by Drupal.org packaging script on 2020-06-06
-version: '8.x-1.0-beta3'
+# Information added by Drupal.org packaging script on 2020-07-19
+version: '8.x-1.0-beta4'
 project: 'path_redirect_import'
-datestamp: 1591413164
+datestamp: 1595182169

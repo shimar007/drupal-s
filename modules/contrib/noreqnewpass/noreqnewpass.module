@@ -1,7 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains noreqnewpass.module.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
 function noreqnewpass_form_alter(&$form, $form_state, $form_id) {
-  if (($form_id == 'user_login_block' || $form_id == 'user_login') && variable_get('noreqnewpass_disabled', true)) {
+  if (($form_id == 'user_login_block' || $form_id == 'user_login') && variable_get('noreqnewpass_disabled', TRUE)) {
     $key = array_search('user_login_final_validate', $form['#validate']);
     $form['#validate'][$key] = 'noreqnewpass_user_login_final_validate';
   }
@@ -31,7 +39,7 @@ function noreqnewpass_user_login_final_validate($form_id, &$form_state) {
     }
     else {
       form_set_error('name', t('Sorry, unrecognized username or password.'));
-      watchdog('user', 'Login attempt failed for %user.', array('%user' => $form_state['values']['name']));
+      watchdog('user', 'Login attempt failed for %user.', ['%user' => $form_state['values']['name']]);
     }
   }
   elseif (isset($form_state['flood_control_user_identifier'])) {

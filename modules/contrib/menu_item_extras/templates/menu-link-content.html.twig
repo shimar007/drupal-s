@@ -14,10 +14,9 @@
 #}
 {% import _self as menu %}
 
-{{ menu.menu_link_content(attributes, menu_link_content, show_item_link, content, elements) }}
+{{ menu.build_menu_link_content(attributes, menu_link_content, show_item_link, content, elements) }}
 
-{% macro menu_link_content(attributes, menu_link_content, show_item_link, content, elements) %}
-  {% import _self as menu_link_content %}
+{% macro build_menu_link_content(attributes, menu_link_content, show_item_link, content, elements) %}
   {% set menu_dropdown_classes = [
     'menu-dropdown',
     elements['#menu_level'] is defined ? 'menu-dropdown-' ~ elements['#menu_level'],

@@ -65,7 +65,7 @@ class RedirectImportForm extends FormBase {
       '#title' => $this->t('CSV File'),
       '#description' => [
         '#theme' => 'file_upload_help',
-        '#description' => $this->t('The CSV file must include the following columns in this order: "From URL","To URL","Redirect Status","Redirect Language". Defaults for status and language can be set in the advanced options, below.'),
+        '#description' => $this->t('The CSV file must include the following columns in this order: "From URL","To URL","Redirect Status","Redirect Language". Defaults for status and language can be set in the advanced options, below. The Language column will be ignored if the language module is not in use.'),
       ],
       '#upload_validators' => $validators,
     ];
@@ -101,6 +101,11 @@ class RedirectImportForm extends FormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Suppress displaying line-specific messages on screen'),
       '#description' => $this->t('Consider checking this if you are importing a very large amount of redirects. Reporting will still be logged, and general import messages will still print.'),
+    ];
+    $form['advanced']['allow_nonexistent'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Allow nonexistent paths to be imported'),
+      '#description' => $this->t('Consider checking this if you want to have nonexistent paths imported.'),
     ];
     $form['actions']['submit'] = [
       '#type' => 'submit',
@@ -140,6 +145,7 @@ class RedirectImportForm extends FormBase {
       'delimiter' => $form_state->getValue('delimiter'),
       'language' => $form_state->getValue('language') ?: Language::LANGCODE_NOT_SPECIFIED,
       'suppress_messages' => $form_state->getValue('suppress_messages'),
+      'allow_nonexistent' => $form_state->getValue('allow_nonexistent'),
     ];
 
     ImporterService::import($this->file, $options);

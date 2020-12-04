@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Definition of Drupal\noreqnewpass\Services\NoreqnewpassFlood.
- */
 
 namespace Drupal\noreqnewpass\Services;
 
@@ -40,9 +36,9 @@ class NoreqnewpassFlood {
     );
   }
 
- /**
-  * Implements Drupal\noreqnewpass\NoreqnewpassFlood::register().
-  */
+  /**
+   * Implements Drupal\noreqnewpass\NoreqnewpassFlood::register().
+   */
   public function noreqnewpassregister($name, $window = 3600, $identifier = NULL) {
     $this->flood->register($name, $window = 3600, $identifier);
   }
@@ -53,4 +49,5 @@ class NoreqnewpassFlood {
   public function noreqnewpassclear($name, $identifier = NULL) {
     $this->flood->clear($name, $identifier);
   }
+
 }

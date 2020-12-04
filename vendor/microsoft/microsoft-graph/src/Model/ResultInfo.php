@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ResultInfo extends Entity
 {
@@ -54,34 +52,6 @@ class ResultInfo extends Entity
         return $this;
     }
     /**
-    * Gets the subcode
-    * The result sub-code.
-    *
-    * @return int The subcode
-    */
-    public function getSubcode()
-    {
-        if (array_key_exists("subcode", $this->_propDict)) {
-            return $this->_propDict["subcode"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the subcode
-    * The result sub-code.
-    *
-    * @param int $val The value of the subcode
-    *
-    * @return ResultInfo
-    */
-    public function setSubcode($val)
-    {
-        $this->_propDict["subcode"] = $val;
-        return $this;
-    }
-    /**
     * Gets the message
     * The message.
     *
@@ -107,6 +77,34 @@ class ResultInfo extends Entity
     public function setMessage($val)
     {
         $this->_propDict["message"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the subcode
+    * The result sub-code.
+    *
+    * @return int The subcode
+    */
+    public function getSubcode()
+    {
+        if (array_key_exists("subcode", $this->_propDict)) {
+            return $this->_propDict["subcode"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the subcode
+    * The result sub-code.
+    *
+    * @param int $val The value of the subcode
+    *
+    * @return ResultInfo
+    */
+    public function setSubcode($val)
+    {
+        $this->_propDict["subcode"] = $val;
         return $this;
     }
 }

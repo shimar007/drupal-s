@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,39 +19,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ImplicitGrantSettings extends Entity
 {
-    /**
-    * Gets the enableIdTokenIssuance
-    * Specifies whether this web application can request an ID token using the OAuth 2.0 implicit flow.
-    *
-    * @return bool The enableIdTokenIssuance
-    */
-    public function getEnableIdTokenIssuance()
-    {
-        if (array_key_exists("enableIdTokenIssuance", $this->_propDict)) {
-            return $this->_propDict["enableIdTokenIssuance"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the enableIdTokenIssuance
-    * Specifies whether this web application can request an ID token using the OAuth 2.0 implicit flow.
-    *
-    * @param bool $val The value of the enableIdTokenIssuance
-    *
-    * @return ImplicitGrantSettings
-    */
-    public function setEnableIdTokenIssuance($val)
-    {
-        $this->_propDict["enableIdTokenIssuance"] = $val;
-        return $this;
-    }
     /**
     * Gets the enableAccessTokenIssuance
     * Specifies whether this web application can request an access token using the OAuth 2.0 implicit flow.
@@ -79,6 +49,34 @@ class ImplicitGrantSettings extends Entity
     public function setEnableAccessTokenIssuance($val)
     {
         $this->_propDict["enableAccessTokenIssuance"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the enableIdTokenIssuance
+    * Specifies whether this web application can request an ID token using the OAuth 2.0 implicit flow.
+    *
+    * @return bool The enableIdTokenIssuance
+    */
+    public function getEnableIdTokenIssuance()
+    {
+        if (array_key_exists("enableIdTokenIssuance", $this->_propDict)) {
+            return $this->_propDict["enableIdTokenIssuance"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the enableIdTokenIssuance
+    * Specifies whether this web application can request an ID token using the OAuth 2.0 implicit flow.
+    *
+    * @param bool $val The value of the enableIdTokenIssuance
+    *
+    * @return ImplicitGrantSettings
+    */
+    public function setEnableIdTokenIssuance($val)
+    {
+        $this->_propDict["enableIdTokenIssuance"] = $val;
         return $this;
     }
 }

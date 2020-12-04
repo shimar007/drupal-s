@@ -23,6 +23,7 @@ class PathRedirectImport extends DrushCommands {
    * @option $status_code
    * @option $delimiter
    * @option $language
+   * @option $allow_nonexistent
    * @aliases primport
    */
   public function pathRedirectImportCsv(
@@ -33,6 +34,7 @@ class PathRedirectImport extends DrushCommands {
       'status_code' => 301,
       'delimiter' => ',',
       'language' => '',
+      'allow_nonexistent' => FALSE,
     ]) {
     if (!file_exists($file)) {
       $this->logger()->error("File $file doesn't exist \n");

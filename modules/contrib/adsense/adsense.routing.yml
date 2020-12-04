@@ -26,3 +26,10 @@ adsense_cse.results:
     _controller: '\Drupal\adsense\Controller\CseResultsController::display'
   requirements:
     _access: 'TRUE'
+adsense_csev2.results:
+  path: '/csev2/results/{slot}'
+  defaults:
+    _title: 'Search Results'
+    _controller: '\Drupal\adsense\Controller\CseV2ResultsController::display'
+  requirements:
+    _access: 'TRUE'

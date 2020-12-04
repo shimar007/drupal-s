@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,65 +20,10 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class IdentityProvider extends Entity
 {
-    /**
-    * Gets the type
-    *
-    * @return string The type
-    */
-    public function getType()
-    {
-        if (array_key_exists("type", $this->_propDict)) {
-            return $this->_propDict["type"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the type
-    *
-    * @param string $val The type
-    *
-    * @return IdentityProvider
-    */
-    public function setType($val)
-    {
-        $this->_propDict["type"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the name
-    *
-    * @return string The name
-    */
-    public function getName()
-    {
-        if (array_key_exists("name", $this->_propDict)) {
-            return $this->_propDict["name"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the name
-    *
-    * @param string $val The name
-    *
-    * @return IdentityProvider
-    */
-    public function setName($val)
-    {
-        $this->_propDict["name"] = $val;
-        return $this;
-    }
-    
     /**
     * Gets the clientId
     *
@@ -131,6 +75,60 @@ class IdentityProvider extends Entity
     public function setClientSecret($val)
     {
         $this->_propDict["clientSecret"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the name
+    *
+    * @return string The name
+    */
+    public function getName()
+    {
+        if (array_key_exists("name", $this->_propDict)) {
+            return $this->_propDict["name"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the name
+    *
+    * @param string $val The name
+    *
+    * @return IdentityProvider
+    */
+    public function setName($val)
+    {
+        $this->_propDict["name"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the type
+    *
+    * @return string The type
+    */
+    public function getType()
+    {
+        if (array_key_exists("type", $this->_propDict)) {
+            return $this->_propDict["type"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the type
+    *
+    * @param string $val The type
+    *
+    * @return IdentityProvider
+    */
+    public function setType($val)
+    {
+        $this->_propDict["type"] = $val;
         return $this;
     }
     

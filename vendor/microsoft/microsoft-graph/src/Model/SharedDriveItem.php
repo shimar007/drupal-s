@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class SharedDriveItem extends BaseItem
 {
@@ -131,7 +129,7 @@ class SharedDriveItem extends BaseItem
     public function getList()
     {
         if (array_key_exists("list", $this->_propDict)) {
-            if (is_a($this->_propDict["list"], "Microsoft\Graph\Model\List")) {
+            if (is_a($this->_propDict["list"], "Microsoft\Graph\Model\GraphList")) {
                 return $this->_propDict["list"];
             } else {
                 $this->_propDict["list"] = new GraphList($this->_propDict["list"]);

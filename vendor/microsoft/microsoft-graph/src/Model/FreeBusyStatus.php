@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -23,8 +22,7 @@ use Microsoft\Graph\Core\Enum;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class FreeBusyStatus extends Enum
 {
@@ -33,8 +31,8 @@ class FreeBusyStatus extends Enum
     */
     const FREE = "free";
     const TENTATIVE = "tentative";
+    const UNKNOWN = "unknown";
     const BUSY = "busy";
     const OOF = "oof";
     const WORKING_ELSEWHERE = "workingElsewhere";
-    const UNKNOWN = "unknown";
 }

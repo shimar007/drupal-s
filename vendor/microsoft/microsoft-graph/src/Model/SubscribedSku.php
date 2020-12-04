@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,11 +20,39 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class SubscribedSku extends Entity
 {
+    /**
+    * Gets the appliesTo
+    * For example, 'User' or 'Company'.
+    *
+    * @return string The appliesTo
+    */
+    public function getAppliesTo()
+    {
+        if (array_key_exists("appliesTo", $this->_propDict)) {
+            return $this->_propDict["appliesTo"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the appliesTo
+    * For example, 'User' or 'Company'.
+    *
+    * @param string $val The appliesTo
+    *
+    * @return SubscribedSku
+    */
+    public function setAppliesTo($val)
+    {
+        $this->_propDict["appliesTo"] = $val;
+        return $this;
+    }
+    
     /**
     * Gets the capabilityStatus
     * Possible values are: Enabled, Warning, Suspended, Deleted, LockedOut.
@@ -202,35 +229,6 @@ class SubscribedSku extends Entity
     public function setSkuPartNumber($val)
     {
         $this->_propDict["skuPartNumber"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the appliesTo
-    * For example, 'User' or 'Company'.
-    *
-    * @return string The appliesTo
-    */
-    public function getAppliesTo()
-    {
-        if (array_key_exists("appliesTo", $this->_propDict)) {
-            return $this->_propDict["appliesTo"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the appliesTo
-    * For example, 'User' or 'Company'.
-    *
-    * @param string $val The appliesTo
-    *
-    * @return SubscribedSku
-    */
-    public function setAppliesTo($val)
-    {
-        $this->_propDict["appliesTo"] = $val;
         return $this;
     }
     

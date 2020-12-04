@@ -44,7 +44,9 @@ class MenuController extends ControllerBase {
    * @param \Drupal\system\MenuInterface $menu
    *   An entity representing a custom menu.
    *
-   * @todo: Deprecate this method after https://www.drupal.org/project/drupal/issues/2923429
+   * @deprecated in 2.11 and is removed from 3.0.0. https://www.drupal.org/project/drupal/issues/2923429.
+   *
+   * @see https://www.drupal.org/project/drupal/issues/2923429
    *
    * @return array
    *   Returns the menu link creation form.

@@ -62,4 +62,16 @@ class MenuItemExtrasMenuLinkContent extends MenuLinkContent implements MenuItemE
     return $tags;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function validate() {
+    $plugin_id = $this->getTypedData()->getDataDefinition()->getDataType();
+    if (!\Drupal::typedDataManager()->hasDefinition($plugin_id)) {
+      \Drupal::typedDataManager()->clearCachedDefinitions();
+      \Drupal::typedDataManager()->getDefinitions();
+    }
+    return parent::validate();
+  }
+
 }

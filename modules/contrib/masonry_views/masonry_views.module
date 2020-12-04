@@ -60,7 +60,7 @@ function masonry_views_preprocess_views_view(&$variables) {
   $view = $variables['view'];
   $style = $view->style_plugin;
 
-  if ($style->getPluginId() === 'masonry') {
+  if ($style->getPluginId() === 'masonry' && !empty($variables['rows'])) {
     $variables['rows']['#theme_wrappers']['container']['#attributes']['data-drupal-masonry-layout'] = TRUE;
     $variables['rows']['#theme_wrappers']['container']['#attributes']['class'][] = 'masonry-layout-' . Html::cleanCssIdentifier($view->storage->id());
   }

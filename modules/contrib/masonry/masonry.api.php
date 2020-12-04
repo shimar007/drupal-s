@@ -53,8 +53,6 @@ function hook_masonry_options_form_alter(&$form, $default_values) {
  *
  * @param $masonry
  *   An array of Masonry options to send to the script file.
- * @param $script_file
- *   A path to the javascript file that triggers Masonry.
  * @param $context
  *   An associative array of additional variables.
  *   Contains:

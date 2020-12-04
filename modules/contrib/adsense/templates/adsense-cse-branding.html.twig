@@ -1,7 +1,7 @@
 {#
 /**
  * @file
- * AdSense CSE (with branding) form HTML code.
+ * AdSense CSE v1 (with branding) search box HTML code.
  */
 #}
 <style type="text/css">
@@ -14,7 +14,7 @@
         <input type="hidden" name="cx" value="partner-{{ client }}:{{ slot }}" />
         <input type="hidden" name="cof" value="FORID:{{ forid }}" />
         <input type="hidden" name="ie" value="{{ encoding }}" />
-        <input type="text" name="as_q" size="{{ qsize }}" />
+        <input type="text" name="q" size="{{ qsize }}" />
         <input type="submit" name="sa" value="{{ search }}" />
       </div>
     </form>

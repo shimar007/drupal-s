@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,37 +20,36 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class Subscription extends Entity
 {
     /**
-    * Gets the resource
-    * Required. Specifies the resource that will be monitored for changes. Do not include the base URL (https://graph.microsoft.com/v1.0/). See the possible resource path values for each supported resource.
+    * Gets the applicationId
+    * Identifier of the application used to create the subscription. Read-only.
     *
-    * @return string The resource
+    * @return string The applicationId
     */
-    public function getResource()
+    public function getApplicationId()
     {
-        if (array_key_exists("resource", $this->_propDict)) {
-            return $this->_propDict["resource"];
+        if (array_key_exists("applicationId", $this->_propDict)) {
+            return $this->_propDict["applicationId"];
         } else {
             return null;
         }
     }
     
     /**
-    * Sets the resource
-    * Required. Specifies the resource that will be monitored for changes. Do not include the base URL (https://graph.microsoft.com/v1.0/). See the possible resource path values for each supported resource.
+    * Sets the applicationId
+    * Identifier of the application used to create the subscription. Read-only.
     *
-    * @param string $val The resource
+    * @param string $val The applicationId
     *
     * @return Subscription
     */
-    public function setResource($val)
+    public function setApplicationId($val)
     {
-        $this->_propDict["resource"] = $val;
+        $this->_propDict["applicationId"] = $val;
         return $this;
     }
     
@@ -114,31 +112,89 @@ class Subscription extends Entity
     }
     
     /**
-    * Gets the notificationUrl
-    * Required. The URL of the endpoint that will receive the change notifications. This URL must make use of the HTTPS protocol.
+    * Gets the creatorId
+    * Identifier of the user or service principal that created the subscription. If the app used delegated permissions to create the subscription, this field contains the id of the signed-in user the app called on behalf of. If the app used application permissions, this field contains the id of the service principal corresponding to the app. Read-only.
     *
-    * @return string The notificationUrl
+    * @return string The creatorId
     */
-    public function getNotificationUrl()
+    public function getCreatorId()
     {
-        if (array_key_exists("notificationUrl", $this->_propDict)) {
-            return $this->_propDict["notificationUrl"];
+        if (array_key_exists("creatorId", $this->_propDict)) {
+            return $this->_propDict["creatorId"];
         } else {
             return null;
         }
     }
     
     /**
-    * Sets the notificationUrl
-    * Required. The URL of the endpoint that will receive the change notifications. This URL must make use of the HTTPS protocol.
+    * Sets the creatorId
+    * Identifier of the user or service principal that created the subscription. If the app used delegated permissions to create the subscription, this field contains the id of the signed-in user the app called on behalf of. If the app used application permissions, this field contains the id of the service principal corresponding to the app. Read-only.
     *
-    * @param string $val The notificationUrl
+    * @param string $val The creatorId
     *
     * @return Subscription
     */
-    public function setNotificationUrl($val)
+    public function setCreatorId($val)
     {
-        $this->_propDict["notificationUrl"] = $val;
+        $this->_propDict["creatorId"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the encryptionCertificate
+    * A base64-encoded representation of a certificate with a public key used to encrypt resource data in change notifications. Optional. Required when includeResourceData is true.
+    *
+    * @return string The encryptionCertificate
+    */
+    public function getEncryptionCertificate()
+    {
+        if (array_key_exists("encryptionCertificate", $this->_propDict)) {
+            return $this->_propDict["encryptionCertificate"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the encryptionCertificate
+    * A base64-encoded representation of a certificate with a public key used to encrypt resource data in change notifications. Optional. Required when includeResourceData is true.
+    *
+    * @param string $val The encryptionCertificate
+    *
+    * @return Subscription
+    */
+    public function setEncryptionCertificate($val)
+    {
+        $this->_propDict["encryptionCertificate"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the encryptionCertificateId
+    * A custom app-provided identifier to help identify the certificate needed to decrypt resource data. Optional.
+    *
+    * @return string The encryptionCertificateId
+    */
+    public function getEncryptionCertificateId()
+    {
+        if (array_key_exists("encryptionCertificateId", $this->_propDict)) {
+            return $this->_propDict["encryptionCertificateId"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the encryptionCertificateId
+    * A custom app-provided identifier to help identify the certificate needed to decrypt resource data. Optional.
+    *
+    * @param string $val The encryptionCertificateId
+    *
+    * @return Subscription
+    */
+    public function setEncryptionCertificateId($val)
+    {
+        $this->_propDict["encryptionCertificateId"] = $val;
         return $this;
     }
     
@@ -176,60 +232,31 @@ class Subscription extends Entity
     }
     
     /**
-    * Gets the applicationId
-    * Identifier of the application used to create the subscription. Read-only.
+    * Gets the includeResourceData
+    * When set to true, change notifications include resource data (such as content of a chat message). Optional.
     *
-    * @return string The applicationId
+    * @return bool The includeResourceData
     */
-    public function getApplicationId()
+    public function getIncludeResourceData()
     {
-        if (array_key_exists("applicationId", $this->_propDict)) {
-            return $this->_propDict["applicationId"];
+        if (array_key_exists("includeResourceData", $this->_propDict)) {
+            return $this->_propDict["includeResourceData"];
         } else {
             return null;
         }
     }
     
     /**
-    * Sets the applicationId
-    * Identifier of the application used to create the subscription. Read-only.
+    * Sets the includeResourceData
+    * When set to true, change notifications include resource data (such as content of a chat message). Optional.
     *
-    * @param string $val The applicationId
-    *
-    * @return Subscription
-    */
-    public function setApplicationId($val)
-    {
-        $this->_propDict["applicationId"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the creatorId
-    * Identifier of the user or service principal that created the subscription. If the app used delegated permissions to create the subscription, this field contains the id of the signed-in user the app called on behalf of. If the app used application permissions, this field contains the id of the service principal corresponding to the app. Read-only.
-    *
-    * @return string The creatorId
-    */
-    public function getCreatorId()
-    {
-        if (array_key_exists("creatorId", $this->_propDict)) {
-            return $this->_propDict["creatorId"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the creatorId
-    * Identifier of the user or service principal that created the subscription. If the app used delegated permissions to create the subscription, this field contains the id of the signed-in user the app called on behalf of. If the app used application permissions, this field contains the id of the service principal corresponding to the app. Read-only.
-    *
-    * @param string $val The creatorId
+    * @param bool $val The includeResourceData
     *
     * @return Subscription
     */
-    public function setCreatorId($val)
+    public function setIncludeResourceData($val)
     {
-        $this->_propDict["creatorId"] = $val;
+        $this->_propDict["includeResourceData"] = boolval($val);
         return $this;
     }
     
@@ -259,6 +286,93 @@ class Subscription extends Entity
     public function setLatestSupportedTlsVersion($val)
     {
         $this->_propDict["latestSupportedTlsVersion"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the lifecycleNotificationUrl
+    * The URL of the endpoint that receives lifecycle notifications, including subscriptionRemoved and missed notifications. This URL must make use of the HTTPS protocol. Optional. Read more about how Outlook resources use lifecycle notifications.
+    *
+    * @return string The lifecycleNotificationUrl
+    */
+    public function getLifecycleNotificationUrl()
+    {
+        if (array_key_exists("lifecycleNotificationUrl", $this->_propDict)) {
+            return $this->_propDict["lifecycleNotificationUrl"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the lifecycleNotificationUrl
+    * The URL of the endpoint that receives lifecycle notifications, including subscriptionRemoved and missed notifications. This URL must make use of the HTTPS protocol. Optional. Read more about how Outlook resources use lifecycle notifications.
+    *
+    * @param string $val The lifecycleNotificationUrl
+    *
+    * @return Subscription
+    */
+    public function setLifecycleNotificationUrl($val)
+    {
+        $this->_propDict["lifecycleNotificationUrl"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the notificationUrl
+    * Required. The URL of the endpoint that will receive the change notifications. This URL must make use of the HTTPS protocol.
+    *
+    * @return string The notificationUrl
+    */
+    public function getNotificationUrl()
+    {
+        if (array_key_exists("notificationUrl", $this->_propDict)) {
+            return $this->_propDict["notificationUrl"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the notificationUrl
+    * Required. The URL of the endpoint that will receive the change notifications. This URL must make use of the HTTPS protocol.
+    *
+    * @param string $val The notificationUrl
+    *
+    * @return Subscription
+    */
+    public function setNotificationUrl($val)
+    {
+        $this->_propDict["notificationUrl"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the resource
+    * Required. Specifies the resource that will be monitored for changes. Do not include the base URL (https://graph.microsoft.com/v1.0/). See the possible resource path values for each supported resource.
+    *
+    * @return string The resource
+    */
+    public function getResource()
+    {
+        if (array_key_exists("resource", $this->_propDict)) {
+            return $this->_propDict["resource"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the resource
+    * Required. Specifies the resource that will be monitored for changes. Do not include the base URL (https://graph.microsoft.com/v1.0/). See the possible resource path values for each supported resource.
+    *
+    * @param string $val The resource
+    *
+    * @return Subscription
+    */
+    public function setResource($val)
+    {
+        $this->_propDict["resource"] = $val;
         return $this;
     }
     

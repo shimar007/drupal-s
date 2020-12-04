@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -23,8 +22,7 @@ use Microsoft\Graph\Core\Enum;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class CalendarColor extends Enum
 {
@@ -33,6 +31,7 @@ class CalendarColor extends Enum
     */
     const LIGHT_BLUE = "lightBlue";
     const LIGHT_GREEN = "lightGreen";
+    const AUTO = "auto";
     const LIGHT_ORANGE = "lightOrange";
     const LIGHT_GRAY = "lightGray";
     const LIGHT_YELLOW = "lightYellow";
@@ -41,5 +40,4 @@ class CalendarColor extends Enum
     const LIGHT_BROWN = "lightBrown";
     const LIGHT_RED = "lightRed";
     const MAX_COLOR = "maxColor";
-    const AUTO = "auto";
 }

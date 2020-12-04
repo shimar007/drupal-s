@@ -1,7 +1,7 @@
 services:
   o365.authentication:
     class: Drupal\o365\AuthenticationService
-    arguments: ['@config.factory', '@user.private_tempstore', '@o365.constants', '@o365.logger']
+    arguments: ['@config.factory', '@tempstore.private', '@o365.constants', '@o365.logger']
   o365.constants:
     class: Drupal\o365\ConstantsService
     arguments: ['@config.factory']

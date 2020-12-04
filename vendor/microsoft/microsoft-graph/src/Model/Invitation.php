@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class Invitation extends Entity
 {
@@ -52,35 +50,6 @@ class Invitation extends Entity
     public function setInvitedUserDisplayName($val)
     {
         $this->_propDict["invitedUserDisplayName"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the invitedUserType
-    * The userType of the user being invited. By default, this is Guest. You can invite as Member if you are a company administrator.
-    *
-    * @return string The invitedUserType
-    */
-    public function getInvitedUserType()
-    {
-        if (array_key_exists("invitedUserType", $this->_propDict)) {
-            return $this->_propDict["invitedUserType"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the invitedUserType
-    * The userType of the user being invited. By default, this is Guest. You can invite as Member if you are a company administrator.
-    *
-    * @param string $val The invitedUserType
-    *
-    * @return Invitation
-    */
-    public function setInvitedUserType($val)
-    {
-        $this->_propDict["invitedUserType"] = $val;
         return $this;
     }
     
@@ -147,6 +116,93 @@ class Invitation extends Entity
     }
     
     /**
+    * Gets the invitedUserType
+    * The userType of the user being invited. By default, this is Guest. You can invite as Member if you are a company administrator.
+    *
+    * @return string The invitedUserType
+    */
+    public function getInvitedUserType()
+    {
+        if (array_key_exists("invitedUserType", $this->_propDict)) {
+            return $this->_propDict["invitedUserType"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the invitedUserType
+    * The userType of the user being invited. By default, this is Guest. You can invite as Member if you are a company administrator.
+    *
+    * @param string $val The invitedUserType
+    *
+    * @return Invitation
+    */
+    public function setInvitedUserType($val)
+    {
+        $this->_propDict["invitedUserType"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the inviteRedeemUrl
+    * The URL the user can use to redeem their invitation. Read-only
+    *
+    * @return string The inviteRedeemUrl
+    */
+    public function getInviteRedeemUrl()
+    {
+        if (array_key_exists("inviteRedeemUrl", $this->_propDict)) {
+            return $this->_propDict["inviteRedeemUrl"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the inviteRedeemUrl
+    * The URL the user can use to redeem their invitation. Read-only
+    *
+    * @param string $val The inviteRedeemUrl
+    *
+    * @return Invitation
+    */
+    public function setInviteRedeemUrl($val)
+    {
+        $this->_propDict["inviteRedeemUrl"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the inviteRedirectUrl
+    * The URL the user should be redirected to once the invitation is redeemed. Required.
+    *
+    * @return string The inviteRedirectUrl
+    */
+    public function getInviteRedirectUrl()
+    {
+        if (array_key_exists("inviteRedirectUrl", $this->_propDict)) {
+            return $this->_propDict["inviteRedirectUrl"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the inviteRedirectUrl
+    * The URL the user should be redirected to once the invitation is redeemed. Required.
+    *
+    * @param string $val The inviteRedirectUrl
+    *
+    * @return Invitation
+    */
+    public function setInviteRedirectUrl($val)
+    {
+        $this->_propDict["inviteRedirectUrl"] = $val;
+        return $this;
+    }
+    
+    /**
     * Gets the sendInvitationMessage
     * Indicates whether an email should be sent to the user being invited or not. The default is false.
     *
@@ -172,64 +228,6 @@ class Invitation extends Entity
     public function setSendInvitationMessage($val)
     {
         $this->_propDict["sendInvitationMessage"] = boolval($val);
-        return $this;
-    }
-    
-    /**
-    * Gets the inviteRedirectUrl
-    * The URL user should be redirected to once the invitation is redeemed. Required.
-    *
-    * @return string The inviteRedirectUrl
-    */
-    public function getInviteRedirectUrl()
-    {
-        if (array_key_exists("inviteRedirectUrl", $this->_propDict)) {
-            return $this->_propDict["inviteRedirectUrl"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the inviteRedirectUrl
-    * The URL user should be redirected to once the invitation is redeemed. Required.
-    *
-    * @param string $val The inviteRedirectUrl
-    *
-    * @return Invitation
-    */
-    public function setInviteRedirectUrl($val)
-    {
-        $this->_propDict["inviteRedirectUrl"] = $val;
-        return $this;
-    }
-    
-    /**
-    * Gets the inviteRedeemUrl
-    * The URL user can use to redeem his invitation. Read-Only
-    *
-    * @return string The inviteRedeemUrl
-    */
-    public function getInviteRedeemUrl()
-    {
-        if (array_key_exists("inviteRedeemUrl", $this->_propDict)) {
-            return $this->_propDict["inviteRedeemUrl"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the inviteRedeemUrl
-    * The URL user can use to redeem his invitation. Read-Only
-    *
-    * @param string $val The inviteRedeemUrl
-    *
-    * @return Invitation
-    */
-    public function setInviteRedeemUrl($val)
-    {
-        $this->_propDict["inviteRedeemUrl"] = $val;
         return $this;
     }
     

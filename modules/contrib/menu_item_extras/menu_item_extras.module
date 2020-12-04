@@ -131,7 +131,10 @@ function menu_item_extras_preprocess_block(&$variables) {
   // Menus are built with #theme 'menu__MENU_NAME' form the the MenuLinkTree
   // class. We need to build menus supported by menu_item_extras with the
   // default #theme menu, to be able to add suggestions in the good order.
-  if (isset($variables['content']['#menu_name'])) {
+  if (
+      isset($variables['content']['#menu_name'])
+      && Utility::checkBundleHasExtraFieldsThanEntity('menu_link_content', $variables['content']['#menu_name'])
+    ) {
     $variables['content']['#theme'] = 'menu';
     // Pass region name to the suggestions_menu_alter for
     // the region suggestion.

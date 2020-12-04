@@ -1,8 +1,18 @@
 <?php
 
+/**
+ * @file
+ * Masonry service file.
+ *
+ * Sponsored by: www.freelance-drupal.com
+ */
+
 namespace Drupal\masonry\Services;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Theme\ThemeManagerInterface;
 
 /**
@@ -28,16 +38,36 @@ class MasonryService {
   protected $themeManager;
 
   /**
+   * The language manager service
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
+   * The config factory service
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
    * Constructs a MasonryService object.
    *
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
    * @param \Drupal\Core\Theme\ThemeManagerInterface $theme_manager
    *   The theme manager.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory.
    */
-  public function __construct(ModuleHandlerInterface $module_handler, ThemeManagerInterface $theme_manager) {
+  public function __construct(ModuleHandlerInterface $module_handler, ThemeManagerInterface $theme_manager, LanguageManager $language_manager, ConfigFactoryInterface $config_factory) {
     $this->moduleHandler = $module_handler;
     $this->themeManager = $theme_manager;
+    $this->languageManager = $language_manager;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -60,13 +90,17 @@ class MasonryService {
    *   - isLayoutRtlMode: Display items from right-to-left.
    *   - isLayoutImagesLoadedFirst: Load all images first before triggering
    *     Masonry.
+   *   - isLayoutImagesLazyLoaded: Custom observer to support layout rebuild in
+   *     lazysizes images lazy loading.
+   *   - imageLazyloadSelector: lazyLoad class selector used by lazysizes.
+   *   - imageLazyloadedSelector: lazyLoaded class selector used by lazysizes.
    *   - stampSelector: Specifies which elements are stamped within the layout
    *     using css selector.
    *   - isItemsPositionInPercent: Sets item positions in percent values, rather
    *     than pixel values.
    */
   public function getMasonryDefaultOptions() {
-    return [
+    $options = [
       'layoutColumnWidth' => '',
       'layoutColumnWidthUnit' => 'px',
       'gutterWidth' => '0',
@@ -74,12 +108,27 @@ class MasonryService {
       'isLayoutAnimated' => TRUE,
       'layoutAnimationDuration' => '500',
       'isLayoutFitsWidth' => FALSE,
-      'isLayoutRtlMode' => FALSE,
+      'isLayoutRtlMode' => ($this->languageManager->getCurrentLanguage()->getDirection() == LanguageInterface::DIRECTION_RTL),
       'isLayoutImagesLoadedFirst' => TRUE,
+      'isLayoutImagesLazyLoaded' => FALSE,
+      'imageLazyloadSelector' => 'lazyload',
+      'imageLazyloadedSelector' => 'lazyloaded',
       'stampSelector' => '',
       'isItemsPositionInPercent' => FALSE,
       'extraOptions' => [],
     ];
+
+    // Loazyloading classes are auto-calculated for user simplicity. When
+    // lazysizes is used without a Drupal module, this means DX is able to use
+    // hook_masonry_default_options_alter or hook_masonry_options_form_alter to
+    // override this setting.
+    if ($this->moduleHandler->moduleExists('lazy')) {
+      $config = $this->configFactory->get('lazy.settings');
+      $options['imageLazyloadSelector'] = $config->get('lazysizes.lazyClass');
+      $options['imageLazyloadedSelector'] = $config->get('lazysizes.loadedClass');
+    }
+
+    return $options;
   }
 
   /**
@@ -109,9 +158,7 @@ class MasonryService {
    * Ideal for centering Masonry layouts.
    *   - masonry_rtl: Display items from right-to-left.
    *   - masonry_images_first: Load all images first before triggering Masonry.
-   * @param array
-   *   Some IDs to target this particular display in
-   *   hook_masonry_script_alter().
+   * @param string[] $masonry_ids
    */
   public function applyMasonryDisplay(&$form, $container, $item_selector, $options = [], $masonry_ids = ['masonry_default']) {
 
@@ -137,6 +184,9 @@ class MasonryService {
             'fit_width' => (bool) $options['isLayoutFitsWidth'],
             'rtl' => (bool) $options['isLayoutRtlMode'],
             'images_first' => (bool) $options['isLayoutImagesLoadedFirst'],
+            'images_lazyload' => (bool) $options['isLayoutImagesLazyLoaded'],
+            'lazyload_selector' => $options['imageLazyloadSelector'],
+            'lazyloaded_selector' => $options['imageLazyloadedSelector'],
             'stamp' => $options['stampSelector'],
             'percent_position' => (bool) $options['isItemsPositionInPercent'],
             'extra_options' => $options['extraOptions'],
@@ -164,7 +214,13 @@ class MasonryService {
   }
 
   /**
-   * {@inheritdoc}
+   * Build the masonry setting configuration form.
+   *
+   * @param array (optional)
+   *   The default values for the form.
+   *
+   * @return array
+   *   The form
    */
   public function buildSettingsForm($default_values = []) {
 
@@ -243,17 +299,17 @@ class MasonryService {
       '#description' => t("Sets the width of the container to the nearest column. Ideal for centering Masonry layouts. See the <a href='http://masonry.desandro.com/demos/centered.html'>'Centered' demo</a> for more information."),
       '#default_value' => $default_values['isLayoutFitsWidth'],
     ];
-    $form['isLayoutRtlMode'] = [
-      '#type' => 'checkbox',
-      '#title' => t('RTL layout'),
-      '#description' => t("Display items from right-to-left."),
-      '#default_value' => $default_values['isLayoutRtlMode'],
-    ];
     $form['isLayoutImagesLoadedFirst'] = [
       '#type' => 'checkbox',
       '#title' => t('Load images first'),
       '#description' => t("Load all images first before triggering Masonry."),
       '#default_value' => $default_values['isLayoutImagesLoadedFirst'],
+    ];
+    $form['isLayoutImagesLazyLoaded'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Add listener for lazy loaded images.'),
+      '#description' => t("If using the lazysizes library, you should probably activate this option."),
+      '#default_value' => $default_values['isLayoutImagesLazyLoaded'],
     ];
     $form['isItemsPositionInPercent'] = [
       '#type' => 'checkbox',
@@ -280,8 +336,8 @@ class MasonryService {
     if (\Drupal::hasService('library.libraries_directory_file_finder')) {
       $library_path = \Drupal::service('library.libraries_directory_file_finder')->find('masonry/dist/masonry.pkgd.min.js');
     }
-    elseif (\Drupal::moduleHandler()->moduleExists('libraries')) {
-        $library_path = libraries_get_path('masonry') . '/dist/masonry.pkgd.min.js';
+    elseif ($this->moduleHandler->moduleExists('libraries')) {
+      $library_path = libraries_get_path('masonry') . '/dist/masonry.pkgd.min.js';
     }
     else {
       $library_path = 'libraries/masonry/dist/masonry.pkgd.min.js';
@@ -301,7 +357,7 @@ class MasonryService {
     if (\Drupal::hasService('library.libraries_directory_file_finder')) {
       $library_path = \Drupal::service('library.libraries_directory_file_finder')->find('imagesloaded/imagesloaded.pkgd.min.js');
     }
-    elseif (\Drupal::moduleHandler()->moduleExists('libraries')) {
+    elseif ($this->moduleHandler->moduleExists('libraries')) {
       $library_path = libraries_get_path('imagesloaded') . '/imagesloaded.pkgd.min.js';
     }
     else {

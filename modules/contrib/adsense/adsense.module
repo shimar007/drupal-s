@@ -8,11 +8,10 @@
  * and other administrative functions.
  */
 
-use Drupal\Core\Routing\RouteMatchInterface;
-
 use Drupal\adsense\AdsenseAdBase;
 use Drupal\adsense\ContentAdBase;
 use Drupal\adsense\PublisherId;
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_page_attachments().
@@ -113,7 +112,18 @@ function adsense_theme() {
         'encoding' => '',
         'qsize' => '',
         'search' => '',
-        'script' => '',
+      ],
+    ],
+    'adsense_cse_v2_results' => [
+      'variables' => [
+        'client' => '',
+        'slot' => '',
+      ],
+    ],
+    'adsense_cse_v2_searchbox' => [
+      'variables' => [
+        'client' => '',
+        'slot' => '',
       ],
     ],
     'adsense_managed_async' => [
@@ -241,9 +251,9 @@ function adsense_display(array $args) {
  */
 function adsense_preprocess_block(&$variables) {
   // Remove adsense from the block id and classes to bypass adblock rules.
-  if (($variables['plugin_id'] == 'adsense_managed_ad_block') &&
+  if (($variables['configuration']['provider'] == 'adsense') &&
       \Drupal::config('adsense.settings')->get('adsense_unblock_ads')) {
-    $variables['attributes']['id'] = str_replace('adsense', '', $variables['attributes']['id']);
-    $variables['configuration']['provider'] = str_replace('adsense', '', $variables['configuration']['provider']);
+    $variables['plugin_id'] = str_replace('adsense', '', $variables['plugin_id']);
+    $variables['configuration']['provider'] = '';
   }
 }

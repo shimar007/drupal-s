@@ -21,6 +21,8 @@ class ImporterService {
    */
   public static $messages = [];
 
+  public static $options = [];
+
   /**
    * Main method: execute parsing and saving of redirects.
    *
@@ -32,7 +34,7 @@ class ImporterService {
   public static function import($file, array $options) {
     // Parse the CSV file into a readable array.
     $data = self::read($file, $options);
-
+    self::$options = $options;
     // Perform Drupal-specific validation logic on each row.
     $data = array_filter($data, ['self', 'preSave']);
 
@@ -148,7 +150,7 @@ class ImporterService {
         }
       }
 
-      if (empty($line[3])) {
+      if (empty($line[3]) || !\Drupal::moduleHandler()->moduleExists('language')) {
         $line[3] = $options['language'];
       }
       elseif (!self::isValidLanguage($line[3])) {
@@ -193,7 +195,7 @@ class ImporterService {
     }
 
     // Disallow redirects to nonexistent internal paths.
-    if (self::internalPathMissing($row['redirect'])) {
+    if (self::internalPathMissing($row['redirect']) && self::$options['allow_nonexistent'] == 0) {
       self::$messages['warning'][] = t('The destination path "@redirect" does not exist on the site. Redirect from "@source" bypassed.', ['@redirect' => $row['redirect'], '@source' => $row['source']]);
       return FALSE;
     }

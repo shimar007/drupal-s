@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 
@@ -21,8 +20,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class DirectoryRole extends DirectoryObject
 {
@@ -140,6 +138,34 @@ class DirectoryRole extends DirectoryObject
     public function setMembers($val)
     {
 		$this->_propDict["members"] = $val;
+        return $this;
+    }
+    
+
+     /** 
+     * Gets the scopedMembers
+     *
+     * @return array The scopedMembers
+     */
+    public function getScopedMembers()
+    {
+        if (array_key_exists("scopedMembers", $this->_propDict)) {
+           return $this->_propDict["scopedMembers"];
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+    * Sets the scopedMembers
+    *
+    * @param ScopedRoleMembership $val The scopedMembers
+    *
+    * @return DirectoryRole
+    */
+    public function setScopedMembers($val)
+    {
+		$this->_propDict["scopedMembers"] = $val;
         return $this;
     }
     

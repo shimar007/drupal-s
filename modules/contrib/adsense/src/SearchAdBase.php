@@ -305,6 +305,7 @@ abstract class SearchAdBase extends AdsenseAdBase {
   public static function adsenseAdFormats($key = NULL) {
     $ads = [
       'Search Box' => ['desc' => t('Search Box')],
+      'Search Box v2' => ['desc' => t('Search Box v2')],
     ];
 
     if (!empty($key)) {

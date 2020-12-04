@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class AddIn extends Entity
 {
@@ -49,32 +47,6 @@ class AddIn extends Entity
     public function setId($val)
     {
         $this->_propDict["id"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the type
-    *
-    * @return string The type
-    */
-    public function getType()
-    {
-        if (array_key_exists("type", $this->_propDict)) {
-            return $this->_propDict["type"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the type
-    *
-    * @param string $val The value of the type
-    *
-    * @return AddIn
-    */
-    public function setType($val)
-    {
-        $this->_propDict["type"] = $val;
         return $this;
     }
 
@@ -107,5 +79,31 @@ class AddIn extends Entity
     {
         $this->_propDict["properties"] = $val;
          return $this;
+    }
+    /**
+    * Gets the type
+    *
+    * @return string The type
+    */
+    public function getType()
+    {
+        if (array_key_exists("type", $this->_propDict)) {
+            return $this->_propDict["type"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the type
+    *
+    * @param string $val The value of the type
+    *
+    * @return AddIn
+    */
+    public function setType($val)
+    {
+        $this->_propDict["type"] = $val;
+        return $this;
     }
 }

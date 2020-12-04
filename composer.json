@@ -74,7 +74,8 @@
         "drupal/openid_connect_windows_aad": "^1.1",
         "drupal/geocoder": "^2.3",
         "drupal/address": "^1.7",
-        "drupal/geofield": "^1.7"
+        "drupal/geofield": "^1.7",
+        "drush/drush": "^10.3"
     },
     "replace": {
     },

@@ -59,14 +59,7 @@ function masonry_libraries_info() {
  * \Drupal::service('masonry.service')->isImagesloadedInstalled() instead.
  */
 function masonry_loaded() {
-  $masonry = libraries_load('masonry');
-  $imagesloaded = libraries_load('imagesloaded');
-  if ((!empty($masonry['loaded'])) && (!empty($imagesloaded['loaded']))) {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
+  return (\Drupal::service('masonry.service')->isMasonryInstalled() && \Drupal::service('masonry.service')->isImagesloadedInstalled());
 }
 
 /**

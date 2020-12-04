@@ -9,8 +9,7 @@
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   GIT: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 namespace Microsoft\Graph\Model;
 /**
@@ -20,8 +19,7 @@ namespace Microsoft\Graph\Model;
 * @package   Microsoft.Graph
 * @copyright © Microsoft Corporation. All rights reserved.
 * @license   https://opensource.org/licenses/MIT MIT License
-* @version   Release: 1.4.0
-* @link      https://graph.microsoft.io/
+* @link      https://graph.microsoft.com
 */
 class ShiftAvailability extends Entity
 {
@@ -58,34 +56,6 @@ class ShiftAvailability extends Entity
         $this->_propDict["recurrence"] = $val;
          return $this;
     }
-    /**
-    * Gets the timeZone
-    * Specifies the time zone for the indicated time.
-    *
-    * @return string The timeZone
-    */
-    public function getTimeZone()
-    {
-        if (array_key_exists("timeZone", $this->_propDict)) {
-            return $this->_propDict["timeZone"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the timeZone
-    * Specifies the time zone for the indicated time.
-    *
-    * @param string $val The value of the timeZone
-    *
-    * @return ShiftAvailability
-    */
-    public function setTimeZone($val)
-    {
-        $this->_propDict["timeZone"] = $val;
-        return $this;
-    }
 
     /**
     * Gets the timeSlots
@@ -118,5 +88,33 @@ class ShiftAvailability extends Entity
     {
         $this->_propDict["timeSlots"] = $val;
          return $this;
+    }
+    /**
+    * Gets the timeZone
+    * Specifies the time zone for the indicated time.
+    *
+    * @return string The timeZone
+    */
+    public function getTimeZone()
+    {
+        if (array_key_exists("timeZone", $this->_propDict)) {
+            return $this->_propDict["timeZone"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the timeZone
+    * Specifies the time zone for the indicated time.
+    *
+    * @param string $val The value of the timeZone
+    *
+    * @return ShiftAvailability
+    */
+    public function setTimeZone($val)
+    {
+        $this->_propDict["timeZone"] = $val;
+        return $this;
     }
 }
