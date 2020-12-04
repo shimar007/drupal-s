@@ -13,7 +13,7 @@ pagination, on-the-fly filtering, and column sorting.
    https://drupal.org/project/issues/search/datatables
 
  * For full documentation and examples, visit the DataTables plugin page:
-   http://plugins.jquery.com/project/DataTables
+   http://www.datatables.net
 
 
 INSTALLATION

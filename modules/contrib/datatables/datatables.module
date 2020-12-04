@@ -6,7 +6,6 @@
  */
 
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\Unicode;
 use Drupal\field\Entity\FieldStorageConfig;
 
 /**
@@ -78,7 +77,7 @@ function template_preprocess_views_view_datatables(&$variables) {
           if (is_numeric($fields[$field]->last_render->__toString())) {
             $column_options['sType'] = 'numeric';
           }
-          elseif (Unicode::strlen($fields[$field]->last_render->__toString()) != Unicode::strlen(strip_tags($fields[$field]->last_render->__toString()))) {
+          elseif (mb_strlen($fields[$field]->last_render->__toString()) != mb_strlen(strip_tags($fields[$field]->last_render->__toString()))) {
             $column_options['sType'] = 'html';
           }
           elseif ($info && $info->getType() == 'datetime') {
@@ -138,7 +137,7 @@ function template_preprocess_views_view_datatables(&$variables) {
   }
 
   // Enable TableTools plugin support, if necessary.
-  if ($options['elements']['table_tools']) {
+  if (isset($options['elements']['table_tools']) && $options['elements']['table_tools']) {
     $datatable_options['oTableTools'] = [
       'sSwfPath' => base_path() . 'libraries/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf',
     ];
