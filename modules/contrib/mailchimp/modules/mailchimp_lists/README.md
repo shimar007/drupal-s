@@ -51,7 +51,10 @@ A sample Rules configuration export is provided here. This assigns based on Role
     "REQUIRES" : [ "rules", "mailchimp_lists" ],
     "ON" : { "user_presave" : [] },
     "IF" : [
-      { "user_has_role" : { "account" : [ "account" ], "roles" : { "value" : { "3" : "3" } } } }
+      { "user_has_role" : {
+          "account" : [ "account" ], "roles" : { "value" : { "3" : "3" } } }
+        }
+      }
     ],
     "DO" : [
       { "mailchimp_lists_user_subscribe" : {
