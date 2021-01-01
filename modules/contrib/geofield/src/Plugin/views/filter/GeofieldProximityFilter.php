@@ -209,7 +209,7 @@ class GeofieldProximityFilter extends NumericFilter {
 
         // Ensure that destination is valid.
         $condition = (new Condition('AND'))->isNotNull($haversine_options['destination_latitude'])->isNotNull($haversine_options['destination_longitude']);
-        $this->query->addWhere($this->options['group'], $condition);
+        $this->query->addWhere(0, $condition);
       }
       // Otherwise output empty result in case of unexposed proximity filter.
       elseif (!$this->isExposed()) {

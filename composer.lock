@@ -4219,17 +4219,17 @@
         },
         {
             "name": "drupal/geofield",
-            "version": "1.17.0",
+            "version": "1.18.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/geofield.git",
-                "reference": "8.x-1.17"
+                "reference": "8.x-1.18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/geofield-8.x-1.17.zip",
-                "reference": "8.x-1.17",
-                "shasum": "4175dd4e4351e2c566b177c256cc92ef7faff20f"
+                "url": "https://ftp.drupal.org/files/projects/geofield-8.x-1.18.zip",
+                "reference": "8.x-1.18",
+                "shasum": "d1f20ecb66c262f8fd55fea517e4e696b91f2c10"
             },
             "require": {
                 "drupal/core": "^8.8 || ^9",
@@ -4238,8 +4238,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.17",
-                    "datestamp": "1608592856",
+                    "version": "8.x-1.18",
+                    "datestamp": "1608852700",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7040,17 +7040,17 @@
         },
         {
             "name": "drupal/webform",
-            "version": "5.22.0",
+            "version": "5.23.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/webform.git",
-                "reference": "8.x-5.22"
+                "reference": "8.x-5.23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/webform-8.x-5.22.zip",
-                "reference": "8.x-5.22",
-                "shasum": "807308bb8c57c3c66c7a839effc558ab2a76c1f5"
+                "url": "https://ftp.drupal.org/files/projects/webform-8.x-5.23.zip",
+                "reference": "8.x-5.23",
+                "shasum": "5d93f2479ac0b69b0eb5b3921d8173a7b3a3a7e5"
             },
             "require": {
                 "drupal/core": "^8.8"
@@ -7091,8 +7091,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-5.22",
-                    "datestamp": "1601919522",
+                    "version": "8.x-5.23",
+                    "datestamp": "1608855643",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7494,16 +7494,16 @@
         },
         {
             "name": "egulias/email-validator",
-            "version": "2.1.24",
+            "version": "2.1.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egulias/EmailValidator.git",
-                "reference": "ca90a3291eee1538cd48ff25163240695bd95448"
+                "reference": "0dbf5d78455d4d6a41d186da50adc1122ec066f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/ca90a3291eee1538cd48ff25163240695bd95448",
-                "reference": "ca90a3291eee1538cd48ff25163240695bd95448",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/0dbf5d78455d4d6a41d186da50adc1122ec066f4",
+                "reference": "0dbf5d78455d4d6a41d186da50adc1122ec066f4",
                 "shasum": ""
             },
             "require": {
@@ -7554,7 +7554,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-14T15:56:27+00:00"
+            "time": "2020-12-29T14:50:06+00:00"
         },
         {
             "name": "grasmash/expander",
