@@ -2900,17 +2900,17 @@
     },
     {
         "name": "drupal/core",
-        "version": "8.9.11",
-        "version_normalized": "8.9.11.0",
+        "version": "8.9.12",
+        "version_normalized": "8.9.12.0",
         "source": {
             "type": "git",
             "url": "https://github.com/drupal/core.git",
-            "reference": "8fc1d510b8fcff90e2f3a7c96a893ba16bbdc62d"
+            "reference": "ec7ac2bd2b7fa7f06df654c637b7f29f019d356f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/drupal/core/zipball/8fc1d510b8fcff90e2f3a7c96a893ba16bbdc62d",
-            "reference": "8fc1d510b8fcff90e2f3a7c96a893ba16bbdc62d",
+            "url": "https://api.github.com/repos/drupal/core/zipball/ec7ac2bd2b7fa7f06df654c637b7f29f019d356f",
+            "reference": "ec7ac2bd2b7fa7f06df654c637b7f29f019d356f",
             "shasum": ""
         },
         "require": {
@@ -3077,7 +3077,7 @@
             "drupal/workflows": "self.version",
             "drupal/workspaces": "self.version"
         },
-        "time": "2020-12-03T20:57:10+00:00",
+        "time": "2021-01-06T23:44:11+00:00",
         "type": "drupal-core",
         "extra": {
             "drupal-scaffold": {
@@ -8247,17 +8247,17 @@
     },
     {
         "name": "laminas/laminas-feed",
-        "version": "2.13.0",
-        "version_normalized": "2.13.0.0",
+        "version": "2.13.1",
+        "version_normalized": "2.13.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-feed.git",
-            "reference": "fb89aac1984222227f37792dd193d34829a0762f"
+            "reference": "45d36702d09afd5d8ca01192ecd3b5afaf37126b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-feed/zipball/fb89aac1984222227f37792dd193d34829a0762f",
-            "reference": "fb89aac1984222227f37792dd193d34829a0762f",
+            "url": "https://api.github.com/repos/laminas/laminas-feed/zipball/45d36702d09afd5d8ca01192ecd3b5afaf37126b",
+            "reference": "45d36702d09afd5d8ca01192ecd3b5afaf37126b",
             "shasum": ""
         },
         "require": {
@@ -8294,7 +8294,7 @@
             "laminas/laminas-validator": "Laminas\\Validator component, for validating email addresses used in Atom feeds and entries when using the Writer subcomponent",
             "psr/http-message": "PSR-7 ^1.0.1, if you wish to use Laminas\\Feed\\Reader\\Http\\Psr7ResponseDecorator"
         },
-        "time": "2020-11-18T21:02:52+00:00",
+        "time": "2021-01-04T19:20:24+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -10193,17 +10193,17 @@
     },
     {
         "name": "symfony/polyfill-ctype",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
-            "reference": "f4ba089a5b6366e453971d3aad5fe8e897b37f41"
+            "reference": "c6c942b1ac76c82448322025e084cadc56048b4e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f4ba089a5b6366e453971d3aad5fe8e897b37f41",
-            "reference": "f4ba089a5b6366e453971d3aad5fe8e897b37f41",
+            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/c6c942b1ac76c82448322025e084cadc56048b4e",
+            "reference": "c6c942b1ac76c82448322025e084cadc56048b4e",
             "shasum": ""
         },
         "require": {
@@ -10212,11 +10212,11 @@
         "suggest": {
             "ext-ctype": "For best performance"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -10271,17 +10271,17 @@
     },
     {
         "name": "symfony/polyfill-iconv",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-iconv.git",
-            "reference": "c536646fdb4f29104dd26effc2fdcb9a5b085024"
+            "reference": "b34bfb8c4c22650ac080d2662ae3502e5f2f4ae6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-iconv/zipball/c536646fdb4f29104dd26effc2fdcb9a5b085024",
-            "reference": "c536646fdb4f29104dd26effc2fdcb9a5b085024",
+            "url": "https://api.github.com/repos/symfony/polyfill-iconv/zipball/b34bfb8c4c22650ac080d2662ae3502e5f2f4ae6",
+            "reference": "b34bfb8c4c22650ac080d2662ae3502e5f2f4ae6",
             "shasum": ""
         },
         "require": {
@@ -10290,11 +10290,11 @@
         "suggest": {
             "ext-iconv": "For best performance"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -10350,17 +10350,17 @@
     },
     {
         "name": "symfony/polyfill-intl-idn",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-intl-idn.git",
-            "reference": "3b75acd829741c768bc8b1f84eb33265e7cc5117"
+            "reference": "0eb8293dbbcd6ef6bf81404c9ce7d95bcdf34f44"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/3b75acd829741c768bc8b1f84eb33265e7cc5117",
-            "reference": "3b75acd829741c768bc8b1f84eb33265e7cc5117",
+            "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/0eb8293dbbcd6ef6bf81404c9ce7d95bcdf34f44",
+            "reference": "0eb8293dbbcd6ef6bf81404c9ce7d95bcdf34f44",
             "shasum": ""
         },
         "require": {
@@ -10371,11 +10371,11 @@
         "suggest": {
             "ext-intl": "For best performance"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -10436,17 +10436,17 @@
     },
     {
         "name": "symfony/polyfill-intl-normalizer",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-            "reference": "727d1096295d807c309fb01a851577302394c897"
+            "reference": "6e971c891537eb617a00bb07a43d182a6915faba"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/727d1096295d807c309fb01a851577302394c897",
-            "reference": "727d1096295d807c309fb01a851577302394c897",
+            "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/6e971c891537eb617a00bb07a43d182a6915faba",
+            "reference": "6e971c891537eb617a00bb07a43d182a6915faba",
             "shasum": ""
         },
         "require": {
@@ -10455,11 +10455,11 @@
         "suggest": {
             "ext-intl": "For best performance"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T17:09:11+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -10519,17 +10519,17 @@
     },
     {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "39d483bdf39be819deabf04ec872eb0b2410b531"
+            "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/39d483bdf39be819deabf04ec872eb0b2410b531",
-            "reference": "39d483bdf39be819deabf04ec872eb0b2410b531",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
+            "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
             "shasum": ""
         },
         "require": {
@@ -10538,11 +10538,11 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -10730,27 +10730,27 @@
     },
     {
         "name": "symfony/polyfill-php72",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php72.git",
-            "reference": "cede45fcdfabdd6043b3592e83678e42ec69e930"
+            "reference": "cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/cede45fcdfabdd6043b3592e83678e42ec69e930",
-            "reference": "cede45fcdfabdd6043b3592e83678e42ec69e930",
+            "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9",
+            "reference": "cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9",
             "shasum": ""
         },
         "require": {
             "php": ">=7.1"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -10805,27 +10805,27 @@
     },
     {
         "name": "symfony/polyfill-php80",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php80.git",
-            "reference": "e70aa8b064c5b72d3df2abd5ab1e90464ad009de"
+            "reference": "dc3063ba22c2a1fd2f45ed856374d79114998f91"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/e70aa8b064c5b72d3df2abd5ab1e90464ad009de",
-            "reference": "e70aa8b064c5b72d3df2abd5ab1e90464ad009de",
+            "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dc3063ba22c2a1fd2f45ed856374d79114998f91",
+            "reference": "dc3063ba22c2a1fd2f45ed856374d79114998f91",
             "shasum": ""
         },
         "require": {
             "php": ">=7.1"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -11566,17 +11566,17 @@
     },
     {
         "name": "twig/twig",
-        "version": "v1.44.1",
-        "version_normalized": "1.44.1.0",
+        "version": "v1.44.2",
+        "version_normalized": "1.44.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "04b15d4c0bb18ddbf82626320ac07f6a73f199c9"
+            "reference": "138c493c5b8ee7cff3821f80b8896d371366b5fe"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/04b15d4c0bb18ddbf82626320ac07f6a73f199c9",
-            "reference": "04b15d4c0bb18ddbf82626320ac07f6a73f199c9",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/138c493c5b8ee7cff3821f80b8896d371366b5fe",
+            "reference": "138c493c5b8ee7cff3821f80b8896d371366b5fe",
             "shasum": ""
         },
         "require": {
@@ -11587,7 +11587,7 @@
             "psr/container": "^1.0",
             "symfony/phpunit-bridge": "^4.4.9|^5.0.9"
         },
-        "time": "2020-10-27T19:22:48+00:00",
+        "time": "2021-01-05T10:10:05+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
