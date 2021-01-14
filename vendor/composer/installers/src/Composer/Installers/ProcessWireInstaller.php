@@ -1,25 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cbleek
- * Date: 25.03.16
- * Time: 20:55
- */
 
 namespace Composer\Installers;
 
-
-class YawikInstaller extends BaseInstaller
+class ProcessWireInstaller extends BaseInstaller
 {
     protected $locations = array(
-        'module'  => 'module/{$name}/',
+        'module'  => 'site/modules/{$name}/',
     );
 
     /**
      * Format package name to CamelCase
-     * @param array $vars
-     *
-     * @return array
      */
     public function inflectPackageVars($vars)
     {

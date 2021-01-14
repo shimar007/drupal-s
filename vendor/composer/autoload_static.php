@@ -418,7 +418,6 @@ class ComposerStaticInitDrupal8
         'Drupal\\Driver\\' => 
         array (
             0 => __DIR__ . '/../..' . '/drivers/lib/Drupal/Driver',
-            1 => __DIR__ . '/../..' . '/drivers/lib/Drupal/Driver',
         ),
         'Drupal\\Core\\Composer\\' => 
         array (
@@ -427,12 +426,10 @@ class ComposerStaticInitDrupal8
         'Drupal\\Core\\' => 
         array (
             0 => __DIR__ . '/../..' . '/core/lib/Drupal/Core',
-            1 => __DIR__ . '/../..' . '/core/lib/Drupal/Core',
         ),
         'Drupal\\Component\\' => 
         array (
             0 => __DIR__ . '/../..' . '/core/lib/Drupal/Component',
-            1 => __DIR__ . '/../..' . '/core/lib/Drupal/Component',
         ),
         'DrupalCodeGenerator\\' => 
         array (
