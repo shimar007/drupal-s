@@ -28,7 +28,7 @@ class AgreementAcceptance extends Entity
     * Gets the agreementFileId
     * ID of the agreement file accepted by the user.
     *
-    * @return string The agreementFileId
+    * @return string|null The agreementFileId
     */
     public function getAgreementFileId()
     {
@@ -57,7 +57,7 @@ class AgreementAcceptance extends Entity
     * Gets the agreementId
     * ID of the agreement.
     *
-    * @return string The agreementId
+    * @return string|null The agreementId
     */
     public function getAgreementId()
     {
@@ -86,7 +86,7 @@ class AgreementAcceptance extends Entity
     * Gets the deviceDisplayName
     * The display name of the device used for accepting the agreement.
     *
-    * @return string The deviceDisplayName
+    * @return string|null The deviceDisplayName
     */
     public function getDeviceDisplayName()
     {
@@ -115,7 +115,7 @@ class AgreementAcceptance extends Entity
     * Gets the deviceId
     * The unique identifier of the device used for accepting the agreement.
     *
-    * @return string The deviceId
+    * @return string|null The deviceId
     */
     public function getDeviceId()
     {
@@ -144,7 +144,7 @@ class AgreementAcceptance extends Entity
     * Gets the deviceOSType
     * The operating system used for accepting the agreement.
     *
-    * @return string The deviceOSType
+    * @return string|null The deviceOSType
     */
     public function getDeviceOSType()
     {
@@ -173,7 +173,7 @@ class AgreementAcceptance extends Entity
     * Gets the deviceOSVersion
     * The operating system version of the device used for accepting the agreement.
     *
-    * @return string The deviceOSVersion
+    * @return string|null The deviceOSVersion
     */
     public function getDeviceOSVersion()
     {
@@ -200,14 +200,14 @@ class AgreementAcceptance extends Entity
     
     /**
     * Gets the expirationDateTime
-    * The expiration date time of the acceptance. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'
+    * The expiration date time of the acceptance. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z
     *
-    * @return \DateTime The expirationDateTime
+    * @return \DateTime|null The expirationDateTime
     */
     public function getExpirationDateTime()
     {
         if (array_key_exists("expirationDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["expirationDateTime"], "\DateTime")) {
+            if (is_a($this->_propDict["expirationDateTime"], "\DateTime") || is_null($this->_propDict["expirationDateTime"])) {
                 return $this->_propDict["expirationDateTime"];
             } else {
                 $this->_propDict["expirationDateTime"] = new \DateTime($this->_propDict["expirationDateTime"]);
@@ -219,7 +219,7 @@ class AgreementAcceptance extends Entity
     
     /**
     * Sets the expirationDateTime
-    * The expiration date time of the acceptance. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'
+    * The expiration date time of the acceptance. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z
     *
     * @param \DateTime $val The expirationDateTime
     *
@@ -233,14 +233,14 @@ class AgreementAcceptance extends Entity
     
     /**
     * Gets the recordedDateTime
-    * The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'
+    * The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z
     *
-    * @return \DateTime The recordedDateTime
+    * @return \DateTime|null The recordedDateTime
     */
     public function getRecordedDateTime()
     {
         if (array_key_exists("recordedDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["recordedDateTime"], "\DateTime")) {
+            if (is_a($this->_propDict["recordedDateTime"], "\DateTime") || is_null($this->_propDict["recordedDateTime"])) {
                 return $this->_propDict["recordedDateTime"];
             } else {
                 $this->_propDict["recordedDateTime"] = new \DateTime($this->_propDict["recordedDateTime"]);
@@ -252,7 +252,7 @@ class AgreementAcceptance extends Entity
     
     /**
     * Sets the recordedDateTime
-    * The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'
+    * The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z
     *
     * @param \DateTime $val The recordedDateTime
     *
@@ -268,12 +268,12 @@ class AgreementAcceptance extends Entity
     * Gets the state
     * Possible values are: accepted, declined.
     *
-    * @return AgreementAcceptanceState The state
+    * @return AgreementAcceptanceState|null The state
     */
     public function getState()
     {
         if (array_key_exists("state", $this->_propDict)) {
-            if (is_a($this->_propDict["state"], "Beta\Microsoft\Graph\Model\AgreementAcceptanceState")) {
+            if (is_a($this->_propDict["state"], "\Beta\Microsoft\Graph\Model\AgreementAcceptanceState") || is_null($this->_propDict["state"])) {
                 return $this->_propDict["state"];
             } else {
                 $this->_propDict["state"] = new AgreementAcceptanceState($this->_propDict["state"]);
@@ -301,7 +301,7 @@ class AgreementAcceptance extends Entity
     * Gets the userDisplayName
     * Display name of the user when the acceptance was recorded.
     *
-    * @return string The userDisplayName
+    * @return string|null The userDisplayName
     */
     public function getUserDisplayName()
     {
@@ -330,7 +330,7 @@ class AgreementAcceptance extends Entity
     * Gets the userEmail
     * Email of the user when the acceptance was recorded.
     *
-    * @return string The userEmail
+    * @return string|null The userEmail
     */
     public function getUserEmail()
     {
@@ -359,7 +359,7 @@ class AgreementAcceptance extends Entity
     * Gets the userId
     * ID of the user who accepted the agreement.
     *
-    * @return string The userId
+    * @return string|null The userId
     */
     public function getUserId()
     {
@@ -388,7 +388,7 @@ class AgreementAcceptance extends Entity
     * Gets the userPrincipalName
     * UPN of the user when the acceptance was recorded.
     *
-    * @return string The userPrincipalName
+    * @return string|null The userPrincipalName
     */
     public function getUserPrincipalName()
     {

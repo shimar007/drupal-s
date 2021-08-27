@@ -99,10 +99,18 @@ class MetadataEventSubscriber implements EventSubscriberInterface {
       }
     }
     else {
-      return [
-        'theme' => "",
-        'content' => "",
-      ];
+      if ($id == 'description') {
+        return [
+          'content' => $this->generateDescription($file, $subdir_fid, $fid),
+          'theme' => 'filebrowser_description'
+        ];
+      }
+      else {
+        return [
+          'theme' => "",
+          'content' => "",
+        ];
+      }
     }
   }
 
@@ -128,11 +136,12 @@ class MetadataEventSubscriber implements EventSubscriberInterface {
       // entity exists
       $metadata = $this->storage->load(reset($entity_id));
       $content = unserialize($metadata->content->value);
-      $description = $content['title'];
+      //originally title was not set for directories. So even if the entity existed, there was no title
+      $description = isset($content['title']) ? $content['title'] : $this->t('Default description');
     }
     else{
       // no description available
-      $description = 'Default description';
+      $description = $this->t('Default description');
     }
 
     if(!empty($subdir_fid)) {

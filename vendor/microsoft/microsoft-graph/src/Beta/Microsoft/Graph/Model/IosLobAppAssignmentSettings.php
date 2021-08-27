@@ -26,17 +26,47 @@ class IosLobAppAssignmentSettings extends MobileAppAssignmentSettings
     /**
     * Set the @odata.type since this type is immediately descended from an abstract
     * type that is referenced as the type in an entity.
+    * @param array $propDict The property dictionary
     */
-    public function __construct()
+    public function __construct($propDict = array())
     {
+        parent::__construct($propDict);
         $this->setODataType("#microsoft.graph.iosLobAppAssignmentSettings");
     }
 
     /**
+    * Gets the isRemovable
+    * Whether or not the app can be removed by the user.
+    *
+    * @return bool|null The isRemovable
+    */
+    public function getIsRemovable()
+    {
+        if (array_key_exists("isRemovable", $this->_propDict)) {
+            return $this->_propDict["isRemovable"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isRemovable
+    * Whether or not the app can be removed by the user.
+    *
+    * @param bool $val The value of the isRemovable
+    *
+    * @return IosLobAppAssignmentSettings
+    */
+    public function setIsRemovable($val)
+    {
+        $this->_propDict["isRemovable"] = $val;
+        return $this;
+    }
+    /**
     * Gets the uninstallOnDeviceRemoval
     * Whether or not to uninstall the app when device is removed from Intune.
     *
-    * @return bool The uninstallOnDeviceRemoval
+    * @return bool|null The uninstallOnDeviceRemoval
     */
     public function getUninstallOnDeviceRemoval()
     {
@@ -64,7 +94,7 @@ class IosLobAppAssignmentSettings extends MobileAppAssignmentSettings
     * Gets the vpnConfigurationId
     * The VPN Configuration Id to apply for this app.
     *
-    * @return string The vpnConfigurationId
+    * @return string|null The vpnConfigurationId
     */
     public function getVpnConfigurationId()
     {

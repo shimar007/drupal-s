@@ -34,7 +34,7 @@ class Ie9CspSubscriberTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->moduleHandler = $this->getMockBuilder(ModuleHandlerInterface::class)
@@ -113,15 +113,15 @@ class Ie9CspSubscriberTest extends UnitTestCase {
     $subscriber = new Ie9CspSubscriber($configFactory, $this->moduleHandler);
     $subscriber->onCspPolicyAlter($alterEvent);
 
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
       $alterEvent->getPolicy()->getDirective('style-src')
     );
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [Csp::POLICY_SELF],
       $alterEvent->getPolicy()->getDirective('style-src-attr')
     );
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
       $alterEvent->getPolicy()->getDirective('style-src-elem')
     );
@@ -156,15 +156,15 @@ class Ie9CspSubscriberTest extends UnitTestCase {
     $subscriber = new Ie9CspSubscriber($configFactory, $this->moduleHandler);
     $subscriber->onCspPolicyAlter($alterEvent);
 
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [Csp::POLICY_SELF],
       $alterEvent->getPolicy()->getDirective('style-src')
     );
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [Csp::POLICY_SELF],
       $alterEvent->getPolicy()->getDirective('style-src-attr')
     );
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [Csp::POLICY_SELF],
       $alterEvent->getPolicy()->getDirective('style-src-elem')
     );
@@ -187,23 +187,24 @@ class Ie9CspSubscriberTest extends UnitTestCase {
       ],
     ]);
 
-
     $policy = new Csp();
     $policy->setDirective('default-src', [Csp::POLICY_ANY]);
     $policy->setDirective('style-src', [Csp::POLICY_SELF]);
-
 
     $alterEvent = new PolicyAlterEvent($policy, $this->response);
 
     $subscriber = new Ie9CspSubscriber($configFactory, $this->moduleHandler);
     $subscriber->onCspPolicyAlter($alterEvent);
 
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
       $alterEvent->getPolicy()->getDirective('style-src')
     );
-    $this->assertFalse($alterEvent->getPolicy()->hasDirective('style-src-attr'));
-    $this->assertArrayEquals(
+    $this->assertEquals(
+      [Csp::POLICY_SELF],
+      $alterEvent->getPolicy()->getDirective('style-src-attr')
+    );
+    $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
       array_unique($alterEvent->getPolicy()->getDirective('style-src-elem'))
     );
@@ -227,7 +228,6 @@ class Ie9CspSubscriberTest extends UnitTestCase {
       ],
     ]);
 
-
     $policy = new Csp();
     $policy->setDirective('default-src', [Csp::POLICY_SELF]);
 
@@ -236,12 +236,15 @@ class Ie9CspSubscriberTest extends UnitTestCase {
     $subscriber = new Ie9CspSubscriber($configFactory, $this->moduleHandler);
     $subscriber->onCspPolicyAlter($alterEvent);
 
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
       $alterEvent->getPolicy()->getDirective('style-src')
     );
-    $this->assertFalse($alterEvent->getPolicy()->hasDirective('style-src-attr'));
-    $this->assertArrayEquals(
+    $this->assertEquals(
+      [Csp::POLICY_SELF],
+      $alterEvent->getPolicy()->getDirective('style-src-attr')
+    );
+    $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
       array_unique($alterEvent->getPolicy()->getDirective('style-src-elem'))
     );

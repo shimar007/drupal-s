@@ -42,6 +42,8 @@ class CoreCspSubscriber implements EventSubscriberInterface {
    *
    * @param \Drupal\Core\Asset\LibraryDependencyResolverInterface $libraryDependencyResolver
    *   The Library Dependency Resolver Service.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+   *   The Module Handler service.
    */
   public function __construct(LibraryDependencyResolverInterface $libraryDependencyResolver, ModuleHandlerInterface $moduleHandler) {
     $this->libraryDependencyResolver = $libraryDependencyResolver;
@@ -93,8 +95,8 @@ class CoreCspSubscriber implements EventSubscriberInterface {
       // Inline style element is added by ckeditor.off-canvas-css-reset.js.
       // @see https://www.drupal.org/project/drupal/issues/2952390
       if (in_array('ckeditor/drupal.ckeditor', $libraries) || $quickedit) {
-        $policy->fallbackAwareAppendIfEnabled('style-src-attr', []);
         $policy->fallbackAwareAppendIfEnabled('style-src', [Csp::POLICY_UNSAFE_INLINE]);
+        $policy->fallbackAwareAppendIfEnabled('style-src-attr', [Csp::POLICY_UNSAFE_INLINE]);
         $policy->fallbackAwareAppendIfEnabled('style-src-elem', [Csp::POLICY_UNSAFE_INLINE]);
       }
 

@@ -358,6 +358,7 @@ class CspSettingsForm extends ConfigFormBase {
         '#parents' => [$policyTypeKey, 'directives', 'plugin-types', 'mime-types'],
         '#title' => $this->t('MIME Types'),
         '#default_value' => implode(' ', $config->get($policyTypeKey . '.directives.plugin-types') ?: []),
+        '#description' => $this->t('The <code>plugin-types</code> directive has been deprecated. <code>object-src</code> should be used to restrict embedded objects.'),
       ];
 
       // 'sandbox' token values are defined by HTML specification for the iframe
@@ -434,7 +435,7 @@ class CspSettingsForm extends ConfigFormBase {
         '#cspPolicyType' => $policyTypeKey,
         '#button_type' => 'danger',
         '#submit' => [
-          '::submitClearPolicy'
+          '::submitClearPolicy',
         ],
       ];
     }
@@ -447,6 +448,65 @@ class CspSettingsForm extends ConfigFormBase {
       if (empty($enabledPolicies)) {
         $this->messenger()
           ->addWarning($this->t('No policies are currently enabled.'));
+      }
+
+      foreach ($policyTypes as $policyTypeKey => $policyTypeName) {
+        if (!$config->get($policyTypeKey . '.enable')) {
+          continue;
+        }
+
+        foreach ($directiveNames as $directive) {
+          if (($directiveSources = $config->get($policyTypeKey . '.directives.' . $directive . '.sources'))) {
+
+            // '{hashAlgorithm}-{base64-value}'
+            $hashAlgoMatch = '(' . implode('|', Csp::HASH_ALGORITHMS) . ')-[\w+/_-]+=*';
+            $hasHashSource = array_reduce(
+              $directiveSources,
+              function ($return, $value) use ($hashAlgoMatch) {
+                return $return || preg_match("<^'" . $hashAlgoMatch . "'$>", $value);
+              },
+              FALSE
+            );
+            if ($hasHashSource) {
+              $this->messenger()->addWarning($this->t(
+                '%policy %directive has a hash source configured, which may block functionality that relies on inline code.',
+                [
+                  '%policy' => $policyTypeName,
+                  '%directive' => $directive,
+                ]
+              ));
+            }
+          }
+        }
+
+        if (
+          !is_null($config->get($policyTypeKey . '.directives.plugin-types'))
+          &&
+          !$config->get($policyTypeKey . '.directives.object-src')
+        ) {
+          $this->messenger()->addWarning($this->t(
+            'The <code>plugin-types</code> directive has been deprecated. <code>object-src</code> should be used to restrict embedded objects.'
+          ));
+        }
+
+        foreach (['script-src', 'style-src'] as $directive) {
+          foreach (['-attr', '-elem'] as $subdirective) {
+            if ($config->get($policyTypeKey . '.directives.' . $directive . $subdirective)) {
+              foreach (Csp::getDirectiveFallbackList($directive . $subdirective) as $fallbackDirective) {
+                if ($config->get($policyTypeKey . '.directives.' . $fallbackDirective)) {
+                  continue 2;
+                }
+              }
+              $this->messenger()->addWarning($this->t(
+                '%policy %directive is enabled without a fallback directive for non-supporting browsers.',
+                [
+                  '%policy' => $policyTypeName,
+                  '%directive' => $directive . $subdirective,
+                ]
+              ));
+            }
+          }
+        }
       }
     }
 
@@ -462,14 +522,40 @@ class CspSettingsForm extends ConfigFormBase {
       $directiveNames = $this->getConfigurableDirectives();
       foreach ($directiveNames as $directiveName) {
         if (($directiveSources = $form_state->getValue([$policyTypeKey, 'directives', $directiveName, 'sources']))) {
-          $invalidSources = array_reduce(
-            preg_split('/,?\s+/', $directiveSources),
+          $sourcesArray = preg_split('/,?\s+/', $directiveSources);
+
+          $hasNonceSource = array_reduce(
+            $sourcesArray,
             function ($return, $value) {
-              return $return || !(preg_match('<^([a-z]+:)?$>', $value) || static::isValidHost($value));
+              return $return || preg_match("<^'nonce->", $value);
             },
             FALSE
           );
-          if ($invalidSources) {
+          if ($hasNonceSource) {
+            $form_state->setError(
+              $form[$policyTypeKey]['directives'][$directiveName]['options']['sources'],
+              $this->t('<a href=":docUrl">Nonces must be a unique value for each request</a>, so cannot be set in configuration.', [
+                ':docUrl' => 'https://www.w3.org/TR/CSP3/#security-considerations',
+              ])
+            );
+          }
+
+          // '{hashAlgorithm}-{base64-value}'
+          $hashAlgoMatch = '(' . implode('|', Csp::HASH_ALGORITHMS) . ')-[\w+/_-]+=*';
+          $hasInvalidSource = array_reduce(
+            $sourcesArray,
+            function ($return, $value) use ($hashAlgoMatch) {
+              return $return || !(
+                preg_match('<^([a-z]+:)?$>', $value)
+                ||
+                static::isValidHost($value)
+                ||
+                preg_match("<^'(" . $hashAlgoMatch . ")'$>", $value)
+              );
+            },
+            FALSE
+          );
+          if ($hasInvalidSource) {
             $form_state->setError(
               $form[$policyTypeKey]['directives'][$directiveName]['options']['sources'],
               $this->t('Invalid domain or protocol provided.')
@@ -517,8 +603,10 @@ class CspSettingsForm extends ConfigFormBase {
    * Verifies the syntax of the given URL.
    *
    * Similar to UrlHelper::isValid(), except:
-   * - protocol is optional; can only be http or https.
+   * - protocol is optional; can only be http/https, or ws/wss.
    * - domains must have at least a top-level and secondary domain.
+   * - an initial subdomain wildcard is allowed
+   * - wildcard is allowed as port value
    * - query is not allowed.
    *
    * @param string $url
@@ -527,10 +615,10 @@ class CspSettingsForm extends ConfigFormBase {
    * @return bool
    *   TRUE if the URL is in a valid format, FALSE otherwise.
    */
-  private static function isValidHost($url) {
+  protected static function isValidHost($url) {
     return (bool) preg_match("
         /^                                                      # Start at the beginning of the text
-        (?:(?:https?|wss?):\/\/)?                               # Look for http or ws schemes (optional)
+        (?:(?:http|ws)s?:\/\/)?                                 # Look for http or ws schemes (optional)
         (?:
           (?:                                                   # A domain name or a IPv4 address
             (?:\*\.)?                                           # Wildcard prefix (optional)
@@ -538,8 +626,9 @@ class CspSettingsForm extends ConfigFormBase {
             (?:[a-z0-9\-\.]|%[0-9a-f]{2})+
           )
           |(?:\[(?:[0-9a-f]{0,4}:)*(?:[0-9a-f]{0,4})\])         # or a well formed IPv6 address
+          |localhost
         )
-        (?::[0-9]+)?                                            # Server port number (optional)
+        (?::(?:[0-9]+|\*))?                                     # Server port number or wildcard (optional)
         (?:[\/|\?]
           (?:[\w#!:\.\+=&@$'~*,;\/\(\)\[\]\-]|%[0-9a-f]{2})     # The path (optional)
         *)?
@@ -550,7 +639,9 @@ class CspSettingsForm extends ConfigFormBase {
    * Submit handler for clear policy buttons.
    *
    * @param array $form
+   *   The form structure.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
    */
   public function submitClearPolicy(array &$form, FormStateInterface $form_state) {
     $submitElement = $form_state->getTriggeringElement();

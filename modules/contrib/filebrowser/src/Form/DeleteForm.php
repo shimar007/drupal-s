@@ -53,11 +53,19 @@ class DeleteForm extends ConfirmFormBase {
   protected $itemsToDelete;
 
   /**
+   * The file system.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * ConfirmForm constructor.
    */
   public function __construct() {
     $this->validator = \Drupal::service('filebrowser.validator');
     $this->common = \Drupal::service('filebrowser.common');
+    $this->fileSystem = \Drupal::service('file_system');
     $this->itemsToDelete = null;
   }
 
@@ -145,7 +153,7 @@ class DeleteForm extends ConfirmFormBase {
   }
 
   public function getCancelUrl() {
-    return $this->node->urlInfo();
+    return $this->node->toUrl();
   }
 
   public function getDescription() {
@@ -177,7 +185,7 @@ class DeleteForm extends ConfirmFormBase {
     else {
       foreach ($this->itemsToDelete as $item) {
         $data = unserialize($item['file_data']);
-        $success = file_unmanaged_delete_recursive($data->uri);
+        $success = $this->fileSystem->deleteRecursive($data->uri);
         if ($success) {
           // invalidate the cache for this node
           Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);

@@ -412,6 +412,7 @@ class Csp {
           if ($optimizedDirectives[$fallbackDirective] === $value) {
             // Omit directive if it matches nearest defined directive in its
             // fallback list.
+            unset($optimizedDirectives[$name]);
             continue 2;
           }
           else {
@@ -422,6 +423,18 @@ class Csp {
         }
       }
 
+      // Optimize attribute directives if they don't match a fallback.
+      if (strstr($name, '-attr')) {
+        $optimizedDirectives[$name] = self::reduceAttrSourceList($value);
+      }
+    }
+
+    // Workaround Firefox bug in handling default-src.
+    $optimizedDirectives = self::ff1313937($optimizedDirectives);
+
+    $optimizedDirectives = self::sortDirectives($optimizedDirectives);
+
+    foreach ($optimizedDirectives as $name => $value) {
       $output[] = $name . ' ' . implode(' ', $value);
     }
 
@@ -475,6 +488,108 @@ class Csp {
     }
 
     return $sources;
+  }
+
+  /**
+   * Reduce the list of sources for an *-attr directive.
+   *
+   * @param array $sources
+   *   An array of sources.
+   *
+   * @return array
+   *   The reduced array of sources.
+   */
+  private static function reduceAttrSourceList(array $sources) {
+
+    $sources = array_filter($sources, function ($source) {
+      return (
+        // Network sources are meaningless.
+        $source[0] === "'" && $source !== "*"
+        &&
+        // Nonces cannot be applied.
+        strpos($source, "'nonce-") !== 0
+      );
+    });
+
+    // Hashes only work in CSP Level 3 with 'unsafe-hashes'.
+    if (!in_array(self::POLICY_UNSAFE_HASHES, $sources)) {
+      $sources = array_filter($sources, function ($source) {
+        return !preg_match("<'(" . implode('|', self::HASH_ALGORITHMS) . ")-[a-z0-9+/=]+=*'>i", $source);
+      });
+    }
+
+    // If all set source have been removed, block all.
+    if (empty($sources)) {
+      $sources = [self::POLICY_NONE];
+    }
+
+    return $sources;
+  }
+
+  /**
+   * Sort an array of directives.
+   *
+   * @param array $directives
+   *   An array of directives.
+   *
+   * @return array
+   *   The sorted directives.
+   */
+  public static function sortDirectives(array $directives) {
+    $order = array_flip(array_keys(self::DIRECTIVES));
+
+    uksort($directives, function ($a, $b) use ($order) {
+      return $order[$a] <=> $order[$b];
+    });
+
+    return $directives;
+  }
+
+  /**
+   * Firefox doesn't respect certain sources set on default-src.
+   *
+   * If script-src or style-src are not set and fall back to default-src,
+   * Firefox doesn't apply 'strict-dynamic', nonces, or hashes if they are set.
+   *
+   * @see https://bugzilla.mozilla.org/show_bug.cgi?id=1313937
+   *
+   * @param array $directives
+   *   An array of directives.
+   *
+   * @return array
+   *   The modified array of directives.
+   */
+  private static function ff1313937(array $directives) {
+    if (empty($directives['default-src'])) {
+      return $directives;
+    }
+
+    $hasBugSource = array_reduce(
+      $directives['default-src'],
+      function ($return, $value) {
+        return $return || (
+          $value == Csp::POLICY_STRICT_DYNAMIC
+          ||
+          preg_match("<^'(hash|nonce)->", $value)
+        );
+      },
+      FALSE
+    );
+
+    if ($hasBugSource) {
+      if (empty($directives['script-src'])) {
+        $directives['script-src'] = $directives['default-src'];
+      }
+      if (empty($directives['style-src'])) {
+        $directives['style-src'] = array_diff(
+          $directives['default-src'],
+          // Remove 'strict-dynamic' since it's not relevant to styles.
+          [Csp::POLICY_STRICT_DYNAMIC]
+        );
+      }
+    }
+
+    return $directives;
   }
 
   /**

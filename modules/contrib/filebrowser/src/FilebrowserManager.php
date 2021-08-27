@@ -7,6 +7,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Component\Utility;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\filebrowser\Events\MetadataInfo;
 use Drupal\filebrowser\Services\FilebrowserValidator;
 use Drupal\filebrowser\Services\Common;
@@ -36,7 +37,6 @@ class FilebrowserManager extends ControllerBase {
    * @var \Drupal\filebrowser\Filebrowser
    */
   protected $filebrowser;
-
 
   /**
    * FilebrowserManager constructor.
@@ -397,13 +397,14 @@ class FilebrowserManager extends ControllerBase {
   public static function validateFolderPath($element, FormStateInterface $form_state) {
 
     $folder_path = $form_state->getValue('filebrowser')['folder_path'];
-    $file_service = \Drupal::service('file_system');
-    $scheme = $file_service->uriScheme($folder_path);
+    /** @var \Drupal\Core\StreamWrapper\StreamWrapperManager $stream_wrapper_manager */
+    $stream_wrapper_manager = \Drupal::service('stream_wrapper_manager');
+    $scheme = $stream_wrapper_manager::getScheme($folder_path);
     $error = false;
     $message = '';
 
     // Scheme is valid?
-    if (!$scheme || !$file_service->validScheme($scheme)) {
+    if (!$scheme || !$stream_wrapper_manager->isValidScheme($scheme)) {
       $message = t('The scheme: %scheme in your uri is not valid.', ['%scheme' => $scheme]);
       $error = true;
       $form_state->setError($element, $message);
@@ -419,7 +420,8 @@ class FilebrowserManager extends ControllerBase {
       // name is safe, create the folder if it doesn't exists.
       if (!file_exists($folder_path)) {
         if (\Drupal::service('file_system')->mkdir($folder_path, NULL, TRUE, NULL)) {
-          \Drupal::messenger()->addMessage('Folder location @uri created.', ['@uri' => $folder_path]);
+          $message = t('Folder location @uri created.', ['@uri' => $folder_path]);
+          \Drupal::messenger()->addMessage($message);
         }
         else {
           $error = true;
@@ -457,7 +459,7 @@ class FilebrowserManager extends ControllerBase {
 //  }
 //
 //  public function checkFolderPath($form, FormStateInterface $form_state) {
-//
+//    // @todo Replace deprecated code once the method is uncommented.
 //    $folder_path = $form_state->getValue('filebrowser')['folder_path'];
 //    $file_service = \Drupal::service('file_system');
 //    $scheme = $file_service->uriScheme($folder_path);

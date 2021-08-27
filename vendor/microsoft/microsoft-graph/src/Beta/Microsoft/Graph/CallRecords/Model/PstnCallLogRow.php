@@ -23,10 +23,41 @@ namespace Beta\Microsoft\Graph\CallRecords\Model;
 */
 class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
 {
+
+    /**
+    * Gets the callDurationSource
+    *
+    * @return PstnCallDurationSource|null The callDurationSource
+    */
+    public function getCallDurationSource()
+    {
+        if (array_key_exists("callDurationSource", $this->_propDict)) {
+            if (is_a($this->_propDict["callDurationSource"], "\Beta\Microsoft\Graph\CallRecords\Model\PstnCallDurationSource") || is_null($this->_propDict["callDurationSource"])) {
+                return $this->_propDict["callDurationSource"];
+            } else {
+                $this->_propDict["callDurationSource"] = new PstnCallDurationSource($this->_propDict["callDurationSource"]);
+                return $this->_propDict["callDurationSource"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the callDurationSource
+    *
+    * @param PstnCallDurationSource $val The value to assign to the callDurationSource
+    *
+    * @return PstnCallLogRow The PstnCallLogRow
+    */
+    public function setCallDurationSource($val)
+    {
+        $this->_propDict["callDurationSource"] = $val;
+         return $this;
+    }
     /**
     * Gets the calleeNumber
     *
-    * @return string The calleeNumber
+    * @return string|null The calleeNumber
     */
     public function getCalleeNumber()
     {
@@ -52,7 +83,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the callerNumber
     *
-    * @return string The callerNumber
+    * @return string|null The callerNumber
     */
     public function getCallerNumber()
     {
@@ -78,7 +109,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the callId
     *
-    * @return string The callId
+    * @return string|null The callId
     */
     public function getCallId()
     {
@@ -104,7 +135,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the callType
     *
-    * @return string The callType
+    * @return string|null The callType
     */
     public function getCallType()
     {
@@ -131,15 +162,15 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the charge
     *
-    * @return Beta\Microsoft\Graph\Model\Decimal The charge
+    * @return \Beta\Microsoft\Graph\Model\Decimal|null The charge
     */
     public function getCharge()
     {
         if (array_key_exists("charge", $this->_propDict)) {
-            if (is_a($this->_propDict["charge"], "Beta\Microsoft\Graph\Model\Decimal")) {
+            if (is_a($this->_propDict["charge"], "\Beta\Microsoft\Graph\Model\Decimal") || is_null($this->_propDict["charge"])) {
                 return $this->_propDict["charge"];
             } else {
-                $this->_propDict["charge"] = new Beta\Microsoft\Graph\Model\Decimal($this->_propDict["charge"]);
+                $this->_propDict["charge"] = new \Beta\Microsoft\Graph\Model\Decimal($this->_propDict["charge"]);
                 return $this->_propDict["charge"];
             }
         }
@@ -149,7 +180,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Sets the charge
     *
-    * @param Beta\Microsoft\Graph\Model\Decimal $val The value to assign to the charge
+    * @param \Beta\Microsoft\Graph\Model\Decimal $val The value to assign to the charge
     *
     * @return PstnCallLogRow The PstnCallLogRow
     */
@@ -161,7 +192,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the conferenceId
     *
-    * @return string The conferenceId
+    * @return string|null The conferenceId
     */
     public function getConferenceId()
     {
@@ -188,15 +219,15 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the connectionCharge
     *
-    * @return Beta\Microsoft\Graph\Model\Decimal The connectionCharge
+    * @return \Beta\Microsoft\Graph\Model\Decimal|null The connectionCharge
     */
     public function getConnectionCharge()
     {
         if (array_key_exists("connectionCharge", $this->_propDict)) {
-            if (is_a($this->_propDict["connectionCharge"], "Beta\Microsoft\Graph\Model\Decimal")) {
+            if (is_a($this->_propDict["connectionCharge"], "\Beta\Microsoft\Graph\Model\Decimal") || is_null($this->_propDict["connectionCharge"])) {
                 return $this->_propDict["connectionCharge"];
             } else {
-                $this->_propDict["connectionCharge"] = new Beta\Microsoft\Graph\Model\Decimal($this->_propDict["connectionCharge"]);
+                $this->_propDict["connectionCharge"] = new \Beta\Microsoft\Graph\Model\Decimal($this->_propDict["connectionCharge"]);
                 return $this->_propDict["connectionCharge"];
             }
         }
@@ -206,7 +237,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Sets the connectionCharge
     *
-    * @param Beta\Microsoft\Graph\Model\Decimal $val The value to assign to the connectionCharge
+    * @param \Beta\Microsoft\Graph\Model\Decimal $val The value to assign to the connectionCharge
     *
     * @return PstnCallLogRow The PstnCallLogRow
     */
@@ -218,7 +249,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the currency
     *
-    * @return string The currency
+    * @return string|null The currency
     */
     public function getCurrency()
     {
@@ -244,7 +275,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the destinationContext
     *
-    * @return string The destinationContext
+    * @return string|null The destinationContext
     */
     public function getDestinationContext()
     {
@@ -270,7 +301,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the destinationName
     *
-    * @return string The destinationName
+    * @return string|null The destinationName
     */
     public function getDestinationName()
     {
@@ -296,7 +327,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the duration
     *
-    * @return int The duration
+    * @return int|null The duration
     */
     public function getDuration()
     {
@@ -323,12 +354,12 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the endDateTime
     *
-    * @return \DateTime The endDateTime
+    * @return \DateTime|null The endDateTime
     */
     public function getEndDateTime()
     {
         if (array_key_exists("endDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["endDateTime"], "\DateTime")) {
+            if (is_a($this->_propDict["endDateTime"], "\DateTime") || is_null($this->_propDict["endDateTime"])) {
                 return $this->_propDict["endDateTime"];
             } else {
                 $this->_propDict["endDateTime"] = new \DateTime($this->_propDict["endDateTime"]);
@@ -353,7 +384,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the id
     *
-    * @return string The id
+    * @return string|null The id
     */
     public function getId()
     {
@@ -379,7 +410,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the inventoryType
     *
-    * @return string The inventoryType
+    * @return string|null The inventoryType
     */
     public function getInventoryType()
     {
@@ -405,7 +436,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the licenseCapability
     *
-    * @return string The licenseCapability
+    * @return string|null The licenseCapability
     */
     public function getLicenseCapability()
     {
@@ -428,16 +459,42 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
         $this->_propDict["licenseCapability"] = $val;
         return $this;
     }
+    /**
+    * Gets the operator
+    *
+    * @return string|null The operator
+    */
+    public function getOperator()
+    {
+        if (array_key_exists("operator", $this->_propDict)) {
+            return $this->_propDict["operator"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the operator
+    *
+    * @param string $val The value of the operator
+    *
+    * @return PstnCallLogRow
+    */
+    public function setOperator($val)
+    {
+        $this->_propDict["operator"] = $val;
+        return $this;
+    }
 
     /**
     * Gets the startDateTime
     *
-    * @return \DateTime The startDateTime
+    * @return \DateTime|null The startDateTime
     */
     public function getStartDateTime()
     {
         if (array_key_exists("startDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["startDateTime"], "\DateTime")) {
+            if (is_a($this->_propDict["startDateTime"], "\DateTime") || is_null($this->_propDict["startDateTime"])) {
                 return $this->_propDict["startDateTime"];
             } else {
                 $this->_propDict["startDateTime"] = new \DateTime($this->_propDict["startDateTime"]);
@@ -462,7 +519,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the tenantCountryCode
     *
-    * @return string The tenantCountryCode
+    * @return string|null The tenantCountryCode
     */
     public function getTenantCountryCode()
     {
@@ -488,7 +545,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the usageCountryCode
     *
-    * @return string The usageCountryCode
+    * @return string|null The usageCountryCode
     */
     public function getUsageCountryCode()
     {
@@ -514,7 +571,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the userDisplayName
     *
-    * @return string The userDisplayName
+    * @return string|null The userDisplayName
     */
     public function getUserDisplayName()
     {
@@ -540,7 +597,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the userId
     *
-    * @return string The userId
+    * @return string|null The userId
     */
     public function getUserId()
     {
@@ -566,7 +623,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     /**
     * Gets the userPrincipalName
     *
-    * @return string The userPrincipalName
+    * @return string|null The userPrincipalName
     */
     public function getUserPrincipalName()
     {

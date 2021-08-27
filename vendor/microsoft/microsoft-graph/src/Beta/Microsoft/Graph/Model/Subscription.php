@@ -28,7 +28,7 @@ class Subscription extends Entity
     * Gets the applicationId
     * Identifier of the application used to create the subscription. Read-only.
     *
-    * @return string The applicationId
+    * @return string|null The applicationId
     */
     public function getApplicationId()
     {
@@ -57,7 +57,7 @@ class Subscription extends Entity
     * Gets the changeType
     * Indicates the type of change in the subscribed resource that will raise a change notification. The supported values are: created, updated, deleted. Multiple values can be combined using a comma-separated list. Required. Note: Drive root item and list change notifications support only the updated changeType. User and group change notifications support updated and deleted changeType.
     *
-    * @return string The changeType
+    * @return string|null The changeType
     */
     public function getChangeType()
     {
@@ -86,7 +86,7 @@ class Subscription extends Entity
     * Gets the clientState
     * Specifies the value of the clientState property sent by the service in each change notification. The maximum length is 255 characters. The client can check that the change notification came from the service by comparing the value of the clientState property sent with the subscription with the value of the clientState property received with each change notification. Optional.
     *
-    * @return string The clientState
+    * @return string|null The clientState
     */
     public function getClientState()
     {
@@ -115,7 +115,7 @@ class Subscription extends Entity
     * Gets the creatorId
     * Identifier of the user or service principal that created the subscription. If the app used delegated permissions to create the subscription, this field contains the ID of the signed-in user the app called on behalf of. If the app used application permissions, this field contains the ID of the service principal corresponding to the app. Read-only.
     *
-    * @return string The creatorId
+    * @return string|null The creatorId
     */
     public function getCreatorId()
     {
@@ -144,7 +144,7 @@ class Subscription extends Entity
     * Gets the encryptionCertificate
     * A base64-encoded representation of a certificate with a public key used to encrypt resource data in change notifications. Optional. Required when includeResourceData is true.
     *
-    * @return string The encryptionCertificate
+    * @return string|null The encryptionCertificate
     */
     public function getEncryptionCertificate()
     {
@@ -173,7 +173,7 @@ class Subscription extends Entity
     * Gets the encryptionCertificateId
     * A custom app-provided identifier to help identify the certificate needed to decrypt resource data. Optional. Required when includeResourceData is true.
     *
-    * @return string The encryptionCertificateId
+    * @return string|null The encryptionCertificateId
     */
     public function getEncryptionCertificateId()
     {
@@ -202,12 +202,12 @@ class Subscription extends Entity
     * Gets the expirationDateTime
     * Specifies the date and time when the webhook subscription expires. The time is in UTC, and can be an amount of time from subscription creation that varies for the resource subscribed to.  See the table below for maximum supported subscription length of time. Required.
     *
-    * @return \DateTime The expirationDateTime
+    * @return \DateTime|null The expirationDateTime
     */
     public function getExpirationDateTime()
     {
         if (array_key_exists("expirationDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["expirationDateTime"], "\DateTime")) {
+            if (is_a($this->_propDict["expirationDateTime"], "\DateTime") || is_null($this->_propDict["expirationDateTime"])) {
                 return $this->_propDict["expirationDateTime"];
             } else {
                 $this->_propDict["expirationDateTime"] = new \DateTime($this->_propDict["expirationDateTime"]);
@@ -232,37 +232,10 @@ class Subscription extends Entity
     }
     
     /**
-    * Gets the includeProperties
-    *
-    * @return bool The includeProperties
-    */
-    public function getIncludeProperties()
-    {
-        if (array_key_exists("includeProperties", $this->_propDict)) {
-            return $this->_propDict["includeProperties"];
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-    * Sets the includeProperties
-    *
-    * @param bool $val The includeProperties
-    *
-    * @return Subscription
-    */
-    public function setIncludeProperties($val)
-    {
-        $this->_propDict["includeProperties"] = boolval($val);
-        return $this;
-    }
-    
-    /**
     * Gets the includeResourceData
     * When set to true, change notifications include resource data (such as content of a chat message). Optional.
     *
-    * @return bool The includeResourceData
+    * @return bool|null The includeResourceData
     */
     public function getIncludeResourceData()
     {
@@ -291,7 +264,7 @@ class Subscription extends Entity
     * Gets the latestSupportedTlsVersion
     * Specifies the latest version of Transport Layer Security (TLS) that the notification endpoint, specified by notificationUrl, supports. The possible values are: v1_0, v1_1, v1_2, v1_3. For subscribers whose notification endpoint supports a version lower than the currently recommended version (TLS 1.2), specifying this property by a set timeline allows them to temporarily use their deprecated version of TLS before completing their upgrade to TLS 1.2. For these subscribers, not setting this property per the timeline would result in subscription operations failing. For subscribers whose notification endpoint already supports TLS 1.2, setting this property is optional. In such cases, Microsoft Graph defaults the property to v1_2.
     *
-    * @return string The latestSupportedTlsVersion
+    * @return string|null The latestSupportedTlsVersion
     */
     public function getLatestSupportedTlsVersion()
     {
@@ -320,7 +293,7 @@ class Subscription extends Entity
     * Gets the lifecycleNotificationUrl
     * The URL of the endpoint that receives lifecycle notifications, including subscriptionRemoved and missed notifications. This URL must make use of the HTTPS protocol. Optional. Read more about how Outlook resources use lifecycle notifications.
     *
-    * @return string The lifecycleNotificationUrl
+    * @return string|null The lifecycleNotificationUrl
     */
     public function getLifecycleNotificationUrl()
     {
@@ -346,9 +319,39 @@ class Subscription extends Entity
     }
     
     /**
-    * Gets the notificationQueryOptions
+    * Gets the notificationContentType
+    * Desired content-type for MS Graph change notifications for supported resource types. The default content-type is the 'application/json' content-type.
     *
-    * @return string The notificationQueryOptions
+    * @return string|null The notificationContentType
+    */
+    public function getNotificationContentType()
+    {
+        if (array_key_exists("notificationContentType", $this->_propDict)) {
+            return $this->_propDict["notificationContentType"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the notificationContentType
+    * Desired content-type for MS Graph change notifications for supported resource types. The default content-type is the 'application/json' content-type.
+    *
+    * @param string $val The notificationContentType
+    *
+    * @return Subscription
+    */
+    public function setNotificationContentType($val)
+    {
+        $this->_propDict["notificationContentType"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the notificationQueryOptions
+    * OData Query Options for specifying value for the targeting resource. Clients receive notifications when resource reaches the state matching the query options provided here. With this new property in the subscription creation payload along with all existing properties, Webhooks will deliver notifications whenever a resource reaches the desired state mentioned in the notificationQueryOptions property eg  when the print job is completed, when a print job resource isFetchable property value becomes true etc.
+    *
+    * @return string|null The notificationQueryOptions
     */
     public function getNotificationQueryOptions()
     {
@@ -361,6 +364,7 @@ class Subscription extends Entity
     
     /**
     * Sets the notificationQueryOptions
+    * OData Query Options for specifying value for the targeting resource. Clients receive notifications when resource reaches the state matching the query options provided here. With this new property in the subscription creation payload along with all existing properties, Webhooks will deliver notifications whenever a resource reaches the desired state mentioned in the notificationQueryOptions property eg  when the print job is completed, when a print job resource isFetchable property value becomes true etc.
     *
     * @param string $val The notificationQueryOptions
     *
@@ -376,7 +380,7 @@ class Subscription extends Entity
     * Gets the notificationUrl
     * The URL of the endpoint that receives the change notifications. This URL must make use of the HTTPS protocol. Required.
     *
-    * @return string The notificationUrl
+    * @return string|null The notificationUrl
     */
     public function getNotificationUrl()
     {
@@ -402,10 +406,37 @@ class Subscription extends Entity
     }
     
     /**
+    * Gets the notificationUrlAppId
+    *
+    * @return string|null The notificationUrlAppId
+    */
+    public function getNotificationUrlAppId()
+    {
+        if (array_key_exists("notificationUrlAppId", $this->_propDict)) {
+            return $this->_propDict["notificationUrlAppId"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the notificationUrlAppId
+    *
+    * @param string $val The notificationUrlAppId
+    *
+    * @return Subscription
+    */
+    public function setNotificationUrlAppId($val)
+    {
+        $this->_propDict["notificationUrlAppId"] = $val;
+        return $this;
+    }
+    
+    /**
     * Gets the resource
     * Specifies the resource that will be monitored for changes. Do not include the base URL (https://graph.microsoft.com/beta/). See the possible resource path values for each supported resource. Required.
     *
-    * @return string The resource
+    * @return string|null The resource
     */
     public function getResource()
     {

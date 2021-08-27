@@ -232,6 +232,8 @@ class EntityUsageTest extends EntityKernelTestBase {
    */
   public function testEntityUsageBlockTrackingHook() {
     $this->container->get('module_installer')->install([
+      'image',
+      'media',
       'path',
       'views',
       'entity_usage_test',

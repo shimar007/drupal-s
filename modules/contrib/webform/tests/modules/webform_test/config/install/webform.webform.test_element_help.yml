@@ -1,4 +1,3 @@
-uuid: null
 langcode: en
 status: open
 dependencies:
@@ -38,6 +37,10 @@ elements: |
     '#type': textfield
     '#title': help_xss
     '#help': '{This is an example of help with <b>XSS <script>alert("XSS")</b>}'
+  help_empty:
+    '#type': textfield
+    '#title': help_empty
+    '#help': '[webform_submission:values:not_valid:clear]'
   help_checkbox:
     '#type': checkbox
     '#title': help_checkbox
@@ -124,16 +127,15 @@ elements: |
     '#title': help_before_details
     '#help': '{This is an example of help}'
     '#help_display': element_before
-    'help_before_details':
+    help_before_details:
       '#markup': '{This is markup}'
   help_after_details:
     '#type': details
     '#title': help_after_details
     '#help': '{This is an example of help}'
     '#help_display': element_after
-    'help_after_details':
+    help_after_details:
       '#markup': '{This is markup}'
-  
 css: ''
 javascript: ''
 settings:

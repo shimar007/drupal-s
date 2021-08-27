@@ -81,21 +81,22 @@ class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
    * {@inheritdoc}
    */
   public function getMenuLinkItemContent(MenuLinkContentInterface $entity, $menu_level = NULL, $show_item_link = FALSE) {
-    $view_builder = $this->entityTypeManager
-      ->getViewBuilder('menu_link_content');
-    if ($entity->id()) {
-      $view_mode = $this->getMenuLinkContentViewMode($entity);
-    }
-    else {
-      $view_mode = 'default';
-    }
-    $render_output = array_merge(
-      $view_builder->view($entity, $view_mode),
-      EntityViewDisplay::collectRenderDisplay($entity, $view_mode)->build($entity)
-    );
-    unset($render_output['#cache']);
-    $render_output['#show_item_link'] = $show_item_link;
+    // Build the render array for this menu link.
+    $view_builder = $this->entityTypeManager->getViewBuilder('menu_link_content');
+    $view_mode = $entity->id() ? $this->getMenuLinkContentViewMode($entity) : 'default';
+    $render_output = $view_builder->view($entity, $view_mode);
 
+    // Build the entity view ourselves and unset the #pre_render so that it
+    // doesn't run twice later on, when rendered.
+    // This gives us access to all fields immediately in the menu template.
+    $render_output = $view_builder->build($render_output);
+    array_pop($render_output['#pre_render']);
+
+    // Unset cache, handled by menu_item_extras_link_item_content_active_trails.
+    unset($render_output['#cache']);
+
+    // Add other properties.
+    $render_output['#show_item_link'] = $show_item_link;
     if (!is_null($menu_level)) {
       $render_output['#menu_level'] = $menu_level;
     }
@@ -150,7 +151,10 @@ class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
       }
       // Process subitems.
       if (!empty($item['below'])) {
-        $content['content']['children'] = $this->processMenuLinkTree($item['below'], $menu_name, $menu_level, $show_item_link);
+        $content['content']['children']['#items'] = $this->processMenuLinkTree($item['below'], $menu_name, $menu_level, $show_item_link);
+        $content['content']['children']['#theme'] = 'menu_levels';
+        $content['content']['children']['#menu_name'] = $menu_name;
+        $content['content']['children']['#menu_level'] = $menu_level + 1;
       }
       $item = array_merge($item, $content);
     }

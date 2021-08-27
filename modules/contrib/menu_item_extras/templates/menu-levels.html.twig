@@ -20,8 +20,8 @@
 
     <li{{ item.attributes.addClass(menu_item_classes) }}>
       {{ link(item.title, item.url) }}
-      {% set rendered_content = item.content|without('') %}
-      {% if rendered_content|render %}
+      {% set rendered_content = item.content|without('')|render %}
+      {% if rendered_content %}
         {{ rendered_content }}
       {% endif %}
     </li>

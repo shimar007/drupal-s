@@ -27,9 +27,8 @@ class OfficeClientConfiguration extends Entity
 
      /** 
      * Gets the checkinStatuses
-    * List of office Client check-in status.
      *
-     * @return array The checkinStatuses
+     * @return array|null The checkinStatuses
      */
     public function getCheckinStatuses()
     {
@@ -42,7 +41,6 @@ class OfficeClientConfiguration extends Entity
     
     /** 
     * Sets the checkinStatuses
-    * List of office Client check-in status.
     *
     * @param OfficeClientCheckinStatus $val The checkinStatuses
     *
@@ -50,15 +48,14 @@ class OfficeClientConfiguration extends Entity
     */
     public function setCheckinStatuses($val)
     {
-		$this->_propDict["checkinStatuses"] = $val;
+        $this->_propDict["checkinStatuses"] = $val;
         return $this;
     }
     
     /**
     * Gets the description
-    * Not yet documented
     *
-    * @return string The description
+    * @return string|null The description
     */
     public function getDescription()
     {
@@ -71,7 +68,6 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Sets the description
-    * Not yet documented
     *
     * @param string $val The description
     *
@@ -85,9 +81,8 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Gets the displayName
-    * Admin provided description of the office client configuration policy.
     *
-    * @return string The displayName
+    * @return string|null The displayName
     */
     public function getDisplayName()
     {
@@ -100,7 +95,6 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Sets the displayName
-    * Admin provided description of the office client configuration policy.
     *
     * @param string $val The displayName
     *
@@ -114,17 +108,16 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Gets the policyPayload
-    * Policy settings JSON string in binary format, these values cannot be changed by the user.
     *
-    * @return \GuzzleHttp\Psr7\Stream The policyPayload
+    * @return \GuzzleHttp\Psr7\Stream|null The policyPayload
     */
     public function getPolicyPayload()
     {
         if (array_key_exists("policyPayload", $this->_propDict)) {
-            if (is_a($this->_propDict["policyPayload"], "\GuzzleHttp\Psr7\Stream")) {
+            if (is_a($this->_propDict["policyPayload"], "\GuzzleHttp\Psr7\Stream") || is_null($this->_propDict["policyPayload"])) {
                 return $this->_propDict["policyPayload"];
             } else {
-                $this->_propDict["policyPayload"] = \GuzzleHttp\Psr7\stream_for($this->_propDict["policyPayload"]);
+                $this->_propDict["policyPayload"] = \GuzzleHttp\Psr7\Utils::streamFor($this->_propDict["policyPayload"]);
                 return $this->_propDict["policyPayload"];
             }
         }
@@ -133,7 +126,6 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Sets the policyPayload
-    * Policy settings JSON string in binary format, these values cannot be changed by the user.
     *
     * @param \GuzzleHttp\Psr7\Stream $val The policyPayload
     *
@@ -147,9 +139,8 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Gets the priority
-    * Priority value should be unique value for each policy under a tenant and will be used for conflict resolution, lower values mean priority is high.
     *
-    * @return int The priority
+    * @return int|null The priority
     */
     public function getPriority()
     {
@@ -162,7 +153,6 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Sets the priority
-    * Priority value should be unique value for each policy under a tenant and will be used for conflict resolution, lower values mean priority is high.
     *
     * @param int $val The priority
     *
@@ -176,14 +166,13 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Gets the userCheckinSummary
-    * User check-in summary for the policy.
     *
-    * @return OfficeUserCheckinSummary The userCheckinSummary
+    * @return OfficeUserCheckinSummary|null The userCheckinSummary
     */
     public function getUserCheckinSummary()
     {
         if (array_key_exists("userCheckinSummary", $this->_propDict)) {
-            if (is_a($this->_propDict["userCheckinSummary"], "Beta\Microsoft\Graph\Model\OfficeUserCheckinSummary")) {
+            if (is_a($this->_propDict["userCheckinSummary"], "\Beta\Microsoft\Graph\Model\OfficeUserCheckinSummary") || is_null($this->_propDict["userCheckinSummary"])) {
                 return $this->_propDict["userCheckinSummary"];
             } else {
                 $this->_propDict["userCheckinSummary"] = new OfficeUserCheckinSummary($this->_propDict["userCheckinSummary"]);
@@ -195,7 +184,6 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Sets the userCheckinSummary
-    * User check-in summary for the policy.
     *
     * @param OfficeUserCheckinSummary $val The userCheckinSummary
     *
@@ -209,17 +197,16 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Gets the userPreferencePayload
-    * Preference settings JSON string in binary format, these values can be overridden by the user.
     *
-    * @return \GuzzleHttp\Psr7\Stream The userPreferencePayload
+    * @return \GuzzleHttp\Psr7\Stream|null The userPreferencePayload
     */
     public function getUserPreferencePayload()
     {
         if (array_key_exists("userPreferencePayload", $this->_propDict)) {
-            if (is_a($this->_propDict["userPreferencePayload"], "\GuzzleHttp\Psr7\Stream")) {
+            if (is_a($this->_propDict["userPreferencePayload"], "\GuzzleHttp\Psr7\Stream") || is_null($this->_propDict["userPreferencePayload"])) {
                 return $this->_propDict["userPreferencePayload"];
             } else {
-                $this->_propDict["userPreferencePayload"] = \GuzzleHttp\Psr7\stream_for($this->_propDict["userPreferencePayload"]);
+                $this->_propDict["userPreferencePayload"] = \GuzzleHttp\Psr7\Utils::streamFor($this->_propDict["userPreferencePayload"]);
                 return $this->_propDict["userPreferencePayload"];
             }
         }
@@ -228,7 +215,6 @@ class OfficeClientConfiguration extends Entity
     
     /**
     * Sets the userPreferencePayload
-    * Preference settings JSON string in binary format, these values can be overridden by the user.
     *
     * @param \GuzzleHttp\Psr7\Stream $val The userPreferencePayload
     *
@@ -243,9 +229,8 @@ class OfficeClientConfiguration extends Entity
 
      /** 
      * Gets the assignments
-    * The list of group assignments for the policy.
      *
-     * @return array The assignments
+     * @return array|null The assignments
      */
     public function getAssignments()
     {
@@ -258,7 +243,6 @@ class OfficeClientConfiguration extends Entity
     
     /** 
     * Sets the assignments
-    * The list of group assignments for the policy.
     *
     * @param OfficeClientConfigurationAssignment $val The assignments
     *
@@ -266,7 +250,7 @@ class OfficeClientConfiguration extends Entity
     */
     public function setAssignments($val)
     {
-		$this->_propDict["assignments"] = $val;
+        $this->_propDict["assignments"] = $val;
         return $this;
     }
     

@@ -25,15 +25,44 @@ namespace Beta\Microsoft\Graph\Model;
 class UserExperienceAnalyticsMetricHistory extends Entity
 {
     /**
+    * Gets the deviceId
+    * The user experience analytics device id.
+    *
+    * @return string|null The deviceId
+    */
+    public function getDeviceId()
+    {
+        if (array_key_exists("deviceId", $this->_propDict)) {
+            return $this->_propDict["deviceId"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the deviceId
+    * The user experience analytics device id.
+    *
+    * @param string $val The deviceId
+    *
+    * @return UserExperienceAnalyticsMetricHistory
+    */
+    public function setDeviceId($val)
+    {
+        $this->_propDict["deviceId"] = $val;
+        return $this;
+    }
+    
+    /**
     * Gets the metricDateTime
     * The user experience analytics metric date time.
     *
-    * @return \DateTime The metricDateTime
+    * @return \DateTime|null The metricDateTime
     */
     public function getMetricDateTime()
     {
         if (array_key_exists("metricDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["metricDateTime"], "\DateTime")) {
+            if (is_a($this->_propDict["metricDateTime"], "\DateTime") || is_null($this->_propDict["metricDateTime"])) {
                 return $this->_propDict["metricDateTime"];
             } else {
                 $this->_propDict["metricDateTime"] = new \DateTime($this->_propDict["metricDateTime"]);
@@ -58,15 +87,44 @@ class UserExperienceAnalyticsMetricHistory extends Entity
     }
     
     /**
+    * Gets the metricType
+    * The user experience analytics metric type.
+    *
+    * @return string|null The metricType
+    */
+    public function getMetricType()
+    {
+        if (array_key_exists("metricType", $this->_propDict)) {
+            return $this->_propDict["metricType"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the metricType
+    * The user experience analytics metric type.
+    *
+    * @param string $val The metricType
+    *
+    * @return UserExperienceAnalyticsMetricHistory
+    */
+    public function setMetricType($val)
+    {
+        $this->_propDict["metricType"] = $val;
+        return $this;
+    }
+    
+    /**
     * Gets the userExperienceAnalyticsMetric
     * User experience analytics metric.
     *
-    * @return UserExperienceAnalyticsMetric The userExperienceAnalyticsMetric
+    * @return UserExperienceAnalyticsMetric|null The userExperienceAnalyticsMetric
     */
     public function getUserExperienceAnalyticsMetric()
     {
         if (array_key_exists("userExperienceAnalyticsMetric", $this->_propDict)) {
-            if (is_a($this->_propDict["userExperienceAnalyticsMetric"], "Beta\Microsoft\Graph\Model\UserExperienceAnalyticsMetric")) {
+            if (is_a($this->_propDict["userExperienceAnalyticsMetric"], "\Beta\Microsoft\Graph\Model\UserExperienceAnalyticsMetric") || is_null($this->_propDict["userExperienceAnalyticsMetric"])) {
                 return $this->_propDict["userExperienceAnalyticsMetric"];
             } else {
                 $this->_propDict["userExperienceAnalyticsMetric"] = new UserExperienceAnalyticsMetric($this->_propDict["userExperienceAnalyticsMetric"]);

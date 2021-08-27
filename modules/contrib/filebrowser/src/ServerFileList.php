@@ -67,15 +67,16 @@ class ServerFileList {
     /** @var Filebrowser $folder_path */
     $folder_path = $node->filebrowser->folderPath;
     $directory = $folder_path . $relative_path;
-    $files = file_scan_directory($directory, '/.*/', ['recurse' => false]);
+    $files = \Drupal::service('file_system')->scanDirectory($directory, '/.*/', ['recurse' => false]);
     $validator = \Drupal::service('filebrowser.validator');
+    $guessor = \Drupal::service('file.mime_type.guesser');
 
     foreach ($files as $key => $file) {
 
       $file->url = file_create_url($file->uri);
       // Complete the required file data
 
-      $file->mimetype = \Drupal::service('file.mime_type.guesser')->guess($file->filename);
+      $file->mimetype = $guessor->guess($file->filename);
 
       $file->size = filesize($file->uri);
       $file->type = filetype($file->uri);

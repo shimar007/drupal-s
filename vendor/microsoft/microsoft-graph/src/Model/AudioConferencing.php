@@ -25,8 +25,9 @@ class AudioConferencing extends Entity
 {
     /**
     * Gets the conferenceId
+    * The conference id of the online meeting.
     *
-    * @return string The conferenceId
+    * @return string|null The conferenceId
     */
     public function getConferenceId()
     {
@@ -39,6 +40,7 @@ class AudioConferencing extends Entity
 
     /**
     * Sets the conferenceId
+    * The conference id of the online meeting.
     *
     * @param string $val The value of the conferenceId
     *
@@ -53,7 +55,7 @@ class AudioConferencing extends Entity
     * Gets the dialinUrl
     * A URL to the externally-accessible web page that contains dial-in information.
     *
-    * @return string The dialinUrl
+    * @return string|null The dialinUrl
     */
     public function getDialinUrl()
     {
@@ -81,7 +83,7 @@ class AudioConferencing extends Entity
     * Gets the tollFreeNumber
     * The toll-free number that connects to the Audio Conference Provider.
     *
-    * @return string The tollFreeNumber
+    * @return string|null The tollFreeNumber
     */
     public function getTollFreeNumber()
     {
@@ -109,7 +111,7 @@ class AudioConferencing extends Entity
     * Gets the tollNumber
     * The toll number that connects to the Audio Conference Provider.
     *
-    * @return string The tollNumber
+    * @return string|null The tollNumber
     */
     public function getTollNumber()
     {

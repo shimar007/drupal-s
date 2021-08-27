@@ -93,18 +93,15 @@ class MenuItemExtrasUninstallTest extends BrowserTestBase {
       'required' => FALSE,
     ])->save();
     $linkAfterInstall = MenuLinkContent::load($link->id());
-    $this->assertEqual($linkAfterInstall->get('bundle')
-      ->getString(), $this->menu->id());
+    $this->assertEquals($this->menu->id(), $linkAfterInstall->get('bundle')->getString());
     $linkAfterInstall->set('field_test', 1);
     $linkAfterInstall->save();
-    $this->assertEqual($linkAfterInstall->get('field_test')
-      ->getString(), '1');
+    $this->assertEquals('1', $linkAfterInstall->get('field_test')->getString());
 
     $module_installer->uninstall(['menu_item_extras']);
 
     $linkAfterUninstall = MenuLinkContent::load($link->id());
-    $this->assertEqual($linkAfterUninstall->get('bundle')
-      ->getString(), $entity_type);
+    $this->assertEquals($entity_type, $linkAfterUninstall->get('bundle')->getString());
     $this->assertFalse($linkAfterUninstall->hasField('field_test'));
 
     $definishions = \Drupal::entityTypeManager()->getDefinition($entity_type);
@@ -113,7 +110,7 @@ class MenuItemExtrasUninstallTest extends BrowserTestBase {
 
     $module_installer->install(['menu_item_extras']);
     $this->drupalGet(Url::fromRoute('entity.' . $entity_type . '.edit_form', [$entity_type => $linkAfterUninstall->id()]));
-    $this->assertElementNotPresent('input[name="field_test[value]"]');
+    $this->assertSession()->elementNotExists('css', 'input[name="field_test[value]"]');
   }
 
 }

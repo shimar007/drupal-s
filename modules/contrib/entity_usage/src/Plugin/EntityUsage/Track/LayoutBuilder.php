@@ -2,6 +2,7 @@
 
 namespace Drupal\entity_usage\Plugin\EntityUsage\Track;
 
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
@@ -92,7 +93,13 @@ class LayoutBuilder extends EntityUsageTrackBase {
       $section = $value->getValue();
       foreach ($section->getComponents() as $component) {
         $configuration = $component->toArray()['configuration'];
-        $def = $this->blockManager->getDefinition($component->getPluginId());
+        try {
+          $def = $this->blockManager->getDefinition($component->getPluginId());
+        }
+        catch (PluginNotFoundException $e) {
+          // Block has since been removed, continue.
+          continue;
+        }
         if ($def['id'] === 'inline_block') {
           $blockContentRevisionIds[] = $configuration['block_revision_id'];
         }

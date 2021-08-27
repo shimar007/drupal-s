@@ -22,20 +22,51 @@ namespace Beta\Microsoft\Graph\Model;
 * @license   https://opensource.org/licenses/MIT MIT License
 * @link      https://graph.microsoft.com
 */
-class Compliance extends 
+class Compliance implements \JsonSerializable
 {
+    /**
+    * The array of properties available
+    * to the model
+    *
+    * @var array $_propDict
+    */
+    protected $_propDict;
+    
+    /**
+    * Construct a new Compliance
+    *
+    * @param array $propDict A list of properties to set
+    */
+    function __construct($propDict = array())
+    {
+        if (!is_array($propDict)) {
+           $propDict = array();
+        }
+        $this->_propDict = $propDict;
+    }
+
+    /**
+    * Gets the property dictionary of the Compliance
+    *
+    * @return array The list of properties
+    */
+    public function getProperties()
+    {
+        return $this->_propDict;
+    }
+    
     /**
     * Gets the ediscovery
     *
-    * @return Ediscovery The ediscovery
+    * @return \Beta\Microsoft\Graph\Ediscovery\Model\Ediscoveryroot|null The ediscovery
     */
     public function getEdiscovery()
     {
         if (array_key_exists("ediscovery", $this->_propDict)) {
-            if (is_a($this->_propDict["ediscovery"], "Beta\Microsoft\Graph\Model\Ediscovery")) {
+            if (is_a($this->_propDict["ediscovery"], "\Beta\Microsoft\Graph\Ediscovery\Model\Ediscoveryroot") || is_null($this->_propDict["ediscovery"])) {
                 return $this->_propDict["ediscovery"];
             } else {
-                $this->_propDict["ediscovery"] = new Ediscovery($this->_propDict["ediscovery"]);
+                $this->_propDict["ediscovery"] = new \Beta\Microsoft\Graph\Ediscovery\Model\Ediscoveryroot($this->_propDict["ediscovery"]);
                 return $this->_propDict["ediscovery"];
             }
         }
@@ -45,7 +76,7 @@ class Compliance extends
     /**
     * Sets the ediscovery
     *
-    * @param Ediscovery $val The ediscovery
+    * @param \Beta\Microsoft\Graph\Ediscovery\Model\Ediscoveryroot $val The ediscovery
     *
     * @return Compliance
     */
@@ -55,4 +86,48 @@ class Compliance extends
         return $this;
     }
     
+    /**
+    * Gets the ODataType
+    *
+    * @return string|null The ODataType
+    */
+    public function getODataType()
+    {
+        if (array_key_exists('@odata.type', $this->_propDict)) {
+            return $this->_propDict["@odata.type"];
+        }
+        return null;
+    }
+    
+    /**
+    * Sets the ODataType
+    *
+    * @param string $val The ODataType
+    *
+    * @return Compliance
+    */
+    public function setODataType($val)
+    {
+        $this->_propDict["@odata.type"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Serializes the object by property array
+    * Manually serialize DateTime into RFC3339 format
+    *
+    * @return array The list of properties
+    */
+    public function jsonSerialize()
+    {
+        $serializableProperties = $this->getProperties();
+        foreach ($serializableProperties as $property => $val) {
+            if (is_a($val, "\DateTime")) {
+                $serializableProperties[$property] = $val->format(\DateTime::RFC3339);
+            } else if (is_a($val, "\Microsoft\Graph\Core\Enum")) {
+                $serializableProperties[$property] = $val->value();
+            }
+        }
+        return $serializableProperties;
+    }
 }

@@ -26,13 +26,14 @@ class BroadcastMeetingSettings extends Entity
 
     /**
     * Gets the allowedAudience
+    * Defines who can join the live event. Possible values are listed in the following table.
     *
-    * @return BroadcastMeetingAudience The allowedAudience
+    * @return BroadcastMeetingAudience|null The allowedAudience
     */
     public function getAllowedAudience()
     {
         if (array_key_exists("allowedAudience", $this->_propDict)) {
-            if (is_a($this->_propDict["allowedAudience"], "Beta\Microsoft\Graph\Model\BroadcastMeetingAudience")) {
+            if (is_a($this->_propDict["allowedAudience"], "\Beta\Microsoft\Graph\Model\BroadcastMeetingAudience") || is_null($this->_propDict["allowedAudience"])) {
                 return $this->_propDict["allowedAudience"];
             } else {
                 $this->_propDict["allowedAudience"] = new BroadcastMeetingAudience($this->_propDict["allowedAudience"]);
@@ -44,6 +45,7 @@ class BroadcastMeetingSettings extends Entity
 
     /**
     * Sets the allowedAudience
+    * Defines who can join the live event. Possible values are listed in the following table.
     *
     * @param BroadcastMeetingAudience $val The value to assign to the allowedAudience
     *
@@ -56,8 +58,9 @@ class BroadcastMeetingSettings extends Entity
     }
     /**
     * Gets the isAttendeeReportEnabled
+    * Indicates whether attendee report is enabled for this live event. Default value is false.
     *
-    * @return bool The isAttendeeReportEnabled
+    * @return bool|null The isAttendeeReportEnabled
     */
     public function getIsAttendeeReportEnabled()
     {
@@ -70,6 +73,7 @@ class BroadcastMeetingSettings extends Entity
 
     /**
     * Sets the isAttendeeReportEnabled
+    * Indicates whether attendee report is enabled for this live event. Default value is false.
     *
     * @param bool $val The value of the isAttendeeReportEnabled
     *
@@ -82,8 +86,9 @@ class BroadcastMeetingSettings extends Entity
     }
     /**
     * Gets the isQuestionAndAnswerEnabled
+    * Indicates whether Q&amp;A is enabled for this live event. Default value is false.
     *
-    * @return bool The isQuestionAndAnswerEnabled
+    * @return bool|null The isQuestionAndAnswerEnabled
     */
     public function getIsQuestionAndAnswerEnabled()
     {
@@ -96,6 +101,7 @@ class BroadcastMeetingSettings extends Entity
 
     /**
     * Sets the isQuestionAndAnswerEnabled
+    * Indicates whether Q&amp;A is enabled for this live event. Default value is false.
     *
     * @param bool $val The value of the isQuestionAndAnswerEnabled
     *
@@ -108,8 +114,9 @@ class BroadcastMeetingSettings extends Entity
     }
     /**
     * Gets the isRecordingEnabled
+    * Indicates whether recording is enabled for this live event. Default value is false.
     *
-    * @return bool The isRecordingEnabled
+    * @return bool|null The isRecordingEnabled
     */
     public function getIsRecordingEnabled()
     {
@@ -122,6 +129,7 @@ class BroadcastMeetingSettings extends Entity
 
     /**
     * Sets the isRecordingEnabled
+    * Indicates whether recording is enabled for this live event. Default value is false.
     *
     * @param bool $val The value of the isRecordingEnabled
     *
@@ -134,8 +142,9 @@ class BroadcastMeetingSettings extends Entity
     }
     /**
     * Gets the isVideoOnDemandEnabled
+    * Indicates whether video on demand is enabled for this live event. Default value is false.
     *
-    * @return bool The isVideoOnDemandEnabled
+    * @return bool|null The isVideoOnDemandEnabled
     */
     public function getIsVideoOnDemandEnabled()
     {
@@ -148,6 +157,7 @@ class BroadcastMeetingSettings extends Entity
 
     /**
     * Sets the isVideoOnDemandEnabled
+    * Indicates whether video on demand is enabled for this live event. Default value is false.
     *
     * @param bool $val The value of the isVideoOnDemandEnabled
     *

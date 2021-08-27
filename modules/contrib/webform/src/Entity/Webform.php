@@ -56,6 +56,7 @@ use Drupal\webform\WebformSubmissionStorageInterface;
  *       "add" = "Drupal\webform\WebformEntityAddForm",
  *       "duplicate" = "Drupal\webform\WebformEntityAddForm",
  *       "delete" = "Drupal\webform\WebformEntityDeleteForm",
+ *       "delete-multiple-confirm" = "Drupal\webform\Form\WebformEntityDeleteMultipleForm",
  *       "edit" = "Drupal\webform\WebformEntityElementsForm",
  *       "export" = "Drupal\webform\WebformEntityExportForm",
  *       "settings" = "Drupal\webform\EntitySettings\WebformEntitySettingsGeneralForm",
@@ -84,6 +85,7 @@ use Drupal\webform\WebformSubmissionStorageInterface;
  *     "test-form" = "/webform/{webform}/test",
  *     "duplicate-form" = "/admin/structure/webform/manage/{webform}/duplicate",
  *     "delete-form" = "/admin/structure/webform/manage/{webform}/delete",
+ *     "delete-multiple-form" = "/admin/structure/webform/delete",
  *     "export-form" = "/admin/structure/webform/manage/{webform}/export",
  *     "settings" = "/admin/structure/webform/manage/{webform}/settings",
  *     "settings-form" = "/admin/structure/webform/manage/{webform}/settings/form",
@@ -169,6 +171,16 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
    * @var bool
    */
   protected $elementsTranslated = FALSE;
+
+  /**
+   * The webform elements are being updated.
+   *
+   * Set to TRUE the webform elements are being saved and translations should
+   * not be applied.
+   *
+   * @var bool
+   */
+  protected $updating = FALSE;
 
   /**
    * The webform status.
@@ -562,6 +574,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
    */
   public function setOverride($override = TRUE) {
     $this->override = $override;
+    return $this;
   }
 
   /**
@@ -569,6 +582,21 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
    */
   public function isOverridden() {
     return $this->override || $this->elementsTranslated;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUpdating($updating = TRUE) {
+    $this->updating = $updating;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isUpdating() {
+    return $this->updating;
   }
 
   /**
@@ -1497,6 +1525,11 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
       return;
     }
 
+    // If the webform elements are being updated, do not alter them.
+    if ($this->updating) {
+      return;
+    }
+
     // Get the current langcode.
     $current_langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
 
@@ -1516,7 +1549,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     }
 
     // Get the webform's decoded elements and translations.
-    $elements = Yaml::decode($this->elements);
+    $elements = WebformYaml::decode($this->elements);
     $elementsTranslations = $translation_manager->getElements($this, $current_langcode);
 
     // If the elements are empty or they are equal to the translated elements
@@ -2216,10 +2249,6 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
   public function getCacheContexts() {
     $cache_contexts = parent::getCacheContexts();
 
-    // Add paths to cache contexts since webform can be placed on multiple
-    // pages.
-    $cache_contexts[] = 'url.path';
-
     // Add all prepopulate query string parameters.
     if ($this->getSetting('form_prepopulate')) {
       $cache_contexts[] = 'url.query_args';
@@ -2227,11 +2256,11 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     else {
       // Add source entity type and id query string parameters.
       if ($this->getSetting('form_prepopulate_source_entity')) {
-        $cache_contexts[] = 'url.query_args:entity_type';
-        $cache_contexts[] = 'url.query_args:entity_id';
+        $cache_contexts[] = 'url.query_args:source_entity_type';
+        $cache_contexts[] = 'url.query_args:source_entity_id';
       }
       // Add webform (secure) token query string parameter.
-      if ($this->getSetting('token_view') || $this->getSetting('token_update')) {
+      if ($this->getSetting('token_view') || $this->getSetting('token_update') || $this->getSetting('token_delete')) {
         $cache_contexts[] = 'url.query_args:token';
       }
     }
@@ -2363,6 +2392,9 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
 
     // Reset settings.
     $this->settingsOriginal = $this->settings;
+
+    // Clear updating flag.
+    $this->setUpdating(FALSE);
   }
 
   /**

@@ -4,6 +4,7 @@ namespace Drupal\menu_item_extras\Entity;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Url;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
 
 /**
@@ -21,6 +22,16 @@ class MenuItemExtrasMenuLinkContent extends MenuLinkContent implements MenuItemE
       $values += ['bundle' => $values['menu_name']];
     }
     parent::preCreate($storage, $values);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getUrlObject() {
+    if (!$this->link->first()) {
+      return Url::fromRoute($this->route_name);
+    }
+    return parent::getUrlObject();
   }
 
   /**

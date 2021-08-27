@@ -135,13 +135,13 @@ class MenuLinksOriginTest extends KernelTestBase {
     foreach ($expected_hierarchy as $id => $parent) {
       /* @var \Drupal\Core\Menu\MenuLinkInterface $menu_link_plugin  */
       $menu_link_plugin = $this->menuLinkManager->createInstance($links[$id]);
-      $expected_parent = isset($links[$parent]) ? $links[$parent] : '';
-
-      $this->assertEqual($menu_link_plugin->getParent(), $expected_parent, new FormattableMarkup('Menu link %id has parent of %parent, expected %expected_parent.', [
+      $expected_parent = $links[$parent] ?? '';
+      $message = new FormattableMarkup('Menu link %id has parent of %parent, expected %expected_parent.', [
         '%id' => $id,
         '%parent' => $menu_link_plugin->getParent(),
         '%expected_parent' => $expected_parent,
-      ]));
+      ]);
+      $this->assertEquals($expected_parent, $menu_link_plugin->getParent(), $message);
     }
   }
 
@@ -236,7 +236,7 @@ class MenuLinksOriginTest extends KernelTestBase {
     // Verify that the entity was updated too.
     $menu_link_plugin = $this->menuLinkManager->createInstance($links['child-1']);
     $entity = \Drupal::service('entity.repository')->loadEntityByUuid('menu_link_content', $menu_link_plugin->getDerivativeId());
-    $this->assertEqual($entity->getParentId(), $links['child-2']);
+    $this->assertEquals($links['child-2'], $entity->getParentId());
 
     $expected_hierarchy = [
       'parent' => '',
@@ -320,15 +320,15 @@ class MenuLinksOriginTest extends KernelTestBase {
     \Drupal::service('router.builder')->rebuild();
     \Drupal::service('plugin.manager.menu.link')->rebuild();
     $menu_links = $this->menuLinkManager->loadLinksByRoute('menu_test.menu_test');
-    $this->assertEqual(count($menu_links), 1);
+    $this->assertEquals(1, count($menu_links));
     $menu_link = reset($menu_links);
-    $this->assertEqual($menu_link->getPluginId(), 'menu_test');
+    $this->assertEquals('menu_test', $menu_link->getPluginId());
 
     // Uninstall the module and ensure the menu link got removed.
     \Drupal::service('module_installer')->uninstall(['menu_test']);
     \Drupal::service('plugin.manager.menu.link')->rebuild();
     $menu_links = $this->menuLinkManager->loadLinksByRoute('menu_test.menu_test');
-    $this->assertEqual(count($menu_links), 0);
+    $this->assertEquals(0, count($menu_links));
   }
 
   /**

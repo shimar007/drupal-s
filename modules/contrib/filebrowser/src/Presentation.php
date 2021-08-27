@@ -3,12 +3,14 @@
 namespace Drupal\filebrowser;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Utility\TableSort;
 use Drupal\filebrowser\Entity\FilebrowserMetadataEntity;
 use Drupal\filebrowser\Events\MetadataInfo;
 use Drupal\filebrowser\File\DisplayFile;
 use Drupal\filebrowser\Grid\Grid;
 use Drupal\filebrowser\Services\Common;
 use Drupal\node\NodeInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class Presentation extends ControllerBase{
 
@@ -109,10 +111,11 @@ class Presentation extends ControllerBase{
     $this->buildHeader($header, $unsorted_rows, $visible_columns, $column_names, $default_sort, $sort_order);
 
     // Split files in two heaps to preserve folders and files
+    $request = Request::createFromGlobals();
     $result =  $this->splitFiles($this->dbFileList['files']);
     $just_files = isset($result['files']) ? $result['files'] : null;
     $just_folders = isset($result['folders']) ? $result['folders'] : null;
-    $table_sort = tablesort_init($header);
+    $table_sort = TableSort::getContextFromRequest($header, $request);
     // Sort files according to correct column.
     if (isset($table_sort['sql'])) {
       $field = $table_sort['sql'];

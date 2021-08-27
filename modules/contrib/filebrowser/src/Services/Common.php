@@ -5,6 +5,7 @@ namespace Drupal\filebrowser\Services;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
@@ -383,7 +384,7 @@ class Common extends ControllerBase{
    * @return bool
    */
   public function isLocal($uri) {
-    $scheme = \Drupal::service('file_system')->uriScheme($uri);
+    $scheme = StreamWrapperManager::getScheme($uri);
     return ($scheme == 'public' || $scheme == 'private');
   }
 

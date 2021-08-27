@@ -23,56 +23,37 @@ namespace Beta\Microsoft\Graph\Model;
 */
 class RegistrationEnforcement extends Entity
 {
+
     /**
-    * Gets the isAllowedToSkipRegistration
+    * Gets the authenticationMethodsRegistrationCampaign
+    * Run campaigns to remind users to setup targeted authentication methods.
     *
-    * @return bool The isAllowedToSkipRegistration
+    * @return AuthenticationMethodsRegistrationCampaign|null The authenticationMethodsRegistrationCampaign
     */
-    public function getIsAllowedToSkipRegistration()
+    public function getAuthenticationMethodsRegistrationCampaign()
     {
-        if (array_key_exists("isAllowedToSkipRegistration", $this->_propDict)) {
-            return $this->_propDict["isAllowedToSkipRegistration"];
-        } else {
-            return null;
+        if (array_key_exists("authenticationMethodsRegistrationCampaign", $this->_propDict)) {
+            if (is_a($this->_propDict["authenticationMethodsRegistrationCampaign"], "\Beta\Microsoft\Graph\Model\AuthenticationMethodsRegistrationCampaign") || is_null($this->_propDict["authenticationMethodsRegistrationCampaign"])) {
+                return $this->_propDict["authenticationMethodsRegistrationCampaign"];
+            } else {
+                $this->_propDict["authenticationMethodsRegistrationCampaign"] = new AuthenticationMethodsRegistrationCampaign($this->_propDict["authenticationMethodsRegistrationCampaign"]);
+                return $this->_propDict["authenticationMethodsRegistrationCampaign"];
+            }
         }
+        return null;
     }
 
     /**
-    * Sets the isAllowedToSkipRegistration
+    * Sets the authenticationMethodsRegistrationCampaign
+    * Run campaigns to remind users to setup targeted authentication methods.
     *
-    * @param bool $val The value of the isAllowedToSkipRegistration
+    * @param AuthenticationMethodsRegistrationCampaign $val The value to assign to the authenticationMethodsRegistrationCampaign
     *
-    * @return RegistrationEnforcement
+    * @return RegistrationEnforcement The RegistrationEnforcement
     */
-    public function setIsAllowedToSkipRegistration($val)
+    public function setAuthenticationMethodsRegistrationCampaign($val)
     {
-        $this->_propDict["isAllowedToSkipRegistration"] = $val;
-        return $this;
-    }
-    /**
-    * Gets the registrationSkipDurationInDays
-    *
-    * @return int The registrationSkipDurationInDays
-    */
-    public function getRegistrationSkipDurationInDays()
-    {
-        if (array_key_exists("registrationSkipDurationInDays", $this->_propDict)) {
-            return $this->_propDict["registrationSkipDurationInDays"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the registrationSkipDurationInDays
-    *
-    * @param int $val The value of the registrationSkipDurationInDays
-    *
-    * @return RegistrationEnforcement
-    */
-    public function setRegistrationSkipDurationInDays($val)
-    {
-        $this->_propDict["registrationSkipDurationInDays"] = $val;
-        return $this;
+        $this->_propDict["authenticationMethodsRegistrationCampaign"] = $val;
+         return $this;
     }
 }

@@ -1439,15 +1439,15 @@ function webform_update_8071() {
     foreach ($handlers as $handler) {
       if ($handler instanceof RemotePostWebformHandler) {
         $has_remote_post = TRUE;
-        $configuration = $handler->getConfiguration();
-        foreach ($configuration['settings'] as $key => $value) {
+        $configuration = $handler->getSettings();
+        foreach ($configuration as $key => $value) {
           if (isset($settings_mapping[$key])) {
-            $configuration['settings'][$settings_mapping[$key]] = $value;
-            unset($configuration['settings'][$key]);
+            $configuration[$settings_mapping[$key]] = $value;
+            unset($configuration[$key]);
           }
         }
-        $configuration['settings'] += $handler->defaultConfiguration();
-        $handler->setConfiguration($configuration);
+        $configuration += $handler->defaultConfiguration();
+        $handler->getSettings($configuration);
       }
     }
     if ($has_remote_post) {
@@ -1918,12 +1918,10 @@ function webform_update_8100() {
     foreach ($handlers as $handler) {
       if ($handler instanceof RemotePostWebformHandler) {
         $has_handler = TRUE;
-        $configuration = $handler->getConfiguration();
-        $settings = $configuration['settings'];
+        $settings = $handler->getSettings();
         if ($settings['excluded_data']) {
           $settings['excluded_data']['locked'] = 'locked';
-          $configuration['settings'] = $settings;
-          $handler->setConfiguration($configuration);
+          $handler->setSettings($settings);
         }
       }
     }
@@ -3915,4 +3913,45 @@ function webform_update_8209() {
  */
 function webform_update_8210() {
   _webform_update_webform_settings();
+}
+
+/**
+ * Issue #174151 Webform Contact Form - open mail relay.
+ */
+function webform_update_8211() {
+  $config_factory = \Drupal::configFactory();
+
+  $config = $config_factory->getEditable('webform.webform.contact');
+  if (!$config) {
+    return;
+  }
+
+  $to_mail = $config->get('handlers.email_confirmation.settings.to_mail');
+  if ($to_mail === '[webform_submission:values:email:raw]') {
+    $config->set('handlers.email_confirmation.settings.to_mail', '[current-user:mail]');
+    $config->save();
+
+    /** @var \Drupal\webform\WebformHelpManagerInterface $help_manager */
+    $help_manager = \Drupal::service('webform.help_manager');
+    $help_manager->addNotification('webform_update_8211',
+      t("<strong>ATTENTION!!!</strong> The default Contact webform, included with the Webform module, has been updated to send the confirmation email to an authenticated user's email address.") .
+      ' ' . t('<a href=":href">Learn more</a>', [':href' => 'https://www.drupal.org/project/webform/releases/8.x-5.25']),
+      'warning'
+    );
+  }
+}
+
+/**
+ * Issue #000000: Add support options to help and add-ons.
+ */
+function webform_update_8212() {
+  _webform_update_admin_settings();
+}
+
+/**
+ * Issue #3220703: Add support for bulk operations on webform entities.
+ */
+function webform_update_8213() {
+  _webform_update_actions();
+  _webform_update_admin_settings();
 }

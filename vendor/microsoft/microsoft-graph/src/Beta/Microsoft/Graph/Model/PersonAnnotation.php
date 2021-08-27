@@ -28,12 +28,12 @@ class PersonAnnotation extends ItemFacet
     * Gets the detail
     * Contains the detail of the note itself.
     *
-    * @return ItemBody The detail
+    * @return ItemBody|null The detail
     */
     public function getDetail()
     {
         if (array_key_exists("detail", $this->_propDict)) {
-            if (is_a($this->_propDict["detail"], "Beta\Microsoft\Graph\Model\ItemBody")) {
+            if (is_a($this->_propDict["detail"], "\Beta\Microsoft\Graph\Model\ItemBody") || is_null($this->_propDict["detail"])) {
                 return $this->_propDict["detail"];
             } else {
                 $this->_propDict["detail"] = new ItemBody($this->_propDict["detail"]);
@@ -61,7 +61,7 @@ class PersonAnnotation extends ItemFacet
     * Gets the displayName
     * Contains a friendly name for the note.
     *
-    * @return string The displayName
+    * @return string|null The displayName
     */
     public function getDisplayName()
     {
@@ -83,6 +83,33 @@ class PersonAnnotation extends ItemFacet
     public function setDisplayName($val)
     {
         $this->_propDict["displayName"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the thumbnailUrl
+    *
+    * @return string|null The thumbnailUrl
+    */
+    public function getThumbnailUrl()
+    {
+        if (array_key_exists("thumbnailUrl", $this->_propDict)) {
+            return $this->_propDict["thumbnailUrl"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the thumbnailUrl
+    *
+    * @param string $val The thumbnailUrl
+    *
+    * @return PersonAnnotation
+    */
+    public function setThumbnailUrl($val)
+    {
+        $this->_propDict["thumbnailUrl"] = $val;
         return $this;
     }
     

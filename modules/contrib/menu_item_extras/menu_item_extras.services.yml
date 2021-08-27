@@ -17,7 +17,8 @@ services:
     class: Drupal\menu_item_extras\Service\UpdateHelper
   menu_item_extras.route_subscriber:
     class: Drupal\menu_item_extras\Routing\RouteSubscriber
-    arguments: ['@entity_type.manager']
+    arguments:
+      - '@entity_type.manager'
     deprecated: The "%service_id%" service is deprecated in menu_item_extras:2.11 and is removed from menu_item_extras:3.0.0
     tags:
       - { name: event_subscriber }
@@ -37,3 +38,9 @@ services:
       - [setContainer, ['@service_container']]
     tags:
       - { name: cache.context }
+  menu_item_extras.config_subscriber:
+    class: Drupal\menu_item_extras\EventSubscriber\ConfigSubscriber
+    arguments:
+      - '@config.installer'
+    tags:
+      - { name: event_subscriber }

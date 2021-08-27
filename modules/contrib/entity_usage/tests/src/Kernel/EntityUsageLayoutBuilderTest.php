@@ -78,6 +78,10 @@ class EntityUsageLayoutBuilderTest extends KernelTestBase {
           'id' => 'inline_block:' . $type->id(),
           'block_revision_id' => $block->getRevisionId(),
         ]),
+        // Ensure plugins that don't exist don't throw errors.
+        'second-uuid' => new SectionComponent('second-uuid', 'content', [
+          'id' => 'foo_block:plugin_not_found',
+        ]),
       ]),
     ];
 

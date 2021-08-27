@@ -28,7 +28,7 @@ class CloudPcProvisioningPolicy extends Entity
     * Gets the description
     * The provisioning policy description.
     *
-    * @return string The description
+    * @return string|null The description
     */
     public function getDescription()
     {
@@ -57,7 +57,7 @@ class CloudPcProvisioningPolicy extends Entity
     * Gets the displayName
     * The display name for the provisioning policy.
     *
-    * @return string The displayName
+    * @return string|null The displayName
     */
     public function getDisplayName()
     {
@@ -86,7 +86,7 @@ class CloudPcProvisioningPolicy extends Entity
     * Gets the imageDisplayName
     * The display name for the OS image you’re provisioning.
     *
-    * @return string The imageDisplayName
+    * @return string|null The imageDisplayName
     */
     public function getImageDisplayName()
     {
@@ -113,9 +113,9 @@ class CloudPcProvisioningPolicy extends Entity
     
     /**
     * Gets the imageId
-    * The ID of the OS image you want to provision on cloud PCs. The format for a gallery type image is: {publisher_offer_sku}.
+    * The ID of the OS image you want to provision on Cloud PCs. The format for a gallery type image is: {publisher_offer_sku}.
     *
-    * @return string The imageId
+    * @return string|null The imageId
     */
     public function getImageId()
     {
@@ -128,7 +128,7 @@ class CloudPcProvisioningPolicy extends Entity
     
     /**
     * Sets the imageId
-    * The ID of the OS image you want to provision on cloud PCs. The format for a gallery type image is: {publisher_offer_sku}.
+    * The ID of the OS image you want to provision on Cloud PCs. The format for a gallery type image is: {publisher_offer_sku}.
     *
     * @param string $val The imageId
     *
@@ -142,14 +142,14 @@ class CloudPcProvisioningPolicy extends Entity
     
     /**
     * Gets the imageType
-    * The type of OS image (custom or gallery) you want to provision on cloud PCs. Possible values are: gallery, custom.
+    * The type of OS image (custom or gallery) you want to provision on Cloud PCs. Possible values are: gallery, custom.
     *
-    * @return CloudPcProvisioningPolicyImageType The imageType
+    * @return CloudPcProvisioningPolicyImageType|null The imageType
     */
     public function getImageType()
     {
         if (array_key_exists("imageType", $this->_propDict)) {
-            if (is_a($this->_propDict["imageType"], "Beta\Microsoft\Graph\Model\CloudPcProvisioningPolicyImageType")) {
+            if (is_a($this->_propDict["imageType"], "\Beta\Microsoft\Graph\Model\CloudPcProvisioningPolicyImageType") || is_null($this->_propDict["imageType"])) {
                 return $this->_propDict["imageType"];
             } else {
                 $this->_propDict["imageType"] = new CloudPcProvisioningPolicyImageType($this->_propDict["imageType"]);
@@ -161,7 +161,7 @@ class CloudPcProvisioningPolicy extends Entity
     
     /**
     * Sets the imageType
-    * The type of OS image (custom or gallery) you want to provision on cloud PCs. Possible values are: gallery, custom.
+    * The type of OS image (custom or gallery) you want to provision on Cloud PCs. Possible values are: gallery, custom.
     *
     * @param CloudPcProvisioningPolicyImageType $val The imageType
     *
@@ -175,9 +175,9 @@ class CloudPcProvisioningPolicy extends Entity
     
     /**
     * Gets the onPremisesConnectionId
-    * The ID of the cloudPcOnPremisesConnection. To ensure that cloud PCs have network connectivity and that they domain join, choose a connection with a virtual network that’s validated by the cloud PC service.
+    * The ID of the cloudPcOnPremisesConnection. To ensure that Cloud PCs have network connectivity and that they domain join, choose a connection with a virtual network that’s validated by the Cloud PC service.
     *
-    * @return string The onPremisesConnectionId
+    * @return string|null The onPremisesConnectionId
     */
     public function getOnPremisesConnectionId()
     {
@@ -190,7 +190,7 @@ class CloudPcProvisioningPolicy extends Entity
     
     /**
     * Sets the onPremisesConnectionId
-    * The ID of the cloudPcOnPremisesConnection. To ensure that cloud PCs have network connectivity and that they domain join, choose a connection with a virtual network that’s validated by the cloud PC service.
+    * The ID of the cloudPcOnPremisesConnection. To ensure that Cloud PCs have network connectivity and that they domain join, choose a connection with a virtual network that’s validated by the Cloud PC service.
     *
     * @param string $val The onPremisesConnectionId
     *
@@ -205,9 +205,9 @@ class CloudPcProvisioningPolicy extends Entity
 
      /** 
      * Gets the assignments
-    * A defined collection of provisioning policy assignments. Returned only on $expand. See an example of getting the assignments relationship.
+    * A defined collection of provisioning policy assignments. Represents the set of Microsoft 365 groups and security groups in Azure AD that have provisioning policy assigned. Returned only on $expand. See an example of getting the assignments relationship.
      *
-     * @return array The assignments
+     * @return array|null The assignments
      */
     public function getAssignments()
     {
@@ -220,7 +220,7 @@ class CloudPcProvisioningPolicy extends Entity
     
     /** 
     * Sets the assignments
-    * A defined collection of provisioning policy assignments. Returned only on $expand. See an example of getting the assignments relationship.
+    * A defined collection of provisioning policy assignments. Represents the set of Microsoft 365 groups and security groups in Azure AD that have provisioning policy assigned. Returned only on $expand. See an example of getting the assignments relationship.
     *
     * @param CloudPcProvisioningPolicyAssignment $val The assignments
     *
@@ -228,7 +228,7 @@ class CloudPcProvisioningPolicy extends Entity
     */
     public function setAssignments($val)
     {
-		$this->_propDict["assignments"] = $val;
+        $this->_propDict["assignments"] = $val;
         return $this;
     }
     

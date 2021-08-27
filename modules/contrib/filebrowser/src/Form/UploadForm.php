@@ -62,6 +62,13 @@ class UploadForm extends FormBase {
       $form['close'] = $this->common->closeButtonMarkup();
     }
 
+    // Set upload location, Replace "//" with "/" when needed.
+    if ($this->node->filebrowser->folderPath && $this->relativeRoot) {
+      $upload_location = preg_replace('/\/\/$/', '/', $this->node->filebrowser->folderPath) . $this->relativeRoot;
+    }
+    else {
+      $upload_location = $this->node->filebrowser->folderPath . $this->relativeRoot;
+    }
     $form['u_file'] = [
       '#title' => $this->t('Upload file'),
       '#type' => 'filebrowser_managed_file',
@@ -69,7 +76,7 @@ class UploadForm extends FormBase {
       '#upload_validators' => [
         'file_validate_extensions' => [$this->node->filebrowser->accepted],
       ],
-      '#upload_location' => $this->node->filebrowser->folderPath . $this->relativeRoot, '#progress_indicator' => 'bar', '#progress_message' => $this->t('Please wait...'),
+      '#upload_location' => $upload_location, '#progress_indicator' => 'bar', '#progress_message' => $this->t('Please wait...'),
     ];
 
     $form['submit'] = [

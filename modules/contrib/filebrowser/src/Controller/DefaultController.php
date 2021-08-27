@@ -7,6 +7,7 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\AlertCommand;
 use Drupal\Core\Ajax\RemoveCommand;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\filebrowser\Filebrowser;
 use Drupal\filebrowser\FilebrowserManager;
 use Drupal\filebrowser\Services\FilebrowserValidator;
@@ -88,7 +89,7 @@ class DefaultController extends ControllerBase {
     // RedirectResponse needs a relative path so we will convert the full url into a relative path
     // This is done here, but should be moved to a better place in Common
     $file_path = file_url_transform_relative($file_data->url);
-    if ($filebrowser->downloadManager == 'public' && \Drupal::service('file_system')->uriScheme($file_data->uri) == 'public') {
+    if ($filebrowser->downloadManager == 'public' && StreamWrapperManager::getScheme($file_data->uri) == 'public') {
       $response = new RedirectResponse($file_path);
       return $response;
     }

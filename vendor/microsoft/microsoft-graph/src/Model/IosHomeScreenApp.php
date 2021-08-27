@@ -26,17 +26,19 @@ class IosHomeScreenApp extends IosHomeScreenItem
     /**
     * Set the @odata.type since this type is immediately descended from an abstract
     * type that is referenced as the type in an entity.
+    * @param array $propDict The property dictionary
     */
-    public function __construct()
+    public function __construct($propDict = array())
     {
+        parent::__construct($propDict);
         $this->setODataType("#microsoft.graph.iosHomeScreenApp");
     }
 
     /**
     * Gets the bundleID
-    * BundleID of app
+    * BundleID of the app if isWebClip is false or the URL of a web clip if isWebClip is true.
     *
-    * @return string The bundleID
+    * @return string|null The bundleID
     */
     public function getBundleID()
     {
@@ -49,7 +51,7 @@ class IosHomeScreenApp extends IosHomeScreenItem
 
     /**
     * Sets the bundleID
-    * BundleID of app
+    * BundleID of the app if isWebClip is false or the URL of a web clip if isWebClip is true.
     *
     * @param string $val The value of the bundleID
     *

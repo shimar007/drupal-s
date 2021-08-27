@@ -22,13 +22,13 @@ namespace Beta\Microsoft\Graph\Model;
 * @license   https://opensource.org/licenses/MIT MIT License
 * @link      https://graph.microsoft.com
 */
-class External extends 
+class External extends Entity
 {
 
      /** 
      * Gets the connections
      *
-     * @return array The connections
+     * @return array|null The connections
      */
     public function getConnections()
     {
@@ -48,7 +48,7 @@ class External extends
     */
     public function setConnections($val)
     {
-		$this->_propDict["connections"] = $val;
+        $this->_propDict["connections"] = $val;
         return $this;
     }
     

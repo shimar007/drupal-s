@@ -49,7 +49,7 @@ services:
     class: Drupal\filebrowser\FilebrowserUninstallValidator
     tags:
       - { name: module_install.uninstall_validator }
-    arguments: ['@entity_type.manager', '@entity.query', '@string_translation']
+    arguments: ['@entity_type.manager', '@string_translation']
 
   filebrowser.action.access_checker:
       class: Drupal\filebrowser\Access\FilebrowserAccessCheck

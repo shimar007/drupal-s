@@ -28,7 +28,7 @@ class EducationOrganization extends Entity
     * Gets the description
     * Organization description.
     *
-    * @return string The description
+    * @return string|null The description
     */
     public function getDescription()
     {
@@ -57,7 +57,7 @@ class EducationOrganization extends Entity
     * Gets the displayName
     * Organization display name.
     *
-    * @return string The displayName
+    * @return string|null The displayName
     */
     public function getDisplayName()
     {
@@ -86,12 +86,12 @@ class EducationOrganization extends Entity
     * Gets the externalSource
     * Where this user was created from. Possible values are: sis, lms, or manual.
     *
-    * @return EducationExternalSource The externalSource
+    * @return EducationExternalSource|null The externalSource
     */
     public function getExternalSource()
     {
         if (array_key_exists("externalSource", $this->_propDict)) {
-            if (is_a($this->_propDict["externalSource"], "Microsoft\Graph\Model\EducationExternalSource")) {
+            if (is_a($this->_propDict["externalSource"], "\Microsoft\Graph\Model\EducationExternalSource") || is_null($this->_propDict["externalSource"])) {
                 return $this->_propDict["externalSource"];
             } else {
                 $this->_propDict["externalSource"] = new EducationExternalSource($this->_propDict["externalSource"]);
@@ -112,6 +112,35 @@ class EducationOrganization extends Entity
     public function setExternalSource($val)
     {
         $this->_propDict["externalSource"] = $val;
+        return $this;
+    }
+    
+    /**
+    * Gets the externalSourceDetail
+    * The name of the external source this resources was generated from.
+    *
+    * @return string|null The externalSourceDetail
+    */
+    public function getExternalSourceDetail()
+    {
+        if (array_key_exists("externalSourceDetail", $this->_propDict)) {
+            return $this->_propDict["externalSourceDetail"];
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+    * Sets the externalSourceDetail
+    * The name of the external source this resources was generated from.
+    *
+    * @param string $val The externalSourceDetail
+    *
+    * @return EducationOrganization
+    */
+    public function setExternalSourceDetail($val)
+    {
+        $this->_propDict["externalSourceDetail"] = $val;
         return $this;
     }
     

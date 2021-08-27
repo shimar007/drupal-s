@@ -19,6 +19,7 @@ use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
+use Drupal\webform\Cache\WebformBubbleableMetadata;
 use Drupal\webform\Element\WebformCompositeFormElementTrait;
 use Drupal\webform\Element\WebformHtmlEditor;
 use Drupal\webform\Element\WebformMessage;
@@ -806,19 +807,6 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
       $element['#wrapper_attributes']['class'][] = 'webform-element--title-inline';
     }
 
-    // Check markup properties.
-    $markup_properties = [
-      '#description',
-      '#help',
-      '#more',
-      '#multiple__no_items_message',
-    ];
-    foreach ($markup_properties as $markup_property) {
-      if (isset($element[$markup_property]) && !is_array($element[$markup_property])) {
-        $element[$markup_property] = WebformHtmlEditor::checkMarkup($element[$markup_property]);
-      }
-    }
-
     // Add default description display.
     $default_description_display = $this->configFactory->get('webform.settings')->get('element.default_description_display');
     if ($default_description_display && !isset($element['#description_display']) && $this->hasProperty('description_display')) {
@@ -873,6 +861,20 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
     // Replace tokens for all properties.
     if ($webform_submission) {
       $this->replaceTokens($element, $webform_submission);
+    }
+
+    // Check markup properties after token replacement just-in-case markup
+    // is empty.
+    $markup_properties = [
+      '#description',
+      '#help',
+      '#more',
+      '#multiple__no_items_message',
+    ];
+    foreach ($markup_properties as $markup_property) {
+      if (!empty($element[$markup_property]) && !is_array($element[$markup_property])) {
+        $element[$markup_property] = WebformHtmlEditor::checkMarkup($element[$markup_property]);
+      }
     }
   }
 
@@ -1027,6 +1029,8 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
    * {@inheritdoc}
    */
   public function replaceTokens(array &$element, EntityInterface $entity = NULL) {
+    $bubbleable_metadata = new WebformBubbleableMetadata();
+
     foreach ($element as $key => $value) {
       // Only replace tokens in properties.
       if (Element::child($key)) {
@@ -1038,8 +1042,11 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
         continue;
       }
 
-      $element[$key] = $this->tokenManager->replaceNoRenderContext($value, $entity);
+      $element[$key] = $this->tokenManager->replace($value, $entity, [], [], $bubbleable_metadata);
     }
+
+    // Append metadata to the element's #cache property.
+    $bubbleable_metadata->appendTo($element);
   }
 
   /**
@@ -2407,7 +2414,7 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
     $form['element_description']['help'] = [
       '#type' => 'details',
       '#title' => $this->t('Help'),
-      '#description' => $this->t("Displays a help tooltip after the element's title."),
+      '#description' => $this->t("Displays a Help tooltip after the element's title."),
       '#states' => [
         'invisible' => [
           [':input[name="properties[title_display]"]' => ['value' => 'invisible']],
@@ -2417,13 +2424,13 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
     $form['element_description']['help']['help_title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Help title'),
-      '#description' => $this->t("The text displayed in help tooltip after the element's title.") . '<br /><br />' .
+      '#description' => $this->t("The text displayed in Help tooltip after the element's title.") . '<br /><br />' .
         $this->t("Defaults to the element's title"),
     ];
     $form['element_description']['help']['help'] = [
       '#type' => 'webform_html_editor',
       '#title' => $this->t('Help text'),
-      '#description' => $this->t("The text displayed in help tooltip after the element's title."),
+      '#description' => $this->t("The text displayed in Help tooltip after the element's title."),
     ];
     $form['element_description']['more'] = [
       '#type' => 'details',
@@ -2488,7 +2495,7 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
         'element_before' => $this->t('Before element'),
         'element_after' => $this->t('After element'),
       ],
-      '#description' => $this->t('Determines the placement of the help tooltip.'),
+      '#description' => $this->t('Determines the placement of the Help tooltip.'),
     ];
     if ($this->hasProperty('title_display')) {
       $form['form']['title_display_message'] = [

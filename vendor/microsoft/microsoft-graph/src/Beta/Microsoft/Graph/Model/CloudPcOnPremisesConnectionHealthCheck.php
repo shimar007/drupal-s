@@ -27,7 +27,7 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
     * Gets the additionalDetails
     * Additional details about the health check or the recommended action.
     *
-    * @return string The additionalDetails
+    * @return string|null The additionalDetails
     */
     public function getAdditionalDetails()
     {
@@ -55,7 +55,7 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
     * Gets the displayName
     * The display name for this health check item.
     *
-    * @return string The displayName
+    * @return string|null The displayName
     */
     public function getDisplayName()
     {
@@ -84,12 +84,12 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
     * Gets the endDateTime
     * The end time of the health check item. Read-only.
     *
-    * @return \DateTime The endDateTime
+    * @return \DateTime|null The endDateTime
     */
     public function getEndDateTime()
     {
         if (array_key_exists("endDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["endDateTime"], "\DateTime")) {
+            if (is_a($this->_propDict["endDateTime"], "\DateTime") || is_null($this->_propDict["endDateTime"])) {
                 return $this->_propDict["endDateTime"];
             } else {
                 $this->_propDict["endDateTime"] = new \DateTime($this->_propDict["endDateTime"]);
@@ -115,14 +115,14 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
 
     /**
     * Gets the errorType
-    * The type of error that occurred during this health check. Possible values are: DnsCheckFqdnNotFound, DnsCheckUnknownError, AdJoinCheckFqdnNotFound, AdJoinCheckIncorrectCredentials, AdJoinCheckOrganizationalUnitNotFound, AdJoinCheckOrganizationalUnitIncorrectFormat, AdJoinCheckUnknownError, EndpointConnectivityCheckUrlNotWhitelisted, EndpointConnectivityCheckUnknownError, AadConnectivityCheckUnknownError.
+    * The type of error that occurred during this health check.
     *
-    * @return CloudPcOnPremisesConnectionHealthCheckErrorType The errorType
+    * @return CloudPcOnPremisesConnectionHealthCheckErrorType|null The errorType
     */
     public function getErrorType()
     {
         if (array_key_exists("errorType", $this->_propDict)) {
-            if (is_a($this->_propDict["errorType"], "Beta\Microsoft\Graph\Model\CloudPcOnPremisesConnectionHealthCheckErrorType")) {
+            if (is_a($this->_propDict["errorType"], "\Beta\Microsoft\Graph\Model\CloudPcOnPremisesConnectionHealthCheckErrorType") || is_null($this->_propDict["errorType"])) {
                 return $this->_propDict["errorType"];
             } else {
                 $this->_propDict["errorType"] = new CloudPcOnPremisesConnectionHealthCheckErrorType($this->_propDict["errorType"]);
@@ -134,7 +134,7 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
 
     /**
     * Sets the errorType
-    * The type of error that occurred during this health check. Possible values are: DnsCheckFqdnNotFound, DnsCheckUnknownError, AdJoinCheckFqdnNotFound, AdJoinCheckIncorrectCredentials, AdJoinCheckOrganizationalUnitNotFound, AdJoinCheckOrganizationalUnitIncorrectFormat, AdJoinCheckUnknownError, EndpointConnectivityCheckUrlNotWhitelisted, EndpointConnectivityCheckUnknownError, AadConnectivityCheckUnknownError.
+    * The type of error that occurred during this health check.
     *
     * @param CloudPcOnPremisesConnectionHealthCheckErrorType $val The value to assign to the errorType
     *
@@ -149,7 +149,7 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
     * Gets the recommendedAction
     * The recommended action to fix the corresponding error.
     *
-    * @return string The recommendedAction
+    * @return string|null The recommendedAction
     */
     public function getRecommendedAction()
     {
@@ -178,12 +178,12 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
     * Gets the startDateTime
     * The start time of the health check item. Read-only.
     *
-    * @return \DateTime The startDateTime
+    * @return \DateTime|null The startDateTime
     */
     public function getStartDateTime()
     {
         if (array_key_exists("startDateTime", $this->_propDict)) {
-            if (is_a($this->_propDict["startDateTime"], "\DateTime")) {
+            if (is_a($this->_propDict["startDateTime"], "\DateTime") || is_null($this->_propDict["startDateTime"])) {
                 return $this->_propDict["startDateTime"];
             } else {
                 $this->_propDict["startDateTime"] = new \DateTime($this->_propDict["startDateTime"]);
@@ -209,14 +209,14 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
 
     /**
     * Gets the status
-    * The status of the health check item. Read-only. Possible values are: Pending, Running, Passed, Failed, UnknownFutureValue.
+    * The status of the health check item. Possible values are: pending, running, passed, failed, unknownFutureValue. Read-only.
     *
-    * @return CloudPcOnPremisesConnectionStatus The status
+    * @return CloudPcOnPremisesConnectionStatus|null The status
     */
     public function getStatus()
     {
         if (array_key_exists("status", $this->_propDict)) {
-            if (is_a($this->_propDict["status"], "Beta\Microsoft\Graph\Model\CloudPcOnPremisesConnectionStatus")) {
+            if (is_a($this->_propDict["status"], "\Beta\Microsoft\Graph\Model\CloudPcOnPremisesConnectionStatus") || is_null($this->_propDict["status"])) {
                 return $this->_propDict["status"];
             } else {
                 $this->_propDict["status"] = new CloudPcOnPremisesConnectionStatus($this->_propDict["status"]);
@@ -228,7 +228,7 @@ class CloudPcOnPremisesConnectionHealthCheck extends Entity
 
     /**
     * Sets the status
-    * The status of the health check item. Read-only. Possible values are: Pending, Running, Passed, Failed, UnknownFutureValue.
+    * The status of the health check item. Possible values are: pending, running, passed, failed, unknownFutureValue. Read-only.
     *
     * @param CloudPcOnPremisesConnectionStatus $val The value to assign to the status
     *

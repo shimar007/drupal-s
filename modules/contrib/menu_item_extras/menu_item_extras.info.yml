@@ -12,7 +12,7 @@ dependencies:
 simplytest_dependencies:
   - menu_item_extras:mie_demo_base
 
-# Information added by Drupal.org packaging script on 2020-11-22
-version: '8.x-2.13'
+# Information added by Drupal.org packaging script on 2021-08-24
+version: '8.x-2.16'
 project: 'menu_item_extras'
-datestamp: 1606037927
+datestamp: 1629830742

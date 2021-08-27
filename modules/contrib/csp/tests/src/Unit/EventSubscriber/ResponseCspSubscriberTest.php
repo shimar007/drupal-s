@@ -59,7 +59,7 @@ class ResponseCspSubscriberTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->response = $this->getMockBuilder(HtmlResponse::class)
@@ -157,11 +157,11 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->withConsecutive(
         [
           $this->equalTo('Content-Security-Policy-Report-Only'),
-          $this->equalTo("style-src *; font-src 'self'"),
+          $this->equalTo("font-src 'self'; style-src *"),
         ],
         [
           $this->equalTo('Content-Security-Policy'),
-          $this->equalTo("script-src 'self'; font-src 'self'"),
+          $this->equalTo("font-src 'self'; script-src 'self'"),
         ]
       );
 

@@ -53,7 +53,7 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->cache = new MemoryBackend();
@@ -93,7 +93,7 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
 
     $libraryPolicy = new LibraryPolicyBuilder($this->cache, $this->moduleHandler, $this->themeHandler, $this->libraryDiscovery);
 
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [],
       $libraryPolicy->getSources()
     );
@@ -163,7 +163,7 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
 
     $libraryPolicy = new LibraryPolicyBuilder($this->cache, $this->moduleHandler, $this->themeHandler, $this->libraryDiscovery);
 
-    $this->assertArrayEquals(
+    $this->assertEquals(
       [
         'script-src' => ['js.example.com', 'js.example.org'],
         'script-src-elem' => ['js.example.com', 'js.example.org'],

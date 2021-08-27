@@ -29,7 +29,7 @@ class OfficeGraphInsights extends Entity
      * Gets the shared
     * Access this property from the derived type itemInsights.
      *
-     * @return array The shared
+     * @return array|null The shared
      */
     public function getShared()
     {
@@ -50,7 +50,7 @@ class OfficeGraphInsights extends Entity
     */
     public function setShared($val)
     {
-		$this->_propDict["shared"] = $val;
+        $this->_propDict["shared"] = $val;
         return $this;
     }
     
@@ -59,7 +59,7 @@ class OfficeGraphInsights extends Entity
      * Gets the trending
     * Access this property from the derived type itemInsights.
      *
-     * @return array The trending
+     * @return array|null The trending
      */
     public function getTrending()
     {
@@ -80,7 +80,7 @@ class OfficeGraphInsights extends Entity
     */
     public function setTrending($val)
     {
-		$this->_propDict["trending"] = $val;
+        $this->_propDict["trending"] = $val;
         return $this;
     }
     
@@ -89,7 +89,7 @@ class OfficeGraphInsights extends Entity
      * Gets the used
     * Access this property from the derived type itemInsights.
      *
-     * @return array The used
+     * @return array|null The used
      */
     public function getUsed()
     {
@@ -110,7 +110,7 @@ class OfficeGraphInsights extends Entity
     */
     public function setUsed($val)
     {
-		$this->_propDict["used"] = $val;
+        $this->_propDict["used"] = $val;
         return $this;
     }
     
