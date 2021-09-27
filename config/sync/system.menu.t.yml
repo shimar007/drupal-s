@@ -1,8 +1,0 @@
-uuid: 6d5ddb70-5e1e-4781-b595-e813fd1bb4a2
-langcode: en
-status: true
-dependencies: {  }
-id: t
-label: 'Test Menu'
-description: ''
-locked: false

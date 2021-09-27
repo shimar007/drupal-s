@@ -73,7 +73,8 @@
         "drupal/admin_toolbar": "^3.0",
         "drupal/toolbar_anti_flicker": "^9.3",
         "drupal/toolbar_menu": "^2.2",
-        "drupal/libraries": "^3.0@beta"
+        "drupal/libraries": "^3.0@beta",
+        "drupal/config_delete": "^1.17"
     },
     "replace": {
     },

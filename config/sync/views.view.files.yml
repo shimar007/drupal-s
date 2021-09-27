@@ -627,22 +627,19 @@ display:
           clear_on_exposed: false
           action_title: Action
           selected_actions:
-            -
-              action_id: comment_delete_action
-              preconfiguration:
-                label_override: ''
-            -
-              action_id: views_bulk_operations_delete_entity
-              preconfiguration:
-                label_override: ''
-            -
-              action_id: pathauto_update_alias
-              preconfiguration:
-                label_override: ''
-            -
-              action_id: 'entity:save_action:file'
-              preconfiguration:
-                label_override: ''
+            comment_delete_action: comment_delete_action
+            views_bulk_operations_delete_entity: views_bulk_operations_delete_entity
+            pathauto_update_alias: pathauto_update_alias
+            'entity:save_action:file': 'entity:save_action:file'
+          preconfiguration:
+            comment_delete_action:
+              label_override: ''
+            views_bulk_operations_delete_entity:
+              label_override: ''
+            pathauto_update_alias:
+              label_override: ''
+            'entity:save_action:file':
+              label_override: ''
           plugin_id: views_bulk_operations_bulk_form
       filters:
         filename:
