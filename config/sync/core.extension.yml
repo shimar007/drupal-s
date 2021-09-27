@@ -60,6 +60,7 @@ module:
   image_captcha: 0
   imce: 0
   inline_form_errors: 0
+  libraries: 0
   link: 0
   link_attributes: 0
   masonry: 0

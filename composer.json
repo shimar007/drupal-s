@@ -72,7 +72,8 @@
         "drupal/webformautosave": "^1.0@RC",
         "drupal/admin_toolbar": "^3.0",
         "drupal/toolbar_anti_flicker": "^9.3",
-        "drupal/toolbar_menu": "^2.2"
+        "drupal/toolbar_menu": "^2.2",
+        "drupal/libraries": "^3.0@beta"
     },
     "replace": {
     },
