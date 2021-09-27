@@ -162,7 +162,7 @@ function attach_configuration_to_element(&$element, $config_id) {
  * Display a notice to user for cache rebuild after install.
  */
 function search_autocomplete_install() {
-  drupal_set_message(t('To finish install of Search Autocomplete, you must %clear_caches.', [
+  \Drupal::messenger()->addMessage(t('To finish install of Search Autocomplete, you must %clear_caches.', [
     '%clear_caches' => Link::fromTextAndUrl(t('Clear all caches'),
       Url::fromRoute('system.performance_settings'))->toString()
   ]));
@@ -184,7 +184,7 @@ function search_autocomplete_library_info_build() {
 
   // Find all available themes.
   $themes = [];
-  $files = file_scan_directory(drupal_get_path('module', 'search_autocomplete') . '/css/themes', '/.*\.css\z/', ['recurse' => FALSE]);
+  $files = \Drupal::service('file_system')->scanDirectory(drupal_get_path('module', 'search_autocomplete') . '/css/themes', '/.*\.css\z/', ['recurse' => FALSE]);
 
   // Create a new library for all themes.
   foreach ($files as $file) {

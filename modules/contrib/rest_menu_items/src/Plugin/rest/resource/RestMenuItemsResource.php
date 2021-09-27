@@ -4,9 +4,10 @@ namespace Drupal\rest_menu_items\Plugin\rest\resource;
 
 use Drupal\Core\Cache\CacheableResponseInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\Menu\MenuLinkInterface;
-use Drupal\Core\Path\AliasManagerInterface;
+use Drupal\path_alias\AliasManagerInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
 use Drupal\Core\Url;
@@ -30,7 +31,7 @@ class RestMenuItemsResource extends ResourceBase {
   /**
    * A instance of the alias manager.
    *
-   * @var \Drupal\Core\Path\AliasManagerInterface
+   * @var \Drupal\path_alias\AliasManagerInterface
    */
   protected $aliasManager;
 
@@ -40,6 +41,13 @@ class RestMenuItemsResource extends ResourceBase {
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
+
+  /**
+   * A instance of the entitytype manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
 
   /**
    * A list of menu items.
@@ -65,33 +73,20 @@ class RestMenuItemsResource extends ResourceBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition,
-    array $serializer_formats,
-    LoggerInterface $logger,
-    AliasManagerInterface $alias_manager,
-    ConfigFactoryInterface $config_factory) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, array $serializer_formats, LoggerInterface $logger, AliasManagerInterface $alias_manager, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entityTypeManager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
 
     $this->aliasManager = $alias_manager;
     $this->configFactory = $config_factory;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->getParameter('serializer.formats'),
-      $container->get('logger.factory')->get('rest'),
-      $container->get('path.alias_manager'),
-      $container->get('config.factory')
-    );
+    return new static($configuration, $plugin_id, $plugin_definition, $container->getParameter('serializer.formats'), $container->get('logger.factory')
+      ->get('rest'), $container->get('path_alias.manager'), $container->get('config.factory'), $container->get('entity_type.manager'));
   }
 
   /**
@@ -170,7 +165,7 @@ class RestMenuItemsResource extends ResourceBase {
       // Return the JSON response.
       return $response;
     }
-    throw new HttpException(t("Menu name was not provided"));
+    throw new HttpException($this->t("Menu name was not provided"));
   }
 
   /**
@@ -258,7 +253,12 @@ class RestMenuItemsResource extends ResourceBase {
     $value = NULL;
 
     // Check if the url is a <nolink> and do not do anything for some keys.
-    $itemsToRemoveWhenNoLink = ['uri', 'alias', 'absolute', 'relative'];
+    $itemsToRemoveWhenNoLink = [
+      'uri',
+      'alias',
+      'absolute',
+      'relative',
+    ];
     if (!$external && $routed && $url->getRouteName() === '<nolink>' && in_array($key, $itemsToRemoveWhenNoLink)) {
       return;
     }
@@ -271,7 +271,8 @@ class RestMenuItemsResource extends ResourceBase {
         $uri = $url->getInternalPath();
       }
       catch (\UnexpectedValueException $e) {
-        $uri = $relative = Url::fromUri($url->getUri())->toString();
+        $uri = $relative = Url::fromUri($url->getUri())
+          ->toString();
         $existing = FALSE;
       }
     }
@@ -317,8 +318,7 @@ class RestMenuItemsResource extends ResourceBase {
             $url->setAbsolute();
           }
 
-          $value = $url
-            ->toString(TRUE)
+          $value = $url->toString(TRUE)
             ->getGeneratedUrl();
 
           if (!empty($base_url)) {
@@ -350,13 +350,13 @@ class RestMenuItemsResource extends ResourceBase {
 
         if (!$routed) {
           $url->setAbsolute(FALSE);
-          $value = $url
-            ->toString(TRUE)
+          $value = $url->toString(TRUE)
             ->getGeneratedUrl();
         }
 
         if (!$existing) {
-          $value = Url::fromUri($url->getUri())->toString();
+          $value = Url::fromUri($url->getUri())
+            ->toString();
         }
         break;
 
@@ -378,11 +378,12 @@ class RestMenuItemsResource extends ResourceBase {
 
       case 'uuid':
         if (!$external && $routed) {
-          $params = Url::fromUri('internal:/' . $uri)->getRouteParameters();
+          $params = Url::fromUri('internal:/' . $uri)
+            ->getRouteParameters();
           $entity_type = key($params);
-          if (!empty($entity_type)) {
-            $entity = \Drupal::entityTypeManager()
-              ->getStorage($entity_type)
+
+          if (!empty($entity_type) && $this->entityTypeManager->hasDefinition($entity_type)) {
+            $entity = $this->entityTypeManager->getStorage($entity_type)
               ->load($params[$entity_type]);
             $value = $entity->uuid();
           }
@@ -394,7 +395,11 @@ class RestMenuItemsResource extends ResourceBase {
         break;
     }
 
-    $addFragmentElements = ['alias', 'absolute', 'relative'];
+    $addFragmentElements = [
+      'alias',
+      'absolute',
+      'relative',
+    ];
     if (!empty($config->get('add_fragment')) && in_array($key, $addFragmentElements)) {
       $this->addFragment($value, $link);
     }

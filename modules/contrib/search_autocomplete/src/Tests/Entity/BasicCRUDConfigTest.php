@@ -2,7 +2,7 @@
 
 namespace Drupal\search_autocomplete\Tests\Entity;
 
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Test basic CRUD on configurations.
@@ -11,7 +11,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @ingroup seach_auocomplete
  */
-class BasicCRUDConfigTest extends WebTestBase {
+class BasicCRUDConfigTest extends BrowserTestBase {
 
   /**
    * Modules to enable.
@@ -272,7 +272,7 @@ class BasicCRUDConfigTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Create admin user.
     $this->adminUser = $this->drupalCreateUser(['administer search autocomplete']);

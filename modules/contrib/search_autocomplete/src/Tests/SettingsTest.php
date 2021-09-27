@@ -2,7 +2,7 @@
 
 namespace Drupal\search_autocomplete\Tests;
 
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Test search_autocomplete settings.
@@ -11,7 +11,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @ingroup seach_auocomplete
  */
-class SettingsTest extends WebTestBase {
+class SettingsTest extends BrowserTestBase {
 
   /**
    * Modules to enable.
@@ -71,7 +71,7 @@ class SettingsTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $admin_user = $this->drupalCreateUser(['administer search autocomplete']);
     $this->drupalLogin($admin_user);

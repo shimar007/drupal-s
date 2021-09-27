@@ -3,7 +3,7 @@
 namespace Drupal\search_autocomplete\Tests;
 
 use Drupal\search_autocomplete\Entity\AutocompletionConfiguration;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Test proper module installation.
@@ -12,7 +12,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @ingroup seach_auocomplete
  */
-class InstallTest extends WebTestBase {
+class InstallTest extends BrowserTestBase {
 
   /**
    * Modules to enable.
@@ -111,7 +111,7 @@ class InstallTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Make default entity deletable for testing purpose.

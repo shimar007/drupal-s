@@ -1,0 +1,6 @@
+uuid: 7394b5f1-5e7a-4d42-b551-7d4fe55ec396
+langcode: en
+status: true
+dependencies: {  }
+id: test_acce
+label: 'Test Access Type'

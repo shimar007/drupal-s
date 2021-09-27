@@ -156,10 +156,10 @@ class EntityUsageBatchManager implements ContainerInjectionInterface {
       ->accessCheck(FALSE)
       ->sort($entity_type_key)
       ->execute();
+    $entity_id = reset($entity_ids);
 
-    /** @var \Drupal\Core\Entity\EntityInterface $entity */
-    $entity = $entity_storage->load(reset($entity_ids));
-    if ($entity) {
+    if ($entity_id && $entity = $entity_storage->load($entity_id)) {
+      /** @var \Drupal\Core\Entity\EntityInterface $entity */
       try {
         if ($entity->getEntityType()->isRevisionable()) {
           // We cannot query the revisions due to this bug
@@ -170,6 +170,7 @@ class EntityUsageBatchManager implements ContainerInjectionInterface {
           // are tracked as if they were new entities.
           $result = $entity_storage->getQuery()->allRevisions()
             ->condition($entity->getEntityType()->getKey('id'), $entity->id())
+            ->accessCheck(FALSE)
             ->sort($entity->getEntityType()->getKey('revision'), 'DESC')
             ->range($start, static::REVISION_BATCH_SIZE)
             ->execute();

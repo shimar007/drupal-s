@@ -12,11 +12,10 @@ dependencies:
     - field.field.paragraph.about_us.field_file_name
     - field.field.paragraph.about_us.field_heading
     - field.field.paragraph.about_us.field_image
-    - image.style.medium
     - paragraphs.paragraphs_type.about_us
   module:
-    - extra_image_field_classes
     - file
+    - image
     - text
 id: paragraph.about_us.default
 targetEntityType: paragraph
@@ -86,13 +85,13 @@ content:
     type: string
     region: content
   field_image:
-    weight: 0
-    label: hidden
+    weight: 9
+    label: above
     settings:
-      image_style: medium
+      image_style: ''
       image_link: ''
-      extra_image_field_classes: profile-pic
     third_party_settings: {  }
-    type: extra_image_field_classes
+    type: image
     region: content
-hidden: {  }
+hidden:
+  search_api_excerpt: true

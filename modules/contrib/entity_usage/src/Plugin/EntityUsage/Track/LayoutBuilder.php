@@ -86,6 +86,7 @@ class LayoutBuilder extends EntityUsageTrackBase {
     // We support both Content Blocks and Entity Browser Blocks.
     $blockContentRevisionIds = [];
     $ebbContentIds = [];
+    $contentDependencyIds = [];
 
     /** @var \Drupal\layout_builder\Plugin\DataType\SectionData $value */
     foreach ($item as $value) {
@@ -106,6 +107,14 @@ class LayoutBuilder extends EntityUsageTrackBase {
         elseif ($def['id'] === 'entity_browser_block' && !empty($configuration['entity_ids'])) {
           $ebbContentIds = array_unique(array_merge($ebbContentIds, (array) $configuration['entity_ids']));
         }
+
+        // Check the block plugin's content dependencies.
+        /** @var \Drupal\Core\Block\BlockPluginInterface $plugin */
+        $plugin = $component->getPlugin();
+        $dependencies = $plugin->calculateDependencies();
+        if (!empty($dependencies['content'])) {
+          $contentDependencyIds = array_merge($contentDependencyIds, $dependencies['content']);
+        }
       }
     }
 
@@ -115,6 +124,9 @@ class LayoutBuilder extends EntityUsageTrackBase {
     }
     if (count($ebbContentIds) > 0) {
       $target_entities = array_merge($target_entities, $this->prepareEntityBrowserBlockIds($ebbContentIds));
+    }
+    if (count($contentDependencyIds) > 0) {
+      $target_entities = array_merge($target_entities, $this->prepareContentDependencyIds($contentDependencyIds));
     }
     return $target_entities;
 
@@ -184,6 +196,36 @@ class LayoutBuilder extends EntityUsageTrackBase {
     return array_map(function (string $item): string {
       return str_replace(":", "|", $item);
     }, $ids);
+  }
+
+  /**
+   * Prepare plugin content dependency IDs to be in the correct format.
+   *
+   * @param array $ids
+   *   An array of entity ID values as returned from the plugin dependency
+   *   configuration. (Each value is expected to be in the format
+   *   "media:image:4dd39aa2-068f-11ec-9a03-0242ac130003", etc).
+   *
+   * @return array
+   *   The same array passed in, with the following modifications:
+   *   - Non-loadable entities will be filtered out.
+   *   - The bundle ID in the middle will be removed.
+   *   - The UUID will be converted to a regular ID.
+   *   - The ":" character will be replaced by the "|" character.
+   */
+  private function prepareContentDependencyIds(array $ids) {
+    // Only return loadable entities.
+    $ids = array_map(function ($item) {
+      // Content dependencies are stored in the format:
+      // "{$entity_type_id}:{$bundle_id}:{$entity_uuid}".
+      list($entity_type_id, , $entity_uuid) = explode(':', $item);
+      if ($entity = $this->entityRepository->loadEntityByUuid($entity_type_id, $entity_uuid)) {
+        return "{$entity_type_id}|{$entity->id()}";
+      }
+      return FALSE;
+    }, $ids);
+
+    return array_filter($ids);
   }
 
 }

@@ -50,7 +50,7 @@ class ConfigForm extends ConfigFormBase {
         'uuid' => $this->t('Uuid'),
         'options' => $this->t('Options'),
       ],
-      '#default_value' => $config->get('output_values'),
+      '#default_value' => empty($config->get('output_values')) ? [] : $config->get('output_values'),
     ];
 
     $form['base_url'] = [

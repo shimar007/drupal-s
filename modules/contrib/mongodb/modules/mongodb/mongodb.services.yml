@@ -1,7 +1,0 @@
-services:
-  mongodb.client_factory:
-    class: Drupal\mongodb\ClientFactory
-    arguments: ['@settings']
-  mongodb.database_factory:
-    class: Drupal\mongodb\DatabaseFactory
-    arguments: ['@mongodb.client_factory', '@settings']

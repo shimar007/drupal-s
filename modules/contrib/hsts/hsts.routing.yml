@@ -1,7 +1,0 @@
-hsts.settings:
-  path: '/admin/config/system/hsts'
-  defaults:
-    _form: 'Drupal\hsts\Form\HstsConfigForm'
-    _title: 'HSTS settings'
-  requirements:
-    _permission: 'administer hsts'

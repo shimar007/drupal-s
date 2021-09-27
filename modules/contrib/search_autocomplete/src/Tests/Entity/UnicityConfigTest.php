@@ -2,7 +2,7 @@
 
 namespace Drupal\search_autocomplete\Tests\Entity;
 
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Test uniticity when creation configurations.
@@ -11,7 +11,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @ingroup seach_auocomplete
  */
-class UnicityConfigTest extends WebTestBase {
+class UnicityConfigTest extends BrowserTestBase {
 
   /**
    * Modules to enable.
@@ -142,7 +142,7 @@ class UnicityConfigTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->adminUser = $this->drupalCreateUser(['administer search autocomplete']);
     $this->drupalLogin($this->adminUser);

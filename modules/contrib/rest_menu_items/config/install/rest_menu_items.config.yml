@@ -13,3 +13,4 @@ output_values:
   enabled: enabled
   uuid: uuid
   options: options
+add_fragment: 1

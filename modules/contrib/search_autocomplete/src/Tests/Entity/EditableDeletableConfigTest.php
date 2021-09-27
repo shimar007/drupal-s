@@ -3,7 +3,7 @@
 namespace Drupal\search_autocomplete\Tests\Entity;
 
 use Drupal\search_autocomplete\Entity\AutocompletionConfiguration;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Test basic CRUD on configurations.
@@ -12,7 +12,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @ingroup seach_auocomplete
  */
-class EditableDeletableConfigTest extends WebTestBase {
+class EditableDeletableConfigTest extends BrowserTestBase {
 
   /**
    * Modules to enable.
@@ -102,7 +102,7 @@ class EditableDeletableConfigTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->adminUser = $this->drupalCreateUser(['administer search autocomplete']);
     $this->drupalLogin($this->adminUser);

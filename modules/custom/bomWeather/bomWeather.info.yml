@@ -2,5 +2,5 @@ name: BOM Weather Data
 type: module
 description: 'Get Weather Data using BOM'
 package: Custom
-core: 8.x
-version: 8.x
+core_version_requirement: 9.x
+version: 9.x

@@ -3,7 +3,7 @@
 namespace Drupal\search_autocomplete\Tests\Entity;
 
 use Drupal\search_autocomplete\Entity\AutocompletionConfiguration;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Test default configurations.
@@ -12,7 +12,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @ingroup seach_auocomplete
  */
-class DefaultConfigTest extends WebTestBase {
+class DefaultConfigTest extends BrowserTestBase {
 
   /**
    * Modules to enable.

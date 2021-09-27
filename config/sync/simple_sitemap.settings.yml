@@ -13,3 +13,4 @@ enabled_entity_types:
   - taxonomy_term
 _core:
   default_config_hash: FoTCiVMOlTpj9EU5bUJB7lS8JK2gnnvqh-AdIC0ktBQ
+entities_per_queue_item: 50

@@ -3,10 +3,10 @@
 namespace Drupal\search_autocomplete\Plugin\views\display;
 
 use Drupal;
-use Drupal\Component\Render\MarkupTrait;
+use Drupal\views\Annotation\ViewsDisplay;
+use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\CacheableResponse;
-use Drupal\Core\ContentNegotiation;
 use Drupal\Core\Render\RenderContext;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
@@ -182,19 +182,18 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
     parent::optionsSummary($categories, $options);
 
     unset($categories['page'], $categories['exposed']);
+
     // Hide some settings, as they aren't useful for pure data output.
     unset($options['show_admin_links'], $options['analyze-theme']);
 
     $categories['path'] = [
+      'category' => 'path',
       'title' => $this->t('Path settings'),
       'column' => 'second',
       'build' => [
         '#weight' => -10,
       ],
     ];
-
-    $options['path']['category'] = 'path';
-    $options['path']['title'] = $this->t('Path');
 
     // Remove css/exposed form settings, as they are not used for the data
     // display.
@@ -248,7 +247,7 @@ class AutocompletionCallback extends PathPluginBase implements ResponseDisplayPl
       $build['#markup'] = ViewsRenderPipelineMarkup::create($build['#markup']);
     }
 
-    parent::applyDisplayCachablityMetadata($build);
+    parent::applyDisplayCacheabilityMetadata($build);
     return $build;
   }
 

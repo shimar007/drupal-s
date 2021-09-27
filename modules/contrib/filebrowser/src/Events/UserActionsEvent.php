@@ -2,7 +2,7 @@
 
 namespace Drupal\filebrowser\Events;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class UserActionsEvent extends Event{
 

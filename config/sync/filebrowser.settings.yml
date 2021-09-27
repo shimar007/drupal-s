@@ -1,12 +1,17 @@
 filebrowser:
-  folder_path_encoded: ''
+  folder_path: null
+  folder_path_encoded: null
   rights:
     explore_subdirs: 1
     download_archive: 0
     create_folders: 0
     download_manager: private
     force_download: 0
-    forbidden_files: "descript.ion\r\nfile.bbs\r\n*.git\r\n*.svn"
+    forbidden_files: |-
+      descript.ion
+      file.bbs
+      *.git
+      *.svn
     whitelist: ''
   uploads:
     enabled: 1
@@ -17,13 +22,13 @@ filebrowser:
     encoding: UTF-8
     hide_extension: 0
     visible_columns:
+      name: name
       icon: icon
       created: created
       size: size
-      mimetype: mimetype
-      description: description
-      name: name
+      mimetype: 0
     default_sort: name
     default_sort_order: asc
+    langcode: en
 _core:
   default_config_hash: aZOIbJ0mDVxn0sGK6oSzaAVD92j7hTr5amHC4n9DCPg

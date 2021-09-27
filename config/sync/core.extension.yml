@@ -1,5 +1,6 @@
 module:
-  address: 0
+  admin_toolbar: 0
+  admin_toolbar_links_access_filter: 0
   advagg: 0
   advagg_bundler: 0
   advagg_css_minify: 0
@@ -31,7 +32,6 @@ module:
   contact: 0
   content_sync: 0
   contextual: 0
-  cors: 0
   csp: 0
   csv_serialization: 0
   ctools: 0
@@ -45,13 +45,6 @@ module:
   entity_reference_display: 0
   entity_reference_revisions: 0
   entity_usage: 0
-  event_log_track: 0
-  event_log_track_auth: 0
-  event_log_track_menu: 0
-  event_log_track_node: 0
-  event_log_track_taxonomy: 0
-  event_log_track_user: 0
-  extra_image_field_classes: 0
   feeds: 0
   field: 0
   field_group: 0
@@ -59,40 +52,27 @@ module:
   file: 0
   filebrowser: 0
   filter: 0
-  geocoder: 0
-  geocoder_address: 0
-  geocoder_field: 0
-  geocoder_geofield: 0
-  geofield: 0
   google_tag: 0
   hal: 0
   help: 0
   history: 0
-  hsts: 0
   image: 0
   image_captcha: 0
   imce: 0
   inline_form_errors: 0
-  libraries: 0
   link: 0
   link_attributes: 0
   masonry: 0
-  masonry_views: 0
   menu_item_extras: 0
   menu_reference_render: 0
   menu_ui: 0
   metatag: 0
+  metatag_verification: 0
   metatag_views: 0
   minifyhtml: 0
   module_filter: 0
-  mongodb: 0
-  mongodb_storage: 0
   node: 0
   noreqnewpass: 0
-  o365_sso: 0
-  oauth2_client: 0
-  openid_connect: 0
-  openid_connect_windows_aad: 0
   options: 0
   page_cache: 0
   path: 0
@@ -107,7 +87,6 @@ module:
   restui: 0
   robotstxt: 0
   scheduler: 0
-  scroll_progress: 0
   search_api: 0
   search_api_autocomplete: 0
   search_api_db: 0
@@ -121,9 +100,12 @@ module:
   text: 0
   token: 0
   toolbar: 0
+  toolbar_anti_flicker: 0
+  toolbar_menu: 0
   tour: 0
   twig_field_value: 0
   update: 0
+  upgrade_status: 0
   user: 0
   views_bulk_operations: 0
   views_data_export: 0
@@ -131,10 +113,16 @@ module:
   views_ui: 0
   viewsreference: 0
   webform: 0
+  webform_access: 0
+  webform_attachment: 0
+  webform_node: 0
+  webform_submission_log: 0
   webform_ui: 0
   webform_views: 0
+  webformautosave: 0
   menu_link_content: 1
   pathauto: 1
+  masonry_views: 2
   views: 10
   paragraphs: 11
   standard: 1000
