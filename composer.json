@@ -67,14 +67,15 @@
         "drupal/openid_connect_windows_aad": "^1.1",
         "drupal/address": "^1.7",
         "drupal/geofield": "^1.7",
-        "drush/drush": "^10.3",
+        "drush/drush": "^10.6",
         "drupal/upgrade_status": "^3.10",
         "drupal/webformautosave": "^1.0@RC",
         "drupal/admin_toolbar": "^3.0",
         "drupal/toolbar_anti_flicker": "^9.3",
         "drupal/toolbar_menu": "^2.2",
         "drupal/libraries": "^3.0@beta",
-        "drupal/config_delete": "^1.17"
+        "drupal/config_delete": "^1.17",
+        "drupal/jquery_ui_slider": "^1.1"
     },
     "replace": {
     },

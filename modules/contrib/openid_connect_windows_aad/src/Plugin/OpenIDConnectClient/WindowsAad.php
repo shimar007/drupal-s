@@ -79,7 +79,7 @@ class WindowsAad extends OpenIDConnectClientBase {
     $form['group_mapping']['mappings'] = [
       '#title' => $this->t('Manual mappings'),
       '#type' => 'textarea',
-      '#default_value' => $this->configuration['group_mapping']['mappings'],
+      '#default_value' => (isset($this->configuration['group_mapping']) && isset($this->configuration['group_mapping']['mappings'])) ? $this->configuration['group_mapping']['mappings'] : '',
       '#description' => $this->t('Add one role|group(s) mapping per line. Role and Group should be separated by "|". Multiple groups can be mapped to a single role on the same line using ";" to separate the groups. Ideally you should use the group id since it is immutable, but the title (displayName) may also be used.'),
       '#states' => [
         'invisible' => [
@@ -212,6 +212,7 @@ class WindowsAad extends OpenIDConnectClientBase {
       $tokens = [
         'id_token' => $response_data['id_token'],
         'access_token' => $response_data['access_token'],
+        'refresh_token' => isset($response_data['refresh_token']) ? $response_data['refresh_token'] : FALSE,
       ];
       if (array_key_exists('expires_in', $response_data)) {
         $tokens['expire'] = \Drupal::time()->getRequestTime() + $response_data['expires_in'];
@@ -264,21 +265,8 @@ class WindowsAad extends OpenIDConnectClientBase {
 
     // If AD group to Drupal role mapping has been enabled then attach group
     // data from a graph API if configured to do so.
-    if ($this->configuration['map_ad_groups_to_roles']) {
+    if (!empty($this->configuration['map_ad_groups_to_roles'])) {
       $userinfo['groups'] = $this->retrieveGroupInfo($access_token);
-    }
-
-    // Check to see if we have changed email data, O365_connect doesn't
-    // give us the possibility to add a mapping for it, so we do the change
-    // now, first checking if this is wanted by checking the setting for it.
-    if ($userinfo && $this->configuration['userinfo_update_email'] == 1) {
-      /** @var \Drupal\user\UserInterface $user */
-      $user = user_load_by_name($userinfo['name']);
-
-      if ($user && ($user->getEmail() != $userinfo['email'])) {
-        $user->setEmail($userinfo['email']);
-        $user->save();
-      }
     }
 
     return $userinfo;

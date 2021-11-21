@@ -35,6 +35,7 @@ use Drupal\webform\Utility\WebformFormHelper;
 use Drupal\webform\Utility\WebformHtmlHelper;
 use Drupal\webform\Utility\WebformOptionsHelper;
 use Drupal\webform\Utility\WebformReflectionHelper;
+use Drupal\webform\Utility\WebformXss;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionConditionsValidator;
 use Drupal\webform\WebformSubmissionInterface;
@@ -783,6 +784,12 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
       if (!empty($element['#required_error'])) {
         $element['#attributes']['data-webform-required-error'] = WebformHtmlHelper::toPlainText($element['#required_error']);
         $element['#required_error'] = WebformHtmlHelper::toHtmlMarkup($element['#required_error']);
+      }
+
+      // Convert #title to HTML markup so that it can displayed properly
+      // in error messages.
+      if (isset($element['#title'])) {
+        $element['#title'] = WebformHtmlHelper::toHtmlMarkup($element['#title'], WebformXss::getHtmlTagList());
       }
     }
 

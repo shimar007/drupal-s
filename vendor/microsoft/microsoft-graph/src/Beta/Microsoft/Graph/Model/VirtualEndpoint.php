@@ -117,6 +117,7 @@ class VirtualEndpoint extends Entity
 
      /** 
      * Gets the galleryImages
+    * The gallery image resource on Cloud PC.
      *
      * @return array|null The galleryImages
      */
@@ -131,6 +132,7 @@ class VirtualEndpoint extends Entity
     
     /** 
     * Sets the galleryImages
+    * The gallery image resource on Cloud PC.
     *
     * @param CloudPcGalleryImage $val The galleryImages
     *
@@ -205,6 +207,7 @@ class VirtualEndpoint extends Entity
 
      /** 
      * Gets the servicePlans
+    * Cloud PC service plans.
      *
      * @return array|null The servicePlans
      */
@@ -219,6 +222,7 @@ class VirtualEndpoint extends Entity
     
     /** 
     * Sets the servicePlans
+    * Cloud PC service plans.
     *
     * @param CloudPcServicePlan $val The servicePlans
     *

@@ -647,6 +647,18 @@ class WebformSubmissionForm extends ContentEntityForm {
     // Add a reference to the webform's id to the $form render array.
     $form['#webform_id'] = $webform->id();
 
+    // Move form settings to properties.
+    $settings_to_properties = [
+      'form_method' => '#method',
+      'form_action' => '#action',
+      'form_attributes' => '#attributes',
+    ];
+    foreach ($settings_to_properties as $setting_name => $property_name) {
+      if ($this->getWebformSetting($setting_name)) {
+        $form[$property_name] = $this->getWebformSetting($setting_name);
+      }
+    }
+
     // Track current page name or index by setting the
     // "data-webform-wizard-page"
     // attribute which is used Drupal.behaviors.webformWizardTrackPage.
@@ -693,7 +705,9 @@ class WebformSubmissionForm extends ContentEntityForm {
       $class[] = "webform-submission-$webform_id-$source_entity_type-$source_entity_id-$operation-form";
     }
     array_walk($class, ['\Drupal\Component\Utility\Html', 'getClass']);
-    $form['#attributes']['class'] = $class;
+    $form += ['#attributes' => []];
+    $form['#attributes'] += ['class' => []];
+    $form['#attributes']['class'] = array_merge($class, $form['#attributes']['class']);
 
     // Get last class, which is the most specific, as #states prefix.
     // @see \Drupal\webform\WebformSubmissionForm::addStatesPrefix
@@ -1034,7 +1048,7 @@ class WebformSubmissionForm extends ContentEntityForm {
       && $this->operation === 'add'
       && $this->getWebformSetting('draft') !== WebformInterface::DRAFT_NONE
       && $this->getWebformSetting('draft_multiple', FALSE)
-      && ($previous_draft_total = $this->getStorage()->getTotal($webform, $this->sourceEntity, $this->currentUser(), ['in_draft' => TRUE]))
+      && ($previous_draft_total = $this->getStorage()->getTotal($webform, $this->sourceEntity, $this->currentUser(), ['in_draft' => TRUE, 'check_source_entity' => TRUE]))
     ) {
       if ($previous_draft_total > 1) {
         $this->getMessageManager()->display(WebformMessageManagerInterface::DRAFT_PENDING_MULTIPLE);
@@ -2263,7 +2277,7 @@ class WebformSubmissionForm extends ContentEntityForm {
       $pages = $this->getWebform()->getPages($this->operation);
       foreach ($pages as $page_key => $page) {
         if (isset($form['elements'][$page_key])) {
-          $page_element =& $form['elements'][$page_key];
+          $page_element = &$form['elements'][$page_key];
           $page_element_plugin = $this->elementManager->getElementInstance($page_element);
           if ($page_element_plugin instanceof WebformElementWizardPageInterface) {
             if ($page_key != $current_page) {
