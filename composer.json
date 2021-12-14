@@ -58,7 +58,7 @@
         "drupal/masonry_views": "^1.0",
         "drupal/search_api": "^1.13",
         "drupal/facets": "^1.4",
-        "drupal/search_api_autocomplete": "^1.2",
+        "drupal/search_api_autocomplete": "^1.5",
         "drupal/search_autocomplete": "^2.0",
         "drupal/block_class": "^1.0",
         "drupal/csp": "^1.4",
@@ -75,7 +75,16 @@
         "drupal/toolbar_menu": "^2.2",
         "drupal/libraries": "^3.0@beta",
         "drupal/config_delete": "^1.17",
-        "drupal/jquery_ui_slider": "^1.1"
+        "drupal/jquery_ui_slider": "^1.1",
+        "drupal/bat": "^1.3",
+        "drupal/bat_api": "^1.1",
+        "drupal/fullcalendar_library": "^1.1",
+        "drupal/shield": "^1.4",
+        "drupal/bee": "^1.2",
+        "drupal/jquery_ui_autocomplete": "^1.1",
+        "drupal/jquery_ui": "^1.4",
+        "drupal/smart_date": "^3.4",
+        "drupal/smart_date_calendar_kit": "^2.0"
     },
     "replace": {
     },

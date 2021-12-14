@@ -1,0 +1,118 @@
+diff --git a/config/schema/shield.schema.yml b/config/schema/shield.schema.yml
+index c087784..4a6bd41 100644
+--- a/config/schema/shield.schema.yml
++++ b/config/schema/shield.schema.yml
+@@ -24,6 +24,9 @@ shield.settings:
+     whitelist:
+       type: string
+       label: 'Bypass shield based on user IP'
++    domains:
++      type: text
++      label: 'Bypass shield based on domain name'
+ 
+ shield.credentials.shield:
+   type: mapping
+diff --git a/shield.services.yml b/shield.services.yml
+index 8780ed0..b8a883a 100644
+--- a/shield.services.yml
++++ b/shield.services.yml
+@@ -1,7 +1,7 @@
+ services:
+   shield.middleware:
+     class: Drupal\shield\ShieldMiddleware
+-    arguments: ['@config.factory']
++    arguments: ['@config.factory', '@path.matcher']
+     tags:
+       # Ensure to come before page caching, so you don't serve cached pages to
+       # banned users.
+diff --git a/src/Form/ShieldSettingsForm.php b/src/Form/ShieldSettingsForm.php
+index 64dbc95..cc4de9c 100644
+--- a/src/Form/ShieldSettingsForm.php
++++ b/src/Form/ShieldSettingsForm.php
+@@ -69,6 +69,14 @@ class ShieldSettingsForm extends ConfigFormBase {
+       '#placeholder' => $this->t("Example:\n192.168.0.1/24\n127.0.0.1")
+     );
+ 
++    $form['general']['shield_domains'] = array(
++      '#type' => 'textarea',
++      '#title' => $this->t('Whitelist Domains'),
++      '#description' => $this->t('Enter list of domain host names for which shield should not be shown, one per line.'),
++      '#default_value' => $shield_config->get('domains'),
++      '#placeholder' => $this->t("Example:\nexample.com\ndomain.in"),
++    );
++
+     $form['credentials'] = array(
+       '#id' => 'credentials',
+       '#type' => 'details',
+@@ -177,6 +185,7 @@ class ShieldSettingsForm extends ConfigFormBase {
+       ->set('allow_cli', $form_state->getValue(['general', 'shield_allow_cli']))
+       ->set('shield_enable', $form_state->getValue(['general', 'shield_enable']))
+       ->set('whitelist', $form_state->getValue(['general', 'whitelist']))
++      ->set('domains', $form_state->getValue(['general', 'shield_domains']))
+       ->set('print', $form_state->getValue('shield_print'))
+       ->set('credential_provider', $credential_provider);
+     $credentials = $form_state->getValue([
+diff --git a/src/ShieldMiddleware.php b/src/ShieldMiddleware.php
+index 38e0e3d..ccd24e9 100644
+--- a/src/ShieldMiddleware.php
++++ b/src/ShieldMiddleware.php
+@@ -4,6 +4,7 @@ namespace Drupal\shield;
+ 
+ use Drupal\Component\Utility\Crypt;
+ use Drupal\Core\Config\ConfigFactoryInterface;
++use Drupal\Core\Path\PathMatcherInterface;
+ use Symfony\Component\HttpFoundation\IpUtils;
+ use Symfony\Component\HttpFoundation\Request;
+ use Symfony\Component\HttpFoundation\Response;
+@@ -29,16 +30,26 @@ class ShieldMiddleware implements HttpKernelInterface {
+   protected $configFactory;
+ 
+   /**
++   * The path matcher.
++   *
++   * @var \Drupal\Core\Path\PathMatcherInterface
++   */
++  protected $pathMatcher;
++
++  /**
+    * Constructs a BanMiddleware object.
+    *
+    * @param \Symfony\Component\HttpKernel\HttpKernelInterface $http_kernel
+    *   The decorated kernel.
+    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+    *   The configuration factory.
++   * @param \Drupal\Core\Path\PathMatcherInterface $path_matcher
++   *   The path matcher service.
+    */
+-  public function __construct(HttpKernelInterface $http_kernel, ConfigFactoryInterface $config_factory) {
++  public function __construct(HttpKernelInterface $http_kernel, ConfigFactoryInterface $config_factory, PathMatcherInterface $path_matcher) {
+     $this->httpKernel = $http_kernel;
+     $this->configFactory = $config_factory;
++    $this->pathMatcher = $path_matcher;
+   }
+ 
+   /**
+@@ -98,6 +109,14 @@ class ShieldMiddleware implements HttpKernelInterface {
+         $in_whitelist = IpUtils::checkIp($request->getClientIp(), $whitelist);
+       }
+ 
++      // Check if site domain is in whitelist.
++      $allow_domain = FALSE;
++      if ($domains = $config->get('domains')) {
++        if (!empty($domains)) {
++          $allow_domain = $this->pathMatcher->matchPath($request->getHost(), $domains);
++        }
++      }
++
+       // Check if user has provided credentials.
+       if ($request->server->has('PHP_AUTH_USER') && $request->server->has('PHP_AUTH_PW')) {
+         $input_user = $request->server->get('PHP_AUTH_USER');
+@@ -111,7 +130,7 @@ class ShieldMiddleware implements HttpKernelInterface {
+       }
+       $authenticated = isset($input_user) && $input_user === $user && hash_equals($pass, $input_pass);
+ 
+-      if ($in_whitelist || $authenticated) {
++      if ($in_whitelist || $authenticated || $allow_domain) {
+         return $this->httpKernel->handle($request, $type, $catch);
+       }
+     }
