@@ -12,7 +12,7 @@ dependencies:
   - 'add_content_by_bundle:add_content_by_bundle'
   - menu_ui
 
-# Information added by Drupal.org packaging script on 2021-09-24
-version: '2.1.2'
+# Information added by Drupal.org packaging script on 2021-12-07
+version: '2.1.3'
 project: 'smart_date_starter_kit'
-datestamp: 1632479582
+datestamp: 1638864738
