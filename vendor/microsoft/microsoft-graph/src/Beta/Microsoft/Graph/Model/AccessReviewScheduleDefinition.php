@@ -427,6 +427,34 @@ class AccessReviewScheduleDefinition extends Entity
         return $this;
     }
 
+
+     /**
+     * Gets the stageSettings
+     *
+     * @return array|null The stageSettings
+     */
+    public function getStageSettings()
+    {
+        if (array_key_exists("stageSettings", $this->_propDict)) {
+           return $this->_propDict["stageSettings"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the stageSettings
+    *
+    * @param AccessReviewStageSettings[] $val The stageSettings
+    *
+    * @return AccessReviewScheduleDefinition
+    */
+    public function setStageSettings($val)
+    {
+        $this->_propDict["stageSettings"] = $val;
+        return $this;
+    }
+
     /**
     * Gets the status
     * This read-only field specifies the status of an access review. The typical states include Initializing, NotStarted, Starting, InProgress, Completing, Completed, AutoReviewing, and AutoReviewed.  Supports $select, $orderby, and $filter (eq only). Read-only.

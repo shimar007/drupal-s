@@ -1217,66 +1217,6 @@ class DeviceManagement extends Entity
 
 
      /**
-     * Gets the hardwareConfigurations
-    * The hardware configurations for this account.
-     *
-     * @return array|null The hardwareConfigurations
-     */
-    public function getHardwareConfigurations()
-    {
-        if (array_key_exists("hardwareConfigurations", $this->_propDict)) {
-           return $this->_propDict["hardwareConfigurations"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the hardwareConfigurations
-    * The hardware configurations for this account.
-    *
-    * @param HardwareConfiguration[] $val The hardwareConfigurations
-    *
-    * @return DeviceManagement
-    */
-    public function setHardwareConfigurations($val)
-    {
-        $this->_propDict["hardwareConfigurations"] = $val;
-        return $this;
-    }
-
-
-     /**
-     * Gets the hardwarePasswordInfo
-    * The hardware password info for this account.
-     *
-     * @return array|null The hardwarePasswordInfo
-     */
-    public function getHardwarePasswordInfo()
-    {
-        if (array_key_exists("hardwarePasswordInfo", $this->_propDict)) {
-           return $this->_propDict["hardwarePasswordInfo"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the hardwarePasswordInfo
-    * The hardware password info for this account.
-    *
-    * @param HardwarePasswordInfo[] $val The hardwarePasswordInfo
-    *
-    * @return DeviceManagement
-    */
-    public function setHardwarePasswordInfo($val)
-    {
-        $this->_propDict["hardwarePasswordInfo"] = $val;
-        return $this;
-    }
-
-
-     /**
      * Gets the iosUpdateStatuses
     * The IOS software update installation statuses for this account.
      *
@@ -2552,6 +2492,36 @@ class DeviceManagement extends Entity
 
 
      /**
+     * Gets the oemWarrantyInformationOnboarding
+    * List of OEM Warranty Statuses
+     *
+     * @return array|null The oemWarrantyInformationOnboarding
+     */
+    public function getOemWarrantyInformationOnboarding()
+    {
+        if (array_key_exists("oemWarrantyInformationOnboarding", $this->_propDict)) {
+           return $this->_propDict["oemWarrantyInformationOnboarding"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the oemWarrantyInformationOnboarding
+    * List of OEM Warranty Statuses
+    *
+    * @param OemWarrantyInformationOnboarding[] $val The oemWarrantyInformationOnboarding
+    *
+    * @return DeviceManagement
+    */
+    public function setOemWarrantyInformationOnboarding($val)
+    {
+        $this->_propDict["oemWarrantyInformationOnboarding"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the remoteActionAudits
     * The list of device remote action audits with the tenant.
      *
@@ -3735,6 +3705,36 @@ class DeviceManagement extends Entity
     public function setUserExperienceAnalyticsWorkFromAnywhereMetrics($val)
     {
         $this->_propDict["userExperienceAnalyticsWorkFromAnywhereMetrics"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the userExperienceAnalyticsWorkFromAnywhereModelPerformance
+    * The user experience analytics work from anywhere model performance
+     *
+     * @return array|null The userExperienceAnalyticsWorkFromAnywhereModelPerformance
+     */
+    public function getUserExperienceAnalyticsWorkFromAnywhereModelPerformance()
+    {
+        if (array_key_exists("userExperienceAnalyticsWorkFromAnywhereModelPerformance", $this->_propDict)) {
+           return $this->_propDict["userExperienceAnalyticsWorkFromAnywhereModelPerformance"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the userExperienceAnalyticsWorkFromAnywhereModelPerformance
+    * The user experience analytics work from anywhere model performance
+    *
+    * @param UserExperienceAnalyticsWorkFromAnywhereModelPerformance[] $val The userExperienceAnalyticsWorkFromAnywhereModelPerformance
+    *
+    * @return DeviceManagement
+    */
+    public function setUserExperienceAnalyticsWorkFromAnywhereModelPerformance($val)
+    {
+        $this->_propDict["userExperienceAnalyticsWorkFromAnywhereModelPerformance"] = $val;
         return $this;
     }
 

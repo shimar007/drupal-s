@@ -24,6 +24,8 @@ class SmartDateDrushCommands extends DrushCommands {
    *   Field to copy data from.
    * @param string $source_all_day
    *   Field to copy data from.
+   * @param array $options
+   *   Additional configuration options.
    *
    * @command smart_date:migrate
    * @alises sdm
@@ -36,8 +38,16 @@ class SmartDateDrushCommands extends DrushCommands {
    * @option langcode
    *   Language code to store.
    */
-  public function migrate($bundle, $dest, $source_start, $source_end = NULL, $source_all_day = NULL, $options = ['clear' => FALSE, 'entity' => 'node', 'default_duration' => 0, 'langcode' => NULL]) {
-    // TODO: Sanitize provide input.
+  public function migrate($bundle, $dest, $source_start, $source_end = NULL, $source_all_day = NULL, array $options = NULL) {
+    if (!$options) {
+      $options = [
+        'clear' => FALSE,
+        'entity' => 'node',
+        'default_duration' => 0,
+        'langcode' => NULL,
+      ];
+    }
+    // @todo Sanitize provide input.
     $entity = $options['entity'];
     $dest_table = $entity . '__' . $dest;
     $def_duration = (int) $options['default_duration'];

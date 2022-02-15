@@ -18,7 +18,7 @@ class SmartDateFormatListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['name'] = $this->t('Name');;
+    $header['name'] = $this->t('Name');
     $header['preview'] = $this->t('Preview');
     $header['date_format'] = $this->t('Date Format');
     $header['time_format'] = $this->t('Time Format');
@@ -29,7 +29,6 @@ class SmartDateFormatListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /* @var $entity \Drupal\smart_date\Entity\SmartDateFormat */
     $row['query'] = Link::createFromRoute(
       $entity->label(),
       'entity.smart_date_format.edit_form',

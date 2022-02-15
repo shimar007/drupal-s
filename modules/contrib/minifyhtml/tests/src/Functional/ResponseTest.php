@@ -50,60 +50,70 @@ class ResponseTest extends BrowserTestBase {
     $data = [];
 
     // Test Minify HTML Textarea Replacement.
-    $expected_output  = "<html><head><title>Test HTML</title></head><body><textarea cols=\"55\" rows=\"31\">\n";
-    $expected_output .= "Content in here will not matter.\n";
-    $expected_output .= "Even multiline content.\n";
-    $expected_output .= "</textarea></body></html>";
-    $case = 'textarea_replacement';
-    $data[$case] = [
-      $case,
-      $expected_output,
+    $data['textarea_replacement'] = [
+      'textarea_replacement',
+      <<<EOT
+<html lang="xx"><head><title>Test HTML</title></head><body><textarea cols="55" rows="31">
+Content in here will not matter.
+Even multiline content.
+</textarea></body></html>
+EOT,
     ];
 
     // Test Minify HTML Pre Replacement.
-    $expected_output = "<html><head><title>Test HTML</title></head><body><pre>\n";
-    $expected_output .= "  Indented content.\n";
-    $expected_output .= "         Weirdly Indented content.\n";
-    $expected_output .= "Non-indented content.\n";
-    $expected_output .= "</pre></body></html>";
-    $case = 'pre_replacement';
-    $data[$case] = [
-      $case,
-      $expected_output,
+    $data['pre_replacement'] = [
+      'pre_replacement',
+      <<<EOT
+<html lang="xx"><head><title>Test HTML</title></head><body><pre>
+  Indented content.
+         Weirdly Indented content.
+Non-indented content.
+</pre></body></html>
+EOT,
     ];
 
     // Test Minify HTML Iframe Replacement.
-    $case = 'iframe_replacement';
-    $data[$case] = [
-      $case,
-      "<html><head><title>Test HTML</title></head><body><iframe src=\"\" width=\"100\" height=\"100\" ></iframe></body></html>",
+    $data['iframe_replacement'] = [
+      'iframe_replacement',
+      '<html lang="xx"><head><title>Test HTML</title></head><body><iframe src="" width="100" height="100" ></iframe></body></html>',
     ];
 
     // Test Minify HTML Script Replacement.
-    $expected_output = "<html><head><title>Test HTML</title></head><body><script>\n";
-    $expected_output .= "alert('test');\n";
-    $expected_output .= "</script></body></html>";
-    $case = 'script_replacement';
-    $data[$case] = [
-      $case,
-      $expected_output,
+    $data['script_replacement'] = [
+      'script_replacement',
+      <<<EOT
+<html lang="xx"><head><title>Test HTML</title></head><body><script>
+alert('test');
+</script></body></html>
+EOT,
     ];
 
     // Test Minify HTML Style Replacement.
-    $expected_output = "<html><head><title>Test HTML</title></head><body><style>\n";
-    $expected_output .= "body { color: #fff; }\n";
-    $expected_output .= "</style></body></html>";
-    $case = 'style_replacement';
-    $data[$case] = [
-      $case,
-      $expected_output,
+    $data['style_replacement'] = [
+      'style_replacement',
+      <<<EOT
+<html lang="xx"><head><title>Test HTML</title></head><body><style>
+body { color: #fff; }
+</style></body></html>
+EOT,
     ];
 
     // Test Minify HTML Comment Stripping.
-    $case = 'comment_stripping';
-    $data[$case] = [
-      $case,
-      "<html><head><title>Test HTML</title></head><body></body></html>",
+    $data['comment_stripping'] = [
+      'comment_stripping',
+      '<html lang="xx"><head><title>Test HTML</title></head><body></body></html>',
+    ];
+
+    // Test Correct Iframe and Script stripping order.
+    $data['correct_iframe_script_stripping_order'] = [
+      'correct_iframe_script_stripping_order',
+      <<<EOT
+<html lang="xx"><head><title>Test HTML</title></head><body><script type="text/javascript">
+let axel = Math.random() + "";
+let a = axel * 10000000000000;
+document.write('<iframe src=""></iframe>');
+</script></body></html>
+EOT,
     ];
 
     return $data;

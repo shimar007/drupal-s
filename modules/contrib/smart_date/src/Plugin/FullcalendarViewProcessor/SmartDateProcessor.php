@@ -23,13 +23,10 @@ class SmartDateProcessor extends FullcalendarViewProcessorBase {
    *
    * Processing view results of fullcalendar_view for a smart date field.
    *
-   * ToDo:
-   * - timezone handling
-   * - fullcalender_view recurring events handling (not considered yet, maybe
-   * this is not to be supported by smart date anyway
+   * @todo timezone handling.
    */
   public function process(array &$variables) {
-    /* @var \Drupal\views\ViewExecutable $view */
+    /** @var \Drupal\views\ViewExecutable $view */
     $view = $variables['view'];
     $view_index = key($variables['#attached']['drupalSettings']['fullCalendarView']);
 
@@ -37,6 +34,10 @@ class SmartDateProcessor extends FullcalendarViewProcessorBase {
     $options = $view->style_plugin->options;
     $start_field = $options['start'];
     $start_field_options = $fields[$start_field]->options;
+    // If no format set, may be the wrong field type.
+    if (empty($start_field_options['settings']['format'])) {
+      return;
+    }
     $format_label = $start_field_options['settings']['format'];
     // Load the format specified in the View.
     $format = SmartDateTrait::loadSmartDateFormat($format_label);

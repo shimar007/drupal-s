@@ -2,7 +2,6 @@
 
 namespace Drupal\smart_date_recur\Plugin\Field\FieldFormatter;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\smart_date\Entity\SmartDateFormat;
@@ -53,7 +52,7 @@ class SmartDateDailyRangeFormatter extends SmartDateDefaultFormatter {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
-    // TODO: intellident switching between retrieval methods
+    // @todo intellident switching between retrieval methods
     // Look for a defined format and use it if specified.
     $format_label = $this->getSetting('format');
     if ($format_label) {
@@ -77,14 +76,9 @@ class SmartDateDailyRangeFormatter extends SmartDateDefaultFormatter {
     $rrules = [];
     $rrules_nondaily = [];
 
-    // Look for the Date Augmenter plugin manager service.
-    $augmenters = [];
-    if (!empty(\Drupal::hasService('plugin.manager.dateaugmenter'))) {
-      $dateAugmenterManager = \Drupal::service('plugin.manager.dateaugmenter');
-      // TODO: Support custom entities.
-      $config = $this->getThirdPartySettings('date_augmenter');
-      $augmenters = $dateAugmenterManager->getActivePlugins($config);
-      $entity = $items->getEntity();
+    $augmenters = $this->initializeAugmenters();
+    if ($augmenters) {
+      $this->entity = $items->getEntity();
     }
 
     foreach ($items as $delta => $item) {
@@ -107,8 +101,8 @@ class SmartDateDailyRangeFormatter extends SmartDateDefaultFormatter {
           $rule_props = $rrule_obj->toArray();
           $allowed_freq = ['HOURLY', 'MINUTELY'];
           // Check that no extra parameters have been set.
-          // TODO: Separate handling for daily ranges with no end?
-          // TODO: Check for overrides.
+          // @todo Separate handling for daily ranges with no end?
+          // @todo Check for overrides.
           if ($rule_props['freq']) {
             if ($rule_props['freq'][0]['value'] == 'DAILY' && $rule_props['limit'] && !$rule_props['parameters']) {
               $is_daily = TRUE;
@@ -145,26 +139,7 @@ class SmartDateDailyRangeFormatter extends SmartDateDefaultFormatter {
         }
 
         if ($augmenters) {
-          foreach ($augmenters as $augmenter_id => $augmenter) {
-            // Use the enabled plugin to manipulate the output.
-            $augmenter->augmentOutput(
-              // The existing render array.
-              $elements[$delta],
-              // The start and end (optional), as DrupalDateTime objects.
-              DrupalDateTime::createFromTimestamp($item->value),
-              DrupalDateTime::createFromTimestamp($item->end_value),
-              // An optional array of additional parameters.
-              [
-                'timezone' => $timezone,
-                'allday' => static::isAllDay($item->value, $item->end_value, $timezone),
-                'entity' => $entity,
-                'settings' => $config['settings'][$augmenter_id],
-                'delta' => $delta,
-                'formatter' => $this,
-                'field_name' => $this->fieldDefinition->getName(),
-              ]
-            );
-          }
+          $this->augmentOutput($elements[$delta], $augmenters, $item->value, $item->end_value, $timezone, $delta);
         }
       }
     }

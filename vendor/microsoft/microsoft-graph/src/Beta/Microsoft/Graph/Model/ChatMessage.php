@@ -502,6 +502,39 @@ class ChatMessage extends Entity
     }
 
     /**
+    * Gets the onBehalfOf
+    * User attribution of the message when bot sends a message on behalf of a user.
+    *
+    * @return ChatMessageFromIdentitySet|null The onBehalfOf
+    */
+    public function getOnBehalfOf()
+    {
+        if (array_key_exists("onBehalfOf", $this->_propDict)) {
+            if (is_a($this->_propDict["onBehalfOf"], "\Beta\Microsoft\Graph\Model\ChatMessageFromIdentitySet") || is_null($this->_propDict["onBehalfOf"])) {
+                return $this->_propDict["onBehalfOf"];
+            } else {
+                $this->_propDict["onBehalfOf"] = new ChatMessageFromIdentitySet($this->_propDict["onBehalfOf"]);
+                return $this->_propDict["onBehalfOf"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the onBehalfOf
+    * User attribution of the message when bot sends a message on behalf of a user.
+    *
+    * @param ChatMessageFromIdentitySet $val The onBehalfOf
+    *
+    * @return ChatMessage
+    */
+    public function setOnBehalfOf($val)
+    {
+        $this->_propDict["onBehalfOf"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the policyViolation
     * Defines the properties of a policy violation set by a data loss prevention (DLP) application.
     *

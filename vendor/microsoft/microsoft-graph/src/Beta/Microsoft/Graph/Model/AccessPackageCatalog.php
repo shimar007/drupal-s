@@ -409,4 +409,32 @@ class AccessPackageCatalog extends Entity
         return $this;
     }
 
+
+     /**
+     * Gets the customAccessPackageWorkflowExtensions
+     *
+     * @return array|null The customAccessPackageWorkflowExtensions
+     */
+    public function getCustomAccessPackageWorkflowExtensions()
+    {
+        if (array_key_exists("customAccessPackageWorkflowExtensions", $this->_propDict)) {
+           return $this->_propDict["customAccessPackageWorkflowExtensions"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the customAccessPackageWorkflowExtensions
+    *
+    * @param CustomAccessPackageWorkflowExtension[] $val The customAccessPackageWorkflowExtensions
+    *
+    * @return AccessPackageCatalog
+    */
+    public function setCustomAccessPackageWorkflowExtensions($val)
+    {
+        $this->_propDict["customAccessPackageWorkflowExtensions"] = $val;
+        return $this;
+    }
+
 }

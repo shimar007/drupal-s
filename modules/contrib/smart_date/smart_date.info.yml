@@ -8,7 +8,7 @@ dependencies:
   - drupal:datetime
   - drupal:options
 
-# Information added by Drupal.org packaging script on 2021-10-17
-version: '3.4.3'
+# Information added by Drupal.org packaging script on 2022-01-25
+version: '3.5.0'
 project: 'smart_date'
-datestamp: 1634467246
+datestamp: 1643119105

@@ -6,6 +6,4 @@ smart_date_recur:
   js:
     js/smart_date_recur.js: {}
   dependencies:
-    - core/jquery
     - core/drupal
-    - core/jquery.once

@@ -59,6 +59,7 @@ class ConditionalAccessConditionSet extends Entity
 
     /**
     * Gets the clientApplications
+    * Client applications (service principals and workload identities) included in and excluded from the policy. Either users or clientApplications is required.
     *
     * @return ConditionalAccessClientApplications|null The clientApplications
     */
@@ -77,6 +78,7 @@ class ConditionalAccessConditionSet extends Entity
 
     /**
     * Sets the clientApplications
+    * Client applications (service principals and workload identities) included in and excluded from the policy. Either users or clientApplications is required.
     *
     * @param ConditionalAccessClientApplications $val The value to assign to the clientApplications
     *
@@ -250,6 +252,37 @@ class ConditionalAccessConditionSet extends Entity
     public function setPlatforms($val)
     {
         $this->_propDict["platforms"] = $val;
+         return $this;
+    }
+
+    /**
+    * Gets the servicePrincipalRiskLevels
+    *
+    * @return RiskLevel|null The servicePrincipalRiskLevels
+    */
+    public function getServicePrincipalRiskLevels()
+    {
+        if (array_key_exists("servicePrincipalRiskLevels", $this->_propDict)) {
+            if (is_a($this->_propDict["servicePrincipalRiskLevels"], "\Beta\Microsoft\Graph\Model\RiskLevel") || is_null($this->_propDict["servicePrincipalRiskLevels"])) {
+                return $this->_propDict["servicePrincipalRiskLevels"];
+            } else {
+                $this->_propDict["servicePrincipalRiskLevels"] = new RiskLevel($this->_propDict["servicePrincipalRiskLevels"]);
+                return $this->_propDict["servicePrincipalRiskLevels"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the servicePrincipalRiskLevels
+    *
+    * @param RiskLevel $val The value to assign to the servicePrincipalRiskLevels
+    *
+    * @return ConditionalAccessConditionSet The ConditionalAccessConditionSet
+    */
+    public function setServicePrincipalRiskLevels($val)
+    {
+        $this->_propDict["servicePrincipalRiskLevels"] = $val;
          return $this;
     }
 

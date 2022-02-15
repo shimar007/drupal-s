@@ -238,12 +238,12 @@ function smart_date_recur_widget_extra_fields(&$element, $item, $context) {
     ],
   ];
   $repeat_labels = [
-    'MINUTELY' => t('minutes'),
-    'HOURLY' => t('hours'),
-    'DAILY' => t('days'),
-    'WEEKLY' => t('weeks'),
-    'MONTHLY' => t('months'),
-    'YEARLY' => t('years'),
+    'MINUTELY' => t('by minute'),
+    'HOURLY' => t('by hour'),
+    'DAILY' => t('daily'),
+    'WEEKLY' => t('weekly'),
+    'MONTHLY' => t('monthly'),
+    'YEARLY' => t('annually'),
   ];
   $labels = ['' => t('never')];
   $allowed_values = SmartDateRule::getThirdPartyFallback($context, 'allowed_recur_freq_values', _smart_date_recur_get_freq_defaults());
@@ -554,7 +554,7 @@ function smart_date_recur_generate_rows(&$values, $entity_type, $bundle, $field_
       if (!empty($item['rrule'])) {
         // Removed an existing reoccurrence, so delete.
         $rrule = SmartDateRule::load($item['rrule']);
-	if ($rrule) {
+        if ($rrule) {
           $rrule->delete();
         }
         $item['rrule'] = NULL;

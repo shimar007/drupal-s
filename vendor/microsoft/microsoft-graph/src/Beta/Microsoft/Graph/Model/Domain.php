@@ -379,6 +379,34 @@ class Domain extends Entity
 
 
      /**
+     * Gets the federationConfiguration
+     *
+     * @return array|null The federationConfiguration
+     */
+    public function getFederationConfiguration()
+    {
+        if (array_key_exists("federationConfiguration", $this->_propDict)) {
+           return $this->_propDict["federationConfiguration"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the federationConfiguration
+    *
+    * @param InternalDomainFederation[] $val The federationConfiguration
+    *
+    * @return Domain
+    */
+    public function setFederationConfiguration($val)
+    {
+        $this->_propDict["federationConfiguration"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the serviceConfigurationRecords
     * DNS records the customer adds to the DNS zone file of the domain before the domain can be used by Microsoft Online services. Read-only, Nullable
      *

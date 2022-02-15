@@ -86,35 +86,6 @@ class GroupPolicyUploadedDefinitionFile extends GroupPolicyDefinitionFile
         return $this;
     }
 
-    /**
-    * Gets the fileName
-    * The file name of the uploaded ADML file.
-    *
-    * @return string|null The fileName
-    */
-    public function getFileName()
-    {
-        if (array_key_exists("fileName", $this->_propDict)) {
-            return $this->_propDict["fileName"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the fileName
-    * The file name of the uploaded ADML file.
-    *
-    * @param string $val The fileName
-    *
-    * @return GroupPolicyUploadedDefinitionFile
-    */
-    public function setFileName($val)
-    {
-        $this->_propDict["fileName"] = $val;
-        return $this;
-    }
-
 
      /**
      * Gets the groupPolicyUploadedLanguageFiles

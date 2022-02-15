@@ -2,7 +2,6 @@
 
 namespace Drupal\smart_date\Plugin\Field\FieldFormatter;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -80,7 +79,7 @@ class SmartDateDurationFormatter extends SmartDateDefaultFormatter {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $field_type = $this->fieldDefinition->getType();
     $elements = [];
-    // TODO: intelligent switching between retrieval methods.
+    // @todo intelligent switching between retrieval methods.
     // Look for a defined format and use it if specified.
     $format_label = $this->getSetting('format');
     if ($format_label) {
@@ -106,14 +105,9 @@ class SmartDateDurationFormatter extends SmartDateDefaultFormatter {
     $add_classes = $this->getSetting('add_classes');
     $time_wrapper = $this->getSetting('time_wrapper');
 
-    // Look for the Date Augmenter plugin manager service.
-    $augmenters = [];
-    if (!empty(\Drupal::hasService('plugin.manager.dateaugmenter'))) {
-      $dateAugmenterManager = \Drupal::service('plugin.manager.dateaugmenter');
-      // TODO: Support custom entities.
-      $config = $this->getThirdPartySettings('date_augmenter');
-      $augmenters = $dateAugmenterManager->getActivePlugins($config);
-      $entity = $items->getEntity();
+    $augmenters = $this->initializeAugmenters();
+    if ($augmenters) {
+      $this->entity = $items->getEntity();
     }
 
     foreach ($items as $delta => $item) {
@@ -139,7 +133,7 @@ class SmartDateDurationFormatter extends SmartDateDefaultFormatter {
       }
       $elements[$delta] = static::formatSmartDate($start_ts, $start_ts, $settings, $timezone);
       $elements[$delta]['spacer'] = ['#markup' => $this->getSetting('duration_separator')];
-      // TODO: Include timezone in isAllDay check.
+      // @todo Include timezone in isAllDay check.
       if (static::isAllDay($start_ts, $end_ts)) {
         $duration_output = $settings['allday_label'];
         unset($elements[$delta]['start']['time']);
@@ -174,7 +168,10 @@ class SmartDateDurationFormatter extends SmartDateDefaultFormatter {
         else {
           $adjusted_end = $end_ts;
         }
-        $diff = \Drupal::service('date.formatter')->formatDiff($start_ts, $adjusted_end, ['strict' => FALSE, 'language' => 'en']);
+        $diff = \Drupal::service('date.formatter')->formatDiff($start_ts, $adjusted_end, [
+          'strict' => FALSE,
+          'language' => 'en',
+        ]);
         $current_contents = $elements[$delta]['duration'];
         $elements[$delta]['duration'] = [
           '#theme' => 'time',
@@ -184,26 +181,7 @@ class SmartDateDurationFormatter extends SmartDateDefaultFormatter {
       }
 
       if ($augmenters) {
-        foreach ($augmenters as $augmenter_id => $augmenter) {
-          // Use the enabled plugin to manipulate the output.
-          $augmenter->augmentOutput(
-            // The existing render array.
-            $elements[$delta],
-            // The start and end (optional), as DrupalDateTime objects.
-            DrupalDateTime::createFromTimestamp($start_ts),
-            DrupalDateTime::createFromTimestamp($end_ts),
-            // An optional array of additional parameters.
-            [
-              'timezone' => $timezone,
-              'allday' => static::isAllDay($start_ts, $end_ts, $timezone),
-              'entity' => $entity,
-              'settings' => $config['settings'][$augmenter_id],
-              'delta' => $delta,
-              'formatter' => $this,
-              'field_name' => $this->fieldDefinition->getName(),
-            ]
-          );
-        }
+        $this->augmentOutput($elements[$delta], $augmenters, $start_ts, $end_ts, $timezone, $delta);
       }
 
       if (!empty($item->_attributes)) {

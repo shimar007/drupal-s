@@ -1,334 +1,306 @@
-(function ($, Drupal) {
+(function (Drupal, drupalSettings, once) {
   'use strict';
 
   Drupal.behaviors.smartDate = {
-    attach: function(context, settings) {
-      $('.smartdate--widget select.field-duration').each(function(){
-        setInitialDuration(this);
-        augmentInputs(this);
+    attach: function (context, settings) {
+      once('smartDateDuration', '.smartdate--widget select.field-duration', context).forEach(function (element) {
+        setInitialDuration(element);
+        augmentInputs(element);
+        element.addEventListener("change", function () {
+          durationChanged(element);
+        }, false);
       });
-
-      $('.allday').once('add-allday').each(function(){
-        setAllDay(this);
-      }).on('change', function(){
-        checkAllDay(this);
+      once('smartDateAllDay', '.allday', context).forEach(function (element) {
+        setAllDay(element);
+        element.addEventListener("change", function () {
+          checkAllDay(element);
+        }, false);
       });
-
-      // set the step value on time inputs to hide seconds
-      $('.smartdate--widget input[type="time"]').prop('step', '60');
-
-      // update the end values when the start is changed
-      $('.smartdate--widget .time-start input').on('change', function(){
-        setEndDate(this);
+      once('smartDateHideSeconds', '.smartdate--widget input[type="time"]', context).forEach(function (element) {
+        element.step = 60;
       });
-
-      // special handler for duration updates
-      $('.smartdate--widget select.field-duration').on('change', function(){
-        durationChanged(this);
+      once('smartDateStartChange', '.smartdate--widget .time-start input', context).forEach(function (element) {
+        element.addEventListener("change", function () {
+          setEndDate(element);
+        }, false);
       });
-
-      // update the time
-      $('.smartdate--widget .time-end').on('change', function(){
-        setDuration(this);
+      once('smartDateEndChange', '.smartdate--widget .time-end', context).forEach(function (element) {
+        element.addEventListener("change", function () {
+          setDuration(element);
+        }, false);
       });
-
-      // When the repeat frequency changes, update the advanced label.
-      // $('.smartdate--widget .recur-repeat').on('change', function(){
-      //   updateRepeatLabel(this);
-      // }).each(function(){
-      //   updateRepeatLabel(this);
-      // });
 
       function setEndDate(element) {
-        var wrapper = $(element).closest('.smartdate--widget');
-        var duration_select = wrapper.find('select.field-duration');
-        if (duration_select.val() === 'custom') {
-          var duration = parseInt(duration_select.prop('data-duration'));
+        let wrapper = element.closest('.smartdate--widget');
+        let duration_select = wrapper.querySelector('select.field-duration');
+        let duration = false;
+        if (duration_select.value === 'custom') {
+          duration = parseInt(duration_select.dataset.duration);
         }
         else {
-          var duration = parseInt(duration_select.val());
+          duration = parseInt(duration_select.value);
         }
-        if ((!duration && duration !== 0) || duration == 'custom') { return; }
+        if (duration === false || duration == 'custom') { return; }
 
-        var start_date = wrapper.find('.time-start.form-date').val();
+        let start_date = wrapper.querySelector('.time-start.form-date').value;
         if (!start_date) {
           return;
         }
-        var start_time = wrapper.find('.time-start.form-time').val();
+        let start_time = wrapper.querySelector('.time-start.form-time').value;
         if (!start_time && start_date) {
-          // if only the start date has been specified, update only the end date
-          wrapper.find('.time-end.form-date').val(start_date);
-          return
+          // If only the start date has been specified update only the end date.
+          wrapper.querySelector('.time-end.form-date').value = start_date;
+          return;
         }
 
-        var start_array = start_time.split(':');
+        let start_array = start_time.split(':');
+        let end = new Date();
         if (start_date.length) {
           // Use Date objects to automatically roll over days when necessary.
           // ISO 8601 string get encoded as UTC so add the timezone offset.
-          var end = new Date(Date.parse(start_date));
-          var is_iso_8061 = start_date.match(/\d{4}-\d{2}-\d{2}/);
+          end = new Date(Date.parse(start_date));
+          let is_iso_8061 = start_date.match(/\d{4}-\d{2}-\d{2}/);
           if (is_iso_8061 && end.getTimezoneOffset() != 0) {
             end.setMinutes(end.getMinutes() + end.getTimezoneOffset());
           }
-        } else {
-          var end = new Date();
         }
 
         // Calculate and set End Time only if All Day is not checked.
-        if (!(wrapper.find('input.allday').is(':checked'))) {
+        if (wrapper.querySelector('input.allday').checked == false) {
           end.setHours(start_array[0]);
           end.setMinutes(parseInt(start_array[1]) + duration);
 
           // Update End Time input.
-          var end_val = pad(end.getHours(), 2) + ":" + pad(end.getMinutes(), 2);
-          wrapper.find('.time-end.form-time').val(end_val);
+          let end_val = pad(end.getHours(), 2) + ":" + pad(end.getMinutes(), 2);
+          wrapper.querySelector('.time-end.form-time').value = end_val;
         }
 
         // Update End Date input.
-        var new_end = end.getFullYear() + '-' + pad(end.getMonth() + 1, 2) + '-' + pad(end.getDate(), 2);
-        wrapper.find('.time-end.form-date').val(new_end);
+        let new_end = end.getFullYear() + '-' + pad(end.getMonth() + 1, 2) + '-' + pad(end.getDate(), 2);
+        wrapper.querySelector('.time-end.form-date').value = new_end;
         checkEndDate(wrapper);
       }
 
       function durationChanged(element) {
-        var current_val = $(element).val();
-        var wrapper = $(element).parents('.smartdate--widget');
-        var end_time_input = wrapper.find('.time-end.form-time');
-        var end_date_input = wrapper.find('.time-end.form-date');
-        var end_date_label = wrapper.find('.time-start + .label, .form-datetime-wrapper:nth-child(2) .form-item__label');
-        var separator = wrapper.find('.smartdate--separator');
+        let current_val = element.value;
+        let wrapper = element.closest('.smartdate--widget');
+        let end_time_input = wrapper.querySelector('.time-end.form-time');
+        let end_date_input = wrapper.querySelector('.time-end.form-date');
+        let separator = wrapper.querySelector('.smartdate--separator');
         // A strict comparison is needed, but not sure which type we'll get.
         if (current_val === 0 || current_val === '0') {
-          // hide the end date and time
-          end_time_input.fadeOut(0);
-          end_date_input.fadeOut(0);
-          end_date_label.fadeOut(0);
-          separator.fadeOut(0);
+          // Hide the end date and time.
+          end_time_input.style.display = 'none';
+          end_date_input.style.display = 'none';
+          hideLabels(wrapper);
+          if (separator) {
+            separator.style.display = 'none';
+          }
         }
         else {
-          // if they're hidden, show them
-          end_time_input.fadeIn(0);
-          end_date_input.fadeIn(0);
-          end_date_label.fadeIn(0);
-          separator.fadeIn(0);
+          // If they're hidden, show them.
+          end_time_input.style.display = '';
+          end_date_input.style.display = '';
+          hideLabels(wrapper, false);
+          if (separator) {
+            separator.style.display = '';
+          }
         }
-        if ($(element).val() === 'custom') {
-          // reset end time and add focus
-          var wrapper = $(element).parents('fieldset');
-          var end_time = wrapper.find('.time-end.form-time');
-          end_time.val('').focus();
+        if (element.value === 'custom') {
+          // Reset end time and add focus.
+          let wrapper = element.closest('fieldset');
+          let end_time = wrapper.querySelector('.time-end.form-time');
+          end_time.value = '';
+          end_time.focus();
         }
         else {
-          // fire normal setEndDate()
+          // Fire normal setEndDate().
           setEndDate(element);
         }
         checkEndDate(wrapper);
       }
 
       function setInitialDuration(element) {
-        var duration = $(element).val();
+        let duration = element.value;
         if (duration == 'custom') {
-          var wrapper = $(element).parents('.smartdate--widget');
-          var duration = calcDuration(wrapper);
+          let wrapper = element.closest('.smartdate--widget');
+          duration = calcDuration(wrapper);
         }
         else if (duration == 0) {
-          // call this to hide the end date and time
+          // Call this to hide the end date and time.
           durationChanged(element);
         }
-        // Store the numeric value in a property so it can be used programmatically
-        $(element).prop('data-duration', duration);
+        // Store the numeric value in a property so it can be used programmatically.
+        element.dataset.duration = duration;
       }
 
-      // Add/change inputs based on initial config
+      // Add/change inputs based on initial config.
       function augmentInputs(element) {
-        var children = $(element).children();
-        // add "All day checkbox" if config permits
-        if ($(element).children('[value="custom"]').length > 0 || $(element).children('[value="1439"]').length > 0) {
-          //Create the label element
-          var ad_label = $("<label>").text(Drupal.t('All day') + ' ').addClass('allday-label');
-          //Create the input element
-          var ad_input = $('<input type="checkbox">').addClass('allday');
-          //Insert the input into the label
-          ad_input.prependTo(ad_label);
-          $(element).parent().once('add-allday').before(ad_label);
+        // Add "All day checkbox" if config permits.
+        if (element.querySelectorAll('select [value="custom"]').length > 0 || element.querySelectorAll('select [value="1439"]').length > 0) {
+          // Create the input element.
+          let checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.classList.add('allday');
+
+          // Create the label element.
+          let label = document.createElement('label');
+          label.classList.add('allday-label');
+          // Insert the input into the label.
+          label.appendChild(checkbox);
+          label.appendChild(document.createTextNode(Drupal.t('All day')));
+
+          element.parentElement.insertAdjacentElement('beforebegin', label);
         }
-        // if a forced duration, make end date and time read only
-        if ($(element).children('[value="custom"]').length == 0) {
-          var wrapper = $(element).parents('fieldset');
-          var end_time_input = wrapper.find('.time-end.form-time');
-          var end_date_input = wrapper.find('.time-end.form-date');
-          end_time_input.prop('readonly', true);
-          end_time_input.attr('aria-readonly', true);
-          end_date_input.prop('readonly', true);
-          end_date_input.attr('aria-readonly', true);
+        // If a forced duration, make end date and time read only.
+        if (element.querySelectorAll('select [value="custom"]').length == 0) {
+          let wrapper = element.closest('fieldset');
+          let end_time_input = wrapper.querySelector('.time-end.form-time');
+          let end_date_input = wrapper.querySelector('.time-end.form-date');
+          end_time_input.readOnly = true;
+          end_time_input.ariaReadOnly = true;
+          end_date_input.readOnly = true;
+          end_date_input.ariaReadOnly = true;
           checkEndDate(wrapper);
         }
       }
 
       function setDuration(element) {
-        var wrapper = $(element).parents('.smartdate--widget');
-        var duration = calcDuration(wrapper);
+        let wrapper = element.closest('.smartdate--widget');
+        let duration = calcDuration(wrapper);
         if (duration == 0) {
           return;
         }
-        var duration_select = wrapper.find('select.field-duration');
-        // Store the numeric value in a property so it can be used programmatically
-        duration_select.prop('data-duration', duration);
-        // Update the select to show the appropriate value
-        if (duration_select.children('option[value="' + duration + '"]').length != 0){
-          duration_select.val(duration);
+        let duration_select = wrapper.querySelector('select.field-duration');
+        // Store the numeric value in a property so it can be used programmatically.
+        duration_select.dataset.duration = duration;
+        // Update the select to show the appropriate value.
+        if (duration_select.querySelectorAll('option[value="' + duration + '"]').length != 0){
+          duration_select.value = duration;
         } else {
-          duration_select.val('custom');
+          duration_select.value = 'custom';
         }
       }
 
       function calcDuration(wrapper) {
-        var start_time = wrapper.find('.time-start.form-time').val();
-        var start_date = wrapper.find('.time-start.form-date').val();
-        var end_time = wrapper.find('.time-end.form-time').val();
-        var end_date = wrapper.find('.time-end.form-date').val();
+        let start_time = wrapper.querySelector('.time-start.form-time').value;
+        let start_date = wrapper.querySelector('.time-start.form-date').value;
+        let end_time = wrapper.querySelector('.time-end.form-time').value;
+        let end_date = wrapper.querySelector('.time-end.form-date').value;
         if (!start_time || !start_date || !end_time || !end_date) {
           return 0;
         }
-        // split times into hours and minutes
-        var start_array = start_time.split(':');
-        var end_array = end_time.split(':');
+        // Split times into hours and minutes.
+        let start_array = start_time.split(':');
+        let end_array = end_time.split(':');
+        let duration = 0;
         if (start_date !== end_date) {
-          // The range spans more than one day, so use Date objects to calculate duration
-          var start = new Date(start_date);
+          // The range spans more than one day, so use Date objects to calculate duration.
+          let start = new Date(start_date);
           start.setHours(start_array[0]);
           start.setMinutes(parseInt(start_array[1]));
-          var end = new Date(end_date);
+          let end = new Date(end_date);
           end.setHours(end_array[0]);
           end.setMinutes(parseInt(end_array[1]));
-          var duration = (end.getTime() - start.getTime()) / (60 * 1000);
+          duration = (end.getTime() - start.getTime()) / (60 * 1000);
         } else {
-          // Convert to minutes and get the difference
-          var duration = (parseInt(end_array[0]) - parseInt(start_array[0])) * 60 + (parseInt(end_array[1]) - parseInt(start_array[1]));
+          // Convert to minutes and get the difference.
+          duration = (parseInt(end_array[0]) - parseInt(start_array[0])) * 60 + (parseInt(end_array[1]) - parseInt(start_array[1]));
         }
         return duration;
       }
 
       function setAllDay(element) {
-        var checkbox = $(element);
-        var wrapper = checkbox.parents('.smartdate--widget');
-        var start_time = wrapper.find('.time-start.form-time');
-        var start_time_label = start_time.prev('label');
-        var end_time = wrapper.find('.time-end.form-time');
-        var end_time_label = end_time.prev('label');
-        var duration = wrapper.find('select.field-duration');
-        // set initial state of checkbox based on initial values
-        if (start_time.val() == '00:00:00' && end_time.val() == '23:59:00') {
-          checkbox.prop('checked', true);
-          checkbox.prop('data-duration', duration.data('default'));
-          start_time.fadeOut();
-          start_time_label.fadeOut();
-          end_time.fadeOut();
-          end_time_label.fadeOut();
-          var duration_wrapper = duration.parent();
-          duration_wrapper.fadeOut(0);
+        let checkbox = element;
+        let wrapper = checkbox.closest('.smartdate--widget');
+        let start_time = wrapper.querySelector('.time-start.form-time');
+        let end_time = wrapper.querySelector('.time-end.form-time');
+        let duration = wrapper.querySelector('select.field-duration');
+        // Set initial state of checkbox based on initial values.
+        if (start_time.value == '00:00:00' && end_time.value == '23:59:00') {
+          checkbox.checked = true;
+          checkbox.dataset.duration = duration.dataset.default;
+          start_time.style.display = 'none';
+          end_time.style.display = 'none';
+          hideLabels(wrapper);
+          let duration_wrapper = duration.parentElement;
+          duration_wrapper.style.display = 'none';
         }
         else {
-          checkbox.prop('data-duration', duration.val());
+          checkbox.dataset.duration = duration.value;
         }
         checkEndDate(wrapper);
       }
 
       function checkAllDay(element) {
-        var checkbox = $(element);
-        var wrapper = checkbox.parents('.smartdate--widget');
-        var start_time = wrapper.find('input.time-start.form-time');
-        var start_time_label = start_time.siblings('label');
-        var end_time = wrapper.find('.time-end.form-time');
-        var end_time_label = end_time.siblings('label');
-        var duration = wrapper.find('select.field-duration');
-        var duration_wrapper = wrapper.find('select.field-duration').parent();
+        let checkbox = element;
+        let wrapper = checkbox.closest('.smartdate--widget');
+        let start_time = wrapper.querySelector('input.time-start.form-time');
+        let end_time = wrapper.querySelector('.time-end.form-time');
+        let duration = wrapper.querySelector('select.field-duration');
+        let duration_wrapper = duration.parentElement;
 
-        if (checkbox.is(':checked')) {
-          if (checkbox.prop('data-duration') == 0) {
-            var end_date = wrapper.find('input.time-end.form-date');
-            end_date.fadeIn(0);
-            var end_date_label = wrapper.find('.time-start + .label');
-            end_date_label.fadeIn(0);
+        if (checkbox.checked == true) {
+          if (checkbox.dataset.duration == 0) {
+            let end_date = wrapper.querySelector('input.time-end.form-date');
+            end_date.style.display = '';
+            let end_date_label = wrapper.querySelector('.time-start + .label');
+            end_date_label.style.display = '';
           }
-          // save the current start and end_date
-          checkbox.prop('data-start', start_time.val());
-          checkbox.prop('data-end', end_time.val());
-          checkbox.prop('data-duration', duration.val());
-          // set the duration to a corresponding value
-          if (duration.children('option[value="custom"]').length != 0) {
-            duration.val('custom');
+          // Save the current start and end_date.
+          checkbox.dataset.start = start_time.value;
+          checkbox.dataset.end = end_time.value;
+          checkbox.dataset.duration = duration.value;
+          duration_wrapper.style.visibility = 'hidden';
+          // Set the duration to a corresponding value.
+          if (duration.querySelectorAll('option[value="custom"]').length != 0) {
+            duration.value = 'custom';
           }
-          else if (duration.children('option[value="1439"]').length != 0) {
-            duration.val('1439');
+          else if (duration.querySelectorAll('option[value="1439"]').length != 0) {
+            duration.value = '1439';
           }
-          // set to all day $values and hide time elements
-          start_time.fadeOut(0).val('00:00');
-          start_time_label.fadeOut(0);
-          end_time.fadeOut(0).val('23:59');
-          end_time_label.fadeOut(0);
-          duration_wrapper.fadeOut(0);
+          // Set to all day $values and hide time elements.
+          start_time.style.display = 'none';
+          start_time.value = '00:00';
+          end_time.style.display = 'none';
+          end_time.value = '23:59';
+          hideLabels(wrapper);
           // Force the end date visible.
-          var end_date = wrapper.find('.time-end.form-date');
-          end_date.css('visibility', 'visible');
+          let end_date = wrapper.querySelector('.time-end.form-date');
+          end_date.style.visibility = 'visible';
         }
         else {
-          // restore from data $values
-          if (checkbox.prop('data-start')) {
-            start_time.val(checkbox.prop('data-start'));
+          // Restore from data values.
+          if (checkbox.dataset.start) {
+            start_time.value = checkbox.dataset.start;
           }
           else {
-            start_time.val('');
+            start_time.value = '';
           }
-          if (checkbox.prop('data-end')) {
-            end_time.val(checkbox.prop('data-end'));
+          if (checkbox.dataset.end) {
+            end_time.value = checkbox.dataset.end;
           }
           else {
-            end_time.val('');
+            end_time.value = '';
           }
-          if (checkbox.prop('data-duration') || checkbox.prop('data-duration') === 0 || checkbox.prop('data-duration') === '0') {
-            duration.val(checkbox.prop('data-duration'));
-            duration.prop('data-duration', checkbox.prop('data-duration'));
-            if (!end_time.val()) {
+          if (checkbox.dataset.duration || checkbox.dataset.duration === 0 || checkbox.dataset.duration === '0') {
+            duration.value = checkbox.dataset.duration;
+            duration.dataset.duration = checkbox.dataset.duration;
+            if (!end_time.value) {
               setEndDate(start_time);
             }
           }
-          // make time inputs visible
-          start_time.fadeIn(0);
-          start_time_label.fadeIn(0);
-          end_time.fadeIn(0);
-          end_time_label.fadeIn(0);
-          duration_wrapper.fadeIn(0);
-          if (duration.val() == 0) {
-            // call this to hide the end date and time
+          // Make time inputs visible.
+          start_time.style.display = '';
+          end_time.style.display = '';
+          duration_wrapper.style.visibility = 'visible';
+          hideLabels(wrapper, false);
+          if (duration.value == 0) {
+            // Call this to hide the end date and time.
             durationChanged(duration);
           }
           checkEndDate(wrapper);
         }
-      }
-
-      function updateRepeatLabel(element) {
-        var wrapper = $(element).parents('.smartdate--widget');
-        var repeat_label = wrapper.find('.field-interval + .field-suffix');
-        var new_label = '';
-        switch ($(element).val()) {
-          case '':
-            new_label = Drupal.t('times', {}, {context: "Smart Date Recur"});
-            break;
-          case 'DAILY':
-            new_label = Drupal.t('days', {}, {context: "Smart Date Recur"});
-            break;
-          case 'WEEKLY':
-            new_label = Drupal.t('weeks', {}, {context: "Smart Date Recur"});
-            break;
-          case 'MONTHLY':
-            new_label = Drupal.t('months', {}, {context: "Smart Date Recur"});
-            break;
-          case 'YEARLY':
-            new_label = Drupal.t('years', {}, {context: "Smart Date Recur"});
-            break;
-        }
-        repeat_label.text( new_label );
       }
 
       function pad(str, max) {
@@ -337,18 +309,27 @@
       }
 
       function checkEndDate(wrapper) {
-        //var wrapper = $(element).parents('fieldset');
-        var start_date = wrapper.find('.time-start.form-date');
-        var end_date = wrapper.find('.time-end.form-date');
-        var hide_me = end_date.data('hide');
-        var allday = wrapper.find('.allday');
-        if (hide_me && end_date.val() == start_date.val() && !allday.is(':checked')) {
-          end_date.css('visibility', 'hidden');
+        let start_date = wrapper.querySelector('.time-start.form-date');
+        let end_date = wrapper.querySelector('.time-end.form-date');
+        let hide_me = end_date.dataset.hide;
+        let allday = wrapper.querySelector('.allday');
+        if (hide_me == 1 && end_date.value == start_date.value && allday.checked == false) {
+          end_date.style.visibility = 'hidden';
         }
         else {
-          end_date.css('visibility', 'visible');
+          end_date.style.visibility = 'visible';
         }
+      }
+
+      function hideLabels(wrapper, hide = true) {
+        let display_val = 'none';
+        if (!hide) {
+          display_val = '';
+        }
+        wrapper.querySelectorAll('.form-type--date label.form-item__label').forEach(function (label) {
+          label.style.display = display_val;
+        });
       }
     }
   };
-})(jQuery, Drupal);
+} (Drupal, drupalSettings, once));

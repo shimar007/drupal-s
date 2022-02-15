@@ -23,6 +23,13 @@ use Drupal\datetime\DateTimeComputed;
 class SmartDateItem extends TimestampItem {
 
   /**
+   * The stored field delta.
+   *
+   * @var int
+   */
+  public $delta;
+
+  /**
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
@@ -50,7 +57,7 @@ class SmartDateItem extends TimestampItem {
 
     $properties['duration'] = DataDefinition::create('integer')
       ->setLabel(t('Duration, in minutes'))
-      // TODO: figure out a way to validate as required but accept zero.
+      // @todo figure out a way to validate as required but accept zero.
       ->setRequired(FALSE);
 
     $properties['rrule'] = DataDefinition::create('integer')

@@ -25,6 +25,10 @@ class SmartDateInlineWidget extends SmartDateDefaultWidget {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
+    if (!isset($element['value']) || (isset($element['#access']) && $element['#access'] === FALSE)) {
+      return $element;
+    }
+
     $time_wrapper = [
       '#type' => 'container',
       '#attributes' => [
@@ -39,10 +43,6 @@ class SmartDateInlineWidget extends SmartDateDefaultWidget {
     $element['time_wrapper']['end_value'] = (isset($element['end_value'])) ? $element['end_value'] : $element['value'];
     unset($element['value']);
     unset($element['end_value']);
-
-    if (!isset($element['value']) || (isset($element['#access']) && $element['#access'] === FALSE)) {
-      return $element;
-    }
 
     return $element;
   }

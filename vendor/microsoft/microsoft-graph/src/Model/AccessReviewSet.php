@@ -27,6 +27,7 @@ class AccessReviewSet extends Entity
 
      /**
      * Gets the definitions
+    * Represents the template and scheduling for an access review.
      *
      * @return array|null The definitions
      */
@@ -41,6 +42,7 @@ class AccessReviewSet extends Entity
 
     /**
     * Sets the definitions
+    * Represents the template and scheduling for an access review.
     *
     * @param AccessReviewScheduleDefinition[] $val The definitions
     *
@@ -49,6 +51,36 @@ class AccessReviewSet extends Entity
     public function setDefinitions($val)
     {
         $this->_propDict["definitions"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the historyDefinitions
+    * Represents a collection of access review history data and the scopes used to collect that data.
+     *
+     * @return array|null The historyDefinitions
+     */
+    public function getHistoryDefinitions()
+    {
+        if (array_key_exists("historyDefinitions", $this->_propDict)) {
+           return $this->_propDict["historyDefinitions"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the historyDefinitions
+    * Represents a collection of access review history data and the scopes used to collect that data.
+    *
+    * @param AccessReviewHistoryDefinition[] $val The historyDefinitions
+    *
+    * @return AccessReviewSet
+    */
+    public function setHistoryDefinitions($val)
+    {
+        $this->_propDict["historyDefinitions"] = $val;
         return $this;
     }
 

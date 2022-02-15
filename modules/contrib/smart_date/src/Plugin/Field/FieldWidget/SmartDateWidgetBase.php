@@ -28,7 +28,7 @@ class SmartDateWidgetBase extends DateTimeWidgetBase {
    */
   public static function defaultSettings() {
     return [
-      'show_extra' => TRUE,
+      'show_extra' => FALSE,
       'hide_date' => TRUE,
     ] + parent::defaultSettings();
   }
@@ -45,7 +45,7 @@ class SmartDateWidgetBase extends DateTimeWidgetBase {
     if ($cardinality != 1) {
       $element['show_extra'] = [
         '#type' => 'checkbox',
-        '#title' => $this->t('Always show an extra, empty widget (Drupal default). Otherwise the user must explicitly add a new widget if needed.'),
+        '#title' => $this->t('Always include an empty widget (Drupal default). Otherwise the user must explicitly add a new widget if needed.'),
         '#default_value' => $this->getSetting('show_extra'),
       ];
     }
@@ -87,16 +87,16 @@ class SmartDateWidgetBase extends DateTimeWidgetBase {
         $allow_recurring = $field_def->getThirdPartySetting('smart_date_recur', 'allow_recurring');
       }
       elseif ($field_def instanceof BaseFieldDefinition) {
-        // TODO: Document that for custom entities, you must enable recurring
+        // @todo Document that for custom entities, you must enable recurring
         // functionality by adding ->setSetting('allow_recurring', TRUE)
         // to your field definition.
         $allow_recurring = $field_def->getSetting('allow_recurring');
       }
 
-      // TODO: more elegant way to handle hiding recurring instances?
+      // @todo more elegant way to handle hiding recurring instances?
       if ($allow_recurring && $items[$delta]->rrule) {
         $rrule = SmartDateRule::load($items[$delta]->rrule);
-        // TODO: log nonexistent rrule values?
+        // @todo log nonexistent rrule values?
         if ($rrule) {
           if (isset($form['#rules_processed'][$items[$delta]->rrule])) {
             // Not the first instance, so skip this delta.
@@ -230,7 +230,7 @@ class SmartDateWidgetBase extends DateTimeWidgetBase {
         $default_duration = 'custom';
       }
       else {
-        // TODO: throw some kind of error/warning if invalid duration?
+        // @todo throw some kind of error/warning if invalid duration?
         $default_duration = 0;
       }
     }
@@ -320,7 +320,7 @@ class SmartDateWidgetBase extends DateTimeWidgetBase {
       $allow_recurring = $field_def->getThirdPartySetting('smart_date_recur', 'allow_recurring');
     }
     elseif ($field_def instanceof BaseFieldDefinition) {
-      // TODO: Document that for custom entities, you must enable recurring
+      // @todo Document that for custom entities, you must enable recurring
       // functionality by adding ->setSetting('allow_recurring', TRUE)
       // to your field definition.
       $allow_recurring = $field_def->getSetting('allow_recurring');
@@ -330,14 +330,12 @@ class SmartDateWidgetBase extends DateTimeWidgetBase {
       $allow_recurring = FALSE;
     }
 
-    if ($allow_recurring && function_exists('smart_date_recur_widget_extra_fields')) {
+    if ($allow_recurring && function_exists('smart_date_recur_widget_extra_fields') && $form_state->getFormObject() instanceof EntityFormInterface) {
       // Provide extra parameters to be stored with the recurrence rule.
       $month_limit = SmartDateRule::getMonthsLimit($field_def);
-      if ($form_state->getFormObject() instanceof EntityFormInterface) {
-        $entity = $form_state->getformObject()->getEntity();
-        $entity_type = $entity->getEntityTypeId();
-        $bundle = $entity->bundle();
-      }
+      $entity = $form_state->getformObject()->getEntity();
+      $entity_type = $entity->getEntityTypeId();
+      $bundle = $entity->bundle();
       $field_name = $field_def->getName();
       smart_date_recur_generate_rows($values, $entity_type, $bundle, $field_name, $month_limit);
     }
@@ -501,7 +499,7 @@ class SmartDateWidgetBase extends DateTimeWidgetBase {
             '#weight' => 100,
           ];
         }
-        $elements[$delta] = $element;
+        $elements[] = $element;
       }
     }
     if ($elements) {

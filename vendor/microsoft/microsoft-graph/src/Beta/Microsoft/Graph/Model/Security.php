@@ -54,6 +54,34 @@ class Security extends Entity
 
 
      /**
+     * Gets the alertsV2
+     *
+     * @return array|null The alertsV2
+     */
+    public function getAlertsV2()
+    {
+        if (array_key_exists("alertsV2", $this->_propDict)) {
+           return $this->_propDict["alertsV2"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the alertsV2
+    *
+    * @param \Beta\Microsoft\Graph\Security\Model\Alert[] $val The alertsV2
+    *
+    * @return Security
+    */
+    public function setAlertsV2($val)
+    {
+        $this->_propDict["alertsV2"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the incidents
      *
      * @return array|null The incidents
@@ -70,7 +98,7 @@ class Security extends Entity
     /**
     * Sets the incidents
     *
-    * @param Incident[] $val The incidents
+    * @param \Beta\Microsoft\Graph\Security\Model\Incident[] $val The incidents
     *
     * @return Security
     */

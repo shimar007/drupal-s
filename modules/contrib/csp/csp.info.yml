@@ -8,7 +8,7 @@ configure: csp.settings
 dependencies:
 - drupal:system (>= 8.5)
 
-# Information added by Drupal.org packaging script on 2021-04-12
-version: '8.x-1.15'
+# Information added by Drupal.org packaging script on 2022-01-05
+version: '8.x-1.16'
 project: 'csp'
-datestamp: 1618259687
+datestamp: 1641415150

@@ -17,7 +17,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
  *   }
  * )
  */
-class SmartDateTimezoneWidget extends SmartDateDefaultWidget implements ContainerFactoryPluginInterface {
+class SmartDateTimezoneWidget extends SmartDateInlineWidget implements ContainerFactoryPluginInterface {
 
   /**
    * {@inheritdoc}
@@ -118,22 +118,6 @@ class SmartDateTimezoneWidget extends SmartDateDefaultWidget implements Containe
       ],
     ];
 
-    // Set default, based on field config.
-    $default_label = t('- default: @tz_label -', ['@tz_label' => $this->getSiteTimezone()]);
-    switch ($this->getSetting('default_tz')) {
-      case '':
-        $default_timezone = '';
-        break;
-
-      case 'user':
-        $default_timezone = date_default_timezone_get();
-        break;
-
-      case 'custom':
-        $default_timezone = $this->getSetting('custom_tz');
-        break;
-    }
-
     $element['allowed_timezones']['#type'] = 'select';
     $element['allowed_timezones']['#multiple'] = TRUE;
     $element['allowed_timezones']['#options'] = $this->getTimezones();
@@ -220,7 +204,8 @@ class SmartDateTimezoneWidget extends SmartDateDefaultWidget implements Containe
           $abbr = $transition[0]['abbr'];
           if ($add_abbr == 'before') {
             $prepend = $abbr . ' ';
-          } elseif ($add_abbr == 'after') {
+          }
+          elseif ($add_abbr == 'after') {
             $append = ' ' . $abbr;
           }
         }

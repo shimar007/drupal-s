@@ -55,7 +55,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the ageGroup
-    * Sets the age group of the user. Allowed values: null, minor, notAdult and adult. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).
+    * Sets the age group of the user. Allowed values: null, Minor, NotAdult and Adult. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).
     *
     * @return string|null The ageGroup
     */
@@ -70,7 +70,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the ageGroup
-    * Sets the age group of the user. Allowed values: null, minor, notAdult and adult. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).
+    * Sets the age group of the user. Allowed values: null, Minor, NotAdult and Adult. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).
     *
     * @param string $val The ageGroup
     *
@@ -202,7 +202,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the companyName
-    * The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length of the company name is 64 characters.Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).
+    * The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).
     *
     * @return string|null The companyName
     */
@@ -217,7 +217,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the companyName
-    * The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length of the company name is 64 characters.Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).
+    * The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).
     *
     * @param string $val The companyName
     *
@@ -231,7 +231,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the consentProvidedForMinor
-    * Sets whether consent has been obtained for minors. Allowed values: null, granted, denied and notRequired. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).
+    * Sets whether consent has been obtained for minors. Allowed values: null, Granted, Denied and NotRequired. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).
     *
     * @return string|null The consentProvidedForMinor
     */
@@ -246,7 +246,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the consentProvidedForMinor
-    * Sets whether consent has been obtained for minors. Allowed values: null, granted, denied and notRequired. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).
+    * Sets whether consent has been obtained for minors. Allowed values: null, Granted, Denied and NotRequired. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).
     *
     * @param string $val The consentProvidedForMinor
     *
@@ -442,7 +442,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the employeeId
-    * The employee identifier assigned to the user by the organization. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).
+    * The employee identifier assigned to the user by the organization. The maximum length is 16 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).
     *
     * @return string|null The employeeId
     */
@@ -457,7 +457,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the employeeId
-    * The employee identifier assigned to the user by the organization. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).
+    * The employee identifier assigned to the user by the organization. The maximum length is 16 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).
     *
     * @param string $val The employeeId
     *
@@ -803,7 +803,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the legalAgeGroupClassification
-    * Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, minorWithOutParentalConsent, minorWithParentalConsent, minorNoParentalConsentRequired, notAdult and adult. Refer to the legal age group property definitions for further information. Returned only on $select.
+    * Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, MinorWithOutParentalConsent, MinorWithParentalConsent, MinorNoParentalConsentRequired, NotAdult and Adult. Refer to the legal age group property definitions for further information. Returned only on $select.
     *
     * @return string|null The legalAgeGroupClassification
     */
@@ -818,7 +818,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the legalAgeGroupClassification
-    * Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, minorWithOutParentalConsent, minorWithParentalConsent, minorNoParentalConsentRequired, notAdult and adult. Refer to the legal age group property definitions for further information. Returned only on $select.
+    * Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, MinorWithOutParentalConsent, MinorWithParentalConsent, MinorNoParentalConsentRequired, NotAdult and Adult. Refer to the legal age group property definitions for further information. Returned only on $select.
     *
     * @param string $val The legalAgeGroupClassification
     *
@@ -1456,7 +1456,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the proxyAddresses
-    * For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. For Azure AD B2C accounts, this property has a limit of ten unique addresses. Read-only, Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith).
+    * For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. Changes to the mail property will also update this collection to include the value as an SMTP address. For more information, see mail and proxyAddresses properties. The proxy address prefixed with SMTP (capitalized) is the primary proxy address while those prefixed with smtp are the secondary proxy addresses. For Azure AD B2C accounts, this property has a limit of ten unique addresses. Read-only in Microsoft Graph; you can update this property only through the Microsoft 365 admin center. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith).
     *
     * @return string|null The proxyAddresses
     */
@@ -1471,7 +1471,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the proxyAddresses
-    * For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. For Azure AD B2C accounts, this property has a limit of ten unique addresses. Read-only, Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith).
+    * For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. Changes to the mail property will also update this collection to include the value as an SMTP address. For more information, see mail and proxyAddresses properties. The proxy address prefixed with SMTP (capitalized) is the primary proxy address while those prefixed with smtp are the secondary proxy addresses. For Azure AD B2C accounts, this property has a limit of ten unique addresses. Read-only in Microsoft Graph; you can update this property only through the Microsoft 365 admin center. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith).
     *
     * @param string $val The proxyAddresses
     *
@@ -1663,7 +1663,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the userPrincipalName
-    * The user principal name (UPN) of the user. The UPN is an Internet-style login name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the verifiedDomains property of organization.NOTE: This property cannot contain accent characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith) and $orderBy.
+    * The user principal name (UPN) of the user. The UPN is an Internet-style login name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the verifiedDomains property of organization.NOTE: This property cannot contain accent characters. Only the following characters are allowed A - Z, a - z, 0 - 9, ' . - _ ! # ^ ~. For the complete list of allowed characters, see username policies. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith) and $orderBy.
     *
     * @return string|null The userPrincipalName
     */
@@ -1678,7 +1678,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the userPrincipalName
-    * The user principal name (UPN) of the user. The UPN is an Internet-style login name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the verifiedDomains property of organization.NOTE: This property cannot contain accent characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith) and $orderBy.
+    * The user principal name (UPN) of the user. The UPN is an Internet-style login name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the verifiedDomains property of organization.NOTE: This property cannot contain accent characters. Only the following characters are allowed A - Z, a - z, 0 - 9, ' . - _ ! # ^ ~. For the complete list of allowed characters, see username policies. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith) and $orderBy.
     *
     * @param string $val The userPrincipalName
     *
@@ -1721,7 +1721,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the mailboxSettings
-    * Settings for the primary mailbox of the signed-in user. You can get or update settings for sending automatic replies to incoming messages, locale and time zone.Returned only on $select.
+    * Settings for the primary mailbox of the signed-in user. You can get or update settings for sending automatic replies to incoming messages, locale and time zone. Returned only on $select.
     *
     * @return MailboxSettings|null The mailboxSettings
     */
@@ -1740,7 +1740,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the mailboxSettings
-    * Settings for the primary mailbox of the signed-in user. You can get or update settings for sending automatic replies to incoming messages, locale and time zone.Returned only on $select.
+    * Settings for the primary mailbox of the signed-in user. You can get or update settings for sending automatic replies to incoming messages, locale and time zone. Returned only on $select.
     *
     * @param MailboxSettings $val The mailboxSettings
     *

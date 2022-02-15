@@ -93,12 +93,10 @@ function smart_date_tokens($type, $tokens, array $data, array $options, Bubbleab
       continue;
     }
 
-    $delta = 0;
     $parts = explode(':', $token, 2);
     // Test for a delta as the first part.
     if (is_numeric($parts[0])) {
       if (count($parts) > 1) {
-        $delta = $parts[0];
         $parts = explode(':', $parts[1], 2);
         $property_name = $parts[0];
         $format_value = isset($parts[1]) ? $parts[1] : NULL;
@@ -123,7 +121,7 @@ function smart_date_tokens($type, $tokens, array $data, array $options, Bubbleab
       // Get the requested property and apply the provided format.
       if ($name_parts && $prop_needed = array_pop($name_parts)) {
         $field_ts = $field->get($prop_needed)->getValue();
-        $replacements[$original] = \Drupal::service('date.formatter')->format($field_ts, '', $format_value);;
+        $replacements[$original] = \Drupal::service('date.formatter')->format($field_ts, '', $format_value);
       }
     }
     elseif ($approach == 'format') {

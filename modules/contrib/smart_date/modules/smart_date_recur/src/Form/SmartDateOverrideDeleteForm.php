@@ -40,13 +40,13 @@ class SmartDateOverrideDeleteForm extends ContentEntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // TODO: Delete override entity, if it exists.
+    // @todo Delete override entity, if it exists.
     $this->entity
       ->delete();
-    /* @var \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager */
+    /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager */
     $entityTypeManager = \Drupal::service('entity_type.manager');
     $rrid = $this->entity->rrule->getString();
-    /* @var \Drupal\smart_date_recur\Entity\SmartDateRule $rrule */
+    /** @var \Drupal\smart_date_recur\Entity\SmartDateRule $rrule */
     $rrule = $entityTypeManager->getStorage('smart_date_rule')->load($rrid);
     $instanceController = new Instances();
     // Force refresh of parent entity.

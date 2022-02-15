@@ -55,12 +55,12 @@ class RecurRuleUpdate extends QueueWorkerBase {
           $template['end_value'] = $new_instance->getEnd()->getTimestamp();
           $instances[] = $template;
         }
-        // TODO: check for expired instances. Possible to keep indexes the same?
+        // @todo check for expired instances. Possible to keep indexes the same?
         $rule->set('instances', ['data' => $instances]);
         $rule->save();
         $rules[$rrid] = $instances;
       }
-      foreach ($field_values as $delta => $row) {
+      foreach ($field_values as $row) {
         // Skip if this instance isn't in a rule or in one we've ruled out.
         if (empty($row['rrule']) || !isset($rules[$row['rrule']])) {
           // Add directly to our array.

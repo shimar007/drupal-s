@@ -151,7 +151,6 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Gets the downloadUri
-    * Uri which can be used to retrieve review history data. This URI will be active for 24 hours after being generated.
     *
     * @return string|null The downloadUri
     */
@@ -166,7 +165,6 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Sets the downloadUri
-    * Uri which can be used to retrieve review history data. This URI will be active for 24 hours after being generated.
     *
     * @param string $val The downloadUri
     *
@@ -180,7 +178,6 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Gets the fulfilledDateTime
-    * Timestamp when all of the available data for this definition was collected. This will be set after this definition's status is set to done.
     *
     * @return \DateTime|null The fulfilledDateTime
     */
@@ -199,7 +196,6 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Sets the fulfilledDateTime
-    * Timestamp when all of the available data for this definition was collected. This will be set after this definition's status is set to done.
     *
     * @param \DateTime $val The fulfilledDateTime
     *
@@ -213,7 +209,7 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Gets the reviewHistoryPeriodEndDateTime
-    * Timestamp, reviews starting on or after this date will be included in the fetched history data. Required.
+    * A timestamp. Reviews ending on or before this date will be included in the fetched history data. Only required if scheduleSettings is not defined.
     *
     * @return \DateTime|null The reviewHistoryPeriodEndDateTime
     */
@@ -232,7 +228,7 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Sets the reviewHistoryPeriodEndDateTime
-    * Timestamp, reviews starting on or after this date will be included in the fetched history data. Required.
+    * A timestamp. Reviews ending on or before this date will be included in the fetched history data. Only required if scheduleSettings is not defined.
     *
     * @param \DateTime $val The reviewHistoryPeriodEndDateTime
     *
@@ -246,7 +242,7 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Gets the reviewHistoryPeriodStartDateTime
-    * Timestamp, reviews starting on or before this date will be included in the fetched history data. Required.
+    * A timestamp. Reviews starting on or before this date will be included in the fetched history data. Only required if scheduleSettings is not defined.
     *
     * @return \DateTime|null The reviewHistoryPeriodStartDateTime
     */
@@ -265,7 +261,7 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Sets the reviewHistoryPeriodStartDateTime
-    * Timestamp, reviews starting on or before this date will be included in the fetched history data. Required.
+    * A timestamp. Reviews starting on or before this date will be included in the fetched history data. Only required if scheduleSettings is not defined.
     *
     * @param \DateTime $val The reviewHistoryPeriodStartDateTime
     *
@@ -274,6 +270,39 @@ class AccessReviewHistoryDefinition extends Entity
     public function setReviewHistoryPeriodStartDateTime($val)
     {
         $this->_propDict["reviewHistoryPeriodStartDateTime"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the scheduleSettings
+    * The settings for a recurring access review history definition series. Only required if reviewHistoryPeriodStartDateTime or reviewHistoryPeriodEndDateTime are not defined.
+    *
+    * @return AccessReviewHistoryScheduleSettings|null The scheduleSettings
+    */
+    public function getScheduleSettings()
+    {
+        if (array_key_exists("scheduleSettings", $this->_propDict)) {
+            if (is_a($this->_propDict["scheduleSettings"], "\Beta\Microsoft\Graph\Model\AccessReviewHistoryScheduleSettings") || is_null($this->_propDict["scheduleSettings"])) {
+                return $this->_propDict["scheduleSettings"];
+            } else {
+                $this->_propDict["scheduleSettings"] = new AccessReviewHistoryScheduleSettings($this->_propDict["scheduleSettings"]);
+                return $this->_propDict["scheduleSettings"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the scheduleSettings
+    * The settings for a recurring access review history definition series. Only required if reviewHistoryPeriodStartDateTime or reviewHistoryPeriodEndDateTime are not defined.
+    *
+    * @param AccessReviewHistoryScheduleSettings $val The scheduleSettings
+    *
+    * @return AccessReviewHistoryDefinition
+    */
+    public function setScheduleSettings($val)
+    {
+        $this->_propDict["scheduleSettings"] = $val;
         return $this;
     }
 
@@ -309,7 +338,7 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Gets the status
-    * Represents the status of the review history data collection. Possible values are: done, inprogress, error, requested.
+    * Represents the status of the review history data collection. The possible values are: done, inProgress, error, requested, unknownFutureValue.
     *
     * @return AccessReviewHistoryStatus|null The status
     */
@@ -328,7 +357,7 @@ class AccessReviewHistoryDefinition extends Entity
 
     /**
     * Sets the status
-    * Represents the status of the review history data collection. Possible values are: done, inprogress, error, requested.
+    * Represents the status of the review history data collection. The possible values are: done, inProgress, error, requested, unknownFutureValue.
     *
     * @param AccessReviewHistoryStatus $val The status
     *
@@ -337,6 +366,36 @@ class AccessReviewHistoryDefinition extends Entity
     public function setStatus($val)
     {
         $this->_propDict["status"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the instances
+    * If the accessReviewHistoryDefinition is a recurring definition, instances represent each recurrence. A definition that does not recur will have exactly one instance.
+     *
+     * @return array|null The instances
+     */
+    public function getInstances()
+    {
+        if (array_key_exists("instances", $this->_propDict)) {
+           return $this->_propDict["instances"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the instances
+    * If the accessReviewHistoryDefinition is a recurring definition, instances represent each recurrence. A definition that does not recur will have exactly one instance.
+    *
+    * @param AccessReviewHistoryInstance[] $val The instances
+    *
+    * @return AccessReviewHistoryDefinition
+    */
+    public function setInstances($val)
+    {
+        $this->_propDict["instances"] = $val;
         return $this;
     }
 

@@ -75,7 +75,7 @@ class SmartDateOverride extends ContentEntityBase {
       ->setLabel(t('Duration, in minutes'))
       ->setRequired(FALSE);
 
-    // TODO: figure out a way to validate as required but accept zero.
+    // @todo figure out a way to validate as required but accept zero.
     // Allow an instance to be overridden by a full entity.
     // NOTE: entity_type is skipped here because it will always match the rule.
     $fields['entity_id'] = BaseFieldDefinition::create('entity_reference')

@@ -18,7 +18,7 @@ class FullCalendarController extends CalendarEventController {
   // see https://fullcalendar.io/docs/v4/defaultTimedEventDuration -
   // so taking the value of 1 hour in seconds here,
   // not sure how to get this from the JS here.
-  // TODO: Get this from the configuration of Fullcalendar somehow.
+  // @todo Get this from the configuration of Fullcalendar somehow.
   /**
    * The default duration for a new event.
    *
@@ -66,7 +66,7 @@ class FullCalendarController extends CalendarEventController {
         $delta = $id[2];
       }
       elseif ($id[1] == 'R') {
-        /* @var \Drupal\smart_date_recur\Entity\SmartDateRule $rule */
+        /** @var \Drupal\smart_date_recur\Entity\SmartDateRule $rule */
         $rule = $this->entityTypeManager()
           ->getStorage('smart_date_rule')
           ->load($id[2]);

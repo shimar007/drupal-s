@@ -34,7 +34,7 @@ class SmartDateOverrideForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $rrule = NULL, $index = NULL, $ajax = FALSE) {
 
-    // TODO: Show some kind of entity summary? Title at least?
+    // @todo Show some kind of entity summary? Title at least?
     $instances = $rrule->getRuleInstances();
     if ($ajax) {
       $form['#prefix'] = '<div id="manage-instances">';
@@ -87,7 +87,10 @@ class SmartDateOverrideForm extends FormBase {
           'callback' => '::ajaxSubmit',
         ],
       ];
-      $cancelurl = new Url('smart_date_recur.instances', ['rrule' => (int) $rrule->id(), 'modal' => TRUE]);
+      $cancelurl = new Url('smart_date_recur.instances', [
+        'rrule' => (int) $rrule->id(),
+        'modal' => TRUE,
+      ]);
       $form['ajaxcancel'] = [
         '#type' => 'link',
         '#title' => $this->t('Cancel'),
@@ -121,8 +124,8 @@ class SmartDateOverrideForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    // TODO: check that end > start.
-    // TODO: check that values != default.
+    // @todo check that end > start.
+    // @todo check that values != default.
   }
 
   /**
@@ -149,9 +152,9 @@ class SmartDateOverrideForm extends FormBase {
       return $response;
     }
     $form_state->disableRedirect();
-    /* @var \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager */
+    /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager */
     $entityTypeManager = \Drupal::service('entity_type.manager');
-    /* @var \Drupal\smart_date_recur\Entity\SmartDateRule $rrule */
+    /** @var \Drupal\smart_date_recur\Entity\SmartDateRule $rrule */
     $rrule = $entityTypeManager->getStorage('smart_date_rule')->load($form_state->getValue('rrule'));
     $instanceController = new Instances();
     $instanceController->setSmartDateRule($rrule);
@@ -168,9 +171,9 @@ class SmartDateOverrideForm extends FormBase {
 
     $this->override($form_state);
     if (!isset($form['ajaxcancel'])) {
-      /* @var \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager */
+      /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager */
       $entityTypeManager = \Drupal::service('entity_type.manager');
-      /* @var \Drupal\smart_date_recur\Entity\SmartDateRule $rrule */
+      /** @var \Drupal\smart_date_recur\Entity\SmartDateRule $rrule */
       $rrule = $entityTypeManager->getStorage('smart_date_rule')->load($form_state->getValue('rrule'));
       $instanceController = new Instances();
       // Force refresh of parent entity.

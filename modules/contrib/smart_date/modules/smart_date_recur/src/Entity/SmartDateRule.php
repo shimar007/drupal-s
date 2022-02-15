@@ -175,11 +175,9 @@ class SmartDateRule extends ContentEntityBase {
         $override = $overrides[$index];
         if ($override->entity_id->getString()) {
           // Overridden, retrieve appropriate entity.
-          $override_type = 'overridden';
           $override = $entity_storage
             ->load($override['entity_id']);
-          $field = $override->get($field_name);
-          // TODO: drill down and retrieve, replace values.
+          // @todo drill down and retrieve, replace values.
         }
         elseif ($override->value->getString()) {
           // Rescheduled, use values from override.
@@ -251,7 +249,7 @@ class SmartDateRule extends ContentEntityBase {
     $transformer = new ArrayTransformer();
     $instances = $transformer->transform($rrule, $constraint);
 
-    // TODO: Convert the generated instances into an array for later processing.
+    // @todo Convert the generated instances into an array for later processing.
     return $instances;
   }
 
@@ -293,8 +291,9 @@ class SmartDateRule extends ContentEntityBase {
       // Required elements missing, so abort.
       return FALSE;
     }
-    // TODO: proper timezone handling, allowing for field override.
-    $tz_string = \Drupal::config('system.date')->get('timezone')['default'];
+
+    // Use the date timezone, or the user/site time as a fallback.
+    $tz_string = $this->getTimeZone() ?? date_default_timezone_get();
     $timezone = new \DateTimeZone($tz_string);
 
     $start = new \DateTime('@' . $this->get('start')->getString(), $timezone);
@@ -351,15 +350,18 @@ class SmartDateRule extends ContentEntityBase {
           break;
 
       }
-      $repeat = $this->t('every :num :period', [':num' => $params['interval'], ':period' => $period]);
+      $repeat = $this->t('every :num :period', [
+        ':num' => $params['interval'],
+        ':period' => $period,
+      ]);
     }
     else {
       $frequency_labels = static::getFrequencyLabels();
       $repeat = $frequency_labels[$repeat];
     }
     $start_ts = $this->start;
-    // TODO: proper timezone handling, allowing for field override.
-    $tz_string = \Drupal::config('system.date')->get('timezone')['default'];
+    // Use the date timezone, or the user/site time as a fallback.
+    $tz_string = $this->getTimeZone() ?? date_default_timezone_get();
     $format = SmartDateFormat::load('time_only');
 
     $time_set = FALSE;
@@ -392,7 +394,10 @@ class SmartDateRule extends ContentEntityBase {
         $range_start = array_shift($range);
         if ($range) {
           $range_end = array_pop($range);
-          $range_text[] = $this->t(':start to :end', [':start' => $range_start, ':end' => $range_end], ['context' => 'Rule text']);
+          $range_text[] = $this->t(':start to :end', [
+            ':start' => $range_start,
+            ':end' => $range_end,
+          ], ['context' => 'Rule text']);
         }
         else {
           $range_text[] = $range_start;
@@ -646,7 +651,7 @@ class SmartDateRule extends ContentEntityBase {
       $value = $field_def->getThirdPartySetting($module, $setting_name);
     }
     elseif ($field_def instanceof BaseFieldDefinition) {
-      // TODO: Document that for custom entities, you must enable recurring
+      // @todo Document that for custom entities, you must enable recurring
       // functionality by adding ->setSetting('allow_recurring', TRUE)
       // to your field definition.
       $value = $field_def->getSetting($setting_name);
@@ -756,7 +761,7 @@ class SmartDateRule extends ContentEntityBase {
    */
   public static function postDelete(EntityStorageInterface $storage, array $entities) {
     parent::postDelete($storage, $entities);
-    foreach ($entities as $id => $rrule) {
+    foreach ($entities as $rrule) {
       // Delete any child overrides when a rule is deleted.
       $overrides = $rrule->getRuleOverrides();
       foreach ($overrides as $override) {
@@ -779,7 +784,7 @@ class SmartDateRule extends ContentEntityBase {
         'text_processing' => 0,
       ])
       ->setDefaultValue('')
-      // TODO add a unique constrain for a combination of values,
+      // @todo add a unique constrain for a combination of values,
       // e.g. start field amd delta and revision.
       ->setDisplayOptions('view', [
         'label' => 'hidden',
@@ -818,7 +823,7 @@ class SmartDateRule extends ContentEntityBase {
       ->setDescription(t('Additional parameters to define the recurrence.'))
       ->setSetting('is_ascii', TRUE);
 
-    // TODO: Decide if this field is necessary, given the presence of the Limit.
+    // @todo Decide if this field is necessary, given the presence of the Limit.
     $fields['unlimited'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Unlimited'))
       ->setDescription(t('Whether or not the rule has a limit or end.'))
@@ -836,7 +841,7 @@ class SmartDateRule extends ContentEntityBase {
       ->setLabel(t('Bundle'))
       ->setDescription(t('The bundle on which the date is set.'))
       ->setSetting('is_ascii', TRUE)
-      // TODO: Check for a different limit on bundle max length.
+      // @todo Check for a different limit on bundle max length.
       ->setSetting('max_length', EntityTypeInterface::ID_MAX_LENGTH);
 
     $fields['field_name'] = BaseFieldDefinition::create('string')
@@ -931,6 +936,28 @@ class SmartDateRule extends ContentEntityBase {
         $form_state->setError($element, t('This recurrence pattern will yield zero instances.'));
       }
     }
+  }
+
+  /**
+   * Retrieve the timezone from the parent entity value.
+   *
+   * @return string|null
+   *   The timezone of the parent entity value, if set.
+   */
+  public function getTimeZone() {
+    $entity = $this->getParentEntity();
+    if (empty($entity)) {
+      return NULL;
+    }
+    $field_values = $entity->get($this->field_name->getString())->getValue();
+    if (is_array($field_values)) {
+      foreach ($field_values as $value) {
+        if (is_array($value) && isset($value['rrule']) && $value['rrule'] == $this->id) {
+          return $value['timezone'];
+        }
+      }
+    }
+    return NULL;
   }
 
 }

@@ -68,7 +68,7 @@ function smart_date_array_orderby() {
     if (is_string($field)) {
       $tmp = [];
       foreach ($data as $key => $row) {
-        $tmp[$key] = $row[$field];
+        $tmp[$key] = $row[$field] ?? NULL;
       }
       $args[$n] = $tmp;
     }

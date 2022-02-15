@@ -118,6 +118,37 @@ class Site extends BaseItem
     }
 
     /**
+    * Gets the settings
+    *
+    * @return SiteSettings|null The settings
+    */
+    public function getSettings()
+    {
+        if (array_key_exists("settings", $this->_propDict)) {
+            if (is_a($this->_propDict["settings"], "\Beta\Microsoft\Graph\Model\SiteSettings") || is_null($this->_propDict["settings"])) {
+                return $this->_propDict["settings"];
+            } else {
+                $this->_propDict["settings"] = new SiteSettings($this->_propDict["settings"]);
+                return $this->_propDict["settings"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the settings
+    *
+    * @param SiteSettings $val The settings
+    *
+    * @return Site
+    */
+    public function setSettings($val)
+    {
+        $this->_propDict["settings"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the sharepointIds
     * Returns identifiers useful for SharePoint REST compatibility. Read-only.
     *
@@ -426,6 +457,36 @@ class Site extends BaseItem
     public function setLists($val)
     {
         $this->_propDict["lists"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the operations
+    * The collection of long running operations for the site.
+     *
+     * @return array|null The operations
+     */
+    public function getOperations()
+    {
+        if (array_key_exists("operations", $this->_propDict)) {
+           return $this->_propDict["operations"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the operations
+    * The collection of long running operations for the site.
+    *
+    * @param RichLongRunningOperation[] $val The operations
+    *
+    * @return Site
+    */
+    public function setOperations($val)
+    {
+        $this->_propDict["operations"] = $val;
         return $this;
     }
 

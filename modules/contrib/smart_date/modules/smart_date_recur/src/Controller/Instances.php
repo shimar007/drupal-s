@@ -66,7 +66,6 @@ class Instances extends ControllerBase {
     if (!$entity = $this->rrule->getParentEntity()) {
       return $this->returnError();
     }
-    $field_name = $this->rrule->field_name->getString();
 
     if ($this->rrule->limit->isEmpty()) {
       $month_limit = SmartDateRule::getMonthsLimit($this->rrule);
@@ -95,7 +94,6 @@ class Instances extends ControllerBase {
     // Build headers.
     // Iterate through rows and check for existing overrides.
     foreach ($instances as $index => &$instance) {
-      $row_class = '';
 
       // Check for an override.
       if (isset($overrides[$index])) {
@@ -107,14 +105,13 @@ class Instances extends ControllerBase {
           $override_type = 'overridden';
           $override = $entity_storage
             ->load($override->entity_id->getString());
-          $field = $override->get($field_name);
-          // TODO: drill down and retrieve, replace values.
-          // TODO: drop in the URL to edit.
+          // @todo drill down and retrieve, replace values.
+          // @todo drop in the URL to edit.
         }
         elseif ($override->value->getString()) {
           // Rescheduled, use values from override.
           $override_type = 'rescheduled';
-          // TODO: drill down and retrieve, replace values.
+          // @todo drill down and retrieve, replace values.
           $instance['value'] = $override->value->getString();
           $instance['end_value'] = $override->end_value->getString();
         }
@@ -196,7 +193,7 @@ class Instances extends ControllerBase {
    */
   public function buildRow(array $instance) {
     // Get format settings.
-    // TODO: make the choice of format configurable?
+    // @todo make the choice of format configurable?
     $format = \Drupal::getContainer()
       ->get('entity_type.manager')
       ->getStorage('smart_date_format')
@@ -292,14 +289,16 @@ class Instances extends ControllerBase {
             ]),
           ];
           if ($this->useAjax) {
-            $operations['edit']['url'] = Url::fromRoute('smart_date_recur.instance.reschedule.ajax',
-              ['rrule' => $instance['rrule'], 'index' => $instance['rrule_index']]);
+            $operations['edit']['url'] = Url::fromRoute('smart_date_recur.instance.reschedule.ajax', [
+              'rrule' => $instance['rrule'],
+              'index' => $instance['rrule_index'],
+            ]);
             $operations['edit']['attributes']['class'][] = 'use-ajax';
           }
 
         case 'overriden':
           // Removal handled by the delete action already defined.
-          // TODO: Update the URL of the Edit button above to point to the
+          // @todo Update the URL of the Edit button above to point to the
           // entity form of the referenced entity.
           break;
 

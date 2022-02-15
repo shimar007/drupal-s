@@ -176,6 +176,7 @@ class VirtualEndpoint extends Entity
 
     /**
     * Gets the organizationSettings
+    * The Cloud PC organization settings for a tenant.
     *
     * @return CloudPcOrganizationSettings|null The organizationSettings
     */
@@ -194,6 +195,7 @@ class VirtualEndpoint extends Entity
 
     /**
     * Sets the organizationSettings
+    * The Cloud PC organization settings for a tenant.
     *
     * @param CloudPcOrganizationSettings $val The organizationSettings
     *
@@ -262,6 +264,34 @@ class VirtualEndpoint extends Entity
     public function setServicePlans($val)
     {
         $this->_propDict["servicePlans"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the snapshots
+     *
+     * @return array|null The snapshots
+     */
+    public function getSnapshots()
+    {
+        if (array_key_exists("snapshots", $this->_propDict)) {
+           return $this->_propDict["snapshots"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the snapshots
+    *
+    * @param CloudPcSnapshot[] $val The snapshots
+    *
+    * @return VirtualEndpoint
+    */
+    public function setSnapshots($val)
+    {
+        $this->_propDict["snapshots"] = $val;
         return $this;
     }
 

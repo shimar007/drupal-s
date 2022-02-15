@@ -1,5 +1,0 @@
-minifyhtml.config:
-  title: MinifyHTML settings
-  base_route: system.performance_settings
-  route_name: minifyhtml.config
-  weight: 2

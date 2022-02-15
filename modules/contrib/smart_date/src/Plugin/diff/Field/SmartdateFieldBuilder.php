@@ -107,10 +107,10 @@ class SmartdateFieldBuilder extends FieldDiffBuilderBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    $default_configuration = array(
+    $default_configuration = [
       'timezone_override' => 0,
       'format' => 'default',
-    );
+    ];
     $default_configuration += parent::defaultConfiguration();
 
     return $default_configuration;

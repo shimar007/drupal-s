@@ -58,7 +58,6 @@ class Csp {
     // Document Directives.
     // @see https://www.w3.org/TR/CSP3/#directives-document
     'base-uri' => self::DIRECTIVE_SCHEMA_SOURCE_LIST,
-    'plugin-types' => self::DIRECTIVE_SCHEMA_MEDIA_TYPE_LIST,
     'sandbox' => self::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST,
     // Navigation Directives.
     // @see https://www.w3.org/TR/CSP3/#directives-navigation
@@ -73,7 +72,10 @@ class Csp {
     // @see https://www.w3.org/TR/CSP/#directives-elsewhere
     'block-all-mixed-content' => self::DIRECTIVE_SCHEMA_BOOLEAN,
     'upgrade-insecure-requests' => self::DIRECTIVE_SCHEMA_BOOLEAN,
+
     // Deprecated directives.
+    // @see https://www.drupal.org/project/csp/issues/3193081
+    'plugin-types' => self::DIRECTIVE_SCHEMA_MEDIA_TYPE_LIST,
     // Referrer isn't in the Level 1 spec, but was accepted until Chrome 56 and
     // Firefox 62.
     'referrer' => self::DIRECTIVE_SCHEMA_TOKEN,
@@ -483,7 +485,13 @@ class Csp {
         $protocols[] = 'wss:';
       }
       $sources = array_filter($sources, function ($source) use ($protocols) {
-        return !preg_match('<^(' . implode('|', $protocols) . ')//>', $source);
+        return (
+          // Source doesn't use specified protocols.
+          !preg_match('<^(' . implode('|', $protocols) . ')//>', $source)
+          ||
+          // Source is a URL with a port.
+          preg_match('<^\w+://[^/]+(:\d+)>', $source)
+        );
       });
     }
 

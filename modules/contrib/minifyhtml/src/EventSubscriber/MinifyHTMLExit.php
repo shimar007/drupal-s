@@ -144,8 +144,8 @@ class MinifyHTMLExit implements EventSubscriberInterface {
     $callbacks = [
       'minifyhtmlPlaceholderCallbackTextarea' => '/\\s*<textarea(\\b[^>]*?>[\\s\\S]*?<\\/textarea>)\\s*/i',
       'minifyhtmlPlaceholderCallbackPre' => '/\\s*<pre(\\b[^>]*?>[\\s\\S]*?<\\/pre>)\\s*/i',
-      'minifyhtmlPlaceholderCallbackIframe' => '/\\s*<iframe(\\b[^>]*?>[\\s\\S]*?<\\/iframe>)\\s*/i',
       'minifyhtmlPlaceholderCallbackScript' => '/\\s*<script(\\b[^>]*?>[\\s\\S]*?<\\/script>)\\s*/i',
+      'minifyhtmlPlaceholderCallbackIframe' => '/\\s*<iframe(\\b[^>]*?>[\\s\\S]*?<\\/iframe>)\\s*/i',
       'minifyhtmlPlaceholderCallbackStyle' => '/\\s*<style(\\b[^>]*?>[\\s\\S]*?<\\/style>)\\s*/i',
     ];
 
@@ -251,13 +251,19 @@ class MinifyHTMLExit implements EventSubscriberInterface {
       $replace[] = '';
     }
 
-    // Trim each line.
-    $search[] = '/^\\s+|\\s+$/m';
-    $replace[] = "\n";
-
-    // Remove multiple empty line.
-    $search[] = '/\n(\s*\n)+/';
-    $replace[] = "\n";
+    // Don't change newline if the type is "application/ld+json".
+    if (strpos($matches[0], 'type="application/ld+json"') === FALSE) {
+      // Trim each line.
+      $search[] = '/^\\s+|\\s+$/m';
+      $replace[] = "\n";
+      // Remove multiple empty line.
+      $search[] = '/\n(\s*\n)+/';
+      $replace[] = "\n";
+    }
+    else {
+      $search[] = '/\s\s+/';
+      $replace[] = "";
+    }
 
     $script = preg_replace($search, $replace, $matches[0]);
 

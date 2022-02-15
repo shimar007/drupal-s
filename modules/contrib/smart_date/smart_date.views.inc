@@ -12,7 +12,6 @@ use Drupal\field\FieldStorageConfigInterface;
  */
 function smart_date_field_views_data(FieldStorageConfigInterface $field) {
   $data = views_field_default_views_data($field);
-  $field_type = $field->getType();
   $field_name = $field->getName();
   $entity_type_id = $field->getTargetEntityTypeId();
   $entity_manager = \Drupal::entityTypeManager();
