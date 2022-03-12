@@ -26,7 +26,7 @@ class AccessPackageResource extends Entity
 {
     /**
     * Gets the addedBy
-    * Read-only.
+    * The name of the user or application that first added this resource. Read-only.
     *
     * @return string|null The addedBy
     */
@@ -41,7 +41,7 @@ class AccessPackageResource extends Entity
 
     /**
     * Sets the addedBy
-    * Read-only.
+    * The name of the user or application that first added this resource. Read-only.
     *
     * @param string $val The addedBy
     *
@@ -89,7 +89,7 @@ class AccessPackageResource extends Entity
 
      /**
      * Gets the attributes
-    * Contains attribute information for the resource.
+    * Contains information about the attributes to be collected from the requestor and sent to the resource application.
      *
      * @return array|null The attributes
      */
@@ -104,7 +104,7 @@ class AccessPackageResource extends Entity
 
     /**
     * Sets the attributes
-    * Contains attribute information for the resource.
+    * Contains information about the attributes to be collected from the requestor and sent to the resource application.
     *
     * @param AccessPackageResourceAttribute[] $val The attributes
     *
@@ -321,7 +321,7 @@ class AccessPackageResource extends Entity
 
     /**
     * Gets the accessPackageResourceEnvironment
-    * Contains the environment information for the resource. This can be set using either the @odata.bind annotation or the environment's originId.
+    * Contains the environment information for the resource. This can be set using either the @odata.bind annotation or the environment's originId.Supports $expand.
     *
     * @return AccessPackageResourceEnvironment|null The accessPackageResourceEnvironment
     */
@@ -340,7 +340,7 @@ class AccessPackageResource extends Entity
 
     /**
     * Sets the accessPackageResourceEnvironment
-    * Contains the environment information for the resource. This can be set using either the @odata.bind annotation or the environment's originId.
+    * Contains the environment information for the resource. This can be set using either the @odata.bind annotation or the environment's originId.Supports $expand.
     *
     * @param AccessPackageResourceEnvironment $val The accessPackageResourceEnvironment
     *

@@ -44,6 +44,8 @@ class ComposerStaticInitDrupal8
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         '9e4824c5afbdc1482b6025ce3d4dfde8' => __DIR__ . '/..' . '/league/csv/src/functions_include.php',
         '2d0bd6b7e257b7230c706e6559d6a87b' => __DIR__ . '/..' . '/mglaman/phpstan-drupal/drupal-phpunit-hack.php',
+        'e97cc31ba094eb141a505b6020676f7c' => __DIR__ . '/../..' . '/core/includes/bootstrap.inc',
+        '15b58dcda68d9c48601a1de8a94c88f2' => __DIR__ . '/../..' . '/core/includes/guzzle_php81_shim.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -485,6 +487,7 @@ class ComposerStaticInitDrupal8
         'Drupal\\Driver\\' => 
         array (
             0 => __DIR__ . '/../..' . '/drivers/lib/Drupal/Driver',
+            1 => __DIR__ . '/../..' . '/drivers/lib/Drupal/Driver',
         ),
         'Drupal\\Core\\Composer\\' => 
         array (
@@ -493,10 +496,12 @@ class ComposerStaticInitDrupal8
         'Drupal\\Core\\' => 
         array (
             0 => __DIR__ . '/../..' . '/core/lib/Drupal/Core',
+            1 => __DIR__ . '/../..' . '/core/lib/Drupal/Core',
         ),
         'Drupal\\Component\\' => 
         array (
             0 => __DIR__ . '/../..' . '/core/lib/Drupal/Component',
+            1 => __DIR__ . '/../..' . '/core/lib/Drupal/Component',
         ),
         'DrupalCodeGenerator\\' => 
         array (
@@ -649,6 +654,7 @@ class ComposerStaticInitDrupal8
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'PEAR_Exception' => __DIR__ . '/..' . '/pear/pear_exception/PEAR/Exception.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Psr\\Container\\ContainerInterface' => __DIR__ . '/..' . '/psr/container/src/ContainerInterface.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface' => __DIR__ . '/..' . '/symfony/dependency-injection/ContainerAwareInterface.php',

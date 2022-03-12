@@ -160,11 +160,17 @@ class FullcalendarViewPreprocess {
         $end_dates = empty($end_field) || !$current_entity->hasField($end_field) ? '' :
         $current_entity->get($end_field)->getValue();
         // Render all other fields to so they can be used in rewrite.
-        foreach ($fields as $name => $field) {
-          if (method_exists($field, 'advancedRender')) {
-            // Set the row_index property used by advancedRender function.
-            $field->view->row_index = $row->index;
-            $des = $field->advancedRender($row);
+        $des = [];
+        if (!empty($start_dates) && is_array($start_dates)) {
+          foreach ($start_dates as $i => $start_date) {
+            $idkey = $row->index . '-' . $i;
+            foreach ($fields as $name => $field) {
+              if (method_exists($field, 'advancedRender')) {
+                // Set the row_index property used by advancedRender function.
+                $field->view->row_index = preg_match('#^' . $start_field . '(_\d+)?$#', $name) ? $i : $row->index;
+                $des[$idkey] = $field->advancedRender($row);
+              }
+            }
           }
         }
         // Event title.
@@ -189,12 +195,13 @@ class FullcalendarViewPreprocess {
         // for each date value.
         if (!empty($start_dates) && is_array($start_dates)) {
           foreach ($start_dates as $i => $start_date) {
+            $idkey = $row->index . '-' . $i;
             $entry = [
               'title' =>  Xss::filter($title, $title_allowed_tags),
-              'id' => $row->index . "-$i",
+              'id' => $idkey,
               'eid' => $entity_id,
               'url' => $link_url,
-              'des' => isset($des) ? $des : ''
+              'des' => $des[$idkey] ?? '',
             ];
             // Event duration.
             if (!empty($duration_field) && !empty($fields[$duration_field])) {

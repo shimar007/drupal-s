@@ -152,6 +152,11 @@
     }
     // Open a new window to show the details of the event.
     if (thisEvent.url) {
+      let eventURL = new URL(thisEvent.url, location.origin);
+      if (eventURL.origin === "null") {
+        // Invalid URL.
+        return false;
+      }
       if (viewSettings.openEntityInNewTab) {
         // Open a new window to show the details of the event.
        window.open(thisEvent.url);

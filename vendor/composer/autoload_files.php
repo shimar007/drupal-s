@@ -43,4 +43,6 @@ return array(
     '801c31d8ed748cfa537fa45402288c95' => $vendorDir . '/psy/psysh/src/functions.php',
     '9e4824c5afbdc1482b6025ce3d4dfde8' => $vendorDir . '/league/csv/src/functions_include.php',
     '2d0bd6b7e257b7230c706e6559d6a87b' => $vendorDir . '/mglaman/phpstan-drupal/drupal-phpunit-hack.php',
+    'e97cc31ba094eb141a505b6020676f7c' => $baseDir . '/core/includes/bootstrap.inc',
+    '15b58dcda68d9c48601a1de8a94c88f2' => $baseDir . '/core/includes/guzzle_php81_shim.php',
 );

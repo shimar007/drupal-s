@@ -726,7 +726,8 @@ trait SmartDateTrait {
     if ($keys) {
       $augmenters = [];
       foreach ($keys as $key) {
-        $augmenters[$key] = $dateAugmenterManager->getActivePlugins($config[$key]);
+        $key_config = $config[$key] ?? NULL;
+        $augmenters[$key] = $dateAugmenterManager->getActivePlugins($key_config);
       }
     }
     else {

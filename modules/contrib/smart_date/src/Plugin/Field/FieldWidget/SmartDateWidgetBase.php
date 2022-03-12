@@ -499,7 +499,7 @@ class SmartDateWidgetBase extends DateTimeWidgetBase {
             '#weight' => 100,
           ];
         }
-        $elements[] = $element;
+        $elements[$delta] = $element;
       }
     }
     if ($elements) {

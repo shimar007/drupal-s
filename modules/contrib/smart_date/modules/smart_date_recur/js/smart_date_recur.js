@@ -132,19 +132,23 @@
         // Store the new value for future comparisons.
         element.dataset.repeat = element.value;
         let option = element.querySelector('option[value=""]');
+        let new_labels = false;
         if (!past_repeat && element.value) {
-          // Recurring enabled, update labels.
-          Object.entries(selected_labels).forEach(entry => {
+          // Recurring enabled, use selected labels.
+          new_labels = selected_labels;
+        }
+        else if (past_repeat && !element.value) {
+          // Recurring disabled, use empty labels.
+          new_labels = repeat_labels;
+        }
+        if (new_labels) {
+          // Labels set, update appropriately.
+          Object.entries(new_labels).forEach(entry => {
             const [value, label] = entry;
             option = element.querySelector('option[value="' + value + '"]');
-            option.text = label;
-          });
-        } else if (past_repeat && !element.value) {
-          // Recurring disabled, update labels.
-          Object.entries(repeat_labels).forEach(entry => {
-            const [value, label] = entry;
-            option = element.querySelector('option[value="' + value + '"]');
-            option.text = label;
+            if (option) {
+              option.text = label;
+            }
           });
         }
       }
