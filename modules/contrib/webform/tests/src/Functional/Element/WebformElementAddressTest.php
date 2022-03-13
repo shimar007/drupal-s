@@ -17,7 +17,7 @@ class WebformElementAddressTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform', 'address', 'node'];
+  protected static $modules = ['webform', 'address', 'node'];
 
   /**
    * Webforms to load.

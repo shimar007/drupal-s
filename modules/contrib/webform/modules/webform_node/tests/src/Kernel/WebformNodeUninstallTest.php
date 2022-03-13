@@ -21,7 +21,7 @@ class WebformNodeUninstallTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['system', 'field', 'filter', 'text', 'user', 'node', 'webform', 'webform_node'];
+  protected static $modules = ['system', 'field', 'filter', 'text', 'user', 'node', 'webform', 'webform_node'];
 
   /**
    * {@inheritdoc}

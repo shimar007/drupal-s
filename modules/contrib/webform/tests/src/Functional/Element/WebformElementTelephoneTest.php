@@ -15,7 +15,7 @@ class WebformElementTelephoneTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform', 'telephone_validation'];
+  protected static $modules = ['webform', 'telephone_validation'];
 
   /**
    * Webforms to load.

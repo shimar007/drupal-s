@@ -23,7 +23,7 @@ class WebformSubmissionViewsTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['views', 'webform'];
+  protected static $modules = ['views', 'webform'];
 
   /**
    * Webforms to load.

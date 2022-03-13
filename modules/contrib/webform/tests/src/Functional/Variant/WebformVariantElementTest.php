@@ -17,7 +17,7 @@ class WebformVariantElementTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'webform', 'webform_ui', 'webform_test_variant'];
+  protected static $modules = ['block', 'webform', 'webform_ui', 'webform_test_variant'];
 
   /**
    * Webforms to load.

@@ -54,7 +54,6 @@
         "signature_pad/signature_pad": "*",
         "svg-pan-zoom/svg-pan-zoom": "*",
         "tabby/tabby": "*",
-        "tippyjs/5.x": "*",
         "tippyjs/6.x": "*"
     },
     "suggest": {
@@ -419,21 +418,6 @@
                 "dist": {
                     "url": "https://github.com/cferdinandi/tabby/archive/v12.0.3.zip",
                     "type": "zip"
-                }
-            }
-        },
-        "tippyjs/5.x": {
-            "type": "package",
-            "package": {
-                "name": "tippyjs/5.x",
-                "version": "5.2.1",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "tippyjs/5.x"
-                },
-                "dist": {
-                    "url": "https://unpkg.com/tippy.js@5.2.1/dist/tippy-bundle.iife.min.js",
-                    "type": "file"
                 }
             }
         },

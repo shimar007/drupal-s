@@ -16,7 +16,7 @@ class WebformElementInputMaskTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform_test_element_input_masks'];
+  protected static $modules = ['webform_test_element_input_masks'];
 
   /**
    * Webforms to load.

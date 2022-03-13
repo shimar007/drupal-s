@@ -17,7 +17,7 @@ class WebformEntityElementsValidationTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['system', 'webform', 'user'];
+  protected static $modules = ['system', 'webform', 'user'];
 
   /**
    * The webform elements validator.

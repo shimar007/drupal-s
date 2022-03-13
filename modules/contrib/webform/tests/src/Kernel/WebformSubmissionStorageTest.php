@@ -19,7 +19,7 @@ class WebformSubmissionStorageTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['system', 'user', 'path', 'path_alias', 'field', 'webform'];
+  protected static $modules = ['system', 'user', 'path', 'path_alias', 'field', 'webform'];
 
   /**
    * {@inheritdoc}

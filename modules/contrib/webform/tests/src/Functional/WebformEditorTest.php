@@ -19,7 +19,7 @@ class WebformEditorTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['file', 'filter', 'webform', 'webform_ui'];
+  protected static $modules = ['file', 'filter', 'webform', 'webform_ui'];
 
   /**
    * The file usage service.

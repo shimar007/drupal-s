@@ -23,7 +23,7 @@ class WebformElementManagedFilePublicTest extends WebformElementBrowserTestBase 
    *
    * @var array
    */
-  public static $modules = ['file', 'webform', 'webform_ui'];
+  protected static $modules = ['file', 'webform', 'webform_ui'];
 
   /**
    * {@inheritdoc}

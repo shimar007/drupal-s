@@ -1,10 +1,11 @@
 <?php
 
-namespace Drupal\webform\Plugin\WebformElement;
+namespace Drupal\webform_location_places\Plugin\WebformElement;
 
 use Drupal\webform\WebformInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url as UrlGenerator;
+use Drupal\webform\Plugin\WebformElement\WebformLocationBase;
 
 /**
  * Provides an 'location' element using Algolia Places.

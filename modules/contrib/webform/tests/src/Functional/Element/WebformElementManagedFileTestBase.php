@@ -17,7 +17,7 @@ abstract class WebformElementManagedFileTestBase extends WebformElementBrowserTe
    *
    * @var array
    */
-  public static $modules = ['file', 'webform'];
+  protected static $modules = ['file', 'webform'];
 
   /**
    * The file usage service.

@@ -2,13 +2,13 @@ name: Webform
 type: module
 description: 'Enables the creation of webforms and questionnaires.'
 package: Webform
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^9.2
 configure: entity.webform.collection
 dependencies:
   - 'drupal:field'
   - 'drupal:user'
 
 # Information added by Drupal.org packaging script on 2022-02-15
-version: '6.1.3'
+version: '6.2.0-beta2'
 project: 'webform'
-datestamp: 1644940731
+datestamp: 1644940978

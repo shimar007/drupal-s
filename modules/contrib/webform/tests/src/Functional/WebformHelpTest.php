@@ -14,7 +14,7 @@ class WebformHelpTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'help', 'webform_test_message_custom'];
+  protected static $modules = ['block', 'help', 'webform_test_message_custom'];
 
   /**
    * {@inheritdoc}

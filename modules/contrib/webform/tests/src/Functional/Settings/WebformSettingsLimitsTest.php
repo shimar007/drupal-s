@@ -18,7 +18,7 @@ class WebformSettingsLimitsTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform', 'block'];
+  protected static $modules = ['webform', 'block'];
 
   /**
    * Webforms to load.

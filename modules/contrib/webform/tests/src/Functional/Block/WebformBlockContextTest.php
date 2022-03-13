@@ -17,7 +17,7 @@ class WebformBlockContextTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'webform', 'webform_node', 'webform_test_block_context'];
+  protected static $modules = ['block', 'webform', 'webform_node', 'webform_test_block_context'];
 
   /**
    * {@inheritdoc}

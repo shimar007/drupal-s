@@ -7,6 +7,7 @@
 
 use Drupal\Component\Utility\Environment;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\File\Event\FileUploadSanitizeNameEvent;
 use Drupal\file\Entity\File;
 
 /**
@@ -152,7 +153,9 @@ function _webform_submission_export_import_file_save_upload_single(\SplFileInfo 
   if (!empty($extensions)) {
     // Munge the filename to protect against possible malicious extension
     // hiding within an unknown file type (ie: filename.html.foo).
-    $file->setFilename(file_munge_filename($file->getFilename(), $extensions));
+    $event = new FileUploadSanitizeNameEvent($file->getFilename(), $extensions);
+    \Drupal::service('event_dispatcher')->dispatch($event);
+    $file->setFilename($event->getFilename());
   }
 
   // Rename potentially executable files, to help prevent exploits (i.e. will

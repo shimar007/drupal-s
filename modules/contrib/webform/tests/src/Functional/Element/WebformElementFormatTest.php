@@ -20,7 +20,7 @@ class WebformElementFormatTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'taxonomy', 'file', 'webform', 'webform_ui', 'webform_image_select'];
+  protected static $modules = ['node', 'taxonomy', 'file', 'webform', 'webform_ui', 'webform_image_select'];
 
   /**
    * Webforms to load.

@@ -629,14 +629,6 @@ webform.element.date:
   css:
     component:
       css/webform.element.date.css: {}
-  js:
-    js/webform.element.date.js: {}
-  dependencies:
-    - core/drupalSettings
-    - core/drupal.date
-    - core/modernizr
-    - core/jquery.once
-    - jquery_ui_datepicker/datepicker
 
 webform.element.datelist:
   version: VERSION
@@ -766,18 +758,6 @@ webform.element.likert:
   css:
     component:
       css/webform.element.likert.css: {}
-
-webform.element.location.places:
-  version: VERSION
-  css:
-    component:
-      css/webform.element.location.places.css: {}
-  js:
-    js/webform.element.location.places.js: {}
-  dependencies:
-    - core/drupal
-    - core/jquery.once
-    - webform/libraries.algolia.places
 
 webform.element.managed_file:
   version: VERSION
@@ -991,6 +971,7 @@ webform.element.time:
     js/webform.element.time.js: {}
   dependencies:
     - core/drupal
+    - core/modernizr
     - webform/libraries.jquery.timepicker
 
 webform.element.video_file:
@@ -1139,18 +1120,6 @@ libraries.codemirror.twig:
     /libraries/codemirror/mode/twig/twig.js: {}
   dependencies:
     - webform/libraries.codemirror.text
-
-libraries.algolia.places:
-  remote: https://github.com/algolia/places
-  version: '1.19.0'
-  license:
-    name: MIT
-    url: https://github.com/algolia/places/blob/master/LICENSE
-    gpl-compatible: true
-  cdn:
-    /libraries/algolia.places/dist/cdn/: https://cdn.jsdelivr.net/npm/places.js@1.19.0/dist/cdn/
-  js:
-    /libraries/algolia.places/dist/cdn/places.js: {}
 
 libraries.jquery.inputmask:
   remote: https://github.com/RobinHerbots/jquery.inputmask
@@ -1317,20 +1286,17 @@ libraries.tabby:
   js:
     /libraries/tabby/dist/js/tabby.min.js: {}
 
-# Tippy.js 5.x is compatible with Drupal 8.x.
-# Library info is altered to switch to Tippy.js 6.x for Drupal 9.x compatibility.
-# @see webform_library_info_alter()
 libraries.tippyjs:
   remote: https://github.com/atomiks/tippyjs
-  version: '5.2.1'
+  version: '6.2.6'
   license:
     name: MIT
     url: https://github.com/atomiks/tippyjs/blob/master/LICENSE
     gpl-compatible: true
-  directory: tippyjs/5.x
+  directory: tippyjs/6.x
   cdn:
-    /libraries/tippyjs/5.x/: https://unpkg.com/tippy.js@5.2.1/dist/
+    /libraries/tippyjs/6.x/: https://unpkg.com/tippy.js@6.2.6/dist/
   js:
-    /libraries/tippyjs/5.x/tippy-bundle.iife.min.js: {}
+    /libraries/tippyjs/6.x/tippy-bundle.umd.min.js: { minified: true }
   dependencies:
     - core/popperjs

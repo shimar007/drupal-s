@@ -19,7 +19,7 @@ class WebformNodeTest extends WebformNodeBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'webform', 'webform_node'];
+  protected static $modules = ['block', 'webform', 'webform_node'];
 
   /**
    * Webforms to load.

@@ -111,12 +111,12 @@ class WebformElementSignatureTest extends WebformElementBrowserTestBase {
     // Check deleting the submission deletes submission's signature directory.
     $webform_submission->delete();
     $this->assertFileExists("$signature_public_directory");
-    $this->assertFileNotExists("$signature_public_directory/$sid");
+    $this->assertFileDoesNotExist("$signature_public_directory/$sid");
     $this->assertCount(1, \Drupal::service('file_system')->scanDirectory($signature_public_directory, '/^signature-.*\.png$/'));
 
     // Check deleting the webform deletes webform's signature directory.
     $webform->delete();
-    $this->assertFileNotExists("$signature_public_directory");
+    $this->assertFileDoesNotExist("$signature_public_directory");
   }
 
   /**

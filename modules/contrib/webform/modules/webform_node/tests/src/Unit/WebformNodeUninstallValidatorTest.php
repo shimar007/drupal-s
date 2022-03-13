@@ -24,7 +24,7 @@ class WebformNodeUninstallValidatorTest extends UnitTestCase {
     parent::setUp();
     $this->webformNodeUninstallValidator = $this->getMockBuilder('Drupal\webform_node\WebformNodeUninstallValidator')
       ->disableOriginalConstructor()
-      ->setMethods(['hasWebformNodes'])
+      ->onlyMethods(['hasWebformNodes'])
       ->getMock();
     $this->webformNodeUninstallValidator->setStringTranslation($this->getStringTranslationStub());
   }

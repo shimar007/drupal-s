@@ -19,7 +19,7 @@ class WebformAttachmentTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['token', 'webform_attachment', 'webform_attachment_test'];
+  protected static $modules = ['token', 'webform_attachment', 'webform_attachment_test'];
 
   /**
    * Tests webform attachment.

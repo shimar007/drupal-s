@@ -17,7 +17,7 @@ class WebformNodeAccessPermissionsTest extends WebformNodeBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform', 'webform_node'];
+  protected static $modules = ['webform', 'webform_node'];
 
   /**
    * Webforms to load.

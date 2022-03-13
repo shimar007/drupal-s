@@ -14,7 +14,7 @@ class WebformShortcutsFunctionalTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'webform',
     'webform_ui',

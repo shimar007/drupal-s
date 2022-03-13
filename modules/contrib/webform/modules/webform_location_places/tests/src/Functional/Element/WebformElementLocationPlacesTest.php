@@ -1,7 +1,8 @@
 <?php
 
-namespace Drupal\Tests\webform\Functional\Element;
+namespace Drupal\Tests\webform_location_places\Functional\Element;
 
+use Drupal\Tests\webform\Functional\Element\WebformElementBrowserTestBase;
 use Drupal\webform\Entity\Webform;
 
 /**
@@ -10,6 +11,13 @@ use Drupal\webform\Entity\Webform;
  * @group webform
  */
 class WebformElementLocationPlacesTest extends WebformElementBrowserTestBase {
+
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = ['webform_location_places', 'webform_location_places_test'];
 
   /**
    * Webforms to load.
@@ -65,10 +73,9 @@ class WebformElementLocationPlacesTest extends WebformElementBrowserTestBase {
     $assert_session->responseNotContains('"api_key"');
 
     // Set application id and API key.
-    \Drupal::configFactory()->getEditable('webform.settings')
-      ->set('element.default_algolia_places_app_id', '{default_algolia_places_app_id}')
-      ->set('element.default_algolia_places_api_key', '{default_algolia_places_api_key}')
-      ->save();
+    $third_party_settings_manager = \Drupal::service('webform.third_party_settings_manager');
+    $third_party_settings_manager->setThirdPartySetting('webform_location_places', 'default_algolia_places_app_id', '{default_algolia_places_app_id}');
+    $third_party_settings_manager->setThirdPartySetting('webform_location_places', 'default_algolia_places_api_key', '{default_algolia_places_api_key}');
 
     // Check application id and API key is set.
     $this->drupalGet('/webform/test_element_loc_places');

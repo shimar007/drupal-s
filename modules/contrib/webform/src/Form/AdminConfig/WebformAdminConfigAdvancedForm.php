@@ -33,13 +33,6 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
   protected $routerBuilder;
 
   /**
-   * The (drush) command-line service.
-   *
-   * @var \Drupal\webform\Commands\WebformCliService
-   */
-  protected $cliService;
-
-  /**
    * {@inheritdoc}
    */
   public function getFormId() {
@@ -54,7 +47,6 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
     $instance->renderCache = $container->get('cache.render');
     $instance->moduleHandler = $container->get('module_handler');
     $instance->routerBuilder = $container->get('router.builder');
-    $instance->cliService = $container->get('webform.cli_service');
     return $instance;
   }
 

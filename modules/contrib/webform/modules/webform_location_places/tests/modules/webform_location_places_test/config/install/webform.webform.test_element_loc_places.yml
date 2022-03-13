@@ -4,7 +4,7 @@ status: open
 dependencies:
   enforced:
     module:
-      - webform_test
+      - webform_location_places_test
 open: null
 close: null
 weight: 0

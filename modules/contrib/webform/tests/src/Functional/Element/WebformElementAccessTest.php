@@ -17,7 +17,7 @@ class WebformElementAccessTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform', 'webform_ui'];
+  protected static $modules = ['webform', 'webform_ui'];
 
   /**
    * Webforms to load.

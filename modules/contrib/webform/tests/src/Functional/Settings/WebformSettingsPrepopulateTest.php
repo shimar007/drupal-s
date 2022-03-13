@@ -19,7 +19,7 @@ class WebformSettingsPrepopulateTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'webform'];
+  protected static $modules = ['block', 'webform'];
 
   /**
    * Webforms to load.

@@ -20,7 +20,7 @@ class WebformElementFormatCustomTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['file', 'webform'];
+  protected static $modules = ['file', 'webform'];
 
   /**
    * Webforms to load.

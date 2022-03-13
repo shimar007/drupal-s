@@ -16,7 +16,7 @@ class WebformAccessTest extends WebformAccessBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['field_ui'];
+  protected static $modules = ['field_ui'];
 
   /**
    * Tests webform access.

@@ -19,7 +19,7 @@ class WebformHandlerRemotePostTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['file', 'webform', 'webform_test_handler_remote_post'];
+  protected static $modules = ['file', 'webform', 'webform_test_handler_remote_post'];
 
   /**
    * Webforms to load.

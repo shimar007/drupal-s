@@ -12,7 +12,7 @@ abstract class WebformEntityPrintFunctionalTestBase extends WebformBrowserTestBa
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'entity_print_test',
     'webform',
     'webform_entity_print',

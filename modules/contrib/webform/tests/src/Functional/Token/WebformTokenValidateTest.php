@@ -16,7 +16,7 @@ class WebformTokenValidateTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['token'];
+  protected static $modules = ['token'];
 
   /**
    * Test webform token element validation.

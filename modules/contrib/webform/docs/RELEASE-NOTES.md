@@ -214,7 +214,8 @@ References
 
 [Git Release Notes for Drush](https://www.drupal.org/project/grn)
 
-    drush release-notes --nouser 6.0.0-VERSION 6.x
+  drush release-notes --nouser 6.2.x 6.2.x
+  drush release-notes --nouser 6.1.x 6.2.x
 
 
 6. Tag and create a new release
@@ -222,11 +223,11 @@ References
 
 [Tag a release](https://www.drupal.org/node/1066342)
 
-    git checkout 6.x
+    git checkout 6.2.x
     git up
-    git tag 6.0.0-VERSION
+    git tag 6.2.x-VERSION
     git push --tags
-    git push origin tag 6.0.0-VERSION
+    git push origin tag 6.2.x-VERSION
 
 [Create new release](https://www.drupal.org/node/add/project-release/2640714)
 
@@ -235,9 +236,9 @@ References
 ----------------------------------
 
     # Creete hotfix branch
-    git checkout 6.0.LATEST-VERSION
-    git checkout -b 6.0.NEXT-VERSION-hotfix
-    git push -u origin 6.0.NEXT-VERSION-hotfix
+    git checkout 6.2.LATEST-VERSION
+    git checkout -b 6.2.NEXT-VERSION-hotfix
+    git push -u origin 6.2.NEXT-VERSION-hotfix
 
     # Apply and commit remote patch
     curl https://www.drupal.org/files/issues/[project_name]-[issue-description]-[issue-number]-00.patch | git apply -
@@ -245,14 +246,14 @@ References
     git push
 
     # Tag hotfix release.
-    git tag 6.0.NEXT-VERSION
+    git tag 6.2.NEXT-VERSION
     git push --tags
-    git push origin tag 6.0.NEXT-VERSION
+    git push origin tag 6.2.NEXT-VERSION
 
     # Merge hotfix release with HEAD.
-    git checkout 6.x
-    git merge 6.0.NEXT-VERSION-hotfix
+    git checkout 6.2.x
+    git merge 6.2.NEXT-VERSION-hotfix
 
     # Delete hotfix release.
-    git branch -D 6.0.NEXT-VERSION-hotfix
-    git push origin :6.0.NEXT-VERSION-hotfix
+    git branch -D 6.2.NEXT-VERSION-hotfix
+    git push origin :6.2.NEXT-VERSION-hotfix

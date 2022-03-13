@@ -19,7 +19,7 @@ class WebformEntityPrintFunctionalTest extends WebformEntityPrintFunctionalTestB
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['image', 'webform_entity_print_test'];
+  protected static $modules = ['image', 'webform_entity_print_test'];
 
   /**
    * Test entity print.

@@ -385,19 +385,6 @@ class WebformLibrariesManager implements WebformLibrariesManagerInterface {
       'issues_url' => Url::fromUri('https://github.com/codemirror/codemirror/issues'),
       'version' => '5.61.1',
     ];
-    $libraries['algolia.places'] = [
-      'title' => $this->t('Algolia Places'),
-      'description' => $this->t('Algolia Places provides a fast, distributed and easy way to use an address search autocomplete JavaScript library on your website.'),
-      'notes' => $this->t('Algolia Places is by the location places elements.'),
-      'homepage_url' => Url::fromUri('https://github.com/algolia/places'),
-      'issues_url' => Url::fromUri('https://github.com/algolia/places/issues'),
-      // NOTE: Using NPM/JsDelivr because it contains the '/dist/cdn/' directory.
-      // @see https://asset-packagist.org/package/detail?fullname=npm-asset/places.js
-      // @see https://www.jsdelivr.com/package/npm/places.js
-      'download_url' => Url::fromUri('https://registry.npmjs.org/places.js/-/places.js-1.19.0.tgz'),
-      'version' => '1.19.0',
-      'elements' => ['webform_location_places'],
-    ];
     $libraries['jquery.inputmask'] = [
       'title' => $this->t('jQuery: Input Mask'),
       'description' => $this->t('Input masks ensures a predefined format is entered. This can be useful for dates, numerics, phone numbers, etc…'),
@@ -464,22 +451,10 @@ class WebformLibrariesManager implements WebformLibrariesManagerInterface {
       'download_url' => Url::fromUri('https://github.com/cferdinandi/tabby/archive/v12.0.3.zip'),
       'version' => '12.0.3',
     ];
-    // Drupal 8 and 9 supports different version of PopperJS which is a
-    // dependency for TipperJS.
-    // @see https://www.drupal.org/node/3112670
-    $libraries['tippyjs/5.x'] = [
-      'title' => $this->t('Tippy.j (5.x)'),
-      'description' => $this->t("Tippy.js is the complete tooltip, popover, dropdown, and menu solution for the web, powered by Popper."),
-      'notes' => $this->t('Tippy.js is used to provide a tooltips. Tippy.js 5.x is compatible with Drupal 8.x.'),
-      'homepage_url' => Url::fromUri('https://github.com/atomiks/tippyjs'),
-      'download_url' => Url::fromUri('https://unpkg.com/tippy.js@5.2.1/dist/tippy-bundle.iife.min.js'),
-      'version' => '5.2.1',
-      'core' => 8,
-    ];
     $libraries['tippyjs/6.x'] = [
       'title' => $this->t('Tippy.js (6.x)'),
       'description' => $this->t("Tippy.js is the complete tooltip, popover, dropdown, and menu solution for the web, powered by Popper."),
-      'notes' => $this->t('Tippy.js is used to provide a tooltips. Tippy.js 6.x is compatible with Drupal 9.x.'),
+      'notes' => $this->t('Tippy.js is used to provide a tooltips.'),
       'homepage_url' => Url::fromUri('https://github.com/atomiks/tippyjs'),
       'download_url' => Url::fromUri('https://unpkg.com/tippy.js@6.2.6/dist/tippy-bundle.umd.min.js'),
       'version' => '6.2.6',

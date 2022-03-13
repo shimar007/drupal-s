@@ -19,7 +19,7 @@ class WebformRenderingTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['filter', 'webform'];
+  protected static $modules = ['filter', 'webform'];
 
   /**
    * Webforms to load.

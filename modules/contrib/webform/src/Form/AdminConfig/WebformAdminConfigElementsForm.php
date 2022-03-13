@@ -276,28 +276,6 @@ class WebformAdminConfigElementsForm extends WebformAdminConfigBaseForm {
       ];
     }
 
-    // Element: Location.
-    $form['location'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Location settings'),
-      '#open' => TRUE,
-      '#tree' => TRUE,
-      '#access' => $this->librariesManager->isIncluded('jquery.geocomplete') || $this->librariesManager->isIncluded('algolia.places'),
-    ];
-    $form['location']['default_algolia_places_app_id'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Algolia application id'),
-      '#description' => $this->t('Algolia requires users to use a valid application id and API key for more than 1,000 requests per day. By <a href="https://www.algolia.com/users/sign_up/places">signing up</a>, you can create a free Places app and access your API keys.'),
-      '#default_value' => $config->get('element.default_algolia_places_app_id'),
-      '#access' => $this->librariesManager->isIncluded('algolia.places'),
-    ];
-    $form['location']['default_algolia_places_api_key'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Algolia API key'),
-      '#default_value' => $config->get('element.default_algolia_places_api_key'),
-      '#access' => $this->librariesManager->isIncluded('algolia.places'),
-    ];
-
     // Element: Select.
     $form['select'] = [
       '#type' => 'details',
@@ -545,7 +523,6 @@ class WebformAdminConfigElementsForm extends WebformAdminConfigBaseForm {
     $config = $this->config('webform.settings');
 
     $config->set('element', $form_state->getValue('element') +
-      $form_state->getValue('location') +
       $form_state->getValue('select') +
       ['excluded_elements' => $excluded_elements]
     );
@@ -586,7 +563,7 @@ class WebformAdminConfigElementsForm extends WebformAdminConfigBaseForm {
     // }
     // phpcs:enable
     // @see \Drupal\file\Plugin\Field\FieldType\FileItem::validateMaxFilesize
-    if (!empty($element['#value']) && !Bytes::toInt($element['#value'])) {
+    if (!empty($element['#value']) && !Bytes::toNumber($element['#value'])) {
       $form_state->setError($element, t('The "@name" option must contain a valid value. You may either leave the text field empty or enter a string like "512" (bytes), "80 KB" (kilobytes) or "50 MB" (megabytes).', ['@name' => $element['#title']]));
     }
   }

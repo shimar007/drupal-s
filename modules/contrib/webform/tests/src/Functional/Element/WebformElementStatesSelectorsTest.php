@@ -18,7 +18,7 @@ class WebformElementStatesSelectorsTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['filter', 'file', 'language', 'taxonomy', 'node', 'webform'];
+  protected static $modules = ['filter', 'file', 'language', 'taxonomy', 'node', 'webform'];
 
   /**
    * Webforms to load.

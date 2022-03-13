@@ -123,7 +123,7 @@ class WebformBreadcrumbBuilderTest extends UnitTestCase {
     // Make an object to test.
     $this->breadcrumbBuilder = $this->getMockBuilder('Drupal\webform\Breadcrumb\WebformBreadcrumbBuilder')
       ->setConstructorArgs([$this->moduleHandler, $this->requestHandler, $this->translationManager, $this->configFactory])
-      ->setMethods(NULL)
+      ->onlyMethods([])
       ->getMock();
 
     // Enable the webform_templates.module, so that we can testing breadcrumb

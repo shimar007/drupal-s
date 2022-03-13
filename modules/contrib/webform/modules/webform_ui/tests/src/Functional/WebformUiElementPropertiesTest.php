@@ -17,7 +17,7 @@ class WebformUiElementPropertiesTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['filter', 'file', 'taxonomy', 'webform', 'webform_ui'];
+  protected static $modules = ['filter', 'file', 'taxonomy', 'webform', 'webform_ui'];
 
   /**
    * Webforms to load.

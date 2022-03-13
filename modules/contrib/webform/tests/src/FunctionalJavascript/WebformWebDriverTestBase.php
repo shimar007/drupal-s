@@ -29,7 +29,7 @@ abstract class WebformWebDriverTestBase extends WebDriverTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform'];
+  protected static $modules = ['webform'];
 
   /**
    * Webforms to load.
