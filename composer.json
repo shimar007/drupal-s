@@ -84,7 +84,8 @@
         "drupal/jquery_ui_autocomplete": "^1.1",
         "drupal/jquery_ui": "^1.4",
         "drupal/smart_date": "^3.4",
-        "drupal/smart_date_calendar_kit": "^2.0"
+        "drupal/smart_date_calendar_kit": "^2.0",
+        "drupal/devel_entity_updates": "^3.0"
     },
     "replace": {
     },
