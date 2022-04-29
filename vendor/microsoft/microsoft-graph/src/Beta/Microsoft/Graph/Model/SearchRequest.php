@@ -265,7 +265,7 @@ class SearchRequest extends Entity
 
     /**
     * Gets the queryAlterationOptions
-    * Query alteration options formatted in a JSON blob that contains two optional flags related to spelling correction. Optional.
+    * Provides query alteration options formatted as a JSON blob that contains two optional flags related to spelling correction. Optional.
     *
     * @return SearchAlterationOptions|null The queryAlterationOptions
     */
@@ -284,7 +284,7 @@ class SearchRequest extends Entity
 
     /**
     * Sets the queryAlterationOptions
-    * Query alteration options formatted in a JSON blob that contains two optional flags related to spelling correction. Optional.
+    * Provides query alteration options formatted as a JSON blob that contains two optional flags related to spelling correction. Optional.
     *
     * @param SearchAlterationOptions $val The value to assign to the queryAlterationOptions
     *
@@ -294,6 +294,32 @@ class SearchRequest extends Entity
     {
         $this->_propDict["queryAlterationOptions"] = $val;
          return $this;
+    }
+    /**
+    * Gets the region
+    *
+    * @return string|null The region
+    */
+    public function getRegion()
+    {
+        if (array_key_exists("region", $this->_propDict)) {
+            return $this->_propDict["region"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the region
+    *
+    * @param string $val The value of the region
+    *
+    * @return SearchRequest
+    */
+    public function setRegion($val)
+    {
+        $this->_propDict["region"] = $val;
+        return $this;
     }
 
     /**
@@ -417,6 +443,7 @@ class SearchRequest extends Entity
     }
     /**
     * Gets the trimDuplicates
+    * Indicates whether to trim away the duplicate SharePoint files from search results. Default value is false. Optional.
     *
     * @return bool|null The trimDuplicates
     */
@@ -431,6 +458,7 @@ class SearchRequest extends Entity
 
     /**
     * Sets the trimDuplicates
+    * Indicates whether to trim away the duplicate SharePoint files from search results. Default value is false. Optional.
     *
     * @param bool $val The value of the trimDuplicates
     *

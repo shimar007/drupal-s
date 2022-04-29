@@ -147,6 +147,7 @@ class Call extends Entity
 
     /**
     * Gets the callOptions
+    * Contains the optional features for the call.
     *
     * @return CallOptions|null The callOptions
     */
@@ -165,6 +166,7 @@ class Call extends Entity
 
     /**
     * Sets the callOptions
+    * Contains the optional features for the call.
     *
     * @param CallOptions $val The callOptions
     *
@@ -840,6 +842,36 @@ class Call extends Entity
     public function setAudioRoutingGroups($val)
     {
         $this->_propDict["audioRoutingGroups"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the contentSharingSessions
+    * Read-only. Nullable.
+     *
+     * @return array|null The contentSharingSessions
+     */
+    public function getContentSharingSessions()
+    {
+        if (array_key_exists("contentSharingSessions", $this->_propDict)) {
+           return $this->_propDict["contentSharingSessions"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the contentSharingSessions
+    * Read-only. Nullable.
+    *
+    * @param ContentSharingSession[] $val The contentSharingSessions
+    *
+    * @return Call
+    */
+    public function setContentSharingSessions($val)
+    {
+        $this->_propDict["contentSharingSessions"] = $val;
         return $this;
     }
 

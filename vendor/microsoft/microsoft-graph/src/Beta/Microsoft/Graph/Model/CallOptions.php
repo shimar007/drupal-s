@@ -49,4 +49,32 @@ class CallOptions extends Entity
         $this->_propDict["hideBotAfterEscalation"] = $val;
         return $this;
     }
+    /**
+    * Gets the isContentSharingNotificationEnabled
+    * Indicates whether content sharing notifications should be enabled for the call.
+    *
+    * @return bool|null The isContentSharingNotificationEnabled
+    */
+    public function getIsContentSharingNotificationEnabled()
+    {
+        if (array_key_exists("isContentSharingNotificationEnabled", $this->_propDict)) {
+            return $this->_propDict["isContentSharingNotificationEnabled"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isContentSharingNotificationEnabled
+    * Indicates whether content sharing notifications should be enabled for the call.
+    *
+    * @param bool $val The value of the isContentSharingNotificationEnabled
+    *
+    * @return CallOptions
+    */
+    public function setIsContentSharingNotificationEnabled($val)
+    {
+        $this->_propDict["isContentSharingNotificationEnabled"] = $val;
+        return $this;
+    }
 }

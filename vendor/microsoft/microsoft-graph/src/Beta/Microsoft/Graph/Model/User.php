@@ -830,6 +830,33 @@ class User extends DirectoryObject
     }
 
     /**
+    * Gets the isManagementRestricted
+    *
+    * @return bool|null The isManagementRestricted
+    */
+    public function getIsManagementRestricted()
+    {
+        if (array_key_exists("isManagementRestricted", $this->_propDict)) {
+            return $this->_propDict["isManagementRestricted"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isManagementRestricted
+    *
+    * @param bool $val The isManagementRestricted
+    *
+    * @return User
+    */
+    public function setIsManagementRestricted($val)
+    {
+        $this->_propDict["isManagementRestricted"] = boolval($val);
+        return $this;
+    }
+
+    /**
     * Gets the isResourceAccount
     * Do not use – reserved for future use.
     *
@@ -1309,7 +1336,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the onPremisesSecurityIdentifier
-    * Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. Returned only on $select. Supports $filter (eq) on null values only.
+    * Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. Returned only on $select.  Supports $filter (eq including on null values).
     *
     * @return string|null The onPremisesSecurityIdentifier
     */
@@ -1324,7 +1351,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the onPremisesSecurityIdentifier
-    * Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. Returned only on $select. Supports $filter (eq) on null values only.
+    * Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. Returned only on $select.  Supports $filter (eq including on null values).
     *
     * @param string $val The onPremisesSecurityIdentifier
     *
@@ -1963,6 +1990,37 @@ class User extends DirectoryObject
     }
 
     /**
+    * Gets the print
+    *
+    * @return UserPrint|null The print
+    */
+    public function getPrint()
+    {
+        if (array_key_exists("print", $this->_propDict)) {
+            if (is_a($this->_propDict["print"], "\Beta\Microsoft\Graph\Model\UserPrint") || is_null($this->_propDict["print"])) {
+                return $this->_propDict["print"];
+            } else {
+                $this->_propDict["print"] = new UserPrint($this->_propDict["print"]);
+                return $this->_propDict["print"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the print
+    *
+    * @param UserPrint $val The print
+    *
+    * @return User
+    */
+    public function setPrint($val)
+    {
+        $this->_propDict["print"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the aboutMe
     * A freeform text entry field for the user to describe themselves. Returned only on $select.
     *
@@ -2288,6 +2346,34 @@ class User extends DirectoryObject
     public function setAnalytics($val)
     {
         $this->_propDict["analytics"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the cloudPCs
+     *
+     * @return array|null The cloudPCs
+     */
+    public function getCloudPCs()
+    {
+        if (array_key_exists("cloudPCs", $this->_propDict)) {
+           return $this->_propDict["cloudPCs"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the cloudPCs
+    *
+    * @param CloudPC[] $val The cloudPCs
+    *
+    * @return User
+    */
+    public function setCloudPCs($val)
+    {
+        $this->_propDict["cloudPCs"] = $val;
         return $this;
     }
 
@@ -3993,6 +4079,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the authentication
+    * The authentication methods that are supported for the user.
     *
     * @return Authentication|null The authentication
     */
@@ -4011,6 +4098,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the authentication
+    * The authentication methods that are supported for the user.
     *
     * @param Authentication $val The authentication
     *
