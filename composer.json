@@ -57,7 +57,7 @@
         "drupal/masonry": "^1.0",
         "drupal/masonry_views": "^1.0",
         "drupal/search_api": "^1.13",
-        "drupal/facets": "^1.4",
+        "drupal/facets": "^2.0",
         "drupal/search_api_autocomplete": "^1.5",
         "drupal/search_autocomplete": "^2.0",
         "drupal/block_class": "^1.0",

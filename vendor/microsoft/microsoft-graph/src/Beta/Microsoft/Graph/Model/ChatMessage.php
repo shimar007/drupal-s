@@ -246,7 +246,7 @@ class ChatMessage extends Entity
 
     /**
     * Gets the eventDetail
-    * Read-only. If present, represents details of an event that happened in a chat, a channel, or a team, for example, adding new members. For event messages, the messageType property will be set to systemEventMessage.
+    * Read-only.  If present, represents details of an event that happened in a chat, a channel, or a team, for example, adding new members. For event messages, the messageType property will be set to systemEventMessage.
     *
     * @return EventMessageDetail|null The eventDetail
     */
@@ -265,7 +265,7 @@ class ChatMessage extends Entity
 
     /**
     * Sets the eventDetail
-    * Read-only. If present, represents details of an event that happened in a chat, a channel, or a team, for example, adding new members. For event messages, the messageType property will be set to systemEventMessage.
+    * Read-only.  If present, represents details of an event that happened in a chat, a channel, or a team, for example, adding new members. For event messages, the messageType property will be set to systemEventMessage.
     *
     * @param EventMessageDetail $val The eventDetail
     *
@@ -441,7 +441,7 @@ class ChatMessage extends Entity
 
      /**
      * Gets the mentions
-    * List of entities mentioned in the chat message. Supported entities are: user, bot, team, and channel.
+    * List of entities mentioned in the chat message. Supported entities are: user, bot, team, channel, and tag.
      *
      * @return array|null The mentions
      */
@@ -456,7 +456,7 @@ class ChatMessage extends Entity
 
     /**
     * Sets the mentions
-    * List of entities mentioned in the chat message. Supported entities are: user, bot, team, and channel.
+    * List of entities mentioned in the chat message. Supported entities are: user, bot, team, channel, and tag.
     *
     * @param ChatMessageMention[] $val The mentions
     *
@@ -746,7 +746,7 @@ class ChatMessage extends Entity
 
      /**
      * Gets the replies
-    * Replies for a specified message.
+    * Replies for a specified message. Supports $expand for channel messages.
      *
      * @return array|null The replies
      */
@@ -761,7 +761,7 @@ class ChatMessage extends Entity
 
     /**
     * Sets the replies
-    * Replies for a specified message.
+    * Replies for a specified message. Supports $expand for channel messages.
     *
     * @param ChatMessage[] $val The replies
     *

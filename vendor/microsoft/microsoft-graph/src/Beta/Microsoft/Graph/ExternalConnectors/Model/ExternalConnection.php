@@ -117,6 +117,7 @@ class ExternalConnection extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Gets the ingestedItemsCount
+    * The number of items ingested into a connection. This value is refreshed every 15 minutes. If the connection state is draft, then ingestedItemsCount will be null.
     *
     * @return int|null The ingestedItemsCount
     */
@@ -131,6 +132,7 @@ class ExternalConnection extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Sets the ingestedItemsCount
+    * The number of items ingested into a connection. This value is refreshed every 15 minutes. If the connection state is draft, then ingestedItemsCount will be null.
     *
     * @param int $val The ingestedItemsCount
     *
@@ -206,7 +208,7 @@ class ExternalConnection extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Gets the state
-    * Indicates the current state of the connection. Possible values are: draft, ready, obsolete, limitExceeded, unknownFutureValue.
+    * Indicates the current state of the connection. Possible values are draft, ready, obsolete, and limitExceeded. Required.
     *
     * @return ConnectionState|null The state
     */
@@ -225,7 +227,7 @@ class ExternalConnection extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Sets the state
-    * Indicates the current state of the connection. Possible values are: draft, ready, obsolete, limitExceeded, unknownFutureValue.
+    * Indicates the current state of the connection. Possible values are draft, ready, obsolete, and limitExceeded. Required.
     *
     * @param ConnectionState $val The state
     *
@@ -329,6 +331,7 @@ class ExternalConnection extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Gets the quota
+    * Read-only. Nullable.
     *
     * @return ConnectionQuota|null The quota
     */
@@ -347,6 +350,7 @@ class ExternalConnection extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Sets the quota
+    * Read-only. Nullable.
     *
     * @param ConnectionQuota $val The quota
     *
