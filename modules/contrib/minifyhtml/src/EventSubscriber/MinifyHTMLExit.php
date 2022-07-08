@@ -14,25 +14,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class MinifyHTMLExit implements EventSubscriberInterface {
 
   /**
-   * The content that this class minifies.
+   * Abort flag, when dependencies have not been injected.
    *
-   * @var string
+   * @var bool
    */
-  protected $content;
-
-  /**
-   * A list of placeholders for HTML elements that won't be minified.
-   *
-   * @var array
-   */
-  protected $placeholders = [];
-
-  /**
-   * The placeholder token.
-   *
-   * @var string
-   */
-  protected $token;
+  protected $abort = FALSE;
 
   /**
    * Config Factory object.
@@ -42,11 +28,18 @@ class MinifyHTMLExit implements EventSubscriberInterface {
   protected $config;
 
   /**
-   * Time object.
+   * The current path.
    *
-   * @var \Drupal\Component\Datetime\TimeInterface
+   * @var \Drupal\Core\Path\CurrentPathStack
    */
-  protected $time;
+  protected $currentPath;
+
+  /**
+   * The content that this class minifies.
+   *
+   * @var string
+   */
+  protected $content;
 
   /**
    * Logger Factory object.
@@ -56,11 +49,32 @@ class MinifyHTMLExit implements EventSubscriberInterface {
   protected $logger;
 
   /**
-   * Abort flag, when dependencies have not been injected.
+   * The path matcher.
    *
-   * @var bool
+   * @var \Drupal\Core\Path\PathMatcherInterface
    */
-  protected $abort = FALSE;
+  protected $pathMatcher;
+
+  /**
+   * A list of placeholders for HTML elements that won't be minified.
+   *
+   * @var array
+   */
+  protected $placeholders = [];
+
+  /**
+   * Time object.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
+   * The placeholder token.
+   *
+   * @var string
+   */
+  protected $token;
 
   /**
    * Constructs a MinifyHTMLExit object.
@@ -68,17 +82,20 @@ class MinifyHTMLExit implements EventSubscriberInterface {
   public function __construct() {
 
     // To prevent warnings thrown by func_get_arg(), only attempt to get the
-    // args if there are exactly 3.
+    // args if there are exactly 5.
     $arg_error = TRUE;
-    if (func_num_args() == 3) {
+    if (func_num_args() == 5) {
 
       // Assigning the arguments this way prevents a signature mismatch
       // exception that will occur until the cache is cleared to update the
       // service definition. However, the cache cannot be cleared due to the
       // exception.
+      // @todo create proper signature in 2.0.0 version.
       $this->config = func_get_arg(0);
       $this->time = func_get_arg(1);
       $this->logger = func_get_arg(2);
+      $this->pathMatcher = func_get_arg(3);
+      $this->currentPath = func_get_arg(4);
 
       if ($this->config) {
         $this->token = 'MINIFYHTML_' . md5($this->time->getRequestTime());
@@ -101,6 +118,13 @@ class MinifyHTMLExit implements EventSubscriberInterface {
    */
   public function response(FilterResponseEvent $event) {
     if (!$this->abort && $this->config->get('minifyhtml.config')->get('minify')) {
+
+      // Skip excluded pages.
+      $pages = $this->config->get('minifyhtml.config')->get('exclude_pages');
+      if (!empty($pages) && $this->pathMatcher->matchPath($this->currentPath->getPath(), \mb_strtolower($pages))) {
+        return;
+      }
+
       $response = $event->getResponse();
 
       // Make sure that the following render classes are the only ones that

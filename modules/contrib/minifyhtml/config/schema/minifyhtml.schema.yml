@@ -8,3 +8,6 @@ minifyhtml.config:
     minify:
       type: boolean
       label: 'Minified Source HTML'
+    exclude_pages:
+      type: string
+      label: 'Exclude From Pages'

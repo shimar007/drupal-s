@@ -862,7 +862,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the mail
-    * The SMTP address for the user, for example, admin@contoso.com. Changes to this property will also update the user's proxyAddresses collection to include the value as an SMTP address. For Azure AD B2C accounts, this property can be updated up to only ten times with unique SMTP addresses. This property cannot contain accent characters.  Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).
+    * The SMTP address for the user, for example, admin@contoso.com. Changes to this property will also update the user's proxyAddresses collection to include the value as an SMTP address. This property cannot contain accent characters.  NOTE: We do not recommend updating this property for Azure AD B2C user profiles. Use the otherMails property instead.  Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).
     *
     * @return string|null The mail
     */
@@ -877,7 +877,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the mail
-    * The SMTP address for the user, for example, admin@contoso.com. Changes to this property will also update the user's proxyAddresses collection to include the value as an SMTP address. For Azure AD B2C accounts, this property can be updated up to only ten times with unique SMTP addresses. This property cannot contain accent characters.  Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).
+    * The SMTP address for the user, for example, admin@contoso.com. Changes to this property will also update the user's proxyAddresses collection to include the value as an SMTP address. This property cannot contain accent characters.  NOTE: We do not recommend updating this property for Azure AD B2C user profiles. Use the otherMails property instead.  Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).
     *
     * @param string $val The mail
     *
@@ -1036,7 +1036,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the onPremisesExtensionAttributes
-    * Contains extensionAttributes1-15 for the user. The individual extension attributes are neither selectable nor filterable. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. These extension attributes are also known as Exchange custom attributes 1-15. Returned only on $select.
+    * Contains extensionAttributes1-15 for the user. These extension attributes are also known as Exchange custom attributes 1-15. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. Supports $filter (eq, ne, not, in).
     *
     * @return OnPremisesExtensionAttributes|null The onPremisesExtensionAttributes
     */
@@ -1055,7 +1055,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the onPremisesExtensionAttributes
-    * Contains extensionAttributes1-15 for the user. The individual extension attributes are neither selectable nor filterable. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. These extension attributes are also known as Exchange custom attributes 1-15. Returned only on $select.
+    * Contains extensionAttributes1-15 for the user. These extension attributes are also known as Exchange custom attributes 1-15. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. Supports $filter (eq, ne, not, in).
     *
     * @param OnPremisesExtensionAttributes $val The onPremisesExtensionAttributes
     *
@@ -1277,7 +1277,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the otherMails
-    * A list of additional email addresses for the user; for example: ['bob@contoso.com', 'Robert@fabrikam.com'].NOTE: This property cannot contain accent characters.Supports $filter (eq, not, ge, le, in, startsWith, and counting empty collections).
+    * A list of additional email addresses for the user; for example: ['bob@contoso.com', 'Robert@fabrikam.com'].NOTE: This property cannot contain accent characters.Supports $filter (eq, not, ge, le, in, startsWith, endsWith, and counting empty collections).
     *
     * @return string|null The otherMails
     */
@@ -1292,7 +1292,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the otherMails
-    * A list of additional email addresses for the user; for example: ['bob@contoso.com', 'Robert@fabrikam.com'].NOTE: This property cannot contain accent characters.Supports $filter (eq, not, ge, le, in, startsWith, and counting empty collections).
+    * A list of additional email addresses for the user; for example: ['bob@contoso.com', 'Robert@fabrikam.com'].NOTE: This property cannot contain accent characters.Supports $filter (eq, not, ge, le, in, startsWith, endsWith, and counting empty collections).
     *
     * @param string $val The otherMails
     *
@@ -1514,7 +1514,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the showInAddressList
-    * true if the Outlook global address list should contain this user, otherwise false. If not set, this will be treated as true. For users invited through the invitation manager, this property will be set to false. Supports $filter (eq, ne, not, in).
+    * Do not use in Microsoft Graph. Manage this property through the Microsoft 365 admin center instead. Represents whether the user should be included in the Outlook global address list. See Known issue.
     *
     * @return bool|null The showInAddressList
     */
@@ -1529,7 +1529,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the showInAddressList
-    * true if the Outlook global address list should contain this user, otherwise false. If not set, this will be treated as true. For users invited through the invitation manager, this property will be set to false. Supports $filter (eq, ne, not, in).
+    * Do not use in Microsoft Graph. Manage this property through the Microsoft 365 admin center instead. Represents whether the user should be included in the Outlook global address list. See Known issue.
     *
     * @param bool $val The showInAddressList
     *
@@ -2930,7 +2930,7 @@ class User extends DirectoryObject
 
      /**
      * Gets the extensions
-    * The collection of open extensions defined for the user. Nullable.
+    * The collection of open extensions defined for the user. Supports $expand. Nullable.
      *
      * @return array|null The extensions
      */
@@ -2945,7 +2945,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the extensions
-    * The collection of open extensions defined for the user. Nullable.
+    * The collection of open extensions defined for the user. Supports $expand. Nullable.
     *
     * @param Extension[] $val The extensions
     *
@@ -3112,7 +3112,6 @@ class User extends DirectoryObject
 
     /**
     * Gets the insights
-    * Read-only. Nullable.
     *
     * @return OfficeGraphInsights|null The insights
     */
@@ -3131,7 +3130,6 @@ class User extends DirectoryObject
 
     /**
     * Sets the insights
-    * Read-only. Nullable.
     *
     * @param OfficeGraphInsights $val The insights
     *
@@ -3145,7 +3143,6 @@ class User extends DirectoryObject
 
     /**
     * Gets the settings
-    * Read-only. Nullable.
     *
     * @return UserSettings|null The settings
     */
@@ -3164,7 +3161,6 @@ class User extends DirectoryObject
 
     /**
     * Sets the settings
-    * Read-only. Nullable.
     *
     * @param UserSettings $val The settings
     *
@@ -3178,7 +3174,6 @@ class User extends DirectoryObject
 
     /**
     * Gets the onenote
-    * Read-only.
     *
     * @return Onenote|null The onenote
     */
@@ -3197,7 +3192,6 @@ class User extends DirectoryObject
 
     /**
     * Sets the onenote
-    * Read-only.
     *
     * @param Onenote $val The onenote
     *
@@ -3245,7 +3239,6 @@ class User extends DirectoryObject
 
      /**
      * Gets the photos
-    * Read-only. Nullable.
      *
      * @return array|null The photos
      */
@@ -3260,7 +3253,6 @@ class User extends DirectoryObject
 
     /**
     * Sets the photos
-    * Read-only. Nullable.
     *
     * @param ProfilePhoto[] $val The photos
     *
@@ -3363,7 +3355,7 @@ class User extends DirectoryObject
 
     /**
     * Gets the authentication
-    * TODO: Add Description
+    * The authentication methods that are supported for the user.
     *
     * @return Authentication|null The authentication
     */
@@ -3382,7 +3374,7 @@ class User extends DirectoryObject
 
     /**
     * Sets the authentication
-    * TODO: Add Description
+    * The authentication methods that are supported for the user.
     *
     * @param Authentication $val The authentication
     *

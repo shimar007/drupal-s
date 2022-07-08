@@ -25,6 +25,64 @@ namespace Beta\Microsoft\Graph\Model;
 class CloudPcProvisioningPolicy extends Entity
 {
     /**
+    * Gets the alternateResourceUrl
+    * The URL of the alternate resource that links to this provisioning policy. Read-only.
+    *
+    * @return string|null The alternateResourceUrl
+    */
+    public function getAlternateResourceUrl()
+    {
+        if (array_key_exists("alternateResourceUrl", $this->_propDict)) {
+            return $this->_propDict["alternateResourceUrl"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the alternateResourceUrl
+    * The URL of the alternate resource that links to this provisioning policy. Read-only.
+    *
+    * @param string $val The alternateResourceUrl
+    *
+    * @return CloudPcProvisioningPolicy
+    */
+    public function setAlternateResourceUrl($val)
+    {
+        $this->_propDict["alternateResourceUrl"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the cloudPcGroupDisplayName
+    * The display name of the Cloud PC group that the Cloud PCs reside in. Read-only.
+    *
+    * @return string|null The cloudPcGroupDisplayName
+    */
+    public function getCloudPcGroupDisplayName()
+    {
+        if (array_key_exists("cloudPcGroupDisplayName", $this->_propDict)) {
+            return $this->_propDict["cloudPcGroupDisplayName"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the cloudPcGroupDisplayName
+    * The display name of the Cloud PC group that the Cloud PCs reside in. Read-only.
+    *
+    * @param string $val The cloudPcGroupDisplayName
+    *
+    * @return CloudPcProvisioningPolicy
+    */
+    public function setCloudPcGroupDisplayName($val)
+    {
+        $this->_propDict["cloudPcGroupDisplayName"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the description
     * The provisioning policy description.
     *
@@ -116,6 +174,35 @@ class CloudPcProvisioningPolicy extends Entity
     }
 
     /**
+    * Gets the gracePeriodInHours
+    * The number of hours to wait before reprovisioning/deprovisioning happens. Read-only.
+    *
+    * @return int|null The gracePeriodInHours
+    */
+    public function getGracePeriodInHours()
+    {
+        if (array_key_exists("gracePeriodInHours", $this->_propDict)) {
+            return $this->_propDict["gracePeriodInHours"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the gracePeriodInHours
+    * The number of hours to wait before reprovisioning/deprovisioning happens. Read-only.
+    *
+    * @param int $val The gracePeriodInHours
+    *
+    * @return CloudPcProvisioningPolicy
+    */
+    public function setGracePeriodInHours($val)
+    {
+        $this->_propDict["gracePeriodInHours"] = intval($val);
+        return $this;
+    }
+
+    /**
     * Gets the imageDisplayName
     * The display name for the OS image you’re provisioning.
     *
@@ -203,6 +290,68 @@ class CloudPcProvisioningPolicy extends Entity
     public function setImageType($val)
     {
         $this->_propDict["imageType"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the localAdminEnabled
+    * Indicates whether the local admin option is enabled. If the local admin option is enabled, the end user can be an admin of the Cloud PC device. Read-only.
+    *
+    * @return bool|null The localAdminEnabled
+    */
+    public function getLocalAdminEnabled()
+    {
+        if (array_key_exists("localAdminEnabled", $this->_propDict)) {
+            return $this->_propDict["localAdminEnabled"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the localAdminEnabled
+    * Indicates whether the local admin option is enabled. If the local admin option is enabled, the end user can be an admin of the Cloud PC device. Read-only.
+    *
+    * @param bool $val The localAdminEnabled
+    *
+    * @return CloudPcProvisioningPolicy
+    */
+    public function setLocalAdminEnabled($val)
+    {
+        $this->_propDict["localAdminEnabled"] = boolval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the managedBy
+    * Specifies which services manage the Azure network connection. Possible values are: windows365, devBox, unknownFutureValue. Read-only.
+    *
+    * @return CloudPcManagementService|null The managedBy
+    */
+    public function getManagedBy()
+    {
+        if (array_key_exists("managedBy", $this->_propDict)) {
+            if (is_a($this->_propDict["managedBy"], "\Beta\Microsoft\Graph\Model\CloudPcManagementService") || is_null($this->_propDict["managedBy"])) {
+                return $this->_propDict["managedBy"];
+            } else {
+                $this->_propDict["managedBy"] = new CloudPcManagementService($this->_propDict["managedBy"]);
+                return $this->_propDict["managedBy"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the managedBy
+    * Specifies which services manage the Azure network connection. Possible values are: windows365, devBox, unknownFutureValue. Read-only.
+    *
+    * @param CloudPcManagementService $val The managedBy
+    *
+    * @return CloudPcProvisioningPolicy
+    */
+    public function setManagedBy($val)
+    {
+        $this->_propDict["managedBy"] = $val;
         return $this;
     }
 

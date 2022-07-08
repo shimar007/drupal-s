@@ -112,6 +112,35 @@ class CloudPcOnPremisesConnection extends Entity
     }
 
     /**
+    * Gets the alternateResourceUrl
+    * The interface URL of the partner service's resource that links to this Azure network connection. Returned only on $select.
+    *
+    * @return string|null The alternateResourceUrl
+    */
+    public function getAlternateResourceUrl()
+    {
+        if (array_key_exists("alternateResourceUrl", $this->_propDict)) {
+            return $this->_propDict["alternateResourceUrl"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the alternateResourceUrl
+    * The interface URL of the partner service's resource that links to this Azure network connection. Returned only on $select.
+    *
+    * @param string $val The alternateResourceUrl
+    *
+    * @return CloudPcOnPremisesConnection
+    */
+    public function setAlternateResourceUrl($val)
+    {
+        $this->_propDict["alternateResourceUrl"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the displayName
     * The display name for the Azure network connection.
     *
@@ -142,7 +171,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Gets the healthCheckStatus
-    * The status of the most recent health check done on the Azure network connection. For example, if status is 'passed', the Azure network connection has passed all checks run by the service. Possible values are: pending, running, passed, failed, unknownFutureValue. Read-only.
+    * The status of the most recent health check done on the Azure network connection. For example, if status is passed, the Azure network connection has passed all checks run by the service. Possible values are: pending, running, passed, failed, unknownFutureValue. Read-only.
     *
     * @return CloudPcOnPremisesConnectionStatus|null The healthCheckStatus
     */
@@ -161,7 +190,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Sets the healthCheckStatus
-    * The status of the most recent health check done on the Azure network connection. For example, if status is 'passed', the Azure network connection has passed all checks run by the service. Possible values are: pending, running, passed, failed, unknownFutureValue. Read-only.
+    * The status of the most recent health check done on the Azure network connection. For example, if status is passed, the Azure network connection has passed all checks run by the service. Possible values are: pending, running, passed, failed, unknownFutureValue. Read-only.
     *
     * @param CloudPcOnPremisesConnectionStatus $val The healthCheckStatus
     *
@@ -175,7 +204,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Gets the healthCheckStatusDetails
-    * The details of the connection's health checks and the corresponding results. Returned only on $select.For an example that shows how to get the inUse property, see Example 2: Get the selected properties of an Azure network connection, including healthCheckStatusDetails. Read-only.
+    * The details of the connection's health checks and the corresponding results. Returned only on $select. For an example that shows how to get the inUse property, see Example 2: Get the selected properties of an Azure network connection, including healthCheckStatusDetails. Read-only.
     *
     * @return CloudPcOnPremisesConnectionStatusDetails|null The healthCheckStatusDetails
     */
@@ -194,7 +223,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Sets the healthCheckStatusDetails
-    * The details of the connection's health checks and the corresponding results. Returned only on $select.For an example that shows how to get the inUse property, see Example 2: Get the selected properties of an Azure network connection, including healthCheckStatusDetails. Read-only.
+    * The details of the connection's health checks and the corresponding results. Returned only on $select. For an example that shows how to get the inUse property, see Example 2: Get the selected properties of an Azure network connection, including healthCheckStatusDetails. Read-only.
     *
     * @param CloudPcOnPremisesConnectionStatusDetails $val The healthCheckStatusDetails
     *
@@ -237,7 +266,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Gets the managedBy
-    * Specifies which services manage the Azure network connection. Possible values are: windows365, devBox and unknownFutureValue. Read-only.
+    * Specifies which services manage the Azure network connection. Possible values are: windows365, devBox, unknownFutureValue. Read-only.
     *
     * @return CloudPcManagementService|null The managedBy
     */
@@ -256,7 +285,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Sets the managedBy
-    * Specifies which services manage the Azure network connection. Possible values are: windows365, devBox and unknownFutureValue. Read-only.
+    * Specifies which services manage the Azure network connection. Possible values are: windows365, devBox, unknownFutureValue. Read-only.
     *
     * @param CloudPcManagementService $val The managedBy
     *
@@ -299,7 +328,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Gets the resourceGroupId
-    * The ID of the target resource group. Required format: '/subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}'.
+    * The ID of the target resource group. Required format: /subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}.
     *
     * @return string|null The resourceGroupId
     */
@@ -314,7 +343,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Sets the resourceGroupId
-    * The ID of the target resource group. Required format: '/subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}'.
+    * The ID of the target resource group. Required format: /subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}.
     *
     * @param string $val The resourceGroupId
     *
@@ -328,7 +357,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Gets the subnetId
-    * The ID of the target subnet. Required format: '/subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkId}/subnets/{subnetName}'.
+    * The ID of the target subnet. Required format: /subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkId}/subnets/{subnetName}.
     *
     * @return string|null The subnetId
     */
@@ -343,7 +372,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Sets the subnetId
-    * The ID of the target subnet. Required format: '/subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkId}/subnets/{subnetName}'.
+    * The ID of the target subnet. Required format: /subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkId}/subnets/{subnetName}.
     *
     * @param string $val The subnetId
     *
@@ -448,7 +477,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Gets the virtualNetworkId
-    * The ID of the target virtual network. Required format: '/subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}'.
+    * The ID of the target virtual network. Required format: /subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}.
     *
     * @return string|null The virtualNetworkId
     */
@@ -463,7 +492,7 @@ class CloudPcOnPremisesConnection extends Entity
 
     /**
     * Sets the virtualNetworkId
-    * The ID of the target virtual network. Required format: '/subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}'.
+    * The ID of the target virtual network. Required format: /subscriptions/{subscription-id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}.
     *
     * @param string $val The virtualNetworkId
     *

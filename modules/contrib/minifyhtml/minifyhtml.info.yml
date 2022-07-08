@@ -9,7 +9,7 @@ dependencies:
 
 configure: system.performance_settings
 
-# Information added by Drupal.org packaging script on 2022-01-10
-version: '8.x-1.11'
+# Information added by Drupal.org packaging script on 2022-06-16
+version: '8.x-1.12'
 project: 'minifyhtml'
-datestamp: 1641831115
+datestamp: 1655409146

@@ -282,12 +282,12 @@ function menu_item_extras_form_menu_edit_form_alter(array &$form, FormStateInter
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter().
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  */
 function menu_item_extras_form_node_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
   /** @var \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler */
   $moduleHandler = \Drupal::service('module_handler');
-  if ($moduleHandler->moduleExists('menu_ui')) {
+  if ($moduleHandler->moduleExists('menu_ui') && !empty($form['actions'])) {
     foreach (array_keys($form['actions']) as $action) {
       if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
         $form['actions'][$action]['#submit'][] = [

@@ -130,7 +130,7 @@ class MenuLinkContentId extends ArgumentDefaultPluginBase implements CacheableDe
    */
   public function getArgument() {
     if ($this->options['menu']) {
-      $current_path = $this->currentRequest->getRequestUri();
+      $current_path = $this->currentRequest->getPathInfo();
       /** @var \Drupal\Core\Menu\MenuTreeParameters $parameters */
       $parameters = $this->menuTree->getCurrentRouteMenuTreeParameters($this->options['menu']);
       $parameters->onlyEnabledLinks();

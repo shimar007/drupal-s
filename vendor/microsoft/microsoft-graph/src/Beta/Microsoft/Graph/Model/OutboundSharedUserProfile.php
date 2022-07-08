@@ -142,6 +142,7 @@ class OutboundSharedUserProfile implements \JsonSerializable
     *
     * @return array The list of properties
     */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $serializableProperties = $this->getProperties();
