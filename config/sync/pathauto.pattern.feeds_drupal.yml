@@ -10,13 +10,13 @@ type: 'canonical_entities:node'
 pattern: '[node:field_tags_drupal]/[node:title]'
 selection_criteria:
   df4d6d4b-063b-45fb-8b1a-8e38485bed67:
-    id: node_type
-    bundles:
-      feeds_drupal: feeds_drupal
+    id: 'entity_bundle:node'
     negate: false
+    uuid: df4d6d4b-063b-45fb-8b1a-8e38485bed67
     context_mapping:
       node: node
-    uuid: df4d6d4b-063b-45fb-8b1a-8e38485bed67
+    bundles:
+      feeds_drupal: feeds_drupal
 selection_logic: and
 weight: -5
 relationships: {  }

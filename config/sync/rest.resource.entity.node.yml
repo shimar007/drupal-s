@@ -3,9 +3,10 @@ langcode: en
 status: true
 dependencies:
   module:
-    - basic_auth
+    - csv_serialization
     - hal
     - node
+    - user
 _core:
   default_config_hash: t_jfECmZhJqBOJuSOFn87EOi_TWi-_fRYTuJgd19vgg
 id: entity.node
@@ -14,10 +15,8 @@ granularity: resource
 configuration:
   methods:
     - GET
-    - POST
-    - PATCH
-    - DELETE
   formats:
+    - csv
     - hal_json
   authentication:
-    - basic_auth
+    - cookie

@@ -1,0 +1,20 @@
+uuid: 34df7374-f971-47c4-a857-f144579287f9
+langcode: en
+status: true
+dependencies:
+  module:
+    - bat_event
+    - bat_event_series
+id: bat_event.event_series
+field_name: event_series
+entity_type: bat_event
+type: entity_reference
+settings:
+  target_type: bat_event_series
+module: core
+locked: true
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

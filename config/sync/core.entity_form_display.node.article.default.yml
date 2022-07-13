@@ -9,6 +9,7 @@ dependencies:
     - field.field.node.article.field_image
     - field.field.node.article.field_meta_tags
     - field.field.node.article.field_tags
+    - field.field.node.article.field_test_price_range
     - node.type.article
   module:
     - field_group
@@ -83,6 +84,13 @@ content:
       placeholder: ''
       match_limit: 10
     third_party_settings: {  }
+  field_test_price_range:
+    weight: 51
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
   path:
     type: path
     weight: 8

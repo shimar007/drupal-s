@@ -1,0 +1,18 @@
+uuid: 300dae3b-0e34-47bd-bcea-f7e2d7d365d2
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_test_price_range
+field_name: field_test_price_range
+entity_type: node
+type: float
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

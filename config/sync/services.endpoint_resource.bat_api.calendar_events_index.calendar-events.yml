@@ -1,0 +1,17 @@
+uuid: 1468c3ab-f172-4a14-8c49-d7bca96180cd
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+_core:
+  default_config_hash: aVS_hL4nPYMg-m6PEq9lpdGrEoTQynU7ornVMb67aeA
+id: bat_api.calendar_events_index.calendar-events
+service_plugin_id: 'calendar_events_index:calendar-events'
+service_endpoint_id: bat_api
+formats:
+  json: json
+  hal_json: '0'
+  xml: '0'
+authentication:
+  cookie: cookie

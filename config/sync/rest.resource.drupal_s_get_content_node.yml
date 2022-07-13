@@ -1,0 +1,18 @@
+uuid: c80f3ac6-bcea-4437-96b1-0fe4fc58490b
+langcode: en
+status: true
+dependencies:
+  module:
+    - hal
+    - rest_api_data
+    - user
+id: drupal_s_get_content_node
+plugin_id: drupal_s_get_content_node
+granularity: resource
+configuration:
+  methods:
+    - GET
+  formats:
+    - hal_json
+  authentication:
+    - cookie

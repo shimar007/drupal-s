@@ -1,0 +1,55 @@
+uuid: afb98d93-f6a5-448e-8fa1-0c2a3309a36e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.event.body
+    - field.field.node.event.field_date_booked
+    - field.field.node.event.field_when
+    - node.type.event
+  module:
+    - datetime
+    - smart_date
+    - text
+    - user
+_core:
+  default_config_hash: ppIsOjQ5tKp_SD6BztnDSr18eW9MqwFx1xjOcNUIWyI
+id: node.event.default
+targetEntityType: node
+bundle: event
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_date_booked:
+    weight: 3
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  field_when:
+    weight: 1
+    label: above
+    settings:
+      timezone_override: ''
+      format: default
+      force_chronological: false
+      format_type: medium
+    third_party_settings: {  }
+    type: smartdate_default
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  search_api_excerpt: true

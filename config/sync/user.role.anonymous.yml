@@ -17,3 +17,5 @@ permissions:
   - 'search content'
   - 'use search autocomplete'
   - 'use text format restricted_html'
+  - 'view calendar data for any availability_daily event'
+  - 'view calendar data for any availability_hourly event'
