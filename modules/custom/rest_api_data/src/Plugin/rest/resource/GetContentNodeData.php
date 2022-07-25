@@ -139,6 +139,9 @@ class GetContentNodeData extends ResourceBase {
                     //get header paragrah data
                     if($paragraph_type == 'home_page_header_') {
 
+                        //assign paragraph type
+                        $field_body_content_array[$i]['paragraph_type'] = $paragraph_type;
+
                         //get heading for paragraph
                         $field_body_content_array[$i]['field_heading'] = $referenced_body_content->field_main_heading->value;
 
@@ -148,6 +151,9 @@ class GetContentNodeData extends ResourceBase {
 
                     //get about us paragraph data
                     if($paragraph_type == 'about_us') {
+
+                        //assign paragraph type
+                        $field_body_content_array[$i]['paragraph_type'] = $paragraph_type;
                         
                         //get heading for paragraph
                         $field_body_content_array[$i]['field_heading'] = $referenced_body_content->field_heading->value;
@@ -163,7 +169,7 @@ class GetContentNodeData extends ResourceBase {
                 //setting all the 
                 $data_array['title'] = $title;
                 $data_array['field_body_content'] = $field_body_content_array;
-                $data_array['field_meta_tags'] = $field_meta_tags;
+                $data_array['field_meta_tags'] = [unserialize($field_meta_tags->value)];
 
                 //data message
                 $data_message['data'] = [$data_array];
