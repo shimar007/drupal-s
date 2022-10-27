@@ -15,7 +15,7 @@
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
     "foundation-sites": "^6.4.3",
-    "gulp": "^3.9.0",
+    "gulp": "^4.0.2",
     "gulp-autoprefixer": "^3.1.1",
     "gulp-icomoon-builder": "^1.0.0",
     "gulp-jshint": "^2.1.0",
