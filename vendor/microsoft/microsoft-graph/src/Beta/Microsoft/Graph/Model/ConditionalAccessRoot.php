@@ -24,6 +24,39 @@ namespace Beta\Microsoft\Graph\Model;
 */
 class ConditionalAccessRoot extends Entity
 {
+    /**
+    * Gets the authenticationStrengths
+    * Defines the authentication strength policies, valid authentication method combinations, and authentication method mode details that can be required by a conditional access policy .
+    *
+    * @return AuthenticationStrengthRoot|null The authenticationStrengths
+    */
+    public function getAuthenticationStrengths()
+    {
+        if (array_key_exists("authenticationStrengths", $this->_propDict)) {
+            if (is_a($this->_propDict["authenticationStrengths"], "\Beta\Microsoft\Graph\Model\AuthenticationStrengthRoot") || is_null($this->_propDict["authenticationStrengths"])) {
+                return $this->_propDict["authenticationStrengths"];
+            } else {
+                $this->_propDict["authenticationStrengths"] = new AuthenticationStrengthRoot($this->_propDict["authenticationStrengths"]);
+                return $this->_propDict["authenticationStrengths"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the authenticationStrengths
+    * Defines the authentication strength policies, valid authentication method combinations, and authentication method mode details that can be required by a conditional access policy .
+    *
+    * @param AuthenticationStrengthRoot $val The authenticationStrengths
+    *
+    * @return ConditionalAccessRoot
+    */
+    public function setAuthenticationStrengths($val)
+    {
+        $this->_propDict["authenticationStrengths"] = $val;
+        return $this;
+    }
+
 
      /**
      * Gets the authenticationContextClassReferences
@@ -111,6 +144,36 @@ class ConditionalAccessRoot extends Entity
     public function setPolicies($val)
     {
         $this->_propDict["policies"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the templates
+    * Read-only. Nullable. Returns a collection of the specified Conditional Access templates.
+     *
+     * @return array|null The templates
+     */
+    public function getTemplates()
+    {
+        if (array_key_exists("templates", $this->_propDict)) {
+           return $this->_propDict["templates"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the templates
+    * Read-only. Nullable. Returns a collection of the specified Conditional Access templates.
+    *
+    * @param ConditionalAccessTemplate[] $val The templates
+    *
+    * @return ConditionalAccessRoot
+    */
+    public function setTemplates($val)
+    {
+        $this->_propDict["templates"] = $val;
         return $this;
     }
 

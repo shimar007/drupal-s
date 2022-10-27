@@ -62,7 +62,7 @@ class MetadataEventSubscriber implements EventSubscriberInterface {
             'theme' => $data['theme'],
             'content' => serialize($data['content']),
           ];
-          $entity = FilebrowserMetadataEntity::create($value);
+          $entity = $this->storage->create($value);
           $entity->save();
         }
       }

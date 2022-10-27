@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Contains o365.install.
+ */
+
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Add 'o365_id' field to 'user' entities.
+ */
+function o365_update_8001() {
+  $storage_definition = BaseFieldDefinition::create('string')
+    ->setLabel(t('Office 365 user ID'))
+    ->setTranslatable(FALSE);
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('o365_id', 'user', 'user', $storage_definition);
+}

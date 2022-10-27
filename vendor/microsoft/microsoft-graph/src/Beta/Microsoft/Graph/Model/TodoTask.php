@@ -94,7 +94,7 @@ class TodoTask extends Entity
     * Gets the categories
     * The categories associated with the task. Each category corresponds to the displayName property of an outlookCategory that the user has defined.
     *
-    * @return string|null The categories
+    * @return array|null The categories
     */
     public function getCategories()
     {
@@ -109,7 +109,7 @@ class TodoTask extends Entity
     * Sets the categories
     * The categories associated with the task. Each category corresponds to the displayName property of an outlookCategory that the user has defined.
     *
-    * @param string $val The categories
+    * @param string[] $val The categories
     *
     * @return TodoTask
     */
@@ -121,7 +121,7 @@ class TodoTask extends Entity
 
     /**
     * Gets the completedDateTime
-    * The date in the specified time zone that the task was finished.
+    * The date and time in the specified time zone that the task was finished.
     *
     * @return DateTimeTimeZone|null The completedDateTime
     */
@@ -140,7 +140,7 @@ class TodoTask extends Entity
 
     /**
     * Sets the completedDateTime
-    * The date in the specified time zone that the task was finished.
+    * The date and time in the specified time zone that the task was finished.
     *
     * @param DateTimeTimeZone $val The completedDateTime
     *
@@ -187,7 +187,7 @@ class TodoTask extends Entity
 
     /**
     * Gets the dueDateTime
-    * The date in the specified time zone that the task is to be finished.
+    * The date and time in the specified time zone that the task is to be finished.
     *
     * @return DateTimeTimeZone|null The dueDateTime
     */
@@ -206,7 +206,7 @@ class TodoTask extends Entity
 
     /**
     * Sets the dueDateTime
-    * The date in the specified time zone that the task is to be finished.
+    * The date and time in the specified time zone that the task is to be finished.
     *
     * @param DateTimeTimeZone $val The dueDateTime
     *
@@ -377,7 +377,7 @@ class TodoTask extends Entity
 
     /**
     * Gets the reminderDateTime
-    * The date and time for a reminder alert of the task to occur.
+    * The date and time in the specified time zone for a reminder alert of the task to occur.
     *
     * @return DateTimeTimeZone|null The reminderDateTime
     */
@@ -396,7 +396,7 @@ class TodoTask extends Entity
 
     /**
     * Sets the reminderDateTime
-    * The date and time for a reminder alert of the task to occur.
+    * The date and time in the specified time zone for a reminder alert of the task to occur.
     *
     * @param DateTimeTimeZone $val The reminderDateTime
     *
@@ -410,7 +410,7 @@ class TodoTask extends Entity
 
     /**
     * Gets the startDateTime
-    * The date in the specified time zone at which the task is scheduled to start.
+    * The date and time in the specified time zone at which the task is scheduled to start.
     *
     * @return DateTimeTimeZone|null The startDateTime
     */
@@ -429,7 +429,7 @@ class TodoTask extends Entity
 
     /**
     * Sets the startDateTime
-    * The date in the specified time zone at which the task is scheduled to start.
+    * The date and time in the specified time zone at which the task is scheduled to start.
     *
     * @param DateTimeTimeZone $val The startDateTime
     *

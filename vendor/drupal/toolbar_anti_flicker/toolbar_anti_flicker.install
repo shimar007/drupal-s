@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the "Toolbar Anti-flicker" module.
+ */
+
+/**
+ * Clear caches
+ */
+function toolbar_anti_flicker_update_8301() {
+  // Empty update to cause a cache flush.
+}
+
+

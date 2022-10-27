@@ -88,6 +88,36 @@ class PolicyRoot implements \JsonSerializable
         return $this;
     }
 
+
+     /**
+     * Gets the authenticationStrengthPolicies
+    * The authentication method combinations that are to be used in scenarios defined by Azure AD Conditional Access.
+     *
+     * @return array|null The authenticationStrengthPolicies
+     */
+    public function getAuthenticationStrengthPolicies()
+    {
+        if (array_key_exists("authenticationStrengthPolicies", $this->_propDict)) {
+           return $this->_propDict["authenticationStrengthPolicies"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the authenticationStrengthPolicies
+    * The authentication method combinations that are to be used in scenarios defined by Azure AD Conditional Access.
+    *
+    * @param AuthenticationStrengthPolicy[] $val The authenticationStrengthPolicies
+    *
+    * @return PolicyRoot
+    */
+    public function setAuthenticationStrengthPolicies($val)
+    {
+        $this->_propDict["authenticationStrengthPolicies"] = $val;
+        return $this;
+    }
+
     /**
     * Gets the authenticationFlowsPolicy
     * The policy configuration of the self-service sign-up experience of external users.

@@ -114,7 +114,7 @@ class ConversationThread extends Entity
 
     /**
     * Gets the lastDeliveredDateTime
-    * The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default.
+    * The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.Returned by default.
     *
     * @return \DateTime|null The lastDeliveredDateTime
     */
@@ -133,7 +133,7 @@ class ConversationThread extends Entity
 
     /**
     * Sets the lastDeliveredDateTime
-    * The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default.
+    * The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.Returned by default.
     *
     * @param \DateTime $val The lastDeliveredDateTime
     *
@@ -237,7 +237,7 @@ class ConversationThread extends Entity
     * Gets the uniqueSenders
     * All the users that sent a message to this thread. Returned by default.
     *
-    * @return string|null The uniqueSenders
+    * @return array|null The uniqueSenders
     */
     public function getUniqueSenders()
     {
@@ -252,7 +252,7 @@ class ConversationThread extends Entity
     * Sets the uniqueSenders
     * All the users that sent a message to this thread. Returned by default.
     *
-    * @param string $val The uniqueSenders
+    * @param string[] $val The uniqueSenders
     *
     * @return ConversationThread
     */

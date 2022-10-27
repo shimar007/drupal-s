@@ -25,6 +25,7 @@ class Filebrowser {
    * List of file patterns accepted for upload. Empty means anything
    */
   public $accepted;
+  public $overwriteBreadcrumb;
   public $defaultView;
   public $encoding;
   public $hideExtension;
@@ -71,6 +72,7 @@ class Filebrowser {
       $this->enabled = $settings['uploads']['enabled'];
       $this->allowOverwrite = $settings['uploads']['allow_overwrite'];
       $this->accepted = $settings['uploads']['accepted'];
+      $this->overwriteBreadcrumb = $settings['presentation']['overwrite_breadcrumb'];
       $this->defaultView = $settings['presentation']['default_view'];
       $this->encoding = $settings['presentation']['encoding'];
       $this->hideExtension = $settings['presentation']['hide_extension'];

@@ -1,0 +1,10 @@
+name: 'Office 365 - SSO'
+type: module
+description: 'Enable SSO with Office365'
+core_version_requirement: ^8 || ^9
+package: 'Microsoft Office'
+
+# Information added by Drupal.org packaging script on 2020-10-05
+version: '8.x-1.0-beta5'
+project: 'o365'
+datestamp: 1601908504

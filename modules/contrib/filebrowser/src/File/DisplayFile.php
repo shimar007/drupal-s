@@ -118,7 +118,7 @@ class DisplayFile extends ControllerBase {
     $this->name = $db_content['display_name'];
     $this->fsRoot = $root;
     $this->relativePath = $file_relative_path;
-    $this->fullPath = rtrim($this->fsRoot, '/') . "/" . $fs_file->filename;
+    $this->fullPath = rtrim($this->fsRoot ?? '', '/') . "/" . $fs_file->filename;
     $this->status = MARK_READ;
     $this->fileData = $fs_file;
 

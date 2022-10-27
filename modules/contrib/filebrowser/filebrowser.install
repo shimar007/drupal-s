@@ -27,6 +27,8 @@
  * Install, update and uninstall functions for the Filebrowser module.
  */
 
+use Drupal\Core\Database\Database;
+
 /**
  * Implements hook_install()
  */
@@ -62,13 +64,13 @@ function filebrowser_schema() {
         'description' => 'uri to the exposed directory',
       ],
       'properties' => [
-        'type' => 'text',
+        'type' => 'blob',
         'not null' => TRUE,
         'size' => 'big',
         'description' => 'serialised data containing the filebrowser settings for this node',
-      ]
+      ],
     ],
-    'primary key' => ['nid']
+    'primary key' => ['nid'],
   ];
 
   $schema['filebrowser_content'] = [
@@ -99,7 +101,7 @@ function filebrowser_schema() {
         'description' => 'path to the file',
       ],
       'file_data' => [
-        'type' => 'text',
+        'type' => 'blob',
         'not null' => TRUE,
         'size' => 'big',
         'description' => 'serialised field containing file data',
@@ -109,9 +111,51 @@ function filebrowser_schema() {
     'primary key' => ['fid'],
     'unique keys' => [
       'nid_fid' => ['nid', 'fid'],
-      'fid' => ['fid']
-    ]
+      'fid' => ['fid'],
+    ],
   ];
 
   return $schema;
+}
+
+
+/**
+ * Convert file_browser_metadata_entity into blob.
+ */
+function filebrowser_update_9101() {
+  $entity_type_id = 'filebrowser_metadata_entity';
+  $content_schema = [
+    'type' => 'blob',
+    'not null' => FALSE,
+  ];
+  $fields = [
+    'filebrowser_metadata_entity' => 'content',
+    'filebrowser_content' => 'file_data',
+    'filebrowser_nodes' => 'properties',
+  ];
+  Database::setActiveConnection();
+  $schema = Database::getConnection()->schema();
+  foreach ($fields as $table => $field) {
+    $schema->changeField($table, $field, $field, $content_schema);
+  }
+  $field = 'content';
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $entity_type = $entity_type_manager->getDefinition($entity_type_id);
+  $class = $entity_type->getClass();
+  $fields = $class::baseFieldDefinitions($entity_type);
+  $content_definition = $fields['content'];
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition($field, $entity_type_id, 'filebrowser', $content_definition);
+}
+
+/**
+ * Add overwrite_breadcrumb to Filebrowser settings configuration.
+ */
+function filebrowser_update_9102() {
+  /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+
+  $module_path = \Drupal::service('module_handler')->getModule('filebrowser')->getPath();
+  $source = new \Drupal\Core\Config\FileStorage($module_path . '/config/install');
+  $active_storage = \Drupal::service('config.storage');
+  $active_storage->write('filebrowser.settings', $source->read('filebrowser.settings'));
 }

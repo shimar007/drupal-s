@@ -134,7 +134,7 @@ class Geofield extends FieldTargetBase implements ContainerFactoryPluginInterfac
     }
 
     // Latitude and Longitude should be a pair, if not throw EmptyFeedException.
-    if (count($values['lat']) != count($values['lon'])) {
+    if (count($values['lat'] ?? []) != count($values['lon'] ?? [])) {
       throw new EmptyFeedException('Latitude and Longitude should be a pair. Change your file and import again.');
     }
   }

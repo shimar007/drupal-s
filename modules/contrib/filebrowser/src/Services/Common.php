@@ -167,7 +167,7 @@ class Common extends ControllerBase{
     // We are adding the CSS classes to Twig using variable data.class
     // The normal way, using #attributes is not working: investigate & correct
     if ($return_image) {
-      $markup = file_get_contents($eligible, \FILE_TEXT);
+      $markup = file_get_contents($eligible);
       return  [
         '#theme' => 'filebrowser_icon_svg',
         '#html' => $markup,
@@ -394,6 +394,10 @@ class Common extends ControllerBase{
    * @return string
    */
   public function relativePath($fid) {
+    if (!$fid) {
+      return NULL;
+    }
+
     return $this->storage->loadRecord($fid)['path'];
   }
 

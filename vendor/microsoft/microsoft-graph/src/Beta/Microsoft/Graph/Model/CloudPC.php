@@ -55,6 +55,7 @@ class CloudPC extends Entity
 
     /**
     * Gets the connectivityResult
+    * The connectivity health check result of a Cloud PC, including the updated timestamp and whether the Cloud PC is able to be connected or not.
     *
     * @return CloudPcConnectivityResult|null The connectivityResult
     */
@@ -73,6 +74,7 @@ class CloudPC extends Entity
 
     /**
     * Sets the connectivityResult
+    * The connectivity health check result of a Cloud PC, including the updated timestamp and whether the Cloud PC is able to be connected or not.
     *
     * @param CloudPcConnectivityResult $val The connectivityResult
     *
@@ -81,6 +83,37 @@ class CloudPC extends Entity
     public function setConnectivityResult($val)
     {
         $this->_propDict["connectivityResult"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the diskEncryptionState
+    *
+    * @return CloudPcDiskEncryptionState|null The diskEncryptionState
+    */
+    public function getDiskEncryptionState()
+    {
+        if (array_key_exists("diskEncryptionState", $this->_propDict)) {
+            if (is_a($this->_propDict["diskEncryptionState"], "\Beta\Microsoft\Graph\Model\CloudPcDiskEncryptionState") || is_null($this->_propDict["diskEncryptionState"])) {
+                return $this->_propDict["diskEncryptionState"];
+            } else {
+                $this->_propDict["diskEncryptionState"] = new CloudPcDiskEncryptionState($this->_propDict["diskEncryptionState"]);
+                return $this->_propDict["diskEncryptionState"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the diskEncryptionState
+    *
+    * @param CloudPcDiskEncryptionState $val The diskEncryptionState
+    *
+    * @return CloudPC
+    */
+    public function setDiskEncryptionState($val)
+    {
+        $this->_propDict["diskEncryptionState"] = $val;
         return $this;
     }
 

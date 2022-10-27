@@ -1,7 +1,6 @@
 global-styling:
   version: VERSION
   css:
-    base:
     component:
       css/layout.css: {}
       css/media-queries.css: {}

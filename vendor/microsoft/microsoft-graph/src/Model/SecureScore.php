@@ -206,9 +206,9 @@ class SecureScore extends Entity
 
     /**
     * Gets the enabledServices
-    * Microsoft-provided services for the tenant (for example, Exchange online, Skype, SharePoint).
+    * Microsoft-provided services for the tenant (for example, Exchange online, Skype, Sharepoint).
     *
-    * @return string|null The enabledServices
+    * @return array|null The enabledServices
     */
     public function getEnabledServices()
     {
@@ -221,9 +221,9 @@ class SecureScore extends Entity
 
     /**
     * Sets the enabledServices
-    * Microsoft-provided services for the tenant (for example, Exchange online, Skype, SharePoint).
+    * Microsoft-provided services for the tenant (for example, Exchange online, Skype, Sharepoint).
     *
-    * @param string $val The enabledServices
+    * @param string[] $val The enabledServices
     *
     * @return SecureScore
     */

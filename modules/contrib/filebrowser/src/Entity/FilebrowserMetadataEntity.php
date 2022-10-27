@@ -209,7 +209,8 @@ class FilebrowserMetadataEntity extends ContentEntityBase implements Filebrowser
 
     $fields['theme'] = BaseFieldDefinition::create('string');
 
-    $fields['content'] = BaseFieldDefinition::create('string_long');
+    $fields['content'] = BaseFieldDefinition::create('string_long')
+      ->setSetting('case_sensitive',TRUE);
 
     return $fields;
   }

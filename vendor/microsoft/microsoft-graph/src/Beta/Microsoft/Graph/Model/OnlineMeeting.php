@@ -116,39 +116,6 @@ class OnlineMeeting extends Entity
     }
 
     /**
-    * Gets the allowMeetingChat
-    * Specifies the mode of meeting chat.
-    *
-    * @return MeetingChatMode|null The allowMeetingChat
-    */
-    public function getAllowMeetingChat()
-    {
-        if (array_key_exists("allowMeetingChat", $this->_propDict)) {
-            if (is_a($this->_propDict["allowMeetingChat"], "\Beta\Microsoft\Graph\Model\MeetingChatMode") || is_null($this->_propDict["allowMeetingChat"])) {
-                return $this->_propDict["allowMeetingChat"];
-            } else {
-                $this->_propDict["allowMeetingChat"] = new MeetingChatMode($this->_propDict["allowMeetingChat"]);
-                return $this->_propDict["allowMeetingChat"];
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Sets the allowMeetingChat
-    * Specifies the mode of meeting chat.
-    *
-    * @param MeetingChatMode $val The allowMeetingChat
-    *
-    * @return OnlineMeeting
-    */
-    public function setAllowMeetingChat($val)
-    {
-        $this->_propDict["allowMeetingChat"] = $val;
-        return $this;
-    }
-
-    /**
     * Gets the allowTeamworkReactions
     * Indicates if Teams reactions are enabled for the meeting.
     *
@@ -892,6 +859,37 @@ class OnlineMeeting extends Entity
         return $this;
     }
 
+    /**
+    * Gets the virtualAppointment
+    *
+    * @return VirtualAppointment|null The virtualAppointment
+    */
+    public function getVirtualAppointment()
+    {
+        if (array_key_exists("virtualAppointment", $this->_propDict)) {
+            if (is_a($this->_propDict["virtualAppointment"], "\Beta\Microsoft\Graph\Model\VirtualAppointment") || is_null($this->_propDict["virtualAppointment"])) {
+                return $this->_propDict["virtualAppointment"];
+            } else {
+                $this->_propDict["virtualAppointment"] = new VirtualAppointment($this->_propDict["virtualAppointment"]);
+                return $this->_propDict["virtualAppointment"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the virtualAppointment
+    *
+    * @param VirtualAppointment $val The virtualAppointment
+    *
+    * @return OnlineMeeting
+    */
+    public function setVirtualAppointment($val)
+    {
+        $this->_propDict["virtualAppointment"] = $val;
+        return $this;
+    }
+
 
      /**
      * Gets the attendanceReports
@@ -983,6 +981,36 @@ class OnlineMeeting extends Entity
     public function setRegistration($val)
     {
         $this->_propDict["registration"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the transcripts
+    * The transcripts of an online meeting. Read-only.
+     *
+     * @return array|null The transcripts
+     */
+    public function getTranscripts()
+    {
+        if (array_key_exists("transcripts", $this->_propDict)) {
+           return $this->_propDict["transcripts"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the transcripts
+    * The transcripts of an online meeting. Read-only.
+    *
+    * @param CallTranscript[] $val The transcripts
+    *
+    * @return OnlineMeeting
+    */
+    public function setTranscripts($val)
+    {
+        $this->_propDict["transcripts"] = $val;
         return $this;
     }
 

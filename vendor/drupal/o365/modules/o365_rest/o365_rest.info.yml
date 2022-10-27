@@ -1,0 +1,12 @@
+name: 'Office 365 - REST'
+type: module
+description: 'Enable REST for Office365, eg for getting the access token'
+core_version_requirement: ^8 || ^9
+package: 'Microsoft Office'
+dependencies:
+  - o365:o365_sso
+  - drupal:rest
+# Information added by Drupal.org packaging script on 2020-10-05
+version: '8.x-1.0-beta5'
+project: 'o365'
+datestamp: 1601908504

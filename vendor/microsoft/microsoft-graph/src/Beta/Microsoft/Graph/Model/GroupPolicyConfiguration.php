@@ -149,10 +149,43 @@ class GroupPolicyConfiguration extends Entity
     }
 
     /**
+    * Gets the policyConfigurationIngestionType
+    * Type of definitions configured for this policy. Possible values are: unknown, custom, builtIn, mixed, unknownFutureValue.
+    *
+    * @return GroupPolicyConfigurationIngestionType|null The policyConfigurationIngestionType
+    */
+    public function getPolicyConfigurationIngestionType()
+    {
+        if (array_key_exists("policyConfigurationIngestionType", $this->_propDict)) {
+            if (is_a($this->_propDict["policyConfigurationIngestionType"], "\Beta\Microsoft\Graph\Model\GroupPolicyConfigurationIngestionType") || is_null($this->_propDict["policyConfigurationIngestionType"])) {
+                return $this->_propDict["policyConfigurationIngestionType"];
+            } else {
+                $this->_propDict["policyConfigurationIngestionType"] = new GroupPolicyConfigurationIngestionType($this->_propDict["policyConfigurationIngestionType"]);
+                return $this->_propDict["policyConfigurationIngestionType"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the policyConfigurationIngestionType
+    * Type of definitions configured for this policy. Possible values are: unknown, custom, builtIn, mixed, unknownFutureValue.
+    *
+    * @param GroupPolicyConfigurationIngestionType $val The policyConfigurationIngestionType
+    *
+    * @return GroupPolicyConfiguration
+    */
+    public function setPolicyConfigurationIngestionType($val)
+    {
+        $this->_propDict["policyConfigurationIngestionType"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the roleScopeTagIds
     * The list of scope tags for the configuration.
     *
-    * @return string|null The roleScopeTagIds
+    * @return array|null The roleScopeTagIds
     */
     public function getRoleScopeTagIds()
     {
@@ -167,7 +200,7 @@ class GroupPolicyConfiguration extends Entity
     * Sets the roleScopeTagIds
     * The list of scope tags for the configuration.
     *
-    * @param string $val The roleScopeTagIds
+    * @param string[] $val The roleScopeTagIds
     *
     * @return GroupPolicyConfiguration
     */

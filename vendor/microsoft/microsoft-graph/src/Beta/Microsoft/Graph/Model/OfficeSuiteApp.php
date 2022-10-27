@@ -123,7 +123,7 @@ class OfficeSuiteApp extends MobileApp
     * Gets the localesToInstall
     * The property to represent the locales which are installed when the apps from Office365 is installed. It uses standard RFC 6033. Ref: https://technet.microsoft.com/library/cc179219(v=office.16).aspx
     *
-    * @return string|null The localesToInstall
+    * @return array|null The localesToInstall
     */
     public function getLocalesToInstall()
     {
@@ -138,7 +138,7 @@ class OfficeSuiteApp extends MobileApp
     * Sets the localesToInstall
     * The property to represent the locales which are installed when the apps from Office365 is installed. It uses standard RFC 6033. Ref: https://technet.microsoft.com/library/cc179219(v=office.16).aspx
     *
-    * @param string $val The localesToInstall
+    * @param string[] $val The localesToInstall
     *
     * @return OfficeSuiteApp
     */
@@ -211,6 +211,39 @@ class OfficeSuiteApp extends MobileApp
     public function setOfficePlatformArchitecture($val)
     {
         $this->_propDict["officePlatformArchitecture"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the officeSuiteAppDefaultFileFormat
+    * The property to represent the Office365 default file format type. Possible values are: notConfigured, officeOpenXMLFormat, officeOpenDocumentFormat, unknownFutureValue.
+    *
+    * @return OfficeSuiteDefaultFileFormatType|null The officeSuiteAppDefaultFileFormat
+    */
+    public function getOfficeSuiteAppDefaultFileFormat()
+    {
+        if (array_key_exists("officeSuiteAppDefaultFileFormat", $this->_propDict)) {
+            if (is_a($this->_propDict["officeSuiteAppDefaultFileFormat"], "\Beta\Microsoft\Graph\Model\OfficeSuiteDefaultFileFormatType") || is_null($this->_propDict["officeSuiteAppDefaultFileFormat"])) {
+                return $this->_propDict["officeSuiteAppDefaultFileFormat"];
+            } else {
+                $this->_propDict["officeSuiteAppDefaultFileFormat"] = new OfficeSuiteDefaultFileFormatType($this->_propDict["officeSuiteAppDefaultFileFormat"]);
+                return $this->_propDict["officeSuiteAppDefaultFileFormat"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the officeSuiteAppDefaultFileFormat
+    * The property to represent the Office365 default file format type. Possible values are: notConfigured, officeOpenXMLFormat, officeOpenDocumentFormat, unknownFutureValue.
+    *
+    * @param OfficeSuiteDefaultFileFormatType $val The officeSuiteAppDefaultFileFormat
+    *
+    * @return OfficeSuiteApp
+    */
+    public function setOfficeSuiteAppDefaultFileFormat($val)
+    {
+        $this->_propDict["officeSuiteAppDefaultFileFormat"] = $val;
         return $this;
     }
 

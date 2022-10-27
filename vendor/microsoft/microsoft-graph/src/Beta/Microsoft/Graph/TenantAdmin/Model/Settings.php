@@ -28,7 +28,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Gets the allowedDomainGuidsForSyncApp
     * Collection of trusted domain GUIDs for the OneDrive sync app.
     *
-    * @return string|null The allowedDomainGuidsForSyncApp
+    * @return array|null The allowedDomainGuidsForSyncApp
     */
     public function getAllowedDomainGuidsForSyncApp()
     {
@@ -43,7 +43,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Sets the allowedDomainGuidsForSyncApp
     * Collection of trusted domain GUIDs for the OneDrive sync app.
     *
-    * @param string $val The allowedDomainGuidsForSyncApp
+    * @param string[] $val The allowedDomainGuidsForSyncApp
     *
     * @return Settings
     */
@@ -57,7 +57,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Gets the availableManagedPathsForSiteCreation
     * Collection of managed paths available for site creation. Read-only.
     *
-    * @return string|null The availableManagedPathsForSiteCreation
+    * @return array|null The availableManagedPathsForSiteCreation
     */
     public function getAvailableManagedPathsForSiteCreation()
     {
@@ -72,7 +72,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Sets the availableManagedPathsForSiteCreation
     * Collection of managed paths available for site creation. Read-only.
     *
-    * @param string $val The availableManagedPathsForSiteCreation
+    * @param string[] $val The availableManagedPathsForSiteCreation
     *
     * @return Settings
     */
@@ -115,7 +115,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Gets the excludedFileExtensionsForSyncApp
     * Collection of file extensions not uploaded by the OneDrive sync app.
     *
-    * @return string|null The excludedFileExtensionsForSyncApp
+    * @return array|null The excludedFileExtensionsForSyncApp
     */
     public function getExcludedFileExtensionsForSyncApp()
     {
@@ -130,13 +130,46 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Sets the excludedFileExtensionsForSyncApp
     * Collection of file extensions not uploaded by the OneDrive sync app.
     *
-    * @param string $val The excludedFileExtensionsForSyncApp
+    * @param string[] $val The excludedFileExtensionsForSyncApp
     *
     * @return Settings
     */
     public function setExcludedFileExtensionsForSyncApp($val)
     {
         $this->_propDict["excludedFileExtensionsForSyncApp"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the idleSessionSignOut
+    * Specifies the idle session sign-out policies for the tenant.
+    *
+    * @return IdleSessionSignOut|null The idleSessionSignOut
+    */
+    public function getIdleSessionSignOut()
+    {
+        if (array_key_exists("idleSessionSignOut", $this->_propDict)) {
+            if (is_a($this->_propDict["idleSessionSignOut"], "\Beta\Microsoft\Graph\TenantAdmin\Model\IdleSessionSignOut") || is_null($this->_propDict["idleSessionSignOut"])) {
+                return $this->_propDict["idleSessionSignOut"];
+            } else {
+                $this->_propDict["idleSessionSignOut"] = new IdleSessionSignOut($this->_propDict["idleSessionSignOut"]);
+                return $this->_propDict["idleSessionSignOut"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the idleSessionSignOut
+    * Specifies the idle session sign-out policies for the tenant.
+    *
+    * @param IdleSessionSignOut $val The idleSessionSignOut
+    *
+    * @return Settings
+    */
+    public function setIdleSessionSignOut($val)
+    {
+        $this->_propDict["idleSessionSignOut"] = $val;
         return $this;
     }
 
@@ -232,6 +265,35 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     }
 
     /**
+    * Gets the isLegacyAuthProtocolsEnabled
+    * Indicates whether legacy authentication protocols are enabled for the tenant.
+    *
+    * @return bool|null The isLegacyAuthProtocolsEnabled
+    */
+    public function getIsLegacyAuthProtocolsEnabled()
+    {
+        if (array_key_exists("isLegacyAuthProtocolsEnabled", $this->_propDict)) {
+            return $this->_propDict["isLegacyAuthProtocolsEnabled"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isLegacyAuthProtocolsEnabled
+    * Indicates whether legacy authentication protocols are enabled for the tenant.
+    *
+    * @param bool $val The isLegacyAuthProtocolsEnabled
+    *
+    * @return Settings
+    */
+    public function setIsLegacyAuthProtocolsEnabled($val)
+    {
+        $this->_propDict["isLegacyAuthProtocolsEnabled"] = boolval($val);
+        return $this;
+    }
+
+    /**
     * Gets the isLoopEnabled
     * Indicates whetherif Fluid Framework is allowed on SharePoint sites.
     *
@@ -286,6 +348,35 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     public function setIsMacSyncAppEnabled($val)
     {
         $this->_propDict["isMacSyncAppEnabled"] = boolval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the isRequireAcceptingUserToMatchInvitedUserEnabled
+    * Indicates whether guests must sign in using the same account to which sharing invitations are sent.
+    *
+    * @return bool|null The isRequireAcceptingUserToMatchInvitedUserEnabled
+    */
+    public function getIsRequireAcceptingUserToMatchInvitedUserEnabled()
+    {
+        if (array_key_exists("isRequireAcceptingUserToMatchInvitedUserEnabled", $this->_propDict)) {
+            return $this->_propDict["isRequireAcceptingUserToMatchInvitedUserEnabled"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isRequireAcceptingUserToMatchInvitedUserEnabled
+    * Indicates whether guests must sign in using the same account to which sharing invitations are sent.
+    *
+    * @param bool $val The isRequireAcceptingUserToMatchInvitedUserEnabled
+    *
+    * @return Settings
+    */
+    public function setIsRequireAcceptingUserToMatchInvitedUserEnabled($val)
+    {
+        $this->_propDict["isRequireAcceptingUserToMatchInvitedUserEnabled"] = boolval($val);
         return $this;
     }
 
@@ -583,7 +674,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Gets the sharingAllowedDomainList
     * Collection of email domains that are allowed for sharing outside the organization.
     *
-    * @return string|null The sharingAllowedDomainList
+    * @return array|null The sharingAllowedDomainList
     */
     public function getSharingAllowedDomainList()
     {
@@ -598,7 +689,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Sets the sharingAllowedDomainList
     * Collection of email domains that are allowed for sharing outside the organization.
     *
-    * @param string $val The sharingAllowedDomainList
+    * @param string[] $val The sharingAllowedDomainList
     *
     * @return Settings
     */
@@ -612,7 +703,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Gets the sharingBlockedDomainList
     * Collection of email domains that are blocked for sharing outside the organization.
     *
-    * @return string|null The sharingBlockedDomainList
+    * @return array|null The sharingBlockedDomainList
     */
     public function getSharingBlockedDomainList()
     {
@@ -627,7 +718,7 @@ class Settings extends \Beta\Microsoft\Graph\Model\Entity
     * Sets the sharingBlockedDomainList
     * Collection of email domains that are blocked for sharing outside the organization.
     *
-    * @param string $val The sharingBlockedDomainList
+    * @param string[] $val The sharingBlockedDomainList
     *
     * @return Settings
     */

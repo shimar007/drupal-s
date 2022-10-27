@@ -26,7 +26,7 @@ class ExternalIdentitiesPolicy extends PolicyBase
 {
     /**
     * Gets the allowDeletedIdentitiesDataRemoval
-    * Notifies Azure AD whether to clean up the user information about the external identity, from the guest tenant, when the user is deleted in their home tenant.
+    * Reserved for future use.
     *
     * @return bool|null The allowDeletedIdentitiesDataRemoval
     */
@@ -41,7 +41,7 @@ class ExternalIdentitiesPolicy extends PolicyBase
 
     /**
     * Sets the allowDeletedIdentitiesDataRemoval
-    * Notifies Azure AD whether to clean up the user information about the external identity, from the guest tenant, when the user is deleted in their home tenant.
+    * Reserved for future use.
     *
     * @param bool $val The allowDeletedIdentitiesDataRemoval
     *
@@ -55,7 +55,7 @@ class ExternalIdentitiesPolicy extends PolicyBase
 
     /**
     * Gets the allowExternalIdentitiesToLeave
-    * Defines whether external users can leave the guest tenant. If set to false, self-service controls are not enabled, and the admin of the guest tenant must manually remove the external user from the guest tenant.
+    * Defines whether external users can leave the guest tenant. If set to false, self-service controls are disabled, and the admin of the guest tenant must manually remove the external user from the guest tenant. When the external user leaves the tenant, their data in the guest tenant is first soft-deleted then permanently deleted in 30 days.
     *
     * @return bool|null The allowExternalIdentitiesToLeave
     */
@@ -70,7 +70,7 @@ class ExternalIdentitiesPolicy extends PolicyBase
 
     /**
     * Sets the allowExternalIdentitiesToLeave
-    * Defines whether external users can leave the guest tenant. If set to false, self-service controls are not enabled, and the admin of the guest tenant must manually remove the external user from the guest tenant.
+    * Defines whether external users can leave the guest tenant. If set to false, self-service controls are disabled, and the admin of the guest tenant must manually remove the external user from the guest tenant. When the external user leaves the tenant, their data in the guest tenant is first soft-deleted then permanently deleted in 30 days.
     *
     * @param bool $val The allowExternalIdentitiesToLeave
     *

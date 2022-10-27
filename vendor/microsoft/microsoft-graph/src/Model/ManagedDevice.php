@@ -300,7 +300,7 @@ class ManagedDevice extends Entity
 
     /**
     * Gets the deviceEnrollmentType
-    * Enrollment type of the device. This property is read-only. Possible values are: unknown, userEnrollment, deviceEnrollmentManager, appleBulkWithUser, appleBulkWithoutUser, windowsAzureADJoin, windowsBulkUserless, windowsAutoEnrollment, windowsBulkAzureDomainJoin, windowsCoManagement, windowsAzureADJoinUsingDeviceAuth, appleUserEnrollment, appleUserEnrollmentWithServiceAccount, azureAdJoinUsingAzureVmExtension, androidEnterpriseDedicatedDevice, androidEnterpriseFullyManaged, androidEnterpriseCorporateWorkProfile.
+    * Enrollment type of the device. This property is read-only. Possible values are: unknown, userEnrollment, deviceEnrollmentManager, appleBulkWithUser, appleBulkWithoutUser, windowsAzureADJoin, windowsBulkUserless, windowsAutoEnrollment, windowsBulkAzureDomainJoin, windowsCoManagement, windowsAzureADJoinUsingDeviceAuth, appleUserEnrollment, appleUserEnrollmentWithServiceAccount.
     *
     * @return DeviceEnrollmentType|null The deviceEnrollmentType
     */
@@ -319,7 +319,7 @@ class ManagedDevice extends Entity
 
     /**
     * Sets the deviceEnrollmentType
-    * Enrollment type of the device. This property is read-only. Possible values are: unknown, userEnrollment, deviceEnrollmentManager, appleBulkWithUser, appleBulkWithoutUser, windowsAzureADJoin, windowsBulkUserless, windowsAutoEnrollment, windowsBulkAzureDomainJoin, windowsCoManagement, windowsAzureADJoinUsingDeviceAuth, appleUserEnrollment, appleUserEnrollmentWithServiceAccount, azureAdJoinUsingAzureVmExtension, androidEnterpriseDedicatedDevice, androidEnterpriseFullyManaged, androidEnterpriseCorporateWorkProfile.
+    * Enrollment type of the device. This property is read-only. Possible values are: unknown, userEnrollment, deviceEnrollmentManager, appleBulkWithUser, appleBulkWithoutUser, windowsAzureADJoin, windowsBulkUserless, windowsAutoEnrollment, windowsBulkAzureDomainJoin, windowsCoManagement, windowsAzureADJoinUsingDeviceAuth, appleUserEnrollment, appleUserEnrollmentWithServiceAccount.
     *
     * @param DeviceEnrollmentType $val The deviceEnrollmentType
     *
@@ -978,7 +978,7 @@ class ManagedDevice extends Entity
 
     /**
     * Gets the managementAgent
-    * Management channel of the device. Intune, EAS, etc. This property is read-only. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController, microsoft365ManagedMdm, msSense, intuneAosp.
+    * Management channel of the device. Intune, EAS, etc. This property is read-only. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController.
     *
     * @return ManagementAgentType|null The managementAgent
     */
@@ -997,7 +997,7 @@ class ManagedDevice extends Entity
 
     /**
     * Sets the managementAgent
-    * Management channel of the device. Intune, EAS, etc. This property is read-only. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController, microsoft365ManagedMdm, msSense, intuneAosp.
+    * Management channel of the device. Intune, EAS, etc. This property is read-only. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController.
     *
     * @param ManagementAgentType $val The managementAgent
     *
@@ -1006,6 +1006,39 @@ class ManagedDevice extends Entity
     public function setManagementAgent($val)
     {
         $this->_propDict["managementAgent"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the managementCertificateExpirationDate
+    * Reports device management certificate expiration date. This property is read-only.
+    *
+    * @return \DateTime|null The managementCertificateExpirationDate
+    */
+    public function getManagementCertificateExpirationDate()
+    {
+        if (array_key_exists("managementCertificateExpirationDate", $this->_propDict)) {
+            if (is_a($this->_propDict["managementCertificateExpirationDate"], "\DateTime") || is_null($this->_propDict["managementCertificateExpirationDate"])) {
+                return $this->_propDict["managementCertificateExpirationDate"];
+            } else {
+                $this->_propDict["managementCertificateExpirationDate"] = new \DateTime($this->_propDict["managementCertificateExpirationDate"]);
+                return $this->_propDict["managementCertificateExpirationDate"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the managementCertificateExpirationDate
+    * Reports device management certificate expiration date. This property is read-only.
+    *
+    * @param \DateTime $val The managementCertificateExpirationDate
+    *
+    * @return ManagedDevice
+    */
+    public function setManagementCertificateExpirationDate($val)
+    {
+        $this->_propDict["managementCertificateExpirationDate"] = $val;
         return $this;
     }
 
@@ -1333,6 +1366,35 @@ class ManagedDevice extends Entity
     }
 
     /**
+    * Gets the requireUserEnrollmentApproval
+    * Reports if the managed iOS device is user approval enrollment. This property is read-only.
+    *
+    * @return bool|null The requireUserEnrollmentApproval
+    */
+    public function getRequireUserEnrollmentApproval()
+    {
+        if (array_key_exists("requireUserEnrollmentApproval", $this->_propDict)) {
+            return $this->_propDict["requireUserEnrollmentApproval"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the requireUserEnrollmentApproval
+    * Reports if the managed iOS device is user approval enrollment. This property is read-only.
+    *
+    * @param bool $val The requireUserEnrollmentApproval
+    *
+    * @return ManagedDevice
+    */
+    public function setRequireUserEnrollmentApproval($val)
+    {
+        $this->_propDict["requireUserEnrollmentApproval"] = boolval($val);
+        return $this;
+    }
+
+    /**
     * Gets the serialNumber
     * SerialNumber. This property is read-only.
     *
@@ -1654,6 +1716,36 @@ class ManagedDevice extends Entity
     public function setDeviceCategory($val)
     {
         $this->_propDict["deviceCategory"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the users
+    * The primary users associated with the managed device.
+     *
+     * @return array|null The users
+     */
+    public function getUsers()
+    {
+        if (array_key_exists("users", $this->_propDict)) {
+           return $this->_propDict["users"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the users
+    * The primary users associated with the managed device.
+    *
+    * @param User[] $val The users
+    *
+    * @return ManagedDevice
+    */
+    public function setUsers($val)
+    {
+        $this->_propDict["users"] = $val;
         return $this;
     }
 

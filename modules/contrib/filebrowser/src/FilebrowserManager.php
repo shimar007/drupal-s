@@ -224,6 +224,13 @@ class FilebrowserManager extends ControllerBase {
 
     $view_options = $this->common->getFolderViewOptions();
 
+    $form['filebrowser']['presentation']['overwrite_breadcrumb'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t("Overwrite the breadcrumb provided by other modules"),
+      '#options' => [0, 1],
+      '#default_value' => isset($nodeValues->overwriteBreadcrumb) ? $nodeValues->overwriteBreadcrumb : $config['presentation']['overwrite_breadcrumb'],
+    ];
+
     $form['filebrowser']['presentation']['default_view'] = [
       '#type' => 'select',
       '#title' => $this->t("Default view"),

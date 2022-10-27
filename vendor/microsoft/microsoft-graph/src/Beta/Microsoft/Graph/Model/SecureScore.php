@@ -208,7 +208,7 @@ class SecureScore extends Entity
     * Gets the enabledServices
     * Microsoft-provided services for the tenant (for example, Exchange online, Skype, SharePoint).
     *
-    * @return string|null The enabledServices
+    * @return array|null The enabledServices
     */
     public function getEnabledServices()
     {
@@ -223,7 +223,7 @@ class SecureScore extends Entity
     * Sets the enabledServices
     * Microsoft-provided services for the tenant (for example, Exchange online, Skype, SharePoint).
     *
-    * @param string $val The enabledServices
+    * @param string[] $val The enabledServices
     *
     * @return SecureScore
     */
@@ -293,7 +293,6 @@ class SecureScore extends Entity
 
     /**
     * Gets the vendorInformation
-    * Complex type containing details about the security product/service vendor, provider, and subprovider (for example, vendor=Microsoft; provider=SecureScore). Required.
     *
     * @return SecurityVendorInformation|null The vendorInformation
     */
@@ -312,7 +311,6 @@ class SecureScore extends Entity
 
     /**
     * Sets the vendorInformation
-    * Complex type containing details about the security product/service vendor, provider, and subprovider (for example, vendor=Microsoft; provider=SecureScore). Required.
     *
     * @param SecurityVendorInformation $val The vendorInformation
     *

@@ -87,7 +87,7 @@ class WebformSubmissionSelectFilter extends InOperator {
   public function acceptExposedInput($input) {
     $accept = parent::acceptExposedInput($input);
     $identifier = $this->options['expose']['identifier'];
-    if ($input[$identifier] == self::ALL) {
+    if (isset($input[$identifier]) && $input[$identifier] == self::ALL) {
       return FALSE;
     }
     return $accept;

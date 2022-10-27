@@ -42,7 +42,12 @@ class BreadcrumbBuilder implements BreadcrumbBuilderInterface {
    */
   public function applies(RouteMatchInterface $route_match) {
     $this->node = $this->common->getNodeFromPath();
-    return isset($this->node) && $this->node->bundle() == 'dir_listing';
+    if (isset($this->node) && $this->node->bundle() == 'dir_listing') {
+      if ($this->node->filebrowser->overwriteBreadcrumb == 1) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

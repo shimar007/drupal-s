@@ -1,0 +1,14 @@
+name: BAT Event Series
+type: module
+description: Create and administer series of BAT events.
+core: 8.x
+core_version_requirement: ^8 || ^9
+package: bat
+
+dependencies:
+  - bat:bat_event
+
+# Information added by Drupal.org packaging script on 2020-06-26
+version: '8.x-1.3'
+project: 'bat'
+datestamp: 1593189008

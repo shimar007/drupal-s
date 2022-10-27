@@ -89,7 +89,7 @@ class Application extends DirectoryObject
 
     /**
     * Gets the appId
-    * The unique identifier for the application that is assigned by Azure AD. Not nullable. Read-only.
+    * The unique identifier for the application that is assigned to an application by Azure AD. Not nullable. Read-only. Supports $filter (eq).
     *
     * @return string|null The appId
     */
@@ -104,7 +104,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the appId
-    * The unique identifier for the application that is assigned by Azure AD. Not nullable. Read-only.
+    * The unique identifier for the application that is assigned to an application by Azure AD. Not nullable. Read-only. Supports $filter (eq).
     *
     * @param string $val The appId
     *
@@ -148,7 +148,7 @@ class Application extends DirectoryObject
 
      /**
      * Gets the appRoles
-    * The collection of roles assigned to the application. With app role assignments, these roles can be assigned to users, groups, or service principals associated with other applications. Not nullable.
+    * The collection of roles defined for the application. With app role assignments, these roles can be assigned to users, groups, or service principals associated with other applications. Not nullable.
      *
      * @return array|null The appRoles
      */
@@ -163,7 +163,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the appRoles
-    * The collection of roles assigned to the application. With app role assignments, these roles can be assigned to users, groups, or service principals associated with other applications. Not nullable.
+    * The collection of roles defined for the application. With app role assignments, these roles can be assigned to users, groups, or service principals associated with other applications. Not nullable.
     *
     * @param AppRole[] $val The appRoles
     *
@@ -242,8 +242,35 @@ class Application extends DirectoryObject
     }
 
     /**
+    * Gets the defaultRedirectUri
+    *
+    * @return string|null The defaultRedirectUri
+    */
+    public function getDefaultRedirectUri()
+    {
+        if (array_key_exists("defaultRedirectUri", $this->_propDict)) {
+            return $this->_propDict["defaultRedirectUri"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the defaultRedirectUri
+    *
+    * @param string $val The defaultRedirectUri
+    *
+    * @return Application
+    */
+    public function setDefaultRedirectUri($val)
+    {
+        $this->_propDict["defaultRedirectUri"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the description
-    * Free text field to provide a description of the application object to end users. The maximum allowed size is 1024 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
+    * Free text field to provide a description of the application object to end users. The maximum allowed size is 1024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
     *
     * @return string|null The description
     */
@@ -258,7 +285,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the description
-    * Free text field to provide a description of the application object to end users. The maximum allowed size is 1024 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
+    * Free text field to provide a description of the application object to end users. The maximum allowed size is 1024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
     *
     * @param string $val The description
     *
@@ -330,7 +357,7 @@ class Application extends DirectoryObject
 
     /**
     * Gets the groupMembershipClaims
-    * Configures the groups claim issued in a user or OAuth 2.0 access token that the application expects. To set this attribute, use one of the following string values: None, SecurityGroup (for security groups and Azure AD roles), All (this gets all security groups, distribution groups, and Azure AD directory roles that the signed-in user is a member of).
+    * Configures the groups claim issued in a user or OAuth 2.0 access token that the application expects. To set this attribute, use one of the following valid string values: None, SecurityGroup (for security groups and Azure AD roles), All (this gets all of the security groups, distribution groups, and Azure AD directory roles that the signed-in user is a member of).
     *
     * @return string|null The groupMembershipClaims
     */
@@ -345,7 +372,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the groupMembershipClaims
-    * Configures the groups claim issued in a user or OAuth 2.0 access token that the application expects. To set this attribute, use one of the following string values: None, SecurityGroup (for security groups and Azure AD roles), All (this gets all security groups, distribution groups, and Azure AD directory roles that the signed-in user is a member of).
+    * Configures the groups claim issued in a user or OAuth 2.0 access token that the application expects. To set this attribute, use one of the following valid string values: None, SecurityGroup (for security groups and Azure AD roles), All (this gets all of the security groups, distribution groups, and Azure AD directory roles that the signed-in user is a member of).
     *
     * @param string $val The groupMembershipClaims
     *
@@ -361,7 +388,7 @@ class Application extends DirectoryObject
     * Gets the identifierUris
     * Also known as App ID URI, this value is set when an application is used as a resource app. The identifierUris acts as the prefix for the scopes you'll reference in your API's code, and it must be globally unique. You can use the default value provided, which is in the form api://&amp;lt;application-client-id&amp;gt;, or specify a more readable URI like https://contoso.com/api. For more information on valid identifierUris patterns and best practices, see Azure AD application registration security best practices. Not nullable. Supports $filter (eq, ne, ge, le, startsWith).
     *
-    * @return string|null The identifierUris
+    * @return array|null The identifierUris
     */
     public function getIdentifierUris()
     {
@@ -376,7 +403,7 @@ class Application extends DirectoryObject
     * Sets the identifierUris
     * Also known as App ID URI, this value is set when an application is used as a resource app. The identifierUris acts as the prefix for the scopes you'll reference in your API's code, and it must be globally unique. You can use the default value provided, which is in the form api://&amp;lt;application-client-id&amp;gt;, or specify a more readable URI like https://contoso.com/api. For more information on valid identifierUris patterns and best practices, see Azure AD application registration security best practices. Not nullable. Supports $filter (eq, ne, ge, le, startsWith).
     *
-    * @param string $val The identifierUris
+    * @param string[] $val The identifierUris
     *
     * @return Application
     */
@@ -388,7 +415,7 @@ class Application extends DirectoryObject
 
     /**
     * Gets the info
-    * Basic profile information of the application, such as it's marketing, support, terms of service, and privacy statement URLs. The terms of service and privacy statement are surfaced to users through the user consent experience. For more information, see How to: Add Terms of service and privacy statement for registered Azure AD apps. Supports $filter (eq, ne, not, ge, le, and eq on null values).
+    * Basic profile information of the application such as  app's marketing, support, terms of service and privacy statement URLs. The terms of service and privacy statement are surfaced to users through the user consent experience. For more info, see How to: Add Terms of service and privacy statement for registered Azure AD apps. Supports $filter (eq, ne, not, ge, le, and eq on null values).
     *
     * @return InformationalUrl|null The info
     */
@@ -407,7 +434,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the info
-    * Basic profile information of the application, such as it's marketing, support, terms of service, and privacy statement URLs. The terms of service and privacy statement are surfaced to users through the user consent experience. For more information, see How to: Add Terms of service and privacy statement for registered Azure AD apps. Supports $filter (eq, ne, not, ge, le, and eq on null values).
+    * Basic profile information of the application such as  app's marketing, support, terms of service and privacy statement URLs. The terms of service and privacy statement are surfaced to users through the user consent experience. For more info, see How to: Add Terms of service and privacy statement for registered Azure AD apps. Supports $filter (eq, ne, not, ge, le, and eq on null values).
     *
     * @param InformationalUrl $val The info
     *
@@ -450,7 +477,7 @@ class Application extends DirectoryObject
 
     /**
     * Gets the isFallbackPublicClient
-    * Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false which means the fallback application type is confidential client such as a web app. There are certain scenarios where Azure AD cannot determine the client application type. For example, the ROPC flow where the application is configured without specifying a redirect URI. In those cases Azure AD interprets the application type based on the value of this property.
+    * Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false which means the fallback application type is confidential client such as a web app. There are certain scenarios where Azure AD cannot determine the client application type. For example, the ROPC flow where it is configured without specifying a redirect URI. In those cases Azure AD interprets the application type based on the value of this property.
     *
     * @return bool|null The isFallbackPublicClient
     */
@@ -465,7 +492,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the isFallbackPublicClient
-    * Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false which means the fallback application type is confidential client such as a web app. There are certain scenarios where Azure AD cannot determine the client application type. For example, the ROPC flow where the application is configured without specifying a redirect URI. In those cases Azure AD interprets the application type based on the value of this property.
+    * Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false which means the fallback application type is confidential client such as a web app. There are certain scenarios where Azure AD cannot determine the client application type. For example, the ROPC flow where it is configured without specifying a redirect URI. In those cases Azure AD interprets the application type based on the value of this property.
     *
     * @param bool $val The isFallbackPublicClient
     *
@@ -727,7 +754,7 @@ class Application extends DirectoryObject
 
     /**
     * Gets the publisherDomain
-    * The verified publisher domain for the application. Read-only. Supports $filter (eq, ne, ge, le, startsWith).
+    * The verified publisher domain for the application. Read-only. For more information, see How to: Configure an application's publisher domain. Supports $filter (eq, ne, ge, le, startsWith).
     *
     * @return string|null The publisherDomain
     */
@@ -742,7 +769,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the publisherDomain
-    * The verified publisher domain for the application. Read-only. Supports $filter (eq, ne, ge, le, startsWith).
+    * The verified publisher domain for the application. Read-only. For more information, see How to: Configure an application's publisher domain. Supports $filter (eq, ne, ge, le, startsWith).
     *
     * @param string $val The publisherDomain
     *
@@ -906,9 +933,9 @@ class Application extends DirectoryObject
 
     /**
     * Gets the tags
-    * Custom strings that can be used to categorize and identify the application. Not nullable.Supports $filter (eq, not, ge, le, startsWith).
+    * Custom strings that can be used to categorize and identify the application. Not nullable. Supports $filter (eq, not, ge, le, startsWith).
     *
-    * @return string|null The tags
+    * @return array|null The tags
     */
     public function getTags()
     {
@@ -921,9 +948,9 @@ class Application extends DirectoryObject
 
     /**
     * Sets the tags
-    * Custom strings that can be used to categorize and identify the application. Not nullable.Supports $filter (eq, not, ge, le, startsWith).
+    * Custom strings that can be used to categorize and identify the application. Not nullable. Supports $filter (eq, not, ge, le, startsWith).
     *
-    * @param string $val The tags
+    * @param string[] $val The tags
     *
     * @return Application
     */
@@ -1030,6 +1057,7 @@ class Application extends DirectoryObject
 
     /**
     * Gets the createdOnBehalfOf
+    * Supports $filter (eq when counting empty collections). Read-only.
     *
     * @return DirectoryObject|null The createdOnBehalfOf
     */
@@ -1048,6 +1076,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the createdOnBehalfOf
+    * Supports $filter (eq when counting empty collections). Read-only.
     *
     * @param DirectoryObject $val The createdOnBehalfOf
     *
@@ -1062,7 +1091,7 @@ class Application extends DirectoryObject
 
      /**
      * Gets the extensionProperties
-    * Read-only. Nullable. Supports $expand and $filter (eq when counting empty collections).
+    * Read-only. Nullable. Supports $expand and $filter (eq and ne when counting empty collections and only with advanced query parameters).
      *
      * @return array|null The extensionProperties
      */
@@ -1077,7 +1106,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the extensionProperties
-    * Read-only. Nullable. Supports $expand and $filter (eq when counting empty collections).
+    * Read-only. Nullable. Supports $expand and $filter (eq and ne when counting empty collections and only with advanced query parameters).
     *
     * @param ExtensionProperty[] $val The extensionProperties
     *
@@ -1092,7 +1121,7 @@ class Application extends DirectoryObject
 
      /**
      * Gets the federatedIdentityCredentials
-    * Federated identities for applications. Supports $expand and $filter (eq when counting empty collections).
+    * Federated identities for applications. Supports $expand and $filter (startsWith, and eq, ne when counting empty collections and only with advanced query parameters).
      *
      * @return array|null The federatedIdentityCredentials
      */
@@ -1107,7 +1136,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the federatedIdentityCredentials
-    * Federated identities for applications. Supports $expand and $filter (eq when counting empty collections).
+    * Federated identities for applications. Supports $expand and $filter (startsWith, and eq, ne when counting empty collections and only with advanced query parameters).
     *
     * @param FederatedIdentityCredential[] $val The federatedIdentityCredentials
     *
@@ -1150,7 +1179,7 @@ class Application extends DirectoryObject
 
      /**
      * Gets the owners
-    * Directory objects that are owners of the application. Read-only. Nullable. Supports $expand.
+    * Directory objects that are owners of the application. Read-only. Nullable. Supports $expand and $filter (eq when counting empty collections).
      *
      * @return array|null The owners
      */
@@ -1165,7 +1194,7 @@ class Application extends DirectoryObject
 
     /**
     * Sets the owners
-    * Directory objects that are owners of the application. Read-only. Nullable. Supports $expand.
+    * Directory objects that are owners of the application. Read-only. Nullable. Supports $expand and $filter (eq when counting empty collections).
     *
     * @param DirectoryObject[] $val The owners
     *
@@ -1208,7 +1237,6 @@ class Application extends DirectoryObject
 
      /**
      * Gets the tokenLifetimePolicies
-    * The tokenLifetimePolicies assigned to this application. Supports $expand.
      *
      * @return array|null The tokenLifetimePolicies
      */
@@ -1223,7 +1251,6 @@ class Application extends DirectoryObject
 
     /**
     * Sets the tokenLifetimePolicies
-    * The tokenLifetimePolicies assigned to this application. Supports $expand.
     *
     * @param TokenLifetimePolicy[] $val The tokenLifetimePolicies
     *

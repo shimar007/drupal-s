@@ -26,6 +26,36 @@ class ConditionalAccessRoot extends Entity
 {
 
      /**
+     * Gets the authenticationContextClassReferences
+    * Read-only. Nullable. Returns a collection of the specified authentication context class references.
+     *
+     * @return array|null The authenticationContextClassReferences
+     */
+    public function getAuthenticationContextClassReferences()
+    {
+        if (array_key_exists("authenticationContextClassReferences", $this->_propDict)) {
+           return $this->_propDict["authenticationContextClassReferences"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the authenticationContextClassReferences
+    * Read-only. Nullable. Returns a collection of the specified authentication context class references.
+    *
+    * @param AuthenticationContextClassReference[] $val The authenticationContextClassReferences
+    *
+    * @return ConditionalAccessRoot
+    */
+    public function setAuthenticationContextClassReferences($val)
+    {
+        $this->_propDict["authenticationContextClassReferences"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the namedLocations
     * Read-only. Nullable. Returns a collection of the specified named locations.
      *
@@ -57,7 +87,7 @@ class ConditionalAccessRoot extends Entity
 
      /**
      * Gets the policies
-    * Read-only. Nullable. Returns a collection of the specified Conditional Access policies.
+    * Read-only. Nullable. Returns a collection of the specified Conditional Access (CA) policies.
      *
      * @return array|null The policies
      */
@@ -72,7 +102,7 @@ class ConditionalAccessRoot extends Entity
 
     /**
     * Sets the policies
-    * Read-only. Nullable. Returns a collection of the specified Conditional Access policies.
+    * Read-only. Nullable. Returns a collection of the specified Conditional Access (CA) policies.
     *
     * @param ConditionalAccessPolicy[] $val The policies
     *
@@ -81,6 +111,36 @@ class ConditionalAccessRoot extends Entity
     public function setPolicies($val)
     {
         $this->_propDict["policies"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the templates
+    * Read-only. Nullable. Returns a collection of the specified Conditional Access templates.
+     *
+     * @return array|null The templates
+     */
+    public function getTemplates()
+    {
+        if (array_key_exists("templates", $this->_propDict)) {
+           return $this->_propDict["templates"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the templates
+    * Read-only. Nullable. Returns a collection of the specified Conditional Access templates.
+    *
+    * @param ConditionalAccessTemplate[] $val The templates
+    *
+    * @return ConditionalAccessRoot
+    */
+    public function setTemplates($val)
+    {
+        $this->_propDict["templates"] = $val;
         return $this;
     }
 

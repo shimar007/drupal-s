@@ -22,7 +22,7 @@ namespace Beta\Microsoft\Graph\Model;
 * @license   https://opensource.org/licenses/MIT MIT License
 * @link      https://graph.microsoft.com
 */
-class GroupPolicyPresentationComboBox extends GroupPolicyPresentation
+class GroupPolicyPresentationComboBox extends GroupPolicyUploadedPresentation
 {
     /**
     * Gets the defaultValue
@@ -115,7 +115,7 @@ class GroupPolicyPresentationComboBox extends GroupPolicyPresentation
     * Gets the suggestions
     * Localized strings listed in the drop-down list of the combo box. The default value is empty.
     *
-    * @return string|null The suggestions
+    * @return array|null The suggestions
     */
     public function getSuggestions()
     {
@@ -130,7 +130,7 @@ class GroupPolicyPresentationComboBox extends GroupPolicyPresentation
     * Sets the suggestions
     * Localized strings listed in the drop-down list of the combo box. The default value is empty.
     *
-    * @param string $val The suggestions
+    * @param string[] $val The suggestions
     *
     * @return GroupPolicyPresentationComboBox
     */

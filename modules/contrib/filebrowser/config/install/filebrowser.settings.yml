@@ -14,6 +14,7 @@ filebrowser:
     allow_overwrite: 0
     accepted: 'jpg jpeg png gif svg txt doc docx pdf mp3'
   presentation:
+    overwrite_breadcrumb: 1
     default_view: 'list-view'
     encoding: 'UTF-8'
     hide_extension: 0

@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser;
 
+use Drupal\Core\Site\Settings;
 use Drupal\filebrowser\Services\Common;
 use Drupal\node\NodeInterface;
 
@@ -72,15 +73,28 @@ class ServerFileList {
     $guessor = \Drupal::service('file.mime_type.guesser');
 
     foreach ($files as $key => $file) {
-
-      $file->url = file_create_url($file->uri);
+      $file->url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->uri);
       // Complete the required file data
-
       $file->mimetype = $guessor->guess($file->filename);
-
-      $file->size = filesize($file->uri);
-      $file->type = filetype($file->uri);
-      $file->timestamp = filectime($file->uri);
+      $symlink = FALSE;
+      if (stripos($directory, 'private:') >= 0 ) {
+        $private_path = Settings::get('file_private_path');
+        $file_full_path = str_replace('private://', '', $file->uri);
+        $file_full_path = $private_path . '/' . $file_full_path;
+        if (is_link($file_full_path)) {
+          $symlink = TRUE;
+        }
+      }
+      if ($symlink) {
+        $file->size = 0;
+        $file->type = "dir";
+        $file->timestamp = time();
+      }
+      else {
+        $file->size = filesize($file->uri);
+        $file->type = filetype($file->uri);
+        $file->timestamp = filectime($file->uri);
+      }
 
       if (
         // filter whitelist and blacklist

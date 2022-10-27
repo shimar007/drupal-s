@@ -26,9 +26,8 @@ class AudioRoutingGroup extends Entity
 {
     /**
     * Gets the receivers
-    * List of receiving participant ids.
     *
-    * @return string|null The receivers
+    * @return array|null The receivers
     */
     public function getReceivers()
     {
@@ -41,9 +40,8 @@ class AudioRoutingGroup extends Entity
 
     /**
     * Sets the receivers
-    * List of receiving participant ids.
     *
-    * @param string $val The receivers
+    * @param string[] $val The receivers
     *
     * @return AudioRoutingGroup
     */
@@ -55,7 +53,6 @@ class AudioRoutingGroup extends Entity
 
     /**
     * Gets the routingMode
-    * Routing group mode.  Possible values are: oneToOne, multicast.
     *
     * @return RoutingMode|null The routingMode
     */
@@ -74,7 +71,6 @@ class AudioRoutingGroup extends Entity
 
     /**
     * Sets the routingMode
-    * Routing group mode.  Possible values are: oneToOne, multicast.
     *
     * @param RoutingMode $val The routingMode
     *
@@ -88,9 +84,8 @@ class AudioRoutingGroup extends Entity
 
     /**
     * Gets the sources
-    * List of source participant ids.
     *
-    * @return string|null The sources
+    * @return array|null The sources
     */
     public function getSources()
     {
@@ -103,9 +98,8 @@ class AudioRoutingGroup extends Entity
 
     /**
     * Sets the sources
-    * List of source participant ids.
     *
-    * @param string $val The sources
+    * @param string[] $val The sources
     *
     * @return AudioRoutingGroup
     */

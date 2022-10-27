@@ -369,7 +369,6 @@ class Team extends Entity
 
     /**
     * Gets the summary
-    * Contains summary information about the team, including number of owners, members, and guests.
     *
     * @return TeamSummary|null The summary
     */
@@ -388,7 +387,6 @@ class Team extends Entity
 
     /**
     * Sets the summary
-    * Contains summary information about the team, including number of owners, members, and guests.
     *
     * @param TeamSummary $val The summary
     *
@@ -704,7 +702,7 @@ class Team extends Entity
 
     /**
     * Gets the photo
-    * The team photo.
+    * The profile photo for the team.
     *
     * @return ProfilePhoto|null The photo
     */
@@ -723,7 +721,7 @@ class Team extends Entity
 
     /**
     * Sets the photo
-    * The team photo.
+    * The profile photo for the team.
     *
     * @param ProfilePhoto $val The photo
     *
@@ -765,6 +763,36 @@ class Team extends Entity
     public function setPrimaryChannel($val)
     {
         $this->_propDict["primaryChannel"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the tags
+    * The tags associated with the team.
+     *
+     * @return array|null The tags
+     */
+    public function getTags()
+    {
+        if (array_key_exists("tags", $this->_propDict)) {
+           return $this->_propDict["tags"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the tags
+    * The tags associated with the team.
+    *
+    * @param TeamworkTag[] $val The tags
+    *
+    * @return Team
+    */
+    public function setTags($val)
+    {
+        $this->_propDict["tags"] = $val;
         return $this;
     }
 

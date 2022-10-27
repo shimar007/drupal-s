@@ -26,9 +26,8 @@ class OutlookItem extends Entity
 {
     /**
     * Gets the categories
-    * The categories associated with the item
     *
-    * @return string|null The categories
+    * @return array|null The categories
     */
     public function getCategories()
     {
@@ -41,9 +40,8 @@ class OutlookItem extends Entity
 
     /**
     * Sets the categories
-    * The categories associated with the item
     *
-    * @param string $val The categories
+    * @param string[] $val The categories
     *
     * @return OutlookItem
     */
@@ -55,7 +53,6 @@ class OutlookItem extends Entity
 
     /**
     * Gets the changeKey
-    * Identifies the version of the item. Every time the item is changed, changeKey changes as well. This allows Exchange to apply changes to the correct version of the object. Read-only.
     *
     * @return string|null The changeKey
     */
@@ -70,7 +67,6 @@ class OutlookItem extends Entity
 
     /**
     * Sets the changeKey
-    * Identifies the version of the item. Every time the item is changed, changeKey changes as well. This allows Exchange to apply changes to the correct version of the object. Read-only.
     *
     * @param string $val The changeKey
     *

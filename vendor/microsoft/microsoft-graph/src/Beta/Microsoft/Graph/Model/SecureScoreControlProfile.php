@@ -260,7 +260,6 @@ class SecureScoreControlProfile extends Entity
 
     /**
     * Gets the lastModifiedDateTime
-    * Time at which the control profile entity was last modified. The Timestamp type represents date and time
     *
     * @return \DateTime|null The lastModifiedDateTime
     */
@@ -279,7 +278,6 @@ class SecureScoreControlProfile extends Entity
 
     /**
     * Sets the lastModifiedDateTime
-    * Time at which the control profile entity was last modified. The Timestamp type represents date and time
     *
     * @param \DateTime $val The lastModifiedDateTime
     *
@@ -440,7 +438,7 @@ class SecureScoreControlProfile extends Entity
     * Gets the threats
     * List of threats the control mitigates (accountBreach,dataDeletion,dataExfiltration,dataSpillage,elevationOfPrivilege,maliciousInsider,passwordCracking,phishingOrWhaling,spoofing).
     *
-    * @return string|null The threats
+    * @return array|null The threats
     */
     public function getThreats()
     {
@@ -455,7 +453,7 @@ class SecureScoreControlProfile extends Entity
     * Sets the threats
     * List of threats the control mitigates (accountBreach,dataDeletion,dataExfiltration,dataSpillage,elevationOfPrivilege,maliciousInsider,passwordCracking,phishingOrWhaling,spoofing).
     *
-    * @param string $val The threats
+    * @param string[] $val The threats
     *
     * @return SecureScoreControlProfile
     */

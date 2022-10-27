@@ -57,7 +57,7 @@ class Store extends \Microsoft\Graph\Model\Entity
     * Gets the languageTags
     * List of languages for the term store.
     *
-    * @return string|null The languageTags
+    * @return array|null The languageTags
     */
     public function getLanguageTags()
     {
@@ -72,7 +72,7 @@ class Store extends \Microsoft\Graph\Model\Entity
     * Sets the languageTags
     * List of languages for the term store.
     *
-    * @param string $val The languageTags
+    * @param string[] $val The languageTags
     *
     * @return Store
     */
@@ -115,7 +115,7 @@ class Store extends \Microsoft\Graph\Model\Entity
 
      /**
      * Gets the sets
-    * Collection of all sets available in the term store.
+    * Collection of all sets available in the term store. This relationship can only be used to load a specific term set.
      *
      * @return array|null The sets
      */
@@ -130,7 +130,7 @@ class Store extends \Microsoft\Graph\Model\Entity
 
     /**
     * Sets the sets
-    * Collection of all sets available in the term store.
+    * Collection of all sets available in the term store. This relationship can only be used to load a specific term set.
     *
     * @param Set[] $val The sets
     *

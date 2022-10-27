@@ -70,6 +70,12 @@ views.filter_value.geofield_proximity_filter:
       type: string
     units:
       type: string
+    min:
+      type: integer
+    max:
+      type: integer
+    value:
+      type: integer
     source:
       type: string
     source_configuration:
@@ -81,6 +87,16 @@ views.filter_value.geofield_proximity_filter:
 views.sort.geofield_proximity_sort:
   type: views_sort
   label: 'Geofield Proximity Sort'
+  mapping:
+    units:
+      type: string
+    source:
+      type: string
+    source_configuration:
+      type: mapping
+      mapping:
+        source_proximity_filter:
+          type: string
 
 views.argument.geofield_proximity_argument:
   type: views_argument

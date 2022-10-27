@@ -57,7 +57,7 @@ class Fido2AuthenticationMethod extends AuthenticationMethod
     * Gets the attestationCertificates
     * The attestation certificate(s) attached to this security key.
     *
-    * @return string|null The attestationCertificates
+    * @return array|null The attestationCertificates
     */
     public function getAttestationCertificates()
     {
@@ -72,7 +72,7 @@ class Fido2AuthenticationMethod extends AuthenticationMethod
     * Sets the attestationCertificates
     * The attestation certificate(s) attached to this security key.
     *
-    * @param string $val The attestationCertificates
+    * @param string[] $val The attestationCertificates
     *
     * @return Fido2AuthenticationMethod
     */
@@ -84,7 +84,7 @@ class Fido2AuthenticationMethod extends AuthenticationMethod
 
     /**
     * Gets the attestationLevel
-    * The attestation level of this FIDO2 security key. Possible values are: attested, notAttested, unknownFutureValue.
+    * The attestation level of this FIDO2 security key. Possible values are: attested, or notAttested.
     *
     * @return AttestationLevel|null The attestationLevel
     */
@@ -103,7 +103,7 @@ class Fido2AuthenticationMethod extends AuthenticationMethod
 
     /**
     * Sets the attestationLevel
-    * The attestation level of this FIDO2 security key. Possible values are: attested, notAttested, unknownFutureValue.
+    * The attestation level of this FIDO2 security key. Possible values are: attested, or notAttested.
     *
     * @param AttestationLevel $val The attestationLevel
     *
