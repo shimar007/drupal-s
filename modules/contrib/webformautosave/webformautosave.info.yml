@@ -1,14 +1,13 @@
 name: 'Webform Autosave'
 type: module
 description: 'This module allows for an auto-saving and optimistic locking on webform submissions'
-core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8.8 || ^9 || ^10
 package: 'Webform'
 dependencies:
   - webform:webform
   - webform:webform_submission_log
 
-# Information added by Drupal.org packaging script on 2021-06-25
-version: '8.x-1.0-rc3'
+# Information added by Drupal.org packaging script on 2022-10-21
+version: '2.0.0-rc2'
 project: 'webformautosave'
-datestamp: 1624639943
+datestamp: 1666385245

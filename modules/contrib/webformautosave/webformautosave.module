@@ -69,18 +69,26 @@ function webformautosave_webform_submission_form_alter(array &$form, FormStateIn
   /** @var \Drupal\webform\WebformSubmissionInterface $webform_submission */
   $webform_submission = $form_object->getEntity();
   $webform = $webform_submission->getWebform();
-  // Get webform auto-save settings.
-  $autosave_enabled = $webform->getThirdPartySetting('webformautosave', 'auto_save');
-  $autosave_time = $webform->getThirdPartySetting('webformautosave', 'auto_save_time');
-  $optimistic_locking = $webform->getThirdPartySetting('webformautosave', 'optimistic_locking');
   /** @var \Drupal\webformautosave\AutosaveHelper $autosave_helper */
   $autosave_helper = Drupal::service('webformautosave.helper');
+  // Check to see if autosave is enabled.
+  try {
+    $autosave_enabled = $autosave_helper->enableAutosave($webform, $webform_submission);
+  }
+  catch (\Exception $e) {
+    $autosave_enabled = FALSE;
+  }
+  // Get the autosave settings.
+  $autosave_time = $webform->getThirdPartySetting('webformautosave', 'auto_save_time');
+  $optimistic_locking = $webform->getThirdPartySetting('webformautosave', 'optimistic_locking');
 
-  // Auto create draft if purging is enabled and it has not been created yet.
+  // Auto create draft if purging is enabled, and it has not been created yet.
   $draft_enabled = ($webform->getSetting('draft') === WebformInterface::DRAFT_AUTHENTICATED && Drupal::currentUser()->isAuthenticated())
     || $webform->getSetting('draft') === WebformInterface::DRAFT_ALL;
   $purge_enabled = $webform->getSetting('purge') === WebformSubmissionStorageInterface::PURGE_DRAFT
     || $webform->getSetting('purge') === WebformSubmissionStorageInterface::PURGE_ALL;
+
+  // Save an initial draft to use.
   if ($webform_submission->isNew() && $autosave_enabled && $draft_enabled && $purge_enabled) {
     $webform_submission->set('in_draft', TRUE);
     $webform_submission->save();
@@ -147,7 +155,7 @@ function webformautosave_webform_submission_form_alter(array &$form, FormStateIn
     if ($log = $autosave_helper->getCurrentSubmissionLog($webform_submission)) {
       $form_state->set('optimistic_timestamp_' . $webform_submission->getToken(), $log->timestamp);
     }
-    $form['#validate'][] = 'optimistic_locking_validate';
+    $form['#validate'][] = 'webformautosave_optimistic_locking_validate';
   }
 }
 
@@ -167,7 +175,7 @@ function webformautosave_ajax_handler(array &$form, FormStateInterface $form_sta
  * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   A form_state for the form we are validating.
  */
-function optimistic_locking_validate(array $form, FormStateInterface $form_state) {
+function webformautosave_optimistic_locking_validate(array $form, FormStateInterface $form_state) {
   // Load the submission.
   /** @var \Drupal\webform\WebformSubmissionForm $form_object */
   $form_object = $form_state->getFormObject();

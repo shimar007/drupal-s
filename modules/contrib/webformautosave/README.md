@@ -5,8 +5,8 @@ Webform Navigation
 
 The goal of this module is to make it possible to automatically save a draft of 
 a webform whenever a jQuery change event is detected on an input or select 
-element on the form. The module uses jQuery to detect the load and change events and fire 
-AJAX calls to each of these endpoints appropriately.
+element on the form. The module uses jQuery to detect the load and change events 
+and fire AJAX calls to each of these endpoints appropriately.
 
 ### Configuration
 

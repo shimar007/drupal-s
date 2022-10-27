@@ -3,6 +3,9 @@
 namespace Drupal\webformautosave;
 
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
 use Drupal\webform_submission_log\WebformSubmissionLogManager;
 
@@ -22,13 +25,33 @@ class AutosaveHelper {
   protected $webformSubmissionLogManager;
 
   /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * AutosaveHelper constructor.
    *
    * @param \Drupal\webform_submission_log\WebformSubmissionLogManager $webform_submission_log_manager
    *   The webform_submission log manager.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The current user.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(WebformSubmissionLogManager $webform_submission_log_manager) {
+  public function __construct(WebformSubmissionLogManager $webform_submission_log_manager, AccountInterface $current_user, EntityTypeManagerInterface $entity_type_manager) {
     $this->webformSubmissionLogManager = $webform_submission_log_manager;
+    $this->currentUser = $current_user;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -125,6 +148,146 @@ class AutosaveHelper {
       return key($elements);
     }
     return FALSE;
+  }
+
+  /**
+   * Checks to see if we should prevent autosave.
+   *
+   * @param \Drupal\webform\WebformInterface $webform
+   *   A webform.
+   * @param \Drupal\webform\WebformSubmissionInterface $webform_submission
+   *   The webform submission in question.
+   *
+   * @return bool
+   *   True if autosave should be enabled.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function enableAutosave(WebformInterface $webform, WebformSubmissionInterface $webform_submission) {
+    // Return false if autosave is not enabled.
+    if (empty($webform->getThirdPartySetting('webformautosave', 'auto_save'))) {
+      return FALSE;
+    }
+
+    // Return FALSE if the user has hit their limit of submissions.
+    if ($this->checkTotalLimit($webform, $webform_submission)) {
+      return FALSE;
+    }
+
+    // Return FALSE if the user has reached their entity limit.
+    if ($this->checkUserLimit($webform_submission)) {
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * Check webform submission total limits.
+   *
+   * @param \Drupal\webform\WebformInterface $webform
+   *   The webform.
+   * @param \Drupal\webform\WebformSubmissionInterface $webform_submission
+   *   The webform submission.
+   *
+   * @return bool
+   *   TRUE if webform submission total limit have been met.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function checkTotalLimit(WebformInterface $webform, WebformSubmissionInterface $webform_submission) {
+    /** @var \Drupal\webform\WebformSubmissionStorageInterface $webform_submission_storage */
+    $webform_submission_storage = $this->entityTypeManager->getStorage('webform_submission');
+    // Get limit total to unique submission per webform/source entity.
+    $limit_total_unique = $webform->getSetting('limit_total_unique');
+
+    // Check per source entity total limit.
+    $entity_limit_total = $webform->getSetting('entity_limit_total');
+    $entity_limit_total_interval = $webform->getSetting('entity_limit_total_interval');
+    if ($limit_total_unique) {
+      $entity_limit_total = 1;
+      $entity_limit_total_interval = NULL;
+    }
+    if ($entity_limit_total && ($source_entity = $this->getLimitSourceEntity($webform_submission))) {
+      if ($webform_submission_storage->getTotal($webform, $source_entity, NULL, ['interval' => $entity_limit_total_interval]) >= $entity_limit_total) {
+        return TRUE;
+      }
+    }
+
+    // Check total limit.
+    $limit_total = $webform->getSetting('limit_total');
+    $limit_total_interval = $webform->getSetting('limit_total_interval');
+    if ($limit_total_unique) {
+      $limit_total = 1;
+      $limit_total_interval = NULL;
+    }
+    if ($limit_total && $webform_submission_storage->getTotal($webform, NULL, NULL, ['interval' => $limit_total_interval]) >= $limit_total) {
+      return TRUE;
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Check webform submission user limit.
+   *
+   * @param \Drupal\webform\WebformSubmissionInterface $webform_submission
+   *   The webform submission.
+   *
+   * @return bool
+   *   TRUE if webform submission user limit have been met.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function checkUserLimit(WebformSubmissionInterface $webform_submission) {
+    // Allow anonymous and authenticated users edit own submission.
+    if ($webform_submission->id() && $webform_submission->isOwner($this->currentUser)) {
+      return FALSE;
+    }
+
+    /** @var \Drupal\webform\WebformSubmissionStorageInterface $webform_submission_storage */
+    $webform_submission_storage = $this->entityTypeManager->getStorage('webform_submission');
+
+    // Get the submission owner and not current user.
+    // This takes into account when an API submission changes the owner id.
+    // @see \Drupal\webform\WebformSubmissionForm::submitFormValues
+    $account = $webform_submission->getOwner();
+    $webform = $webform_submission->getWebform();
+
+    // Check per source entity user limit.
+    $entity_limit_user = $webform->getSetting('entity_limit_user');
+    $entity_limit_user_interval = $webform->getSetting('entity_limit_user_interval');
+    if ($entity_limit_user && ($source_entity = $this->getLimitSourceEntity($webform_submission))) {
+      if ($webform_submission_storage->getTotal($webform, $source_entity, $account, ['interval' => $entity_limit_user_interval]) >= $entity_limit_user) {
+        return TRUE;
+      }
+    }
+
+    // Check user limit.
+    $limit_user = $webform->getSetting('limit_user');
+    $limit_user_interval = $webform->getSetting('limit_user_interval');
+    if ($limit_user && $webform_submission_storage->getTotal($webform, NULL, $account, ['interval' => $limit_user_interval]) >= $limit_user) {
+      return TRUE;
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Get source entity for use with entity limit total and user submissions.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *   The webform submission's source entity.
+   */
+  protected function getLimitSourceEntity(WebformSubmissionInterface $webform_submission) {
+    $source_entity = $webform_submission->getSourceEntity();
+    if ($source_entity && $source_entity->getEntityTypeId() !== 'webform') {
+      return $source_entity;
+    }
+    return NULL;
   }
 
 }

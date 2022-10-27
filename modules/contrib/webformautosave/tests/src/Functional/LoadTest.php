@@ -5,7 +5,7 @@ namespace Drupal\Tests\webformautosave\Functional;
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * Simple test to ensure that main page loads with module enabled.
+ * Simple test to ensure that pages load with module enabled.
  *
  * @group webformautosave
  */
@@ -19,9 +19,8 @@ class LoadTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
-    'dblog',
-    'rest',
+  protected static $modules = [
+    'node',
     'webform',
     'webform_submission_log',
     'webformautosave',
@@ -32,24 +31,23 @@ class LoadTest extends BrowserTestBase {
    *
    * @var \Drupal\user\UserInterface
    */
-  protected $user;
+  protected $adminUser;
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
-    $this->user = $this->drupalCreateUser(['access administration pages']);
+    $this->adminUser = $this->drupalCreateUser(['access administration pages']);
   }
 
   /**
-   * Tests that the home page loads with a 200 response.
+   * Tests that the admin page loads.
    */
-  public function testLoad() {
-    $this->drupalLogin($this->user);
+  public function testAdmin() {
+    $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin');
-    $this->assertSession()
-      ->elementExists('xpath', '//h1[text() = "Administration"]');
+    $this->assertSession()->elementExists('xpath', '//h1[text() = "Administration"]');
   }
 
 }
