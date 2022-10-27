@@ -509,12 +509,11 @@ class WebformSubmission extends ContentEntityBase implements WebformSubmissionIn
    * {@inheritdoc}
    */
   public function getWebform() {
-    if (isset($this->webform_id->entity)) {
-      return $this->webform_id->entity;
+    $webform = static::$webform;
+    if (!$webform && isset($this->webform_id->entity)) {
+      $webform = $this->webform_id->entity;
     }
-    else {
-      return static::$webform;
-    }
+    return $webform;
   }
 
   /**

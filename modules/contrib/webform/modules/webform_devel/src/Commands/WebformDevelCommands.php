@@ -61,7 +61,7 @@ class WebformDevelCommands extends DrushCommands {
    * @aliases wfdcu,webform-devel-reset
    */
   public function develConfigUpdate() {
-    module_load_include('inc', 'webform', 'includes/webform.install');
+    \Drupal::moduleHandler()->loadInclude('webform', 'inc', 'includes/webform.install');
 
     $files = $this->fileSystem->scanDirectory(__DIR__ . '/../../../../', '/^webform\.webform\..*\.yml$/');
     $total = 0;

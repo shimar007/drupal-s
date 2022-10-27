@@ -106,7 +106,7 @@ class WebformDevelCommands extends WebformCommandsBase {
       throw new UserAbortException();
     }
 
-    module_load_include('install', 'webform');
+    $this->moduleHandler->loadInclude('webform', 'install');
 
     $this->output()->writeln(dt('Repairing webform submission storage schema…'));
     _webform_update_webform_submission_storage_schema();
@@ -128,7 +128,7 @@ class WebformDevelCommands extends WebformCommandsBase {
 
     if ($this->moduleHandler->moduleExists('webform_entity_print')) {
       $this->output()->writeln(dt('Repairing webform entity print settings…'));
-      module_load_include('install', 'webform_entity_print');
+      $this->moduleHandler->loadInclude('webform_entity_print', 'install');
       webform_entity_print_install();
     }
 

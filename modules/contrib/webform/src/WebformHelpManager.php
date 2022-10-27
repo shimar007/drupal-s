@@ -526,6 +526,10 @@ class WebformHelpManager implements WebformHelpManagerInterface {
    * {@inheritdoc}
    */
   public function buildAddOns($docs = FALSE) {
+    $t_args = [
+      ':href_submodules' => 'https://www.drupal.org/docs/contributed-modules/webform/webform-sub-modules',
+      ':href_libraries' => 'https://www.drupal.org/docs/contributed-modules/webform/webform-libraries',
+    ];
     $build = [
       'quote' => [
         '#markup' => '<table class="views-view-grid" width="100%"><tr>
@@ -535,9 +539,13 @@ class WebformHelpManager implements WebformHelpManagerInterface {
         '#allowed_tags' => Xss::getAdminTagList(),
       ],
       'content' => [
-        '#markup' => '<p>' . $this->t("Below is a list of modules and projects that extend and/or provide additional functionality to the Webform module and Drupal's Form API.") . '</p>' .
-          '<hr/>' .
-          '<p>★ = ' . $this->t('Recommended') . '</p>',
+        '#markup' => '<p>'
+        . $this->t("Below is a list of modules and projects that extend and/or provide additional functionality to the Webform module and Drupal's Form API.")
+        . ' '
+        . $this->t('(Other optional functionality is provided by <a href=":href_submodules">Webform sub-modules</a> and <a href=":href_libraries">Webform libraries</a>.)', $t_args)
+        . '</p>'
+        . '<hr/>'
+        . '<p>★ = ' . $this->t('Recommended') . '</p>',
       ],
     ];
 

@@ -3,6 +3,7 @@
 namespace Drupal\webform\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Mail\MailFormatHelper;
 use Drupal\webform\Utility\WebformObjectHelper;
 use Drupal\webform\WebformLibrariesManagerInterface;
@@ -31,6 +32,13 @@ class WebformLibrariesCommands extends WebformCommandsBase {
   protected $librariesManager;
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * Constructs WebformLibrariesCommand.
    *
    * @param \GuzzleHttp\ClientInterface $http_client
@@ -38,10 +46,11 @@ class WebformLibrariesCommands extends WebformCommandsBase {
    * @param \Drupal\webform\WebformLibrariesManagerInterface $libraries_manager
    *   The webform libraries manager.
    */
-  public function __construct(ClientInterface $http_client, WebformLibrariesManagerInterface $libraries_manager) {
+  public function __construct(ClientInterface $http_client, WebformLibrariesManagerInterface $libraries_manager, ModuleHandlerInterface $module_handler) {
     parent::__construct();
     $this->httpClient = $http_client;
     $this->librariesManager = $libraries_manager;
+    $this->moduleHandler = $module_handler;
   }
 
   /* ************************************************************************ */
@@ -59,7 +68,7 @@ class WebformLibrariesCommands extends WebformCommandsBase {
    * @aliases wfls,webform-libraries-status
    */
   public function librariesStatus() {
-    module_load_include('install', 'webform');
+    $this->moduleHandler->loadInclude('webform', 'install');
 
     $requirements = $this->librariesManager->requirements();
     $description = $requirements['webform_libraries']['description'];
@@ -484,6 +493,7 @@ class WebformLibrariesCommands extends WebformCommandsBase {
             'url' => $dist_url,
             'type' => $dist_type,
           ],
+          'license' => $library['license'] ?: 'N/A',
         ],
       ];
 

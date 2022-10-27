@@ -6,7 +6,7 @@ services:
       - { name: drush.command }
   webform.libraries.commands:
     class: \Drupal\webform\Commands\WebformLibrariesCommands
-    arguments: ['@http_client', '@webform.libraries_manager']
+    arguments: ['@http_client', '@webform.libraries_manager', '@module_handler']
     tags:
       - { name: drush.command }
   webform.utilities.commands:

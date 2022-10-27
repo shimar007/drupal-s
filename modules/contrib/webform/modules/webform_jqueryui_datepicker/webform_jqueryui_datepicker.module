@@ -165,7 +165,7 @@ function webform_jqueryui_datepicker_webform_element_alter(array &$element, Form
     // Display datepicker button.
     if (!empty($element['#datepicker_button']) || !empty($element['#date_date_datepicker_button'])) {
       $element['#attributes']['data-datepicker-button'] = TRUE;
-      $button_image = base_path() . \Drupal::service('extension.list.module')->getPath('webform') . '/images/elements/date-calendar.png';
+      $button_image = base_path() . \Drupal::service('extension.list.module')->getPath('webform_jqueryui_datepicker') . '/images/elements/date-calendar.png';
       $element['#attached']['drupalSettings']['webform']['datePicker']['buttonImage'] = $button_image;
     }
   }

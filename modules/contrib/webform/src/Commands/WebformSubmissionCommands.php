@@ -161,10 +161,11 @@ class WebformSubmissionCommands extends WebformCommandsBase {
     // Convert dashes to underscores.
     foreach ($export_options as $key => $value) {
       unset($export_options[$key]);
+      $key = str_replace('-', '_', $key);
       if (isset($default_options[$key]) && is_array($default_options[$key])) {
         $value = explode(',', $value);
       }
-      $export_options[str_replace('-', '_', $key)] = $value;
+      $export_options[$key] = $value;
     }
     $export_options += $submission_exporter->getDefaultExportOptions();
     $submission_exporter->setExporter($export_options);
@@ -351,7 +352,7 @@ class WebformSubmissionCommands extends WebformCommandsBase {
 
     if (!$webform) {
       $submission_total = $submission_storage->getQuery()->count()->accessCheck(FALSE)->execute();
-      $form_total = $webform_storage->getQuery()->count()->execute();
+      $form_total = $webform_storage->getQuery()->count()->accessCheck(FALSE)->execute();
 
       $t_args = [
         '@submission_total' => $submission_total,

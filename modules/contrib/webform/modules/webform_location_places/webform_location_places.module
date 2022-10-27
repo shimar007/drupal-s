@@ -25,6 +25,7 @@ function webform_location_places_webform_libraries_info() {
     'download_url' => Url::fromUri('https://registry.npmjs.org/places.js/-/places.js-1.19.0.tgz'),
     'version' => '1.19.0',
     'elements' => ['webform_location_places'],
+    'license' => 'MIT',
   ];
   return $libraries;
 }

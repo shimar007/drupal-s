@@ -6,7 +6,6 @@ use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
-use Drupal\Core\Url as UrlGenerator;
 use Drupal\webform\Element\WebformAjaxElementTrait;
 use Drupal\webform\Element\WebformEntityTrait;
 use Drupal\webform\Entity\WebformSubmission;
@@ -20,6 +19,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 trait WebformEntityReferenceTrait {
 
   use WebformAjaxElementTrait;
+  use WebformEntityTrait {
+    setOptions as WebformEntityTraitSetOptions;
+  }
 
   /**
    * The entity repository.
@@ -109,7 +111,7 @@ trait WebformEntityReferenceTrait {
                 return [
                   '#type' => 'link',
                   '#title' => $entity->label(),
-                  '#url' => UrlGenerator::fromUri(file_create_url($entity->getFileUri())),
+                  '#url' => \Drupal::service('file_url_generator')->generate($entity->getFileUri()),
                 ];
               }
               else {
@@ -392,7 +394,7 @@ trait WebformEntityReferenceTrait {
       $this->replaceTokens($element, $settings['webform_submission']);
     }
 
-    WebformEntityTrait::setOptions($element, $settings);
+    $this->WebformEntityTraitSetOptions($element, $settings);
 
     // Set options all after entity options are defined.
     if (!empty($element['#options_all'])) {

@@ -18,14 +18,12 @@ class WebformServiceProvider extends ServiceProviderBase {
    */
   public function alter(ContainerBuilder $container) {
     $modules = $container->getParameter('container.modules');
-    // Hal module is enabled, add our new normalizer for webform items.
-    // Core 8.3 and above use hal module https://www.drupal.org/node/2830467.
-    $manager = isset($modules['hal']) ? 'hal.link_manager' : 'rest.link_manager';
-    if ($container->has($manager)) {
+    if (isset($modules['hal'])) {
       $service_definition = new Definition(WebformEntityReferenceItemNormalizer::class, [
-        new Reference($manager),
+        new Reference('hal.link_manager'),
         new Reference('serializer.entity_resolver'),
       ]);
+      $service_definition->setPublic(TRUE);
       // The priority must be higher than that of
       // serializer.normalizer.entity_reference_item.hal in
       // hal.services.yml.

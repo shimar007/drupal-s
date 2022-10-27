@@ -137,6 +137,13 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
+    $form['page_settings']['default_page'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Allow users to post submissions from a dedicated URL for all webform'),
+      '#description' => $this->t('If unchecked, all webform must added to your website using a node, block, or paragraph.'),
+      '#return_value' => TRUE,
+      '#default_value' => $settings['default_page'],
+    ];
     $form['page_settings']['default_page_base_path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Default base path for webform URLs'),
