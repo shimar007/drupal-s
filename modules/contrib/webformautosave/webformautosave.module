@@ -171,9 +171,9 @@ function webformautosave_ajax_handler(array &$form, FormStateInterface $form_sta
  * Validation handler for forms with optimistic locking enabled.
  *
  * @param array $form
- *   The form we are validating.
+ *   An associative array containing the structure of the form.
  * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   A form_state for the form we are validating.
+ *   The current state of the form.
  */
 function webformautosave_optimistic_locking_validate(array $form, FormStateInterface $form_state) {
   // Load the submission.

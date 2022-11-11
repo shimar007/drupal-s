@@ -2,25 +2,26 @@
  * @file
  * Webform Autosave behaviors.
  */
-(function ($, Drupal, drupalSettings) {
-  'use strict';
 
+// eslint-disable-next-line func-names
+(function ($, Drupal, drupalSettings) {
   // Set our primary store.
-  const store = Object.assign(
-    {}, {
-      csrfToken: null,
-      activeClass: 'active',
-      focusedElement: null,
-      webform: null,
-      submit: null
-    },
-    drupalSettings.webformautosave
-  );
+  const store = {
+    csrfToken: null,
+    activeClass: 'active',
+    focusedElement: null,
+    webform: null,
+    submit: null,
+    ...drupalSettings.webformautosave,
+  };
 
   /**
    * The handler that triggers after ajax is complete.
+   *
+   * @return {Boolean}
+   *   True if the element already has the active class.
    */
-  const ajaxCompleteHandler = function () {
+  function ajaxCompleteHandler() {
     // Get outta here if we didn't trigger the ajax.
     if (!$(store.submit).hasClass(store.activeClass)) {
       return true;
@@ -29,14 +30,17 @@
     $(store.submit).removeClass(store.activeClass);
     // Ensure our focus doesn't change.
     $(store.focusedElement).focus();
-  };
+  }
 
   /**
    * The handler bound to inputs on the form.
+   *
+   * @return {Boolean}
+   *   True if the element already has the active class.
    */
-  const inputHandler = function () {
-    let webformId = store.webform.data('webform-id');
-    let formStore = store.forms[webformId];
+  function inputHandler() {
+    const webformId = store.webform.data('webform-id');
+    const formStore = store.forms[webformId];
     store.submit = $(store.webform).find('[data-autosave-trigger="submit"]');
     // Get out of here if the submit is already happening.
     if ($(store.submit).hasClass(store.activeClass)) {
@@ -46,6 +50,7 @@
     if (formStore) {
       // Prevent propagation by adding the active class.
       $(store.submit).addClass(store.activeClass);
+      // eslint-disable-next-line func-names
       setTimeout(function () {
         // Submit our draft after the timeout.
         $(store.submit).click();
@@ -53,49 +58,67 @@
         $(store.focusedElement).focus();
       }, formStore.autosaveTime);
     }
-  };
+  }
 
   /**
    * Bind event handlers to input fields.
+   *
+   * @param {object} form
+   *   The form element.
+   * @param {HTMLDocument | HTMLElement} context
+   *   The current document.
    */
-  const bindAutosaveHandlers = function (form, context) {
+  function bindAutosaveHandlers(form, context) {
     store.webform = $('form.webform-submission-form');
     store.submit = $(form).find('[data-autosave-trigger="submit"]');
 
     // Add input and focus event listeners to each input.
-    $(once('webformAutosaveBehavior', 'input:not([data-autosave-trigger="submit"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])', context))
+    $(
+      once(
+        'webformAutosaveBehavior',
+        'input:not([data-autosave-trigger="submit"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])',
+        context,
+      ),
+    )
       .on('input', inputHandler)
+      // eslint-disable-next-line func-names
       .on('focus', function () {
         store.focusedElement = $(this);
       });
 
     // Remove the active class and perform other actions when ajax is complete.
-    $(once('webformAutosaveBehaviorAjaxComplete', 'body')).ajaxComplete(ajaxCompleteHandler);
-  };
+    $(once('webformAutosaveBehaviorAjaxComplete', 'body')).ajaxComplete(
+      ajaxCompleteHandler,
+    );
+  }
 
   /**
    * Setup our default behaviors for the webformautosave module.
+   *
+   * @type {Drupal~behavior}
+   *
+   * @prop {Drupal~behaviorAttach} attach
+   *   Specific description of this attach function goes here.
    */
   Drupal.behaviors.webformautosave = {
-    attach: function (context, settings) {
+    attach(context, settings) {
       $(document, context).find('form.webform-submission-form');
       // This runs every time we attach (on backend ajax callback).
-      store.forms = settings.webformautosave.forms
-      let webformForm = $('form.webform-submission-form')
+      store.forms = settings.webformautosave.forms;
+      const webformForm = $('form.webform-submission-form');
       // Let's bind an input event to our inputs once.
       if ($(webformForm).length) {
+        // eslint-disable-next-line func-names
         $(webformForm).each(function (form) {
           bindAutosaveHandlers(form, context);
         });
       }
       // Ensure the wrapper for our draft submit is hidden.
-      $(once('webformAutosaveHideWrapper', webformForm))
-        .each(function () {
-          // Ensure the wrapper is hidden.
-          $(webformForm)
-            .find('.webformautosave-trigger--wrapper')
-            .hide();
-        });
+      // eslint-disable-next-line func-names
+      $(once('webformAutosaveHideWrapper', webformForm)).each(function () {
+        // Ensure the wrapper is hidden.
+        $(webformForm).find('.webformautosave-trigger--wrapper').hide();
+      });
     },
   };
 })(jQuery, Drupal, drupalSettings);

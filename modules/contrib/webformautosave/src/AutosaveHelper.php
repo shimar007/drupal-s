@@ -8,6 +8,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
 use Drupal\webform_submission_log\WebformSubmissionLogManager;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * A helper class that houses helper functions for the webformautosave module.
@@ -39,6 +40,13 @@ class AutosaveHelper {
   protected $entityTypeManager;
 
   /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
    * AutosaveHelper constructor.
    *
    * @param \Drupal\webform_submission_log\WebformSubmissionLogManager $webform_submission_log_manager
@@ -47,11 +55,14 @@ class AutosaveHelper {
    *   The current user.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack.
    */
-  public function __construct(WebformSubmissionLogManager $webform_submission_log_manager, AccountInterface $current_user, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(WebformSubmissionLogManager $webform_submission_log_manager, AccountInterface $current_user, EntityTypeManagerInterface $entity_type_manager, RequestStack $request_stack) {
     $this->webformSubmissionLogManager = $webform_submission_log_manager;
     $this->currentUser = $current_user;
     $this->entityTypeManager = $entity_type_manager;
+    $this->requestStack = $request_stack;
   }
 
   /**
@@ -66,7 +77,7 @@ class AutosaveHelper {
   public function getSubmissionUrl(WebformSubmissionInterface $webform_submission) {
     $submission_url = $webform_submission->getTokenUrl();
     $submission_url->setAbsolute(FALSE);
-    $current_params = (array) \Drupal::request()->query->all();
+    $current_params = $this->requestStack->getCurrentRequest()->query->all();
     // Add the current params to the submission url.
     foreach ($current_params as $key => $param) {
       $submission_url->setRouteParameter($key, $param);
@@ -92,8 +103,8 @@ class AutosaveHelper {
 
     // Clean and return the record if available.
     if (!empty($submission_log)) {
-      $submission_log->variables = unserialize($submission_log->variables);
-      $submission_log->data = unserialize($submission_log->data);
+      $submission_log->variables = unserialize($submission_log->variables, ['allowed_classes' => FALSE]);
+      $submission_log->data = unserialize($submission_log->data, ['allowed_classes' => FALSE]);
       return $submission_log;
     }
 
@@ -102,7 +113,7 @@ class AutosaveHelper {
     $log_data = [
       'webform_id' => $webform_submission->getWebform()->id(),
       'sid' => $webform_submission->id(),
-      'uid' => \Drupal::currentUser()->id(),
+      'uid' => $this->currentUser->id(),
       'message' => 'initial log by webform_autosave',
       'timestamp' => $now->getTimestamp(),
     ];

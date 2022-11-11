@@ -31,6 +31,7 @@ class WebformAutosaveThirdPartySettingsTest extends WebformBrowserTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+    $this->adminUser = $this->drupalCreateUser(['access administration pages']);
   }
 
   /**

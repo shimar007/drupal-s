@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CaptchaImageResponse extends Response {
 
-  const LOG_LEVEL = 'ERROR';
+  const LOG_LEVEL = 'error';
 
   /**
    * Database connection configuration container.
@@ -136,7 +136,7 @@ class CaptchaImageResponse extends Response {
    *   Array representation of RGB color value.
    */
   protected function hexToRgb($hex) {
-    if (strlen($hex) == 4) {
+    if (mb_strlen($hex) == 4) {
       $hex = $hex[1] . $hex[1] . $hex[2] . $hex[2] . $hex[3] . $hex[3];
     }
     $c = hexdec($hex);
