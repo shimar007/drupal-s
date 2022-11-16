@@ -14,3 +14,4 @@ output_values:
   uuid: uuid
   options: options
 add_fragment: 1
+base_url: ''

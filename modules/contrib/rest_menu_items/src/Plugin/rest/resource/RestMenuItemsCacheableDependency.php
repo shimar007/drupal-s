@@ -5,22 +5,41 @@ namespace Drupal\rest_menu_items\Plugin\rest\resource;
 use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Cache\Cache;
 
+/**
+ * The cacheable dependency class.
+ */
 class RestMenuItemsCacheableDependency implements CacheableDependencyInterface {
 
-  // Minimum depth parameter
+  /**
+   * Minimum depth parameter.
+   *
+   * @var int
+   */
   protected $minDepth = 1;
 
-  // Maximum depth parameter
+  /**
+   * Maximum depth parameter.
+   *
+   * @var int
+   */
   protected $maxDepth = 1;
 
-  // the menu being exposed
+  /**
+   * The menu being exposed.
+   *
+   * @var string
+   */
   protected $menuName = '';
 
   /**
    * RestMenuItemsCachableDependency constructor.
    *
-   * @param int $minDepth The minimum depth to be used as a cache context
-   * @param int $maxDepth The maximum depth to be used as a cache context
+   * @param string $menuName
+   *   The menu name.
+   * @param int $minDepth
+   *   The minimum depth to be used as a cache context.
+   * @param int $maxDepth
+   *   The maximum depth to be used as a cache context.
    */
   public function __construct($menuName, $minDepth, $maxDepth) {
     $this->menuName = $menuName;
@@ -28,13 +47,12 @@ class RestMenuItemsCacheableDependency implements CacheableDependencyInterface {
     $this->maxDepth = $maxDepth;
   }
 
-
   /**
    * {@inheritdoc}
    */
   public function getCacheContexts() {
     $contexts = [];
-    // URL parameters as contexts
+    // URL parameters as contexts.
     if ($this->minDepth != 1 || $this->maxDepth != 1) {
       $contexts[] = 'url.query_args';
       $contexts[] = 'user.permissions';

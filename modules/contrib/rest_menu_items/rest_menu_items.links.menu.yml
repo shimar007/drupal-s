@@ -3,4 +3,3 @@ rest_menu_items.config_form:
   route_name: rest_menu_items.config_form
   description: 'Configure Rest Menu Items'
   parent: system.admin_config_services
-

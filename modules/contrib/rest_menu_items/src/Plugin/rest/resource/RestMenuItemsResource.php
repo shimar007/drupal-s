@@ -5,6 +5,7 @@ namespace Drupal\rest_menu_items\Plugin\rest\resource;
 use Drupal\Core\Cache\CacheableResponseInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\Menu\MenuLinkInterface;
 use Drupal\path_alias\AliasManagerInterface;
@@ -50,6 +51,13 @@ class RestMenuItemsResource extends ResourceBase {
   protected $entityTypeManager;
 
   /**
+   * A instance of modulehandler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * A list of menu items.
    *
    * @var array
@@ -73,12 +81,13 @@ class RestMenuItemsResource extends ResourceBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, array $serializer_formats, LoggerInterface $logger, AliasManagerInterface $alias_manager, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, array $serializer_formats, LoggerInterface $logger, AliasManagerInterface $alias_manager, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entityTypeManager, ModuleHandlerInterface $moduleHandler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
 
     $this->aliasManager = $alias_manager;
     $this->configFactory = $config_factory;
     $this->entityTypeManager = $entityTypeManager;
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -86,7 +95,7 @@ class RestMenuItemsResource extends ResourceBase {
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static($configuration, $plugin_id, $plugin_definition, $container->getParameter('serializer.formats'), $container->get('logger.factory')
-      ->get('rest'), $container->get('path_alias.manager'), $container->get('config.factory'), $container->get('entity_type.manager'));
+      ->get('rest'), $container->get('path_alias.manager'), $container->get('config.factory'), $container->get('entity_type.manager'), $container->get('module_handler'));
   }
 
   /**
@@ -142,6 +151,7 @@ class RestMenuItemsResource extends ResourceBase {
         // Use the default sorting of menu links.
         ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
       ];
+      $this->moduleHandler->alter('rest_menu_items_resource_manipulators', $manipulators, $menu_name);
       $tree = $menu_tree->transform($tree, $manipulators);
 
       // Finally, build a renderable array from the transformed tree.
@@ -154,6 +164,9 @@ class RestMenuItemsResource extends ResourceBase {
 
       $this->getMenuItems($menu['#items'], $this->menuItems);
 
+      // Other modules can alter the output before rendering.
+      $this->moduleHandler->alter('rest_menu_items_output', $this->menuItems);
+
       // Return response.
       $response = new ResourceResponse(array_values($this->menuItems));
 
@@ -165,7 +178,7 @@ class RestMenuItemsResource extends ResourceBase {
       // Return the JSON response.
       return $response;
     }
-    throw new HttpException($this->t("Menu name was not provided"));
+    throw new HttpException("Menu name was not provided");
   }
 
   /**
@@ -185,10 +198,10 @@ class RestMenuItemsResource extends ResourceBase {
 
     // Loop through the menu items.
     foreach ($tree as $item_value) {
-      /* @var $org_link \Drupal\Core\Menu\MenuLinkInterface */
+      /** @var \Drupal\Core\Menu\MenuLinkInterface $org_link */
       $org_link = $item_value['original_link'];
 
-      /* @var $url \Drupal\Core\Url */
+      /** @var \Drupal\Core\Url $url */
       $url = $item_value['url'];
 
       $newValue = [];
@@ -415,7 +428,7 @@ class RestMenuItemsResource extends ResourceBase {
    * @param \Drupal\Core\Menu\MenuLinkInterface $link
    *   The link from the menu.
    */
-  private function addFragment(&$value, $link) {
+  private function addFragment(&$value, MenuLinkInterface $link) {
     $options = $link->getOptions();
     if (!empty($options) && isset($options['fragment'])) {
       $value .= '#' . $options['fragment'];
