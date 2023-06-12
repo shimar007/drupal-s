@@ -1,4 +1,6 @@
-/* eslint-disable */
+/**
+ * @file
+ * Eslint-disable .*/
 
 'use strict';
 

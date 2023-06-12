@@ -12,7 +12,7 @@ use Drupal\csp\LibraryPolicyBuilder;
 use Drupal\csp\ReportingHandlerPluginManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -83,11 +83,11 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
   /**
    * Add Content-Security-Policy header to response.
    *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The Response event.
    */
-  public function onKernelResponse(FilterResponseEvent $event) {
-    if (!$event->isMasterRequest()) {
+  public function onKernelResponse(ResponseEvent $event) {
+    if (!$event->isMainRequest()) {
       return;
     }
 
@@ -114,6 +114,13 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
 
         if (is_bool($directiveOptions)) {
           $policy->setDirective($directiveName, TRUE);
+          continue;
+        }
+
+        if (Csp::DIRECTIVES[$directiveName] === Csp::DIRECTIVE_SCHEMA_ALLOW_BLOCK) {
+          if (!empty($directiveOptions)) {
+            $policy->setDirective($directiveName, "'" . $directiveOptions . "'");
+          }
           continue;
         }
 
@@ -174,8 +181,8 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
       }
 
       $this->eventDispatcher->dispatch(
-        CspEvents::POLICY_ALTER,
-        new PolicyAlterEvent($policy, $response)
+        new PolicyAlterEvent($policy, $response),
+        CspEvents::POLICY_ALTER
       );
 
       if (($headerValue = $policy->getHeaderValue())) {

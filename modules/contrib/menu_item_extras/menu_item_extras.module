@@ -8,7 +8,6 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -36,7 +35,7 @@ function menu_item_extras_help($route_name, RouteMatchInterface $route_match) {
           '#value' => t('Provides additional custom fields which can be used on Menu Link.'),
         ],
       ];
-      return render($output);
+      return \Drupal::service('renderer')->render($output);
   }
 }
 
@@ -162,7 +161,7 @@ function menu_item_extras_theme_suggestions_menu_link_content(array $variables) 
   $suggestions = [];
   /** @var \Drupal\menu_item_extras\Utility\Utility $utility */
   $utility = \Drupal::service('menu_item_extras.utility');
-  /* @var \Drupal\menu_link_content\Entity\MenuLinkContent $entity */
+  /** @var \Drupal\menu_link_content\Entity\MenuLinkContent $entity */
   $entity = $variables['elements']['#menu_link_content'];
   $prefix = 'menu_link_content';
   $view_mode = $utility::sanitizeMachineName($variables['elements']['#view_mode']);
@@ -195,7 +194,6 @@ function menu_item_extras_theme_suggestions_menu_levels(array $variables) {
   $menu_name = $utility::sanitizeMachineName($variables['element']['#menu_name']);
   $level = 'level_' . $variables['element']['#menu_level'];
 
-
   if (isset($level)) {
     $suggestions[] = $utility::suggestion($suggestion_prefix, $level);
   }
@@ -217,8 +215,9 @@ function menu_item_extras_theme_suggestions_menu_alter(array &$suggestions, arra
     $utility = \Drupal::service('menu_item_extras.utility');
     $menu_name = $utility::sanitizeMachineName($menu_name);
     if (Utility::checkBundleHasExtraFieldsThanEntity('menu_link_content', $variables['menu_name'])) {
-      // We have to add back the original suggestion that normally is generated
-      // from the #theme, because in pre-process we are replacing it with 'menu'.
+      // We have to add back the original suggestion that
+      // normally is generated from the #theme, because
+      // in pre-process we are replacing it with 'menu'.
       $suggestions[] = $utility::suggestion('menu', $menu_name);
       $suggestion_prefix = 'menu__extras';
       // Custom suggestions.

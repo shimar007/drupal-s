@@ -140,6 +140,7 @@ class SmartDateItem extends TimestampItem {
   public static function generateSampleValue(FieldDefinitionInterface $field_definition) {
     // Pick a random timestamp in the past year.
     $timestamp = \Drupal::time()->getRequestTime() - mt_rand(0, 86400 * 365);
+    $timestamp = floor($timestamp/60)*60;
     $duration = 60;
     $values['value'] = $timestamp;
     $values['end_value'] = $timestamp + $duration * 60;

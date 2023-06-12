@@ -61,21 +61,22 @@ class CoreCspSubscriber implements EventSubscriberInterface {
     $response = $alterEvent->getResponse();
 
     if ($response instanceof AttachmentsInterface) {
-      $attachments = $response->getAttachments();
-      $libraries = isset($attachments['library']) ?
-        $this->libraryDependencyResolver->getLibrariesWithDependencies($attachments['library']) :
-        [];
+      $libraries = $this->libraryDependencyResolver
+        ->getLibrariesWithDependencies(
+          $response->getAttachments()['library'] ?? []
+        );
 
-      // Ajax needs 'unsafe-inline' to add assets required by responses.
+      // Ajax needs 'unsafe-inline' for CSS assets required by responses prior
+      // to Drupal 10.1.
       // @see https://www.drupal.org/project/csp/issues/3100084
-      // The CSP Extras module alters core to not require 'unsafe-inline'.
-      if (in_array('core/drupal.ajax', $libraries) && !$this->moduleHandler->moduleExists('csp_extras')) {
-        // Prevent script-src-attr from falling back to script-src and having
-        // 'unsafe-inline' enabled.
-        $policy->fallbackAwareAppendIfEnabled('script-src-attr', []);
-        $policy->fallbackAwareAppendIfEnabled('script-src', [Csp::POLICY_UNSAFE_INLINE]);
-        $policy->fallbackAwareAppendIfEnabled('script-src-elem', [Csp::POLICY_UNSAFE_INLINE]);
-
+      if (
+        in_array('core/drupal.ajax', $libraries)
+        &&
+        version_compare(\Drupal::VERSION, '10.1', '<')
+        &&
+        // The CSP Extras module alters core to not require 'unsafe-inline'.
+        !$this->moduleHandler->moduleExists('csp_extras')
+      ) {
         $policy->fallbackAwareAppendIfEnabled('style-src-attr', []);
         $policy->fallbackAwareAppendIfEnabled('style-src', [Csp::POLICY_UNSAFE_INLINE]);
         $policy->fallbackAwareAppendIfEnabled('style-src-elem', [Csp::POLICY_UNSAFE_INLINE]);
@@ -101,9 +102,6 @@ class CoreCspSubscriber implements EventSubscriberInterface {
       }
 
       $umamiFontLibraries = [
-        // <= 8.7
-        'umami/webfonts',
-        // >= 8.8
         'umami/webfonts-open-sans',
         'umami/webfonts-scope-one',
       ];

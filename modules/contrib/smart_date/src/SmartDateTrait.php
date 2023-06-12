@@ -5,6 +5,7 @@ namespace Drupal\smart_date;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\smart_date\Entity\SmartDateFormatInterface;
+use DateTimeZone;
 
 /**
  * Provides friendly methods for smart date range.
@@ -28,12 +29,15 @@ trait SmartDateTrait {
   /**
    * {@inheritdoc}
    */
-  public function viewElements(FieldItemListInterface $items, $langcode) {
-    $field_type = $this->fieldDefinition->getType();
+  public function viewElements(FieldItemListInterface $items, $langcode, $format = '') {
+    $field_type = 'smartdate';
+    if (property_exists($this, 'fieldDefinition') && $this->fieldDefinition) {
+      $field_type = $this->fieldDefinition->getType();
+    }
     $elements = [];
     // @todo intelligent switching between retrieval methods.
     // Look for a defined format and use it if specified.
-    $format_label = $this->getSetting('format');
+    $format_label = $format ?: $this->getSetting('format');
     if ($format_label) {
       $entity_storage_manager = \Drupal::entityTypeManager()
         ->getStorage('smart_date_format');
@@ -56,6 +60,7 @@ trait SmartDateTrait {
     $timezone_override = $this->getSetting('timezone_override') ?: NULL;
     $add_classes = $this->getSetting('add_classes');
     $time_wrapper = $this->getSetting('time_wrapper');
+    $localize = $this->getSetting('localize');
 
     $augmenters = $this->initializeAugmenters();
     if ($augmenters) {
@@ -109,7 +114,7 @@ trait SmartDateTrait {
         $this->addRangeClasses($elements[$delta]);
       }
       if ($time_wrapper) {
-        $this->addTimeWrapper($elements[$delta], $start_ts, $end_ts, $timezone, $add_classes);
+        $this->addTimeWrapper($elements[$delta], $start_ts, $end_ts, $timezone, $add_classes, $localize);
       }
       // Attach the timestamps in case they're needed for later processing.
       $elements[$delta]['#value'] = $start_ts;
@@ -176,7 +181,7 @@ trait SmartDateTrait {
    * @param array $instance
    *   The render array of the formatted date range.
    */
-  protected function addRangeClasses(array &$instance) {
+  protected static function addRangeClasses(array &$instance) {
     // Array to define where wrapper parts should be skipped, for a range.
     $skip = [];
     // If a time range within a day, make a single wrapper around the times.
@@ -217,56 +222,75 @@ trait SmartDateTrait {
    *   An optional timezone override.
    * @param bool $add_classes
    *   Whether or not the field is also adding class wrappers.
+   * @param bool $localize
+   *   Whether or not to append a Javascript library to localize times.
    */
-  protected function addTimeWrapper(array &$instance, $start_ts, $end_ts, $timezone = NULL, $add_classes = FALSE) {
+  protected static function addTimeWrapper(array &$instance, $start_ts, $end_ts, $timezone = NULL, $add_classes = FALSE, $localize = FALSE) {
     $times = [
       'start' => $start_ts,
       'end' => $end_ts,
     ];
     // Only add the time wrappers inside if there is an incomplete range part.
-    if ((isset($instance['start']['date']) xor isset($instance['start']['time'])) || (isset($instance['end']['date']) xor isset($instance['end']['time']))) {
+    if ($localize || (isset($instance['start']['date']) xor isset($instance['start']['time'])) || (isset($instance['end']['date']) xor isset($instance['end']['time']))) {
       $inner_wrappers = TRUE;
     }
     else {
       $inner_wrappers = FALSE;
     }
     foreach (['start', 'end'] as $part) {
-      if (isset($instance[$part])) {
-        if ($this->isAllDay($start_ts, $end_ts, $timezone)) {
-          $format = 'Y-m-d';
-        }
-        else {
-          $format = 'c';
-        }
-        $datetime = \Drupal::service('date.formatter')->format($times[$part], 'custom', $format);
-        if ($add_classes && $inner_wrappers) {
-          // If wrappers for classes have also been added, we need separate
-          // time elements for the date and time, if set.
-          foreach (['date', 'time'] as $subpart) {
-            if (isset($instance[$part][$subpart]) && $instance[$part][$subpart]) {
-              $current_contents = $instance[$part][$subpart];
-              unset($current_contents['#prefix']);
-              unset($current_contents['#suffix']);
-              $prefix = isset($instance[$part][$subpart]['#prefix']) ? $instance[$part][$subpart]['#prefix'] : NULL;
-              $suffix = isset($instance[$part][$subpart]['#suffix']) ? $instance[$part][$subpart]['#suffix'] : NULL;
-              $instance[$part][$subpart] = [
-                '#theme' => 'time',
-                '#attributes' => ['datetime' => $datetime],
-                '#text' => $current_contents,
-                '#prefix' => $prefix,
-                '#suffix' => $suffix,
-              ];
+      if (!isset($instance[$part])) {
+        continue;
+      }
+      if (static::isAllDay($start_ts, $end_ts, $timezone)) {
+        $format = 'Y-m-d';
+      }
+      else {
+        $format = 'c';
+      }
+      $datetime = \Drupal::service('date.formatter')->format($times[$part], 'custom', $format);
+      if ($localize || ($add_classes && $inner_wrappers)) {
+        // If wrappers for classes have also been added, we need separate
+        // time elements for the date and time, if set.
+        foreach (['date', 'time'] as $subpart) {
+          if (isset($instance[$part][$subpart]) && $instance[$part][$subpart]) {
+            $current_contents = $instance[$part][$subpart];
+            unset($current_contents['#prefix']);
+            unset($current_contents['#suffix']);
+            $prefix = isset($instance[$part][$subpart]['#prefix']) ? $instance[$part][$subpart]['#prefix'] : NULL;
+            $suffix = isset($instance[$part][$subpart]['#suffix']) ? $instance[$part][$subpart]['#suffix'] : NULL;
+            $instance[$part][$subpart] = [
+              '#theme' => 'time',
+              '#attributes' => ['datetime' => $datetime],
+              '#text' => $current_contents,
+              '#prefix' => $prefix,
+              '#suffix' => $suffix,
+            ];
+            // If configured, set up for localization, but not if all day.
+            if ($localize && $format == 'c') {
+              if (isset($instance[$part][$subpart]['#text']['#format'])) {
+                $instance[$part][$subpart]['#attributes']['data-format'] = $instance[$part][$subpart]['#text']['#format']['#markup'];
+              }
+              $tz_string = $timezone ?? date_default_timezone_get();
+              if ($tz_string) {
+                // $utc = new DateTimeZone('UTC');
+                $tzObject = new DateTimeZone($tz_string);
+                $date = new \DateTime('now', new \DateTimeZone('UTC'));
+                // Set a data attribute using offset as used by Javascript.
+                $instance[$part][$subpart]['#attributes']['data-tzoffset'] = (0 - $tzObject->getOffset($date)) / 60;
+              }
+              $instance[$part][$subpart]['#attached']['library'][] = 'smart_date/localize';
+              $instance[$part][$subpart]['#attributes']['class'][] = 'smart-date--localize';
             }
           }
         }
-        else {
-          $current_contents = $instance[$part];
-          $instance[$part] = [
-            '#theme' => 'time',
-            '#attributes' => ['datetime' => $datetime],
-            '#text' => $current_contents,
-          ];
-        }
+      }
+      else {
+        $current_contents = $instance[$part];
+        $instance[$part] = [
+          '#theme' => 'time',
+          '#attributes' => ['datetime' => $datetime],
+          '#text' => $current_contents,
+        ];
       }
     }
   }
@@ -306,10 +330,16 @@ trait SmartDateTrait {
     }
     // Apply date format from the display config.
     if ($settings['date_format']) {
-      $range['start']['date'] = \Drupal::service('date.formatter')->format($start_ts, '', $settings['date_format'], $timezone);
-      $range['end']['date'] = \Drupal::service('date.formatter')->format($end_ts, '', $settings['date_format'], $timezone);
+      $range['start']['date'] = [
+        'value' => \Drupal::service('date.formatter')->format($start_ts, '', $settings['date_format'], $timezone),
+        '#format' => $settings['date_format'],
+      ];
+      $range['end']['date'] = [
+        'value' => \Drupal::service('date.formatter')->format($end_ts, '', $settings['date_format'], $timezone),
+        '#format' => $settings['date_format'],
+      ];
 
-      if ($range['start']['date'] == $range['end']['date']) {
+      if ($range['start']['date']['value'] == $range['end']['date']['value']) {
         if ($settings['date_first']) {
           unset($range['end']['date']);
         }
@@ -483,16 +513,24 @@ trait SmartDateTrait {
     // * Month, day ranges only work if year at start or end.
     $start = getdate($start_ts);
     $end = getdate($end_ts);
+    // If an empty date format, nothing to do.
+    if (empty($settings['date_format'])) {
+      return $range;
+    }
+    $range['start']['date']['#format'] = $settings['date_format'];
+    $range['end']['date']['#format'] = $settings['date_format'];
     // If the years are different, no deduplication necessary.
     if ($start['year'] != $end['year']) {
       return $range;
     }
     $valid_days = [];
     $invalid_days = [];
+    // Populate start and end format variables.
+    $start_format = $end_format = $settings['date_format'];
     // Check for workable day tokens.
-    preg_match_all('/[dj]/', $settings['date_format'], $valid_days, PREG_OFFSET_CAPTURE);
+    preg_match_all('/(?<!\\\)[dj]/', $settings['date_format'], $valid_days, PREG_OFFSET_CAPTURE);
     // Check for challenging day tokens.
-    preg_match_all('/[DNlwz]/', $settings['date_format'], $invalid_days, PREG_OFFSET_CAPTURE);
+    preg_match_all('/(?<!\\\)[DNlwz]/', $settings['date_format'], $invalid_days, PREG_OFFSET_CAPTURE);
     // If specific conditions are met format as a range within the month.
     if ($start['month'] == $end['month'] && count($valid_days[0]) == 1 && count($invalid_days[0]) == 0) {
       // Split the date string at the valid day token.
@@ -510,11 +548,6 @@ trait SmartDateTrait {
       }
       $start_format = substr($settings['date_format'], 0, $day_loc + $offset);
       $end_format = substr($settings['date_format'], $day_loc);
-
-      $range['start']['date'] = \Drupal::service('date.formatter')
-        ->format($start_ts, '', $start_format, $timezone);
-      $range['end']['date'] = \Drupal::service('date.formatter')
-        ->format($end_ts, '', $end_format, $timezone);
     }
     else {
       // Only remaining possibility is to deduplicate the year.
@@ -527,30 +560,33 @@ trait SmartDateTrait {
       }
       else {
         // Too complicated if year is in the middle.
-        $year_pos = FALSE;
+        return $range;
       }
-      if ($year_pos !== FALSE) {
-        $valid_tokens = [];
-        // Check for workable day or month tokens.
-        preg_match_all('/[djDNlwzSFmMn]/', $settings['date_format'], $valid_tokens, PREG_OFFSET_CAPTURE);
-        if ($valid_tokens) {
-          if ($year_pos == 0) {
-            // Year is at the beginning, so change the end to start at the
-            // first valid token after it.
-            $first_token = $valid_tokens[0][0];
-            $end_format = substr($settings['date_format'], $first_token[1]);
-            $range['end']['date'] = \Drupal::service('date.formatter')
-              ->format($end_ts, '', $end_format, $timezone);
-          }
-          else {
-            $last_token = array_pop($valid_tokens[0]);
-            $start_format = substr($settings['date_format'], 0, $last_token[1] + 1);
-            $range['start']['date'] = \Drupal::service('date.formatter')
-              ->format($start_ts, '', $start_format, $timezone);
-          }
-        }
+      $valid_tokens = [];
+      // Check for workable day or month tokens.
+      preg_match_all('/(?<!\\\)[djDNlwzSFmMn]/', $settings['date_format'], $valid_tokens, PREG_OFFSET_CAPTURE);
+      if (!$valid_tokens) {
+        return $range;
+      }
+      if ($year_pos == 0) {
+        // Year is at the beginning, so change the end to start at the
+        // first valid token after it.
+        $first_token = $valid_tokens[0][0];
+        $end_format = substr($settings['date_format'], $first_token[1]);
+      }
+      else {
+        $last_token = array_pop($valid_tokens[0]);
+        $start_format = substr($settings['date_format'], 0, $last_token[1] + 1);
       }
     }
+    $range['start']['date'] = [
+      'value' => \Drupal::service('date.formatter')->format($start_ts, '', $start_format, $timezone),
+      '#format' => $start_format,
+    ];
+    $range['end']['date'] = [
+      'value' => \Drupal::service('date.formatter')->format($end_ts, '', $end_format, $timezone),
+      '#format' => $end_format,
+    ];
     return $range;
   }
 
@@ -577,6 +613,11 @@ trait SmartDateTrait {
           if (!$settings['date_first']) {
             // Time should be first so reverse the array.
             krsort($parts);
+          }
+          foreach ($parts as $pkey => $part) {
+            if (isset($part['value'])) {
+              $parts[$pkey] = $part['value'];
+            }
           }
           $pieces[] = implode($settings['join'], $parts);
         }
@@ -655,8 +696,8 @@ trait SmartDateTrait {
    * @param bool $is_start
    *   If this is the start time in a range, it requires special treatment.
    *
-   * @return string
-   *   The formatted time.
+   * @return array
+   *   An array containing the formatted time, and the format applied.
    */
   protected static function timeFormat($time, array $settings, $timezone = NULL, $is_start = FALSE) {
     $format = $settings['time_format'];
@@ -671,7 +712,10 @@ trait SmartDateTrait {
       // Remove the timezone at the start of a time range.
       $format = preg_replace('/\s*(?<![\\\\])[eOPTZ]/i', '', $format);
     }
-    return \Drupal::service('date.formatter')->format($time, '', $format, $timezone);
+    return [
+      'value' => \Drupal::service('date.formatter')->format($time, '', $format, $timezone),
+      '#format' => $format,
+    ];
   }
 
   /**
@@ -689,6 +733,10 @@ trait SmartDateTrait {
    */
   public static function isAllDay($start_ts, $end_ts, $timezone = NULL) {
     if ($timezone) {
+      if ($timezone instanceof DateTimeZone) {
+        // If provided as an object, convert to a string.
+        $timezone = $timezone->getName();
+      }
       // Apply a specific timezone provided.
       $default_tz = date_default_timezone_get();
       date_default_timezone_set($timezone);

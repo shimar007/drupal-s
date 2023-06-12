@@ -6,10 +6,9 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Menu\MenuLinkInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
-use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
 /**
- * Class MenuLinkTreeHandler.
+ * Class for service MenuLinkTreeHandler.
  */
 class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
 
@@ -124,7 +123,7 @@ class MenuLinkTreeHandler implements MenuLinkTreeHandlerInterface {
     $entity = $this->getMenuLinkItemEntity($link);
     if ($entity) {
       $view_mode = $this->getMenuLinkContentViewMode($entity);
-      /* @var \Drupal\Core\Entity\Entity\EntityViewDisplay $display */
+      /** @var \Drupal\Core\Entity\Entity\EntityViewDisplay $display */
       $display = $this->entityTypeManager
         ->getStorage('entity_view_display')
         ->load($entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $view_mode);

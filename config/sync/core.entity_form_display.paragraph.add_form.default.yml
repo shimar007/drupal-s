@@ -17,44 +17,44 @@ third_party_settings:
         - field_form_id
         - field_form_heading
         - field_attach_form
+      label: 'Add Form - Fields'
+      region: content
       parent_name: ''
       weight: 0
       format_type: details
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         open: false
         required_fields: true
-      label: 'Add Form - Fields'
-      region: content
 id: paragraph.add_form.default
 targetEntityType: paragraph
 bundle: add_form
 mode: default
 content:
   field_attach_form:
+    type: webform_entity_reference_select
     weight: 6
+    region: content
     settings:
       default_data: true
     third_party_settings: {  }
-    type: webform_entity_reference_select
-    region: content
   field_form_heading:
+    type: string_textfield
     weight: 5
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_form_id:
+    type: string_textfield
     weight: 4
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
 hidden:
   created: true
   status: true

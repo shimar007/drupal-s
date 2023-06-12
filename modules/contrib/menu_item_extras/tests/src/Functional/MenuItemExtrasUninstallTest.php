@@ -75,7 +75,8 @@ class MenuItemExtrasUninstallTest extends BrowserTestBase {
     $url = Url::fromRoute('entity.menu_link_content.edit_form', ['menu_link_content' => $link->id()]);
     $this->drupalGet($url);
     $this->assertSame(200, $this->getSession()->getStatusCode(), 'Unexpected error on the menu item edit page.');
-    $this->drupalPostForm($url, [], 'Save');
+    $this->drupalGet($url);
+    $this->submitForm([], 'Save');
     $this->assertNotSame(500, $this->getSession()->getStatusCode(), "Unexpected error on the menu item edit page.");
     $this->drupalLogout();
     FieldStorageConfig::create([

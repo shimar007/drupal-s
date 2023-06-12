@@ -7,7 +7,7 @@ use Drupal\menu_item_extras\Controller\MenuController;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Class RouteSubscriber.
+ * Class for RouteSubscriber.
  *
  * @package Drupal\menu_item_extras\Routing
  */

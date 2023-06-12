@@ -1,5 +1,13 @@
 CodeSnippet
 
+CKEditor 5 Note
+===============
+
+CodeSnippet now has an upgrade path to using CKEditor 5 in Drupal core. After upgrading, you no longer need the
+CodeSnippet module for CKEditor 4. See this URL for more information:
+
+https://www.drupal.org/project/drupal/issues/3356929
+
 Installation
 ============
 

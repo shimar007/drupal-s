@@ -51,19 +51,13 @@ class CoreCspSubscriberTest extends UnitTestCase {
   public function setUp(): void {
     parent::setUp();
 
-    $this->libraryDependencyResolver = $this->getMockBuilder(LibraryDependencyResolverInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->libraryDependencyResolver = $this->createMock(LibraryDependencyResolverInterface::class);
     $this->libraryDependencyResolver->method('getLibrariesWithDependencies')
       ->willReturnArgument(0);
 
-    $this->moduleHandler = $this->getMockBuilder(ModuleHandlerInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->moduleHandler = $this->createMock(ModuleHandlerInterface::class);
 
-    $this->response = $this->getMockBuilder(HtmlResponse::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->response = $this->createMock(HtmlResponse::class);
 
     $this->coreCspSubscriber = new CoreCspSubscriber($this->libraryDependencyResolver, $this->moduleHandler);
   }
@@ -96,6 +90,68 @@ class CoreCspSubscriberTest extends UnitTestCase {
     $this->coreCspSubscriber->onCspPolicyAlter($alterEvent);
 
     $this->addToAssertionCount(1);
+  }
+
+  /**
+   * Policies are altered for the Drupal AJAX library.
+   *
+   * @covers ::onCspPolicyAlter
+   */
+  public function testAjaxLibrary() {
+    $policy = new Csp();
+    $policy->setDirective('default-src', [Csp::POLICY_ANY]);
+    $policy->setDirective('script-src', [Csp::POLICY_SELF]);
+    $policy->setDirective('style-src', [Csp::POLICY_SELF]);
+
+    $this->response->method('getAttachments')
+      ->willReturn([
+        'library' => [
+          'core/drupal.ajax',
+        ],
+      ]);
+
+    $alterEvent = new PolicyAlterEvent($policy, $this->response);
+
+    $this->coreCspSubscriber->onCspPolicyAlter($alterEvent);
+
+    if (class_exists('Drupal\Core\Ajax\AddJsCommand')) {
+      // Drupal >= 9.5 should not make changes to script-src.
+      $this->assertEquals(
+        [Csp::POLICY_SELF],
+        $alterEvent->getPolicy()->getDirective('script-src')
+      );
+      $this->assertFalse($alterEvent->getPolicy()->hasDirective('script-src-attr'));
+      $this->assertFalse($alterEvent->getPolicy()->hasDirective('script-src-elem'));
+    }
+    else {
+      // Drupal <=9.4 requires script-src-elem 'unsafe-inline'.
+      $this->assertEquals(
+        [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
+        $alterEvent->getPolicy()->getDirective('script-src')
+      );
+      $this->assertEquals(
+        [Csp::POLICY_SELF],
+        $alterEvent->getPolicy()->getDirective('script-src-attr')
+      );
+      $this->assertEquals(
+        [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
+        array_unique($alterEvent->getPolicy()->getDirective('script-src-elem'))
+      );
+    }
+
+    $this->assertEquals(
+      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
+      $alterEvent->getPolicy()->getDirective('style-src')
+    );
+    $this->assertEquals(
+      [Csp::POLICY_SELF],
+      $alterEvent->getPolicy()->getDirective('style-src-attr')
+    );
+    $this->assertEquals(
+      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
+      array_unique($alterEvent->getPolicy()->getDirective('style-src-elem'))
+    );
+
   }
 
   /**
@@ -347,7 +403,7 @@ class CoreCspSubscriberTest extends UnitTestCase {
     $this->response->method('getAttachments')
       ->willReturn([
         'library' => [
-          'umami/webfonts',
+          'umami/webfonts-open-sans',
         ],
       ]);
 
@@ -373,7 +429,7 @@ class CoreCspSubscriberTest extends UnitTestCase {
     $this->response->method('getAttachments')
       ->willReturn([
         'library' => [
-          'umami/webfonts',
+          'umami/webfonts-open-sans',
         ],
       ]);
 

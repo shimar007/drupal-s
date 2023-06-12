@@ -44,7 +44,7 @@ class MenuController extends ControllerBase {
    * @param \Drupal\system\MenuInterface $menu
    *   An entity representing a custom menu.
    *
-   * @deprecated in 2.11 and is removed from 3.0.0. https://www.drupal.org/project/drupal/issues/2923429.
+   * @deprecated in drupal:2.11.0 and is removed from drupal:3.0.0. https://www.drupal.org/project/drupal/issues/2923429.
    *
    * @see https://www.drupal.org/project/drupal/issues/2923429
    *

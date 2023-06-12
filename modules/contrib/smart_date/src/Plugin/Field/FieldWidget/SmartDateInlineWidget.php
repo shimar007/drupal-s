@@ -22,6 +22,15 @@ class SmartDateInlineWidget extends SmartDateDefaultWidget {
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    return [
+      'separator' => 'to',
+      ] + parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
@@ -39,12 +48,41 @@ class SmartDateInlineWidget extends SmartDateDefaultWidget {
     $element = array_merge(['time_wrapper' => $time_wrapper], $element);
     // Move the start and end elements into our new container.
     $element['time_wrapper']['value'] = $element['value'];
-    $element['time_wrapper']['separator']['#markup'] = '<span class="smartdate--separator">' . $this->t('to') . '</span>';
+    $separator = empty($this->getSetting('separator')) ? $this->t('to') : $this->getSetting('separator');
+    $element['time_wrapper']['separator']['#markup'] = '<span class="smartdate--separator">' . $separator . '</span>';
     $element['time_wrapper']['end_value'] = (isset($element['end_value'])) ? $element['end_value'] : $element['value'];
     unset($element['value']);
     unset($element['end_value']);
 
     return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $settings_form = parent::settingsForm($form, $form_state);
+
+    $settings_form['separator'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Separator string (separating start and end date)'),
+      '#default_value' => $this->getSetting('separator'),
+    ];
+
+    return $settings_form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsSummary() {
+    $summary = parent::settingsSummary();
+
+    if (!empty($this->getSetting('separator'))) {
+      $summary[] = $this->t('Separator string (separating start and end date): @separator', ['@separator' => $this->getSetting('separator')]);
+    }
+
+    return $summary;
   }
 
   /**

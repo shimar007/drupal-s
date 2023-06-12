@@ -5,11 +5,11 @@ dependencies:
   config:
     - field.storage.node.body
     - node.type.dir_listing
+  module:
+    - text
   enforced:
     module:
       - filebrowser
-  module:
-    - text
 _core:
   default_config_hash: yAJpEEQovDC6VIlYdi2qk8xAGaDJkXshQbuFlnUoBzM
 id: node.dir_listing.body

@@ -916,6 +916,7 @@ class RRule implements RRuleInterface
 
 	/**
 	 * @internal
+	 * @return bool
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetExists($offset)
@@ -925,6 +926,7 @@ class RRule implements RRuleInterface
 
 	/**
 	 * @internal
+	 * @return mixed
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetGet($offset)
@@ -958,6 +960,7 @@ class RRule implements RRuleInterface
 
 	/**
 	 * @internal
+	 * @return void
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetSet($offset, $value)
@@ -967,6 +970,7 @@ class RRule implements RRuleInterface
 
 	/**
 	 * @internal
+	 * @return void
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetUnset($offset)
@@ -1506,8 +1510,8 @@ class RRule implements RRuleInterface
 							$tmp = $year.':'.$yearday.':'.$time[0].':'.$time[1].':'.$time[2];
 							if (! isset($filtered_set[$tmp])) {
 								$occurrence = \DateTime::createFromFormat(
-									'Y z',
-									"$year $yearday",
+									'Y z H:i:s',
+									"$year $yearday 00:00:00",
 									$this->dtstart->getTimezone()
 								);
 								$occurrence->setTime($time[0], $time[1], $time[2]);
@@ -1549,8 +1553,8 @@ class RRule implements RRuleInterface
 				// normal loop, without BYSETPOS
 				foreach ($dayset as $yearday) {
 					$occurrence = \DateTime::createFromFormat(
-						'Y z',
-						"$year $yearday",
+						'Y z H:i:s',
+						"$year $yearday 00:00:00",
 						$this->dtstart->getTimezone()
 					);
 
@@ -2182,6 +2186,11 @@ class RRule implements RRuleInterface
 			$parts['bymonth'] = strtr(self::i18nSelect($i18n['bymonth'], count($tmp)), array(
 				'%{months}' => self::i18nList($tmp, $i18n['and'])
 			));
+
+			if ($freq_str == 'yearly') {
+				// if a yearly frequency is being displayed by month, then switch "of the year" text to be monthly
+				$freq_str = 'monthly';
+			}
 		}
 
 		if (not_empty($this->rule['BYWEEKNO'])) {

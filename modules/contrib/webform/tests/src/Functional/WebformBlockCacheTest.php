@@ -31,7 +31,7 @@ class WebformBlockCacheTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->authenticatedUser = $this->createUser([

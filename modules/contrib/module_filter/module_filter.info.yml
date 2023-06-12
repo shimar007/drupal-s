@@ -9,7 +9,7 @@ configure: module_filter.settings
 dependencies:
   - drupal:system (>= 8.3)
 
-# Information added by Drupal.org packaging script on 2021-03-05
-version: '8.x-3.2'
+# Information added by Drupal.org packaging script on 2022-12-19
+version: '8.x-3.4'
 project: 'module_filter'
-datestamp: 1614918374
+datestamp: 1671484804

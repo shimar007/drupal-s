@@ -38,7 +38,7 @@ class SmartDateTimezoneWidget extends SmartDateInlineWidget implements Container
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
     // Set default, based on field config.
-    $default_label = t('- default: @tz_label -', ['@tz_label' => $this->getSiteTimezone()]);
+    $default_label = $this->t('- default: @tz_label -', ['@tz_label' => $this->getSiteTimezone()]);
     switch ($this->getSetting('default_tz')) {
       case '':
         $default_timezone = '';
@@ -54,7 +54,9 @@ class SmartDateTimezoneWidget extends SmartDateInlineWidget implements Container
     }
 
     if ($this->getSetting('allowed_timezones')) {
-      $timezones = $this->formatTimezoneOptions($this->getSetting('allowed_timezones'));
+      $allowed_timezone_values = $this->getSetting('allowed_timezones');
+      $allowed_timezone_options = array_combine($allowed_timezone_values, $allowed_timezone_values);
+      $timezones = $this->formatTimezoneOptions($allowed_timezone_options);
     }
     elseif ($this->getSetting('add_abbreviations')) {
       $timezones = $this->formatTimezoneOptions($this->getTimezones(FALSE));
@@ -172,7 +174,7 @@ class SmartDateTimezoneWidget extends SmartDateInlineWidget implements Container
     $add_abbr = $this->getSetting('add_abbreviations');
 
     $zones = [];
-    foreach ($zonelist as $zone) {
+    foreach ($zonelist as $value => $zone) {
       if (!is_string($zone)) {
         $zone = $zone->render();
       }
@@ -180,8 +182,8 @@ class SmartDateTimezoneWidget extends SmartDateInlineWidget implements Container
       // reasons and should not be used, the list is filtered by a regular
       // expression.
       if (preg_match('!^((Africa|America|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Indian|Pacific)/|UTC$)!', $zone)) {
-        $zones[$zone] = t('@zone', [
-          '@zone' => t(str_replace('_', ' ', $zone)),
+        $zones[$value] = $this->t('@zone', [
+          '@zone' => $this->t(str_replace('_', ' ', $zone)),
         ]);
       }
     }

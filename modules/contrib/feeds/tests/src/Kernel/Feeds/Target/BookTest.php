@@ -23,7 +23,7 @@ class BookTest extends FeedsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'book',
     'text',
@@ -34,7 +34,7 @@ class BookTest extends FeedsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->installSchema('book', 'book');
@@ -463,6 +463,9 @@ class BookTest extends FeedsKernelTestBase {
     $node = $this->reloadEntity($node);
     $this->assertEquals(4, $node->book['bid']);
     $this->assertEquals(4, $node->book['pid']);
+
+    // Clear the logged messages so no failure is reported on tear down.
+    $this->logger->clearMessages();
   }
 
   /**
@@ -517,6 +520,9 @@ class BookTest extends FeedsKernelTestBase {
     $node = $this->reloadEntity($node);
     $this->assertEquals(42, $node->book['bid']);
     $this->assertEquals(8, $node->book['pid']);
+
+    // Clear the logged messages so no failure is reported on tear down.
+    $this->logger->clearMessages();
   }
 
 }

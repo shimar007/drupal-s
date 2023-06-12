@@ -2,8 +2,6 @@
 
 namespace Drupal\menu_item_extras\Utility;
 
-use Drupal\Component\Utility\Unicode;
-
 /**
  * Utility functions specific to menu_item_extras.
  */

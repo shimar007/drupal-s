@@ -115,6 +115,7 @@ class SignIn extends Entity
 
      /**
      * Gets the appliedEventListeners
+    * Detailed information about the listeners, such as Azure Logic Apps and Azure Functions, that were triggered by the corresponding events in the sign-in event.
      *
      * @return array|null The appliedEventListeners
      */
@@ -129,6 +130,7 @@ class SignIn extends Entity
 
     /**
     * Sets the appliedEventListeners
+    * Detailed information about the listeners, such as Azure Logic Apps and Azure Functions, that were triggered by the corresponding events in the sign-in event.
     *
     * @param AppliedAuthenticationEventListener[] $val The appliedEventListeners
     *
@@ -142,6 +144,7 @@ class SignIn extends Entity
 
     /**
     * Gets the authenticationAppDeviceDetails
+    * Provides details about the app and device used during an Azure AD authentication step.
     *
     * @return AuthenticationAppDeviceDetails|null The authenticationAppDeviceDetails
     */
@@ -160,6 +163,7 @@ class SignIn extends Entity
 
     /**
     * Sets the authenticationAppDeviceDetails
+    * Provides details about the app and device used during an Azure AD authentication step.
     *
     * @param AuthenticationAppDeviceDetails $val The authenticationAppDeviceDetails
     *
@@ -174,6 +178,7 @@ class SignIn extends Entity
 
      /**
      * Gets the authenticationAppPolicyEvaluationDetails
+    * Provides details of the Azure AD policies applied to a user and client authentication app during an authentication step.
      *
      * @return array|null The authenticationAppPolicyEvaluationDetails
      */
@@ -188,6 +193,7 @@ class SignIn extends Entity
 
     /**
     * Sets the authenticationAppPolicyEvaluationDetails
+    * Provides details of the Azure AD policies applied to a user and client authentication app during an authentication step.
     *
     * @param AuthenticationAppPolicyDetails[] $val The authenticationAppPolicyEvaluationDetails
     *
@@ -986,6 +992,39 @@ class SignIn extends Entity
     public function setLocation($val)
     {
         $this->_propDict["location"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the managedServiceIdentity
+    * Contains information about the managed identity used for the sign in, including its type and associated Azure Resource Manager (ARM) resource ID.
+    *
+    * @return ManagedIdentity|null The managedServiceIdentity
+    */
+    public function getManagedServiceIdentity()
+    {
+        if (array_key_exists("managedServiceIdentity", $this->_propDict)) {
+            if (is_a($this->_propDict["managedServiceIdentity"], "\Beta\Microsoft\Graph\Model\ManagedIdentity") || is_null($this->_propDict["managedServiceIdentity"])) {
+                return $this->_propDict["managedServiceIdentity"];
+            } else {
+                $this->_propDict["managedServiceIdentity"] = new ManagedIdentity($this->_propDict["managedServiceIdentity"]);
+                return $this->_propDict["managedServiceIdentity"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the managedServiceIdentity
+    * Contains information about the managed identity used for the sign in, including its type and associated Azure Resource Manager (ARM) resource ID.
+    *
+    * @param ManagedIdentity $val The managedServiceIdentity
+    *
+    * @return SignIn
+    */
+    public function setManagedServiceIdentity($val)
+    {
+        $this->_propDict["managedServiceIdentity"] = $val;
         return $this;
     }
 

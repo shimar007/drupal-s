@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\feeds\Unit\Feeds\Parser;
 
-use Drupal\Component\Bridge\ZfExtensionManagerSfContainer;
+use Drupal\feeds\Component\ZfExtensionManagerSfContainer;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\Feeds\Parser\SyndicationParser;
@@ -68,7 +68,7 @@ class SyndicationParserTest extends FeedsUnitTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $container = new ContainerBuilder();
@@ -80,12 +80,11 @@ class SyndicationParserTest extends FeedsUnitTestCase {
       $container->set($key, new $class());
     }
 
-    $container->set('feed.bridge.reader', $manager);
     \Drupal::setContainer($container);
 
     $this->feedType = $this->createMock('Drupal\feeds\FeedTypeInterface');
     $configuration = ['feed_type' => $this->feedType];
-    $this->parser = new SyndicationParser($configuration, 'syndication', []);
+    $this->parser = new SyndicationParser($configuration, 'syndication', [], $manager);
     $this->parser->setStringTranslation($this->getStringTranslationStub());
 
     $this->state = new State();

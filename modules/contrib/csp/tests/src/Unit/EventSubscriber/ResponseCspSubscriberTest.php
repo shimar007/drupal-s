@@ -6,13 +6,16 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Render\HtmlResponse;
 use Drupal\csp\Csp;
 use Drupal\csp\CspEvents;
+use Drupal\csp\Event\PolicyAlterEvent;
 use Drupal\csp\EventSubscriber\ResponseCspSubscriber;
 use Drupal\csp\LibraryPolicyBuilder;
 use Drupal\csp\ReportingHandlerPluginManager;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -24,28 +27,28 @@ class ResponseCspSubscriberTest extends UnitTestCase {
   /**
    * Mock HTTP Response.
    *
-   * @var \Drupal\Core\Render\HtmlResponse|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Render\HtmlResponse|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $response;
 
   /**
    * Mock Response Event.
    *
-   * @var \Symfony\Component\HttpKernel\Event\FilterResponseEvent|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Symfony\Component\HttpKernel\Event\ResponseEvent|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $event;
 
   /**
    * The Library Policy service.
    *
-   * @var \Drupal\csp\LibraryPolicyBuilder|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\csp\LibraryPolicyBuilder|\PHPUnit\Framework\MockObject\MockObject
    */
   private $libraryPolicy;
 
   /**
    * The Reporting Handler Plugin Manager service.
    *
-   * @var \Drupal\csp\ReportingHandlerPluginManager|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\csp\ReportingHandlerPluginManager|\PHPUnit\Framework\MockObject\MockObject
    */
   private $reportingHandlerPluginManager;
 
@@ -62,39 +65,24 @@ class ResponseCspSubscriberTest extends UnitTestCase {
   public function setUp(): void {
     parent::setUp();
 
-    $this->response = $this->getMockBuilder(HtmlResponse::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->response->headers = $this->getMockBuilder(ResponseHeaderBag::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $responseCacheableMetadata = $this->getMockBuilder(CacheableMetadata::class)
-      ->getMock();
+    $this->response = $this->createMock(HtmlResponse::class);
+    $this->response->headers = $this->createMock(ResponseHeaderBag::class);
+    $responseCacheableMetadata = $this->createMock(CacheableMetadata::class);
     $this->response->method('getCacheableMetadata')
       ->willReturn($responseCacheableMetadata);
 
-    /** @var \Symfony\Component\HttpKernel\Event\FilterResponseEvent|\PHPUnit_Framework_MockObject_MockObject $event */
-    $this->event = $this->getMockBuilder(FilterResponseEvent::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->event->expects($this->any())
-      ->method('isMasterRequest')
-      ->willReturn(TRUE);
-    $this->event->expects($this->any())
-      ->method('getResponse')
-      ->willReturn($this->response);
+    $this->event = new ResponseEvent(
+      $this->createMock(HttpKernelInterface::class),
+      $this->createMock(Request::class),
+      HttpKernelInterface::MASTER_REQUEST,
+      $this->response
+    );
 
-    $this->libraryPolicy = $this->getMockBuilder(LibraryPolicyBuilder::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->libraryPolicy = $this->createMock(LibraryPolicyBuilder::class);
 
-    $this->reportingHandlerPluginManager = $this->getMockBuilder(ReportingHandlerPluginManager::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->reportingHandlerPluginManager = $this->createMock(ReportingHandlerPluginManager::class);
 
-    $this->eventDispatcher = $this->getMockBuilder(EventDispatcher::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->eventDispatcher = $this->createMock(EventDispatcher::class);
   }
 
   /**
@@ -113,11 +101,8 @@ class ResponseCspSubscriberTest extends UnitTestCase {
    */
   public function testPolicyAlterEvent() {
 
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $configFactory */
     $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => FALSE,
-      ],
       'csp.settings' => [
         'report-only' => [
           'enable' => TRUE,
@@ -141,15 +126,16 @@ class ResponseCspSubscriberTest extends UnitTestCase {
     $this->eventDispatcher->expects($this->exactly(2))
       ->method('dispatch')
       ->with(
-        $this->equalTo(CspEvents::POLICY_ALTER),
-        $this->callback(function ($event) {
+        $this->callback(function (PolicyAlterEvent $event) {
           $policy = $event->getPolicy();
           return $policy->hasDirective(($policy->isReportOnly() ? 'style-src' : 'script-src'));
-        })
+        }),
+        $this->equalTo(CspEvents::POLICY_ALTER)
       )
-      ->willReturnCallback(function ($eventName, $event) {
+      ->willReturnCallback(function ($event, $eventName) {
         $policy = $event->getPolicy();
         $policy->setDirective('font-src', [Csp::POLICY_SELF]);
+        return $event;
       });
 
     $this->response->headers->expects($this->exactly(2))
@@ -176,11 +162,8 @@ class ResponseCspSubscriberTest extends UnitTestCase {
    * @covers ::onKernelResponse
    */
   public function testEmptyDirective() {
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $configFactory */
     $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => FALSE,
-      ],
       'csp.settings' => [
         'report-only' => [
           'enable' => TRUE,
@@ -205,118 +188,14 @@ class ResponseCspSubscriberTest extends UnitTestCase {
   }
 
   /**
-   * Check the policy with CSS optimization disabled.
-   *
-   * @covers ::onKernelResponse
-   */
-  public function testUnoptimizedResponse() {
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
-    $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => FALSE,
-      ],
-      'csp.settings' => [
-        'report-only' => [
-          'enable' => TRUE,
-          'directives' => [
-            'script-src' => [
-              'base' => 'self',
-              'flags' => [
-                'unsafe-inline',
-              ],
-            ],
-            'style-src' => [
-              'base' => 'self',
-            ],
-          ],
-        ],
-        'enforce' => [
-          'enable' => FALSE,
-        ],
-      ],
-    ]);
-
-    $this->libraryPolicy->expects($this->any())
-      ->method('getSources')
-      ->willReturn([]);
-
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
-
-    $this->response->headers->expects($this->once())
-      ->method('set')
-      ->with(
-        $this->equalTo('Content-Security-Policy-Report-Only'),
-        $this->equalTo("script-src 'self' 'unsafe-inline'; style-src 'self'")
-      );
-    $this->response->getCacheableMetadata()
-      ->expects($this->once())
-      ->method('addCacheTags')
-      ->with(['config:csp.settings']);
-
-    $subscriber->onKernelResponse($this->event);
-  }
-
-  /**
-   * Check the policy with CSS optimization enabled.
-   *
-   * @covers ::onKernelResponse
-   */
-  public function testOptimizedResponse() {
-
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
-    $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => TRUE,
-      ],
-      'csp.settings' => [
-        'report-only' => [
-          'enable' => TRUE,
-          'directives' => [
-            'script-src' => [
-              'base' => 'self',
-              'flags' => [
-                'unsafe-inline',
-              ],
-            ],
-            'style-src' => [
-              'base' => 'self',
-            ],
-          ],
-        ],
-        'enforce' => [
-          'enable' => FALSE,
-        ],
-      ],
-    ]);
-
-    $this->libraryPolicy->expects($this->any())
-      ->method('getSources')
-      ->willReturn([]);
-
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
-
-    $this->response->headers->expects($this->once())
-      ->method('set')
-      ->with(
-        $this->equalTo('Content-Security-Policy-Report-Only'),
-        $this->equalTo("script-src 'self' 'unsafe-inline'; style-src 'self'")
-      );
-
-    $subscriber->onKernelResponse($this->event);
-  }
-
-  /**
    * Check the policy with enforcement enabled.
    *
    * @covers ::onKernelResponse
    */
   public function testEnforcedResponse() {
 
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $configFactory */
     $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => TRUE,
-      ],
       'csp.settings' => [
         'enforce' => [
           'enable' => TRUE,
@@ -361,11 +240,8 @@ class ResponseCspSubscriberTest extends UnitTestCase {
    */
   public function testBothPolicies() {
 
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $configFactory */
     $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => TRUE,
-      ],
       'csp.settings' => [
         'report-only' => [
           'enable' => TRUE,
@@ -427,11 +303,8 @@ class ResponseCspSubscriberTest extends UnitTestCase {
    */
   public function testWithLibraryDirective() {
 
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $configFactory */
     $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => TRUE,
-      ],
       'csp.settings' => [
         'report-only' => [
           'enable' => TRUE,
@@ -482,11 +355,8 @@ class ResponseCspSubscriberTest extends UnitTestCase {
    */
   public function testDisabledLibraryDirective() {
 
-    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject $configFactory */
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $configFactory */
     $configFactory = $this->getConfigFactoryStub([
-      'system.performance' => [
-        'css.preprocess' => TRUE,
-      ],
       'csp.settings' => [
         'report-only' => [
           'enable' => TRUE,

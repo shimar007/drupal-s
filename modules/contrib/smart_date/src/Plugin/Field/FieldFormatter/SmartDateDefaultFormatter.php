@@ -39,6 +39,7 @@ class SmartDateDefaultFormatter extends DateTimeDefaultFormatter {
       'force_chronological' => 0,
       'add_classes' => 0,
       'time_wrapper' => 1,
+      'localize' => 0,
     ] + parent::defaultSettings();
   }
 
@@ -85,12 +86,26 @@ class SmartDateDefaultFormatter extends DateTimeDefaultFormatter {
       '#default_value' => $this->getSetting('add_classes'),
     ];
 
-    // Provide an option to add spans around the date and time values.
+    // Provide an option to add a time tag around the date and time values.
     $form['time_wrapper'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Add time wrapper'),
       '#description' => $this->t('Include an HTML5 time wrapper in the markup. Start and end dates will be individually wrapped.'),
       '#default_value' => $this->getSetting('time_wrapper'),
+    ];
+
+    // Provide an option to add spans around the date and time values.
+    $form['localize'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Add Javascript localization'),
+      '#description' => $this->t("Automatically shows times in the visitor's timezone."),
+      '#default_value' => $this->getSetting('localize'),
+      '#states' => [
+        // Show this option only if tne time wrapper is enabled.
+        'visible' => [
+          [':input[name$="[settings_edit_form][settings][time_wrapper]"]' => ['checked' => TRUE]],
+        ],
+      ],
     ];
 
     return $form;
@@ -101,12 +116,12 @@ class SmartDateDefaultFormatter extends DateTimeDefaultFormatter {
    */
   public function settingsSummary() {
     $summary[] = $this->getSetting('timezone_override') === ''
-      ? t('No timezone override.')
-      : t('Timezone overridden to %timezone.', [
+      ? $this->t('No timezone override.')
+      : $this->t('Timezone overridden to %timezone.', [
         '%timezone' => $this->getSetting('timezone_override'),
       ]);
 
-    $summary[] = t('Smart date format: %format.', [
+    $summary[] = $this->t('Smart date format: %format.', [
       '%format' => $this->getSetting('format'),
     ]);
 

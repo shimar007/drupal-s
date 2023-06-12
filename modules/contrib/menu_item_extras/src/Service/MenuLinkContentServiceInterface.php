@@ -6,7 +6,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
 
 /**
- * Interface MenuLinkContentHelperInterface.
+ * Interface for class MenuLinkContentHelper.
  *
  * @package Drupal\menu_item_extras\Service
  */

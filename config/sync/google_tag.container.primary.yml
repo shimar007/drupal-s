@@ -3,6 +3,19 @@ id: primary
 label: Primary
 weight: 0
 container_id: GTM-WLGR72
+data_layer: dataLayer
+include_classes: false
+whitelist_classes: |-
+  google
+  nonGooglePixels
+  nonGoogleScripts
+  nonGoogleIframes
+blacklist_classes: |-
+  customScripts
+  customPixels
+include_environment: false
+environment_id: ''
+environment_token: ''
 path_toggle: 'exclude listed'
 path_list: |-
   /admin*
@@ -21,16 +34,3 @@ status_toggle: 'exclude listed'
 status_list: |-
   403
   404
-data_layer: dataLayer
-include_classes: false
-whitelist_classes: |-
-  google
-  nonGooglePixels
-  nonGoogleScripts
-  nonGoogleIframes
-blacklist_classes: |-
-  customScripts
-  customPixels
-include_environment: false
-environment_id: ''
-environment_token: ''

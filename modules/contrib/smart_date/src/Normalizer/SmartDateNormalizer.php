@@ -20,7 +20,7 @@ class SmartDateNormalizer extends TimestampNormalizer {
   /**
    * {@inheritdoc}
    */
-  public function denormalize($data, $class, $format = NULL, array $context = []) {
+  public function denormalize($data, $class, $format = NULL, array $context = []): mixed {
     if (!empty($data['format'])) {
       // REST request sender may provide own data format, try to deploy it.
       // Parent classes override $format anyway.

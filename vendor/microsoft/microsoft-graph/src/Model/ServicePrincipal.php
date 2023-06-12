@@ -26,7 +26,7 @@ class ServicePrincipal extends DirectoryObject
 {
     /**
     * Gets the accountEnabled
-    * true if the service principal account is enabled; otherwise, false. Supports $filter (eq, ne, not, in).
+    * true if the service principal account is enabled; otherwise, false. If set to false, then no users will be able to sign in to this app, even if they are assigned to it. Supports $filter (eq, ne, not, in).
     *
     * @return bool|null The accountEnabled
     */
@@ -41,7 +41,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Sets the accountEnabled
-    * true if the service principal account is enabled; otherwise, false. Supports $filter (eq, ne, not, in).
+    * true if the service principal account is enabled; otherwise, false. If set to false, then no users will be able to sign in to this app, even if they are assigned to it. Supports $filter (eq, ne, not, in).
     *
     * @param bool $val The accountEnabled
     *
@@ -702,7 +702,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Gets the preferredTokenSigningKeyThumbprint
-    * Reserved for internal use only. Do not write or otherwise rely on this property. May be removed in future versions.
+    * This property can be used on SAML applications (apps that have preferredSingleSignOnMode set to saml) to control which certificate is used to sign the SAML responses. For applications that are not SAML, do not write or otherwise rely on this property.
     *
     * @return string|null The preferredTokenSigningKeyThumbprint
     */
@@ -717,7 +717,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Sets the preferredTokenSigningKeyThumbprint
-    * Reserved for internal use only. Do not write or otherwise rely on this property. May be removed in future versions.
+    * This property can be used on SAML applications (apps that have preferredSingleSignOnMode set to saml) to control which certificate is used to sign the SAML responses. For applications that are not SAML, do not write or otherwise rely on this property.
     *
     * @param string $val The preferredTokenSigningKeyThumbprint
     *
@@ -881,7 +881,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Gets the signInAudience
-    * Specifies the Microsoft accounts that are supported for the current application. Read-only. Supported values are:AzureADMyOrg: Users with a Microsoft work or school account in my organization’s Azure AD tenant (single-tenant).AzureADMultipleOrgs: Users with a Microsoft work or school account in any organization’s Azure AD tenant (multi-tenant).AzureADandPersonalMicrosoftAccount: Users with a personal Microsoft account, or a work or school account in any organization’s Azure AD tenant.PersonalMicrosoftAccount: Users with a personal Microsoft account only.
+    * Specifies the Microsoft accounts that are supported for the current application. Read-only. Supported values are:AzureADMyOrg: Users with a Microsoft work or school account in my organization's Azure AD tenant (single-tenant).AzureADMultipleOrgs: Users with a Microsoft work or school account in any organization's Azure AD tenant (multi-tenant).AzureADandPersonalMicrosoftAccount: Users with a personal Microsoft account, or a work or school account in any organization's Azure AD tenant.PersonalMicrosoftAccount: Users with a personal Microsoft account only.
     *
     * @return string|null The signInAudience
     */
@@ -896,7 +896,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Sets the signInAudience
-    * Specifies the Microsoft accounts that are supported for the current application. Read-only. Supported values are:AzureADMyOrg: Users with a Microsoft work or school account in my organization’s Azure AD tenant (single-tenant).AzureADMultipleOrgs: Users with a Microsoft work or school account in any organization’s Azure AD tenant (multi-tenant).AzureADandPersonalMicrosoftAccount: Users with a personal Microsoft account, or a work or school account in any organization’s Azure AD tenant.PersonalMicrosoftAccount: Users with a personal Microsoft account only.
+    * Specifies the Microsoft accounts that are supported for the current application. Read-only. Supported values are:AzureADMyOrg: Users with a Microsoft work or school account in my organization's Azure AD tenant (single-tenant).AzureADMultipleOrgs: Users with a Microsoft work or school account in any organization's Azure AD tenant (multi-tenant).AzureADandPersonalMicrosoftAccount: Users with a personal Microsoft account, or a work or school account in any organization's Azure AD tenant.PersonalMicrosoftAccount: Users with a personal Microsoft account only.
     *
     * @param string $val The signInAudience
     *
@@ -910,7 +910,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Gets the tags
-    * Custom strings that can be used to categorize and identify the service principal. Not nullable. Supports $filter (eq, not, ge, le, startsWith).
+    * Custom strings that can be used to categorize and identify the service principal. Not nullable. The value is the union of strings set here and on the associated application entity's tags property.Supports $filter (eq, not, ge, le, startsWith).
     *
     * @return array|null The tags
     */
@@ -925,7 +925,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Sets the tags
-    * Custom strings that can be used to categorize and identify the service principal. Not nullable. Supports $filter (eq, not, ge, le, startsWith).
+    * Custom strings that can be used to categorize and identify the service principal. Not nullable. The value is the union of strings set here and on the associated application entity's tags property.Supports $filter (eq, not, ge, le, startsWith).
     *
     * @param string[] $val The tags
     *
@@ -996,6 +996,36 @@ class ServicePrincipal extends DirectoryObject
     public function setVerifiedPublisher($val)
     {
         $this->_propDict["verifiedPublisher"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the appManagementPolicies
+    * The appManagementPolicy applied to this application.
+     *
+     * @return array|null The appManagementPolicies
+     */
+    public function getAppManagementPolicies()
+    {
+        if (array_key_exists("appManagementPolicies", $this->_propDict)) {
+           return $this->_propDict["appManagementPolicies"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the appManagementPolicies
+    * The appManagementPolicy applied to this application.
+    *
+    * @param AppManagementPolicy[] $val The appManagementPolicies
+    *
+    * @return ServicePrincipal
+    */
+    public function setAppManagementPolicies($val)
+    {
+        $this->_propDict["appManagementPolicies"] = $val;
         return $this;
     }
 
@@ -1178,7 +1208,7 @@ class ServicePrincipal extends DirectoryObject
 
      /**
      * Gets the federatedIdentityCredentials
-    * Federated identities for a specific type of service principal - managed identity. Supports $expand and $filter (eq when counting empty collections).
+    * Federated identities for a specific type of service principal - managed identity. Supports $expand and $filter (/$count eq 0, /$count ne 0).
      *
      * @return array|null The federatedIdentityCredentials
      */
@@ -1193,7 +1223,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Sets the federatedIdentityCredentials
-    * Federated identities for a specific type of service principal - managed identity. Supports $expand and $filter (eq when counting empty collections).
+    * Federated identities for a specific type of service principal - managed identity. Supports $expand and $filter (/$count eq 0, /$count ne 0).
     *
     * @param FederatedIdentityCredential[] $val The federatedIdentityCredentials
     *
@@ -1298,7 +1328,7 @@ class ServicePrincipal extends DirectoryObject
 
      /**
      * Gets the ownedObjects
-    * Directory objects that are owned by this service principal. Read-only. Nullable. Supports $expand.
+    * Directory objects that are owned by this service principal. Read-only. Nullable. Supports $expand and $filter (/$count eq 0, /$count ne 0, /$count eq 1, /$count ne 1).
      *
      * @return array|null The ownedObjects
      */
@@ -1313,7 +1343,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Sets the ownedObjects
-    * Directory objects that are owned by this service principal. Read-only. Nullable. Supports $expand.
+    * Directory objects that are owned by this service principal. Read-only. Nullable. Supports $expand and $filter (/$count eq 0, /$count ne 0, /$count eq 1, /$count ne 1).
     *
     * @param DirectoryObject[] $val The ownedObjects
     *
@@ -1328,7 +1358,7 @@ class ServicePrincipal extends DirectoryObject
 
      /**
      * Gets the owners
-    * Directory objects that are owners of this servicePrincipal. The owners are a set of non-admin users or servicePrincipals who are allowed to modify this object. Read-only. Nullable. Supports $expand.
+    * Directory objects that are owners of this servicePrincipal. The owners are a set of non-admin users or servicePrincipals who are allowed to modify this object. Read-only. Nullable.  Supports $expand and $filter (/$count eq 0, /$count ne 0, /$count eq 1, /$count ne 1).
      *
      * @return array|null The owners
      */
@@ -1343,7 +1373,7 @@ class ServicePrincipal extends DirectoryObject
 
     /**
     * Sets the owners
-    * Directory objects that are owners of this servicePrincipal. The owners are a set of non-admin users or servicePrincipals who are allowed to modify this object. Read-only. Nullable. Supports $expand.
+    * Directory objects that are owners of this servicePrincipal. The owners are a set of non-admin users or servicePrincipals who are allowed to modify this object. Read-only. Nullable.  Supports $expand and $filter (/$count eq 0, /$count ne 0, /$count eq 1, /$count ne 1).
     *
     * @param DirectoryObject[] $val The owners
     *

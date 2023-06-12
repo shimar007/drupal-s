@@ -255,7 +255,11 @@ class WebformLibrariesCommands extends WebformCommandsBase {
       drush_op('chdir', $cwd);
 
       if (!$return) {
-        throw new \Exception(dt('Unable to extract !filename.' . PHP_EOL . implode(PHP_EOL, $process->getOutput()), ['!filename' => $path]));
+        throw new \Exception(dt('Unable to extract @filename to @destination.<br /><pre>@process_output</pre>', [
+          '@filename' => $path,
+          '@destination' => $destination,
+          '@process_output' => print_r($process->getOutput(), TRUE),
+        ]));
       }
     }
     else {
@@ -266,7 +270,11 @@ class WebformLibrariesCommands extends WebformCommandsBase {
       drush_op('chdir', $cwd);
 
       if (!$return) {
-        throw new \Exception(dt('Unable to extract !filename.' . PHP_EOL . implode(PHP_EOL, $process->getOutput()), ['!filename' => $path]));
+        throw new \Exception(dt('Unable to extract @filename to @destination.<br /><pre>@process_output</pre>', [
+          '@filename' => $path,
+          '@destination' => $destination,
+          '@process_output' => print_r($process->getOutput(), TRUE),
+        ]));
       }
     }
     return $return;

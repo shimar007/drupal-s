@@ -49,7 +49,7 @@ class CdnFarfuturePathProcessor implements InboundPathProcessorInterface {
   protected function processFarFuture(string $path, Request $request) : string {
     // Parse the security token, mtime, scheme and root-relative file URL.
     $tail = substr($path, strlen('/cdn/ff/'));
-    list($security_token, $mtime, $scheme, $relative_file_url) = explode('/', $tail, 4);
+    [$security_token, $mtime, $scheme, $relative_file_url] = explode('/', $tail, 4);
     $returnPath = "/cdn/ff/$security_token/$mtime/$scheme";
     // Set the root-relative file URL as query parameter.
     $request->query->set('relative_file_url', '/' . UrlHelper::encodePath($relative_file_url));
@@ -72,7 +72,7 @@ class CdnFarfuturePathProcessor implements InboundPathProcessorInterface {
    */
   protected function processLegacyFarFuture($path, Request $request) {
     $tail = substr($path, strlen('/cdn/farfuture/'));
-    list($security_token, $mtime, $root_relative_file_url) = explode('/', $tail, 3);
+    [$security_token, $mtime, $root_relative_file_url] = explode('/', $tail, 3);
     $returnPath = "/cdn/farfuture/$security_token/$mtime";
     // Set the root-relative file URL as query parameter.
     $request->query->set('root_relative_file_url', '/' . UrlHelper::encodePath($root_relative_file_url));

@@ -5,7 +5,7 @@ namespace Drupal\entity_usage\Plugin\EntityUsage\Track;
 use Drupal\Component\Utility\Html;
 
 /**
- * Tracks usage of entities related in entity_reference fields.
+ * Tracks usage of entities embedded into text fields using Entity Embed module.
  *
  * @EntityUsageTrack(
  *   id = "entity_embed",
@@ -24,6 +24,12 @@ class EntityEmbed extends TextFieldEmbedBase {
     $xpath = new \DOMXPath($dom);
     $entities = [];
     foreach ($xpath->query('//drupal-entity[@data-entity-type and @data-entity-uuid]') as $node) {
+      // Skip elements with empty data-entity-uuid/type attributes.
+      if (empty($node->getAttribute('data-entity-uuid'))
+        || empty($node->getAttribute('data-entity-type'))
+      ) {
+        continue;
+      }
       // Note that this does not cover 100% of the situations. In the (unlikely
       // but possible) use case where the user embeds the same entity twice in
       // the same field, we are just recording 1 usage for this target entity,

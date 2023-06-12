@@ -19,7 +19,7 @@ use Drupal\Core\Render\Element;
  */
 function template_preprocess_menu_link_content(array &$variables) {
   $show_item_link = TRUE;
-  /* @var \Drupal\menu_link_content\Entity\MenuLinkContent $menu_link_content */
+  /** @var \Drupal\menu_link_content\Entity\MenuLinkContent $menu_link_content */
   $menu_link_content = $variables['elements']['#menu_link_content'];
   $variables['menu_link_content'] = $menu_link_content;
   // Disabled standard entity render for using custom TWIG render.
@@ -41,7 +41,7 @@ function template_preprocess_menu_link_content(array &$variables) {
 }
 
 /**
- * @param array $variables
+ * Implements hook_preprocess_menu_levels().
  */
 function template_preprocess_menu_levels(array &$variables) {
   $variables += ['items' => []];

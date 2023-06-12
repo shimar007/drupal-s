@@ -34,6 +34,13 @@ function cdn_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_file_url_alter().
  */
 function cdn_file_url_alter(&$uri) {
+  // Gracefully handle invalid invocations of file_create_url().
+  // @todo Remove when requiring Drupal 9.3.
+  // @see https://www.drupal.org/project/drupal/issues/2669074
+  if (empty($uri) || !is_string($uri)) {
+    \Drupal::logger('php')->warning('A caller of file_create_url() did not pass a file URI.');
+    return;
+  }
   // Don't alter file URLs when running update.php.
   // @todo Remove the second condition after the CDN module requires the Drupal core minor that ships with https://www.drupal.org/project/drupal/issues/2969056
   if (defined('MAINTENANCE_MODE') || stripos($_SERVER['PHP_SELF'], 'update.php') !== FALSE) {

@@ -16,25 +16,25 @@ bundle: home_page_header_
 mode: default
 content:
   field_description:
-    weight: 1
+    type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 1
     region: content
   field_main_heading:
-    weight: 0
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 0
     region: content
   field_social_links:
-    weight: 2
+    type: menu_reference_render
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: menu_reference_render
+    weight: 2
     region: content
 hidden: {  }

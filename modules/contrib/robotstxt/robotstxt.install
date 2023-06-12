@@ -17,7 +17,7 @@ function robotstxt_install() {
   $files = [
     DRUPAL_ROOT . '/robots.txt',
     DRUPAL_ROOT . '/sites/default/default.robots.txt',
-    drupal_get_path('module', 'robotstxt') . '/robots.txt',
+    \Drupal::service('extension.list.module')->getPath('robotstxt') . '/robots.txt',
   ];
 
   foreach ($files as $file) {

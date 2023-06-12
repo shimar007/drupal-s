@@ -17,7 +17,7 @@ class WebformElementLocationPlacesTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform_location_places', 'webform_location_places_test'];
+  protected static $modules = ['webform_location_places', 'webform_location_places_test'];
 
   /**
    * Webforms to load.

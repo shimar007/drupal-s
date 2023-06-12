@@ -6,7 +6,7 @@ use Drupal\menu_item_extras\Service\MenuLinkContentServiceInterface;
 use Drush\Commands\DrushCommands;
 
 /**
- * Class MenuItemExtrasCommands.
+ * Class for running Drush commands.
  */
 class MenuItemExtrasCommands extends DrushCommands {
 

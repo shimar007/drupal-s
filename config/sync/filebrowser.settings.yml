@@ -18,6 +18,7 @@ filebrowser:
     allow_overwrite: 0
     accepted: 'jpg jpeg png gif svg txt doc docx pdf mp3'
   presentation:
+    overwrite_breadcrumb: 1
     default_view: list-view
     encoding: UTF-8
     hide_extension: 0
@@ -30,5 +31,3 @@ filebrowser:
     default_sort: name
     default_sort_order: asc
     langcode: en
-_core:
-  default_config_hash: aZOIbJ0mDVxn0sGK6oSzaAVD92j7hTr5amHC4n9DCPg

@@ -1,6 +1,6 @@
-langcode: en
 _core:
   default_config_hash: GbwamktrK8GXKxWeEk8m8o_PWXbPj2vOiFqIANDYIEc
+langcode: en
 id: search_form_content
 uuid: ac52cc4d-e029-437b-934d-ceac3a50198b
 label: 'Search Form (content tab)'

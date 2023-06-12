@@ -25,7 +25,10 @@ final class GetQueryReturnTypeExtension implements DynamicMethodReturnTypeExtens
 
     public function isMethodSupported(MethodReflection $methodReflection): bool
     {
-        return $methodReflection->getName() === 'getQuery';
+        return in_array($methodReflection->getName(), [
+            'getQuery',
+            'getAggregateQuery',
+        ], true);
     }
 
     public function getTypeFromMethodCall(
@@ -39,7 +42,7 @@ final class GetQueryReturnTypeExtension implements DynamicMethodReturnTypeExtens
         }
 
         $callerType = $scope->getType($methodCall->var);
-        if (!$callerType instanceof ObjectType) {
+        if (!$callerType->isObject()->yes()) {
             return $returnType;
         }
 

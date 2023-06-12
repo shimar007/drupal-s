@@ -4,6 +4,7 @@ namespace Drupal\smart_date\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Class SmartDateSettingsForm.
@@ -11,6 +12,20 @@ use Drupal\Core\Form\FormStateInterface;
  * @ingroup smart_date
  */
 class SmartDateFormatSettingsForm extends FormBase {
+
+  /**
+   * Drupal\Core\Config\ConfigFactoryInterface definition.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(ConfigFactoryInterface $configFactory) {
+    $this->configFactory = $configFactory;
+  }
 
   /**
    * Returns a unique string identifying the form.
@@ -31,7 +46,7 @@ class SmartDateFormatSettingsForm extends FormBase {
    *   The current state of the form.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $config = \Drupal::service('config.factory')->getEditable('smart_date_settings.settings');
+    $config = $this->configFactory->getEditable('smart_date_settings.settings');
     foreach ($form_state->getValues() as $key => $value) {
       if (strpos($key, 'smart_date_format_') !== FALSE) {
         $config->set(str_replace('smart_date_format_', '', $key), $value);

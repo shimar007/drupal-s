@@ -2,11 +2,11 @@ name: 'Webform Algolia Places'
 type: module
 description: 'Provides a form element to collect valid location information (address, longitude, latitude, geolocation) using Algolia Places.'
 package: Webform [DEPRECATED]
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^9.4 || ^10
 dependencies:
   - 'webform:webform'
 
-# Information added by Drupal.org packaging script on 2022-09-23
-version: '6.2.0-beta3'
+# Information added by Drupal.org packaging script on 2023-01-12
+version: '6.2.0-beta5'
 project: 'webform'
-datestamp: 1663937880
+datestamp: 1673535785

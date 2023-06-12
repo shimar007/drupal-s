@@ -3,7 +3,7 @@
  * JavaScript behaviors for Algolia places location integration.
  */
 
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once) {
 
   'use strict';
 
@@ -38,7 +38,7 @@
         return;
       }
 
-      $(context).find('.js-webform-type-webform-location-places').once('webform-location-places').each(function () {
+      $(once('webform-location-places', '.js-webform-type-webform-location-places', context)).each(function () {
         var $element = $(this);
         var $input = $element.find('.webform-location-places');
 
@@ -119,4 +119,4 @@
     }
   };
 
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once);

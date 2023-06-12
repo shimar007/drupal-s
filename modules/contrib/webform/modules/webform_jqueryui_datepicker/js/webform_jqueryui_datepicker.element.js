@@ -27,7 +27,7 @@
   Drupal.behaviors.date = {
     attach: function (context, settings) {
       var $context = $(context);
-      $context.find('input[data-drupal-date-format]').once('datePicker').each(function () {
+      $(once('datePicker', $(context).find('input[data-drupal-date-format]'))).each(function () {
         var $input = $(this);
 
         // Skip if date inputs are supported by the browser and input is not a text field.

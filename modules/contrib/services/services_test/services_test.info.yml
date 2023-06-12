@@ -1,12 +1,12 @@
-name: Services Test
+name: Services Test (obsolete)
 type: module
 description: A service provider test for the Services module.
-core_version_requirement: ^8 || ^9
-package: Services
+package: Testing
+hidden: true
 dependencies:
   - services:services
 
-# Information added by Drupal.org packaging script on 2021-05-30
-version: '8.x-4.0-beta6'
+# Information added by Drupal.org packaging script on 2022-12-18
+version: '8.x-4.0-beta7'
 project: 'services'
-datestamp: 1622397638
+datestamp: 1671398959

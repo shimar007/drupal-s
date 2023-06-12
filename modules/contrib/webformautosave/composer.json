@@ -22,7 +22,6 @@
     "source": "https://git.drupalcode.org/project/webformautosave"
   },
   "require": {
-    "drupal/core": "^9.0 || ^10.0",
-    "drupal/webform": "^5.16 || ^6.0"
+    "drupal/webform": "^6.0"
   }
 }

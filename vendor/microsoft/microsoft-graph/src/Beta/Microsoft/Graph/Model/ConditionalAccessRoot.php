@@ -25,8 +25,40 @@ namespace Beta\Microsoft\Graph\Model;
 class ConditionalAccessRoot extends Entity
 {
     /**
+    * Gets the authenticationStrength
+    * Defines the authentication strength policies, valid authentication method combinations, and authentication method mode details that can be required by a conditional access policy.
+    *
+    * @return AuthenticationStrengthRoot|null The authenticationStrength
+    */
+    public function getAuthenticationStrength()
+    {
+        if (array_key_exists("authenticationStrength", $this->_propDict)) {
+            if (is_a($this->_propDict["authenticationStrength"], "\Beta\Microsoft\Graph\Model\AuthenticationStrengthRoot") || is_null($this->_propDict["authenticationStrength"])) {
+                return $this->_propDict["authenticationStrength"];
+            } else {
+                $this->_propDict["authenticationStrength"] = new AuthenticationStrengthRoot($this->_propDict["authenticationStrength"]);
+                return $this->_propDict["authenticationStrength"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the authenticationStrength
+    * Defines the authentication strength policies, valid authentication method combinations, and authentication method mode details that can be required by a conditional access policy.
+    *
+    * @param AuthenticationStrengthRoot $val The authenticationStrength
+    *
+    * @return ConditionalAccessRoot
+    */
+    public function setAuthenticationStrength($val)
+    {
+        $this->_propDict["authenticationStrength"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the authenticationStrengths
-    * Defines the authentication strength policies, valid authentication method combinations, and authentication method mode details that can be required by a conditional access policy .
     *
     * @return AuthenticationStrengthRoot|null The authenticationStrengths
     */
@@ -45,7 +77,6 @@ class ConditionalAccessRoot extends Entity
 
     /**
     * Sets the authenticationStrengths
-    * Defines the authentication strength policies, valid authentication method combinations, and authentication method mode details that can be required by a conditional access policy .
     *
     * @param AuthenticationStrengthRoot $val The authenticationStrengths
     *

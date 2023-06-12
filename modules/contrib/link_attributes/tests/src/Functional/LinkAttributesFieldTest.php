@@ -17,7 +17,7 @@ class LinkAttributesFieldTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'link_attributes',
     'field_ui',
@@ -40,12 +40,13 @@ class LinkAttributesFieldTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->adminUser = $this->drupalCreateUser([
       'administer content types',
       'administer node fields',
       'administer node display',
+      'bypass node access',
     ]);
     $this->drupalLogin($this->adminUser);
     // Breadcrumb is required for FieldUiTestTrait::fieldUIAddNewField.
@@ -119,7 +120,8 @@ class LinkAttributesFieldTest extends BrowserTestBase {
       'field_' . $field_name . '[1][uri]' => '<front>',
       'field_' . $field_name . '[1][options][attributes][class]' => 'class-three class-four',
     ];
-    $this->drupalPostForm($add_path, $edit, 'Save');
+    $this->drupalGet($add_path);
+    $this->submitForm($edit, 'Save');
     $node = $this->drupalGetNodeByTitle($edit['title[0][value]']);
 
     // Load the field values.
@@ -177,7 +179,7 @@ class LinkAttributesFieldTest extends BrowserTestBase {
       'field_' . $field_name . '[0][title]' => 'Link One',
       'field_' . $field_name . '[0][uri]' => '<front>',
     ];
-    $this->drupalPostForm($add_path, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $node = $this->drupalGetNodeByTitle($edit['title[0][value]']);
     $this->drupalGet($node->toUrl()->toString());
     $web_assert->linkExists('Link One');

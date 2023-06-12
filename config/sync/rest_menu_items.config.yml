@@ -1,3 +1,5 @@
+_core:
+  default_config_hash: Jf4526WHuU7GV95r5Zf107vA07RskjHFmq-9QWKnpbc
 output_values:
   key: key
   title: title
@@ -13,5 +15,3 @@ output_values:
   enabled: enabled
   uuid: uuid
   options: options
-_core:
-  default_config_hash: Jf4526WHuU7GV95r5Zf107vA07RskjHFmq-9QWKnpbc

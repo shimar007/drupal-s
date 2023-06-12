@@ -9,7 +9,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
 /**
- * Class MenuLinkContentUpdateHelper.
+ * Class for service MenuLinkContentUpdateHelper.
  *
  * @package Drupal\menu_item_extras\Service
  */

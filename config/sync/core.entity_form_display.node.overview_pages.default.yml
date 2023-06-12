@@ -17,16 +17,16 @@ third_party_settings:
       children:
         - title
         - field_view_reference
+      label: 'Overview Pages - Details'
+      region: content
       parent_name: ''
       weight: 0
       format_type: details
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         open: false
         required_fields: true
-      label: 'Overview Pages - Details'
-      region: content
 id: node.overview_pages.default
 targetEntityType: node
 bundle: overview_pages
@@ -39,15 +39,15 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_view_reference:
+    type: viewsreference_autocomplete
     weight: 2
+    region: content
     settings:
       match_operator: CONTAINS
       size: '60'
       placeholder: ''
       match_limit: 10
     third_party_settings: {  }
-    type: viewsreference_autocomplete
-    region: content
   path:
     type: path
     weight: 5
@@ -56,10 +56,10 @@ content:
     third_party_settings: {  }
   promote:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 3
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   publish_on:
     type: datetime_timestamp_no_default
@@ -69,17 +69,17 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 8
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 4
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   title:
     type: string_textfield
@@ -92,12 +92,12 @@ content:
   uid:
     type: entity_reference_autocomplete
     weight: 1
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
-    region: content
     third_party_settings: {  }
   unpublish_on:
     type: datetime_timestamp_no_default
@@ -107,8 +107,8 @@ content:
     third_party_settings: {  }
   url_redirects:
     weight: 50
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
   body: true

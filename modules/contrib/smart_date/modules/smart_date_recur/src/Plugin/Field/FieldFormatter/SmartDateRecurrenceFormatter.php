@@ -131,7 +131,7 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
   /**
    * {@inheritdoc}
    */
-  public function viewElements(FieldItemListInterface $items, $langcode) {
+  public function viewElements(FieldItemListInterface $items, $langcode, $format = '') {
     $elements = [];
     // @todo intellident switching between retrieval methods
     // Look for a defined format and use it if specified.
@@ -161,6 +161,15 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
     $settings['show_next'] = $this->getSetting('show_next');
     $settings['current_upcoming'] = $this->getSetting('current_upcoming');
 
+    // If an exposed filter is set for the field, use that as the minimum date.
+    $filter = \Drupal::request()->query->get($items->getName());
+    if (is_array($filter) && isset($filter['min']) && strtotime($filter['min']) > 0) {
+      $settings['min_date'] = strtotime($filter['min']);
+    }
+    elseif (is_string($filter) && strtotime($filter) > 0) {
+      $settings['min_date'] = strtotime($filter);
+    }
+
     // Retrieve any available augmenters.
     $augmenter_sets = ['instances', 'rule'];
     $augmenters = $this->initializeAugmenters($augmenter_sets);
@@ -185,7 +194,7 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
         }
         else {
           // No rule so include the item directly.
-          $elements[$delta] = $this->buildOutput($delta, $item);
+          $elements[$delta] = $this->buildOutput($delta, $item, $settings);
         }
       }
       else {
@@ -201,8 +210,8 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
     if ($force_chrono) {
       ksort($elements);
       $elements = array_values($elements);
-      $next_index = $this->findNextInstance($elements);
-      return [$this->subsetInstances($elements, $next_index)];
+      $next_index = $this->findNextInstance($elements, $settings);
+      return [$this->subsetInstances($elements, $next_index, $settings)];
     }
     foreach ($rrules as $rrid => $rrule_collected) {
       $instances = $rrule_collected['instances'];
@@ -243,10 +252,10 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
       else {
         // Output for other recurrences frequencies.
         // Find the 'next' instance after now.
-        $next_index = $this->findNextInstance($instances);
+        $next_index = $this->findNextInstance($instances, $settings);
       }
 
-      $rrule_output = $this->subsetInstances($instances, $next_index, $within_day);
+      $rrule_output = $this->subsetInstances($instances, $next_index, $settings, $within_day);
 
       $rrule_output['#rule_text']['rule'] = $rrule->getTextRule();
       if (!empty($augmenters['rule'])) {
@@ -256,6 +265,14 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
         $ends = $instances[array_key_last($instances)]->getValue()['end_value'];
         $this->augmentOutput($rrule_output['#rule_text'], $augmenters['rule'], $start['value'], $start['end_value'], $start['timezone'], $delta, 'rule', $repeats, $ends);
       }
+
+      if ($next_index == -1) {
+        $next_instance = array_pop($instances)->getValue();
+      }
+      else {
+        $next_instance = $instances[$next_index]->getValue();
+      }
+      $rrule_output['#cache']['max-age'] = $next_instance['value'] - \Drupal::time()->getRequestTime();
 
       $elements[$delta] = $rrule_output;
     }
@@ -270,18 +287,20 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
    *   The values to draw from.
    * @param int $next_index
    *   The value from which to calculate.
+   * @param array $settings
+   *   The settings used to render the instances.
    * @param bool $within_day
    *   Whether or not to format for recurring within a day.
    *
    * @return array
    *   The formatted render array.
    */
-  protected function subsetInstances(array $instances, $next_index, $within_day = FALSE) {
+  public static function subsetInstances(array $instances, $next_index, array $settings = [], $within_day = FALSE) {
     $periods = ['past_display', 'upcoming_display'];
     $period_instances = [];
 
     // Get the specified number of past instances.
-    $past_display = $this->settings['past_display'];
+    $past_display = $settings['past_display'] ?? 0;
 
     // Display past instances if set and at least one instances in the past.
     if ($past_display && $next_index) {
@@ -298,7 +317,7 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
       $period_instances['past_display'] = array_slice($instances, $begin, $past_display, TRUE);
     }
 
-    $upcoming_display = $this->settings['upcoming_display'];
+    $upcoming_display = $settings['upcoming_display'] ?? 0;
     // Display upcoming instances if set and at least one instance upcoming.
     if ($upcoming_display && $next_index < count($instances) && $next_index != -1) {
       $period_instances['upcoming_display'] = array_slice($instances, $next_index, $upcoming_display, TRUE);
@@ -324,7 +343,7 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
         foreach ($period_instances[$period] as $key => $item) {
           // Check for manual key and use, if set.
           $delta = $item->delta ?? $key;
-          $items[$delta] = $this->buildOutput($delta, $item);
+          $items[$delta] = static::buildOutput($delta, $item, $settings);
         }
       }
       foreach ($items as $delta => $item) {
@@ -334,7 +353,7 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
         ];
       }
     }
-    if ($this->settings['show_next'] && !empty($rrule_output['#upcoming_display']['#items'])) {
+    if (!empty($settings['show_next']) && !empty($rrule_output['#upcoming_display']['#items'])) {
       $rrule_output['#next_display'] = array_shift($rrule_output['#upcoming_display']['#items']);
     }
     return $rrule_output;
@@ -347,23 +366,25 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
    *   Numeric key of the output delta.
    * @param object $item
    *   Field values.
+   * @param array $settings
+   *   The settings used to render the instances.
    *
    * @return array
    *   Render array of the formatted output.
    */
-  protected function buildOutput($key, $item) {
+  protected static function buildOutput($key, $item, array $settings = []) {
     if (!$item || empty($item->value)) {
       return [];
     }
-    $output = static::formatSmartDate($item->value, $item->end_value, $this->settings, $item->timezone);
-    if ($this->settings['add_classes']) {
-      $this->addRangeClasses($output);
+    $output = static::formatSmartDate($item->value, $item->end_value, $settings, $item->timezone);
+    if (!empty($settings['add_classes'])) {
+      static::addRangeClasses($output);
     }
-    if ($this->settings['time_wrapper']) {
-      $this->addTimeWrapper($output, $item->value, $item->end_value, $item->timezone);
+    if (!empty($settings['time_wrapper'])) {
+      static::addTimeWrapper($output, $item->value, $item->end_value, $item->timezone);
     }
-    if (!empty($this->settings['augmenters']['instances'])) {
-      $this->augmentOutput($output, $this->settings['augmenters']['instances'], $item->value, $item->end_value, $item->timezone, $key, 'instances');
+    if (!empty($settings['augmenters']['instances'])) {
+      static::augmentOutput($output, $settings['augmenters']['instances'], $item->value, $item->end_value, $item->timezone, $key, 'instances');
     }
     return $output;
   }
@@ -371,11 +392,12 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
   /**
    * Helper function to find the next instance from now in a provided range.
    */
-  protected function findNextInstance(array $instances) {
+  public static function findNextInstance(array $instances, array $settings = []) {
     $next_index = -1;
-    $time = time();
+    $time = $settings['min_date'] ?? time();
+    $current_upcoming = $settings['current_upcoming'] ?? TRUE;
     foreach ($instances as $index => $instance) {
-      $date_compare = ($this->settings['current_upcoming']) ? $instance->end_value : $instance->value;
+      $date_compare = ($current_upcoming) ? $instance->end_value : $instance->value;
       if ($date_compare > $time) {
         $next_index = $index;
         break;
@@ -387,7 +409,7 @@ class SmartDateRecurrenceFormatter extends SmartDateDefaultFormatter {
   /**
    * Helper function to find the next instance from now in a provided range.
    */
-  protected function findNextInstanceByDay(array $dates, $today) {
+  public static function findNextInstanceByDay(array $dates, $today) {
     $next_index = -1;
     foreach ($dates as $index => $date) {
       if ($date >= $today) {

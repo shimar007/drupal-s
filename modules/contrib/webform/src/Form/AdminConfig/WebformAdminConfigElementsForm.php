@@ -7,6 +7,7 @@ use Drupal\Component\Utility\Environment;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\file\Plugin\Field\FieldType\FileItem;
+use Drupal\webform\Element\WebformHtmlEditor;
 use Drupal\webform\Element\WebformMessage;
 use Drupal\webform\Utility\WebformArrayHelper;
 use Drupal\webform\Utility\WebformOptionsHelper;
@@ -192,11 +193,11 @@ class WebformAdminConfigElementsForm extends WebformAdminConfigBaseForm {
       '#default_value' => $config->get('html_editor.disabled'),
     ];
     $format_options = [];
-    if ($this->moduleHandler->moduleExists('filter')) {
-      $filters = filter_formats();
-      foreach ($filters as $filter) {
-        $format_options[$filter->id()] = $filter->label();
-      }
+    $format_options[WebformHtmlEditor::DEFAULT_FILTER_FORMAT] = $this->t('- Default -');
+    $filters = filter_formats();
+    unset($filters[WebformHtmlEditor::DEFAULT_FILTER_FORMAT]);
+    foreach ($filters as $filter) {
+      $format_options[$filter->id()] = $filter->label();
     }
     $form['html_editor']['format_container'] = [
       '#type' => 'container',
@@ -210,8 +211,8 @@ class WebformAdminConfigElementsForm extends WebformAdminConfigBaseForm {
       '#type' => 'select',
       '#title' => $this->t('Element text format'),
       '#description' => $this->t('Leave blank to use the custom and recommended Webform specific HTML editor.'),
-      '#empty_option' => $this->t('- None -'),
       '#options' => $format_options,
+      '#required' => TRUE,
       '#default_value' => $config->get('html_editor.element_format'),
       '#parents' => ['html_editor', 'element_format'],
     ];
@@ -219,15 +220,10 @@ class WebformAdminConfigElementsForm extends WebformAdminConfigBaseForm {
       '#type' => 'select',
       '#title' => $this->t('Mail text format'),
       '#description' => $this->t('Leave blank to use the custom and recommended Webform specific HTML editor.'),
-      '#empty_option' => $this->t('- None -'),
       '#options' => $format_options,
+      '#required' => TRUE,
       '#default_value' => $config->get('html_editor.mail_format'),
       '#parents' => ['html_editor', 'mail_format'],
-      '#states' => [
-        'visible' => [
-          ':input[name="html_editor[disabled]"]' => ['checked' => FALSE],
-        ],
-      ],
     ];
     $form['html_editor']['format_container']['make_unused_managed_files_temporary'] = [
       '#type' => 'checkbox',
@@ -236,26 +232,12 @@ class WebformAdminConfigElementsForm extends WebformAdminConfigBaseForm {
       '#return_value' => TRUE,
       '#default_value' => $config->get('html_editor.make_unused_managed_files_temporary'),
       '#parents' => ['html_editor', 'make_unused_managed_files_temporary'],
-      '#states' => [
-        'visible' => [
-          [':input[name="html_editor[element_format]"]' => ['!value' => '']],
-          'or',
-          [':input[name="html_editor[mail_format]"]' => ['!value' => '']],
-        ],
-      ],
     ];
     $form['html_editor']['format_container']['warning_message'] = [
       '#type' => 'webform_message',
       '#message_message' => $this->t('Files uploaded via the CKEditor file dialog to webform elements, settings, and configuration will not be exportable.') . '<br/>' .
         '<strong>' . $this->t('All files must be uploaded to your production environment and then copied to development and local environment.') . '</strong>',
       '#message_type' => 'warning',
-      '#states' => [
-        'visible' => [
-          [':input[name="html_editor[element_format]"]' => ['!value' => '']],
-          'or',
-          [':input[name="html_editor[mail_format]"]' => ['!value' => '']],
-        ],
-      ],
       '#message_close' => TRUE,
       '#message_storage' => WebformMessage::STORAGE_SESSION,
     ];
@@ -551,6 +533,10 @@ class WebformAdminConfigElementsForm extends WebformAdminConfigBaseForm {
     $config->set('format', $format);
 
     parent::submitForm($form, $form_state);
+
+    // Make sure the HTML Editor is up-to-date.
+    \Drupal::moduleHandler()->loadInclude('webform', 'inc', 'includes/webform.install').
+    _webform_update_html_editor();
 
     // Reset libraries cached.
     // @see webform_library_info_build()

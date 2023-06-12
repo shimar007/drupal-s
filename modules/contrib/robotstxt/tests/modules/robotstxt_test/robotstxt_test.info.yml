@@ -2,10 +2,9 @@ name: 'Robotstxt module tests'
 type: module
 description: 'Support module for robotstxt module testing.'
 package: Testing
-core: 8.x
-core_version_requirement: ^8 || ^9
+hidden: true
 
-# Information added by Drupal.org packaging script on 2020-03-27
-version: '8.x-1.4'
+# Information added by Drupal.org packaging script on 2022-12-20
+version: '8.x-1.5'
 project: 'robotstxt'
-datestamp: 1585290536
+datestamp: 1671555189

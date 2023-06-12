@@ -107,12 +107,20 @@
         var option_hours = freq.querySelector("option[value = 'HOURLY']");
         var is_checked = element.checked;
         if (is_checked) {
-          option_minutes.disabled = true;
-          option_hours.disabled = true;
+          if (option_minutes) {
+            option_minutes.disabled = true;
+          }
+          if (option_hours) {
+            option_hours.disabled = true;
+          }
         }
         else {
-          option_minutes.disabled = false;
-          option_hours.disabled = false;
+          if (option_minutes) {
+            option_minutes.disabled = false;
+          }
+          if (option_hours) {
+            option_hours.disabled = false;
+          }
         }
       }
 

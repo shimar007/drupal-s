@@ -1,3 +1,5 @@
+_core:
+  default_config_hash: FoTCiVMOlTpj9EU5bUJB7lS8JK2gnnvqh-AdIC0ktBQ
 max_links: 2000
 cron_generate: true
 cron_generate_interval: 0
@@ -11,6 +13,4 @@ excluded_languages: {  }
 enabled_entity_types:
   - node
   - taxonomy_term
-_core:
-  default_config_hash: FoTCiVMOlTpj9EU5bUJB7lS8JK2gnnvqh-AdIC0ktBQ
 entities_per_queue_item: 50

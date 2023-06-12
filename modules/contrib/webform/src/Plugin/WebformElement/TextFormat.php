@@ -292,13 +292,6 @@ class TextFormat extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
-  public function preview() {
-    return ($this->moduleHandler->moduleExists('filter')) ? parent::preview() : [];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
@@ -376,6 +369,10 @@ class TextFormat extends WebformElementBase {
   public function postDelete(array &$element, WebformSubmissionInterface $webform_submission) {
     $key = $element['#webform_key'];
     $value = $webform_submission->getElementData($key);
+    if (is_null($value)) {
+      return;
+    }
+
     $uuids = _webform_parse_file_uuids($value['value']);
     _webform_delete_file_usage($uuids, $webform_submission->getEntityTypeId(), $webform_submission->id(), 0);
   }

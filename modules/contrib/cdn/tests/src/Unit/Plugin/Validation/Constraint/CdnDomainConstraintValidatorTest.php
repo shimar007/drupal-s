@@ -46,6 +46,7 @@ class CdnDomainConstraintValidatorTest extends UnitTestCase {
   }
 
   public function provideTestValidate() {
+    // phpcs:disable Drupal.Arrays.Array.LongLineDeclaration
     $data = [];
 
     $data['NULL is allowed because this is the initial value when installing the CDN module'] = [NULL, TRUE];
@@ -271,6 +272,8 @@ class CdnDomainConstraintValidatorTest extends UnitTestCase {
     $data['scheme + userinfo + host (IPv6) + port + path + fragment'] = ['https://user:pass@2001:db8::ff00:42:8329:1988/foo/bar#foobar', FALSE];
     $data['scheme + userinfo + host (IPv6) + port + path + query + fragment'] = ['https://user:pass@2001:db8::ff00:42:8329:1988/foo/bar?foo=bar#foobar', FALSE];
     $data['scheme + userinfo + host (IPv6) + port + query + fragment'] = ['https://user:pass@2001:db8::ff00:42:8329:1988/foo/bar?foo=bar#foobar', FALSE];
+
+    // phpcs:enable
 
     return $data;
   }

@@ -23,23 +23,23 @@ parser: syndication
 parser_configuration: {  }
 processor: 'entity:node'
 processor_configuration:
+  values:
+    type: feeds_drupal
   update_existing: 2
   update_non_existent: _keep
+  skip_hash_check: false
+  authorize: true
   expire: -1
   owner_feed_author: false
   owner_id: 1
-  authorize: true
-  skip_hash_check: false
-  values:
-    type: feeds_drupal
 custom_sources:
   '':
-    label: ''
     value: ''
+    label: ''
     machine_name: ''
   drupal_news:
-    label: 'Drupal News'
     value: 'Drupal News'
+    label: 'Drupal News'
     machine_name: drupal_news
 mappings:
   -

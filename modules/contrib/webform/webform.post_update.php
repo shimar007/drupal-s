@@ -5,6 +5,14 @@
  * Post update functions for Webform module.
  */
 
+use Drupal\webform\Element\WebformHtmlEditor;
+
+// Webform install helper functions.
+include_once __DIR__ . '/includes/webform.install.inc';
+
+// Webform update hooks.
+include_once __DIR__ . '/includes/webform.install.update.inc';
+
 /**
  * #3254570: Move jQuery UI datepicker support into dedicated deprecated module.
  */
@@ -71,4 +79,20 @@ function webform_post_update_deprecate_location_places() {
 
   // Save webform.settings configuration.
   $config->save();
+}
+
+/**
+ * Move from custom CKEditor to hidden 'webform_default' text format.
+ */
+function webform_post_update_ckeditor() {
+  $config = \Drupal::configFactory()->getEditable('webform.settings');
+  if (empty($config->get('html_editor.element_format'))) {
+    $config->set('html_editor.element_format', WebformHtmlEditor::DEFAULT_FILTER_FORMAT);
+  }
+  if (empty($config->get('html_editor.mail_format'))) {
+    $config->set('html_editor.mail_format', WebformHtmlEditor::DEFAULT_FILTER_FORMAT);
+  }
+  $config->save();
+
+  _webform_update_html_editor();
 }

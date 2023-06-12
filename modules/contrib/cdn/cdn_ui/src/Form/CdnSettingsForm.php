@@ -19,6 +19,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class CdnSettingsForm extends ValidatableConfigFormBase {
 
   /**
+   * The 'nocssjs' conditions preset: all files except CSS and JS.
+   *
+   * @var array
+   */
+  private const CONDITIONS_PRESET_NOCSSJS = [
+    'not' => [
+      'extensions' => ['css', 'js'],
+    ],
+  ];
+
+  /**
    * The stream wrapper manager.
    *
    * @var \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface
@@ -101,7 +112,7 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
     ];
 
     $mapping_type_ui_string = $this->t('Use @mapping-type mapping');
-    list($mapping_type_ui_string_prefix, $mapping_type_ui_string_suffix) = explode('@mapping-type', (string) $mapping_type_ui_string, 2);
+    [$mapping_type_ui_string_prefix, $mapping_type_ui_string_suffix] = explode('@mapping-type', (string) $mapping_type_ui_string, 2);
     $form['mapping']['type'] = [
       '#field_prefix' => $mapping_type_ui_string_prefix,
       '#field_suffix' => $mapping_type_ui_string_suffix,
@@ -127,7 +138,11 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
       '#attributes' => ['class' => ['container-inline']],
     ];
     $simple_mapping_ui_string = $this->t('Serve @files-with-some-extension from @domain using @type-of-urls');
-    list($simple_mapping_ui_string_part_one, $simple_mapping_ui_string_part_two, $simple_mapping_ui_string_part_three) = preg_split('/\@[a-z\-]+/', (string) $simple_mapping_ui_string, -1, PREG_SPLIT_NO_EMPTY);
+    [
+      $simple_mapping_ui_string_part_one,
+      $simple_mapping_ui_string_part_two,
+      $simple_mapping_ui_string_part_three,
+    ] = preg_split('/\@[a-z\-]+/', (string) $simple_mapping_ui_string, -1, PREG_SPLIT_NO_EMPTY);
     $form['mapping']['simple']['extensions_condition_toggle'] = [
       '#type' => 'select',
       '#title' => $this->t('Limit by file extension'),
@@ -138,7 +153,9 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
         'nocssjs' => $this->t('all files except CSS+JS'),
         'limited' => $this->t('only files'),
       ],
-      '#default_value' => $config->get('mapping.conditions') === ['not' => ['extensions' => ['css', 'js']]] ? 'nocssjs' : (empty($config->get('mapping.conditions.extensions')) ? 'all' : 'limited'),
+      '#default_value' => $config->get('mapping.conditions') === static::CONDITIONS_PRESET_NOCSSJS
+        ? 'nocssjs'
+        : (empty($config->get('mapping.conditions.extensions')) ? 'all' : 'limited'),
     ];
     $form['mapping']['simple']['extensions_condition_value'] = [
       '#field_prefix' => $this->t('with the extension'),
@@ -267,7 +284,10 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
       $wrapper = $this->streamWrapperManager->getViaScheme($stream_wrapper_scheme);
       $generates_external_urls = static::streamWrapperGeneratesExternalUrls($stream_wrapper_scheme, $wrapper);
       $checkboxes[$stream_wrapper_scheme] = [
-        '#title' => $this->t('@name → <code>@scheme://</code>', ['@scheme' => $stream_wrapper_scheme, '@name' => $wrapper->getName()]),
+        '#title' => $this->t('@name → <code>@scheme://</code>', [
+          '@scheme' => $stream_wrapper_scheme,
+          '@name' => $wrapper->getName(),
+        ]),
         '#disabled' => $generates_external_urls,
         '#description' => !$generates_external_urls ? NULL : $this->t('This stream wrapper generates external URLs, and hence cannot be served from a CDN.'),
       ];
@@ -283,7 +303,10 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
     $config->set('status', (bool) $form_state->getValue('status'));
 
     // Vertical tab: 'Stream wrappers'.
-    $stream_wrappers = array_values(array_filter($form_state->getValue(['wrappers', 'stream_wrappers'])));
+    $stream_wrappers = array_values(array_filter($form_state->getValue([
+      'wrappers',
+      'stream_wrappers',
+    ])));
     $config->set('stream_wrappers', $stream_wrappers);
 
     // Vertical tab: 'Mapping'.
@@ -300,7 +323,7 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
       // Plus one particular common preset: 'nocssjs', which means all files
       // except CSS and JS.
       elseif ($simple_mapping['extensions_condition_toggle'] === 'nocssjs') {
-        $config->set('mapping.conditions', ['not' => ['extensions' => ['css', 'js']]]);
+        $config->set('mapping.conditions', static::CONDITIONS_PRESET_NOCSSJS);
       }
       else {
         // Remove the 'not' or 'extensions' conditions if set.
@@ -317,7 +340,10 @@ class CdnSettingsForm extends ValidatableConfigFormBase {
     }
 
     // Vertical tab: 'Forever cacheable files'.
-    $config->set('farfuture.status', (bool) $form_state->getValue(['farfuture', 'status']));
+    $config->set('farfuture.status', (bool) $form_state->getValue([
+      'farfuture',
+      'status',
+    ]));
 
     return $config;
   }

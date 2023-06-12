@@ -35,11 +35,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
  *     "uuid" = "uuid",
  *   },
  *   links = {
- *     "canonical" = "/admin/content/smart_date_recur/overrides/{smart_date_override}",
- *     "add-form" = "/admin/content/smart_date_recur/overrides/add",
- *     "edit-form" = "/admin/content/smart_date_recur/overrides/{smart_date_override}/edit",
- *     "delete-form" = "/admin/content/smart_date_recur/overrides/{smart_date_override}/delete",
- *     "collection" = "/admin/content/smart_date_recur/overrides",
+ *     "delete-form" = "/admin/content/smart_date_recur/overrides/{smart_date_override}/delete"
  *   }
  * )
  */

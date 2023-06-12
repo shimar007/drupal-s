@@ -33,7 +33,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $settings = [
@@ -83,39 +83,301 @@ class FileUrlGeneratorTest extends UnitTestCase {
 
   public function urlProvider() {
     $cases_root = [
-      'absolute URL' => ['http://example.com/llama.jpg', FALSE],
-      'scheme-relative URL' => ['//example.com/llama.jpg', FALSE],
-      'shipped file (fallback)' => ['core/misc/something.else', '//cdn.example.com/core/misc/something.else'],
-      'shipped file (simple)' => ['core/misc/simple.css', '//static.example.com/core/misc/simple.css'],
-      'shipped file (auto-balanced)' => ['core/misc/auto-balanced.png', '//img2.example.com/core/misc/auto-balanced.png'],
-      'shipped file with querystring (e.g. in url() in CSS)' => ['core/misc/something.else?foo=bar&baz=qux', '//cdn.example.com/core/misc/something.else?foo=bar&baz=qux'],
-      'shipped file with fragment (e.g. in url() in CSS)' => ['core/misc/something.else#llama', '//cdn.example.com/core/misc/something.else#llama'],
-      'shipped file with querystring & fragment (e.g. in url() in CSS)' => ['core/misc/something.else?foo=bar&baz=qux#llama', '//cdn.example.com/core/misc/something.else?foo=bar&baz=qux#llama'],
-      'managed public public file (fallback)' => ['public://something.else', '//cdn.example.com/sites/default/files/something.else'],
-      'managed public public file (spublic public imple)' => ['public://simple.css', '//static.example.com/sites/default/files/simple.css'],
-      'managed public public file (auto-balanced)' => ['public://auto-balanced.png', '//img2.example.com/sites/default/files/auto-balanced.png'],
-      'managed private file (fallback)' => ['private://something.else', FALSE],
-      'unicode' => ['public://újjáépítésérol — 100% in B&W.jpg', '//img1.example.com/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg'],
-      'reserved characters in RFC3986' => ['public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something', '//cdn.example.com/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something'],
+      'absolute URL' => [
+        'http://example.com/llama.jpg',
+        FALSE,
+      ],
+      'scheme-relative URL' => [
+        '//example.com/llama.jpg',
+        FALSE,
+      ],
+      'shipped file (fallback)' => [
+        'core/misc/something.else',
+        '//cdn.example.com/core/misc/something.else',
+      ],
+      'shipped file (simple)' => [
+        'core/misc/simple.css',
+        '//static.example.com/core/misc/simple.css',
+      ],
+      'shipped file (auto-balanced)' => [
+        'core/misc/auto-balanced.png',
+        '//img2.example.com/core/misc/auto-balanced.png',
+      ],
+      'shipped file with querystring (e.g. in url() in CSS)' => [
+        'core/misc/something.else?foo=bar&baz=qux',
+        '//cdn.example.com/core/misc/something.else?foo=bar&baz=qux',
+      ],
+      'shipped file with fragment (e.g. in url() in CSS)' => [
+        'core/misc/something.else#llama',
+        '//cdn.example.com/core/misc/something.else#llama',
+      ],
+      'shipped file with querystring & fragment (e.g. in url() in CSS)' => [
+        'core/misc/something.else?foo=bar&baz=qux#llama',
+        '//cdn.example.com/core/misc/something.else?foo=bar&baz=qux#llama',
+      ],
+      'managed public file (fallback)' => [
+        'public://something.else',
+        '//cdn.example.com/sites/default/files/something.else',
+      ],
+      'managed public file (spublic public imple)' => [
+        'public://simple.css',
+        '//static.example.com/sites/default/files/simple.css',
+      ],
+      'managed public file (auto-balanced)' => [
+        'public://auto-balanced.png',
+        '//img2.example.com/sites/default/files/auto-balanced.png',
+      ],
+      'managed private file (fallback)' => [
+        'private://something.else',
+        FALSE,
+      ],
+      'unicode' => [
+        'public://újjáépítésérol — 100% in B&W.jpg',
+        '//img1.example.com/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg',
+      ],
+      'encoded' => [
+        'public://llama%20.jpg',
+        '//img2.example.com/sites/default/files/llama%2520.jpg',
+      ],
+      'reserved characters in RFC3986' => [
+        'public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something',
+        '//cdn.example.com/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+      ],
     ];
 
     $cases_subdir = [
-      'absolute URL' => ['http://example.com/llama.jpg', FALSE],
-      'scheme-relative URL' => ['//example.com/llama.jpg', FALSE],
-      'shipped file (fallback)' => ['core/misc/feed.svg', '//cdn.example.com/subdir/core/misc/feed.svg'],
-      'shipped file (simple)' => ['core/misc/simple.css', '//static.example.com/subdir/core/misc/simple.css'],
-      'shipped file (auto-balanced)' => ['core/misc/auto-balanced.png', '//img2.example.com/subdir/core/misc/auto-balanced.png'],
-      'shipped file with querystring (e.g. in url() in CSS)' => ['core/misc/something.else?foo=bar&baz=qux', '//cdn.example.com/subdir/core/misc/something.else?foo=bar&baz=qux'],
-      'shipped file with fragment (e.g. in url() in CSS)' => ['core/misc/something.else#llama', '//cdn.example.com/subdir/core/misc/something.else#llama'],
-      'shipped file with querystring & fragment (e.g. in url() in CSS)' => ['core/misc/something.else?foo=bar&baz=qux#llama', '//cdn.example.com/subdir/core/misc/something.else?foo=bar&baz=qux#llama'],
-      'managed public file (fallback)' => ['public://something.else', '//cdn.example.com/subdir/sites/default/files/something.else'],
-      'managed public file (simple)' => ['public://simple.css', '//static.example.com/subdir/sites/default/files/simple.css'],
-      'managed public file (auto-balanced)' => ['public://auto-balanced.png', '//img2.example.com/subdir/sites/default/files/auto-balanced.png'],
-      'managed private file (fallback)' => ['private://something.else', FALSE],
-      'unicode' => ['public://újjáépítésérol — 100% in B&W.jpg', '//img1.example.com/subdir/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg'],
-      'reserved characters in RFC3986' => ['public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something', '//cdn.example.com/subdir/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something'],
+      'absolute URL' => [
+        'http://example.com/llama.jpg',
+        FALSE,
+      ],
+      'scheme-relative URL' => [
+        '//example.com/llama.jpg',
+        FALSE,
+      ],
+      'shipped file (fallback)' => [
+        'core/misc/feed.svg',
+        '//cdn.example.com/subdir/core/misc/feed.svg',
+      ],
+      'shipped file (simple)' => [
+        'core/misc/simple.css',
+        '//static.example.com/subdir/core/misc/simple.css',
+      ],
+      'shipped file (auto-balanced)' => [
+        'core/misc/auto-balanced.png',
+        '//img2.example.com/subdir/core/misc/auto-balanced.png',
+      ],
+      'shipped file with querystring (e.g. in url() in CSS)' => [
+        'core/misc/something.else?foo=bar&baz=qux',
+        '//cdn.example.com/subdir/core/misc/something.else?foo=bar&baz=qux',
+      ],
+      'shipped file with fragment (e.g. in url() in CSS)' => [
+        'core/misc/something.else#llama',
+        '//cdn.example.com/subdir/core/misc/something.else#llama',
+      ],
+      'shipped file with querystring & fragment (e.g. in url() in CSS)' => [
+        'core/misc/something.else?foo=bar&baz=qux#llama',
+        '//cdn.example.com/subdir/core/misc/something.else?foo=bar&baz=qux#llama',
+      ],
+      'managed public file (fallback)' => [
+        'public://something.else',
+        '//cdn.example.com/subdir/sites/default/files/something.else',
+      ],
+      'managed public file (simple)' => [
+        'public://simple.css',
+        '//static.example.com/subdir/sites/default/files/simple.css',
+      ],
+      'managed public file (auto-balanced)' => [
+        'public://auto-balanced.png',
+        '//img2.example.com/subdir/sites/default/files/auto-balanced.png',
+      ],
+      'managed private file (fallback)' => [
+        'private://something.else',
+        FALSE,
+      ],
+      'unicode' => [
+        'public://újjáépítésérol — 100% in B&W.jpg',
+        '//img1.example.com/subdir/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg',
+      ],
+      'encoded' => [
+        'public://llama%20.jpg',
+        '//img2.example.com/subdir/sites/default/files/llama%2520.jpg',
+      ],
+      'reserved characters in RFC3986' => [
+        'public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something',
+        '//cdn.example.com/subdir/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+      ],
     ];
 
+    return $this->getCasesWithScheme($cases_root, $cases_subdir);
+  }
+
+  /**
+   * @covers ::generate
+   * @dataProvider urlProviderForNegatedCondition
+   */
+  public function testGenerateWithNegatedCondition($scheme, $base_path, $uri, $expected_result) {
+    $gen = $this->createFileUrlGenerator($base_path, [
+      'status' => TRUE,
+      'mapping' => [
+        'type' => 'simple',
+        'domain' => 'cdn.example.com',
+        'conditions' => [
+          'not' => [
+            'extensions' => ['css', 'js'],
+          ],
+        ],
+      ],
+      'scheme' => $scheme,
+      'farfuture' => [
+        'status' => FALSE,
+      ],
+      'stream_wrappers' => ['public'],
+    ]);
+    $this->assertSame($expected_result, $gen->generate($uri));
+  }
+
+  public function urlProviderForNegatedCondition() {
+    $cases_root = [
+      'absolute URL' => [
+        'http://example.com/llama.jpg',
+        FALSE,
+      ],
+      'scheme-relative URL' => [
+        '//example.com/llama.jpg',
+        FALSE,
+      ],
+      'shipped file (simple, excluded)' => [
+        'core/misc/simple.css',
+        FALSE,
+      ],
+      'shipped file (simple)' => [
+        'core/misc/simple.jpg',
+        '//cdn.example.com/core/misc/simple.jpg',
+      ],
+      'shipped file with querystring (e.g. in url() in CSS)' => [
+        'core/misc/something-else.css?foo=bar&baz=qux',
+        FALSE,
+      ],
+      'shipped file with fragment (e.g. in url() in CSS)' => [
+        'core/misc/something-else.css#llama',
+        FALSE,
+      ],
+      'shipped file with querystring & fragment (e.g. in url() in CSS)' => [
+        'core/misc/something-else.css?foo=bar&baz=qux#llama',
+        FALSE,
+      ],
+      'managed public file' => [
+        'public://something.else',
+        '//cdn.example.com/sites/default/files/something.else',
+      ],
+      'managed public file (public simple css)' => [
+        'public://simple.css',
+        FALSE,
+      ],
+      'managed public file (public simple js)' => [
+        'public://simple.js',
+        FALSE,
+      ],
+      'managed public file (public simple anything-else)' => [
+        'public://simple.jpg',
+        '//cdn.example.com/sites/default/files/simple.jpg',
+      ],
+      'managed private file' => [
+        'private://something.else',
+        FALSE,
+      ],
+      'unicode' => [
+        'public://újjáépítésérol — 100% in B&W.jpg',
+        '//cdn.example.com/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg',
+      ],
+      'encoded' => [
+        'public://llama%20.jpg',
+        '//cdn.example.com/sites/default/files/llama%2520.jpg',
+      ],
+      'reserved characters in RFC3986' => [
+        'public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something',
+        '//cdn.example.com/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+      ],
+    ];
+
+    $cases_subdir = [
+      'absolute URL' => [
+        'http://example.com/llama.jpg',
+        FALSE,
+      ],
+      'scheme-relative URL' => [
+        '//example.com/llama.jpg',
+        FALSE,
+      ],
+      'shipped file (simple, excluded)' => [
+        'core/misc/simple.css',
+        FALSE,
+      ],
+      'shipped file (simple)' => [
+        'core/misc/simple.jpg',
+        '//cdn.example.com/subdir/core/misc/simple.jpg',
+      ],
+      'shipped file with querystring (e.g. in url() in CSS)' => [
+        'core/misc/something-else.css?foo=bar&baz=qux',
+        FALSE,
+      ],
+      'shipped file with fragment (e.g. in url() in CSS)' => [
+        'core/misc/something-else.css#llama',
+        FALSE,
+      ],
+      'shipped file with querystring & fragment (e.g. in url() in CSS)' => [
+        'core/misc/something-else.css?foo=bar&baz=qux#llama',
+        FALSE,
+      ],
+      'managed public file' => [
+        'public://something.else',
+        '//cdn.example.com/subdir/sites/default/files/something.else',
+      ],
+      'managed public file (public simple css)' => [
+        'public://simple.css',
+        FALSE,
+      ],
+      'managed public file (public simple js)' => [
+        'public://simple.js',
+        FALSE,
+      ],
+      'managed public file (public simple anything-else)' => [
+        'public://simple.jpg',
+        '//cdn.example.com/subdir/sites/default/files/simple.jpg',
+      ],
+      'managed private file' => [
+        'private://something.else',
+        FALSE,
+      ],
+      'unicode' => [
+        'public://újjáépítésérol — 100% in B&W.jpg',
+        '//cdn.example.com/subdir/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg',
+      ],
+      'encoded' => [
+        'public://llama%20.jpg',
+        '//cdn.example.com/subdir/sites/default/files/llama%2520.jpg',
+      ],
+      'reserved characters in RFC3986' => [
+        'public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something',
+        '//cdn.example.com/subdir/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+      ],
+    ];
+
+    return $this->getCasesWithScheme($cases_root, $cases_subdir);
+  }
+
+  /**
+   * Builds dataProvider for given cases on root and subdir scenarios.
+   *
+   * @param array $cases_root
+   *   An array of scenarios at root level.
+   * @param array $cases_subdir
+   *   An array of scenarios at subdir level.
+   *
+   * @return array
+   *   A dataProvider array of urls to test.
+   */
+  private function getCasesWithScheme(array $cases_root, array $cases_subdir): array {
     $cases = [];
     assert(count($cases_root) === count($cases_subdir));
     foreach ($cases_root as $description => $case) {
@@ -129,7 +391,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
     $cases_with_scheme = [];
     foreach ($cases as $description => $case) {
       foreach (['https://', 'http://', '//'] as $scheme) {
-        list($base_path, $uri, $expected_result) = $case;
+        [$base_path, $uri, $expected_result] = $case;
         $cases_with_scheme['scheme=' . $scheme . ', ' . $description] = [
           $scheme,
           $base_path,
@@ -166,7 +428,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
     ];
 
     // Generate file for testing managed file.
-    $llama_jpg_filename = 'llama (' . $this->randomMachineName() . ').jpg';
+    $llama_jpg_filename = 'llama%20 (' . $this->randomMachineName() . ').jpg';
     $llama_jpg_filepath = $this->root . '/sites/default/files/' . $llama_jpg_filename;
     file_put_contents($llama_jpg_filepath, $this->randomMachineName());
     $llama_jpg_mtime = filemtime($llama_jpg_filepath);

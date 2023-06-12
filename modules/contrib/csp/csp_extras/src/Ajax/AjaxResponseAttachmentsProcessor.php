@@ -2,15 +2,18 @@
 
 namespace Drupal\csp_extras\Ajax;
 
-use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\Ajax\AddCssCommand;
+use Drupal\Core\Ajax\AddJsCommand;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\SettingsCommand;
+use Drupal\Core\Asset\AssetCollectionRendererInterface;
 use Drupal\Core\Asset\AssetResolverInterface;
 use Drupal\Core\Asset\AttachedAssets;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\AttachmentsInterface;
 use Drupal\Core\Render\AttachmentsResponseProcessorInterface;
+use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -21,6 +24,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @see \Drupal\Core\Render\MainContent\AjaxRenderer
  */
 class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorInterface {
+
+  /**
+   * The decorated Ajax Response Attachments Processor.
+   *
+   * @var \Drupal\Core\Render\AttachmentsResponseProcessorInterface
+   */
+  protected $decoratedAjaxResponseAttachmentsProcessor;
 
   /**
    * The asset resolver service.
@@ -37,6 +47,20 @@ class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorIn
   protected $config;
 
   /**
+   * The CSS asset collection renderer service.
+   *
+   * @var \Drupal\Core\Asset\AssetCollectionRendererInterface
+   */
+  protected $cssCollectionRenderer;
+
+  /**
+   * The JS asset collection renderer service.
+   *
+   * @var \Drupal\Core\Asset\AssetCollectionRendererInterface
+   */
+  protected $jsCollectionRenderer;
+
+  /**
    * The request stack.
    *
    * @var \Symfony\Component\HttpFoundation\RequestStack
@@ -51,44 +75,53 @@ class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorIn
   protected $moduleHandler;
 
   /**
-   * The time service.
+   * Constructs an AjaxResponseAttachmentsProcessor object.
    *
-   * @var \Drupal\Component\Datetime\TimeInterface
-   */
-  protected $time;
-
-  /**
-   * Constructs a AjaxResponseAttachmentsProcessor object.
-   *
+   * @param \Drupal\Core\Render\AttachmentsResponseProcessorInterface $decoratedAjaxResponseAttachmentsProcessor
+   *   The decorated Attachments Response Processor.
    * @param \Drupal\Core\Asset\AssetResolverInterface $asset_resolver
    *   An asset resolver.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   A config factory for retrieving required config objects.
+   * @param \Drupal\Core\Asset\AssetCollectionRendererInterface $css_collection_renderer
+   *   The CSS asset collection renderer.
+   * @param \Drupal\Core\Asset\AssetCollectionRendererInterface $js_collection_renderer
+   *   The JS asset collection renderer.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
-   * @param \Drupal\Component\Datetime\TimeInterface $time
-   *   The time service.
    */
   public function __construct(
+    AttachmentsResponseProcessorInterface $decoratedAjaxResponseAttachmentsProcessor,
     AssetResolverInterface $asset_resolver,
     ConfigFactoryInterface $config_factory,
+    AssetCollectionRendererInterface $css_collection_renderer,
+    AssetCollectionRendererInterface $js_collection_renderer,
     RequestStack $request_stack,
-    ModuleHandlerInterface $module_handler,
-    TimeInterface $time
+    RendererInterface $renderer,
+    ModuleHandlerInterface $module_handler
   ) {
+    $this->decoratedAjaxResponseAttachmentsProcessor = $decoratedAjaxResponseAttachmentsProcessor;
     $this->assetResolver = $asset_resolver;
     $this->config = $config_factory->get('system.performance');
+    $this->cssCollectionRenderer = $css_collection_renderer;
+    $this->jsCollectionRenderer = $js_collection_renderer;
     $this->requestStack = $request_stack;
+    $this->renderer = $renderer;
     $this->moduleHandler = $module_handler;
-    $this->time = $time;
   }
 
   /**
    * {@inheritdoc}
    */
   public function processAttachments(AttachmentsInterface $response) {
+    if (version_compare(\Drupal::VERSION, '10.1', '>=')) {
+      return $this->decoratedAjaxResponseAttachmentsProcessor->processAttachments($response);
+    }
+
     // @todo Convert to assertion once https://www.drupal.org/node/2408013 lands
     if (!$response instanceof AjaxResponse) {
       throw new \InvalidArgumentException('\Drupal\Core\Ajax\AjaxResponse instance expected.');
@@ -115,7 +148,7 @@ class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorIn
    *   An array of commands ready to be returned as JSON.
    */
   protected function buildAttachmentsCommands(AjaxResponse $response, Request $request) {
-    $ajax_page_state = $request->request->get('ajax_page_state');
+    $ajax_page_state = $request->request->all('ajax_page_state');
 
     // Aggregate CSS/JS if necessary, but only during normal site operation.
     $optimize_css = !defined('MAINTENANCE_MODE') && $this->config->get('css.preprocess');
@@ -125,11 +158,11 @@ class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorIn
 
     // Resolve the attached libraries into asset collections.
     $assets = new AttachedAssets();
-    $assets->setLibraries(isset($attachments['library']) ? $attachments['library'] : [])
+    $assets->setLibraries($attachments['library'] ?? [])
       ->setAlreadyLoadedLibraries(isset($ajax_page_state['libraries']) ? explode(',', $ajax_page_state['libraries']) : [])
-      ->setSettings(isset($attachments['drupalSettings']) ? $attachments['drupalSettings'] : []);
+      ->setSettings($attachments['drupalSettings'] ?? []);
     $css_assets = $this->assetResolver->getCssAssets($assets, $optimize_css);
-    list($js_assets_header, $js_assets_footer) = $this->assetResolver->getJsAssets($assets, $optimize_js);
+    [$js_assets_header, $js_assets_footer] = $this->assetResolver->getJsAssets($assets, $optimize_js);
 
     // First, AttachedAssets::setLibraries() ensures duplicate libraries are
     // removed: it converts it to a set of libraries if necessary. Second,
@@ -153,64 +186,38 @@ class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorIn
       unset($js_assets_footer['drupalSettings']);
     }
 
-    // Remove assets that are not available to all browsers.
-    $css_assets = array_filter($css_assets, [$this, 'filterBrowserAssets']);
-    $js_assets = array_filter(array_merge($js_assets_header, $js_assets_footer), [$this, 'filterBrowserAssets']);
-
-    if (!empty($css_assets) || !empty($js_assets)) {
-      $default_query_string = \Drupal::state()->get('system.css_js_query_string') ?: '0';
-
-      $css_assets = array_map(
-        function ($css_asset) use ($default_query_string) {
-          $asset = [
-            'type' => 'stylesheet',
-            'attributes' => [
-              'media' => $css_asset['media'],
-              'href' => file_url_transform_relative(file_create_url($css_asset['data'])),
-            ],
-          ];
-
-          if (isset($css_asset['attributes'])) {
-            $asset['attributes'] += $css_asset['attributes'];
-          }
-
-          // Only add the cache-busting query string if this isn't an
-          // aggregate file.
-          if ($css_asset['type'] == 'file' && !isset($css_asset['preprocessed'])) {
-            $query_string_separator = (strpos($css_asset['data'], '?') !== FALSE) ? '&' : '?';
-            $asset['attributes']['href'] .= $query_string_separator . $default_query_string;
-          }
-          return $asset;
-        },
-        $css_assets
+    if (version_compare(\Drupal::VERSION, '10.0.0', '<')) {
+      // Remove assets that are not available to all browsers.
+      $css_assets = array_filter(
+        $css_assets,
+        [$this, 'filterBrowserAssets']
       );
-
-      $js_assets = array_map(
-        function ($js_asset) use ($default_query_string) {
-          $asset = [
-            'type' => 'script',
-            'attributes' => [
-              'src' => file_url_transform_relative(file_create_url($js_asset['data'])),
-            ],
-          ];
-
-          if (isset($js_asset['attributes'])) {
-            $asset['attributes'] += $js_asset['attributes'];
-          }
-
-          // Only add the cache-busting query string if this isn't an
-          // aggregate file.
-          if ($js_asset['type'] == 'file' && !isset($js_asset['preprocessed'])) {
-            $query_string = $js_asset['version'] == -1 ? $default_query_string : 'v=' . $js_asset['version'];
-            $query_string_separator = (strpos($js_asset['data'], '?') !== FALSE) ? '&' : '?';
-            $asset['attributes']['src'] .= $query_string_separator . ($js_asset['cache'] ? $query_string : $this->time->getRequestTime());
-          }
-          return $asset;
-        },
-        $js_assets
+      $js_assets_header = array_filter(
+        $js_assets_header,
+        [$this, 'filterBrowserAssets']
       );
+      $js_assets_footer = array_filter(
+        $js_assets_footer,
+        [$this, 'filterBrowserAssets']
+      );
+    }
 
-      $response->addCommand(new AddAssetsCommand(array_merge($css_assets, $js_assets)), TRUE);
+    // Prepend commands to add the assets, preserving their relative order.
+    $resource_commands = [];
+    if ($css_assets) {
+      $css_render_array = $this->cssCollectionRenderer->render($css_assets);
+      $resource_commands[] = new AddCssCommand(array_column($css_render_array, '#attributes'));
+    }
+    if ($js_assets_header) {
+      $js_header_render_array = $this->jsCollectionRenderer->render($js_assets_header);
+      $resource_commands[] = new AddJsCommand(array_column($js_header_render_array, '#attributes'), 'head');
+    }
+    if ($js_assets_footer) {
+      $js_footer_render_array = $this->jsCollectionRenderer->render($js_assets_footer);
+      $resource_commands[] = new AddJsCommand(array_column($js_footer_render_array, '#attributes'));
+    }
+    foreach (array_reverse($resource_commands) as $resource_command) {
+      $response->addCommand($resource_command, TRUE);
     }
 
     // Prepend a command to merge changes and additions to drupalSettings.

@@ -1010,7 +1010,7 @@ function webform_update_8046() {
       ->condition('collection', $collections, 'IN');
     $result = $query->execute();
     while ($record = $result->fetchAssoc()) {
-      $data = unserialize($record['data']);
+      $data = unserialize($record['data'], ['allowed_classes' => FALSE]);
       $data = _webform_update_8046_convert_data($data);
       \Drupal::database()->update($table_name)
         ->fields(['data' => serialize($data)])
@@ -3276,7 +3276,7 @@ function webform_update_8175() {
       ->condition('name', 'webform.settings');
     $result = $query->execute();
     while ($record = $result->fetchAssoc()) {
-      $data = unserialize($record['data']);
+      $data = unserialize($record['data'], ['allowed_classes' => FALSE]);
       $data['mail']['default_subject'] = str_replace('[webform_submission:source-entity]', '[webform_submission:source-title]', $data['mail']['default_subject']);
       \Drupal::database()->update($table_name)
         ->fields(['data' => serialize($data)])

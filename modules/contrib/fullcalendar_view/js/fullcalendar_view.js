@@ -17,6 +17,8 @@
    * Event render handler
    */
   function eventRender (info) {
+    let viewIndex = parseInt(this.el.getAttribute("calendar-view-index"));
+    let viewSettings = drupalSettings.fullCalendarView[viewIndex];
     // Event title html markup.
     let eventTitleEle = info.el.getElementsByClassName('fc-title');
     if(eventTitleEle.length > 0) {
@@ -30,6 +32,23 @@
       }
       else {
         eventListTitleEle[0].innerHTML = info.event.title;
+      }
+    }
+    // Modal popup
+    if (viewSettings.dialogModal) {
+      if ($(info.el).is('a')) {
+        $(info.el).addClass('use-ajax');
+        $(info.el).attr('data-dialog-type', 'modal');
+        $(info.el).attr('data-dialog-options', viewSettings.dialog_modal_options);
+        $(info.el).attr('href', $(info.el).attr('href').replaceAll('&amp;', '&'));
+      }
+      else {
+        $(info.el).find('a').each(function(){
+          $(this).attr('data-dialog-type', 'modal');
+          $(this).attr('data-dialog-options', viewSettings.dialog_modal_options);
+          $(this).addClass('use-ajax');
+          $(this).attr('href', $(this).attr('href').replaceAll('&amp;', '&'));
+        });
       }
     }
   }
@@ -249,7 +268,14 @@
 
     }
   }
-  
+
+  function datesRender (info) {
+    Drupal.attachBehaviors(info.el);
+  }
+  function datesDestroy (info) {
+    Drupal.detachBehaviors(info.el);
+  }
+
   // Build the calendar objects.
   function buildCalendars() {
     $('.js-drupal-fullcalendar')
@@ -268,8 +294,18 @@
       calendarOptions.eventClick = eventClick;
       // Bind the drop event handler.
       calendarOptions.eventDrop = eventDrop;
+      // Trigger Drupal behaviors when calendar events are updated.
+      calendarOptions.datesRender = datesRender;
+      // Trigger Drupal behaviors when calendar events are destroyed.
+      calendarOptions.datesDestroy = datesDestroy;
       // Language select element.
       var localeSelectorEl = document.getElementById('locale-selector-' + viewIndex);
+      // Allow passing a default date via query string.
+      const params = (new URL(document.location)).searchParams;
+      const initialDate = params.get('initialDate')
+      if (initialDate) {
+        calendarOptions.defaultDate = initialDate;
+      }
       // Initial the calendar.
       if (calendarEl) {
         if (drupalSettings.calendar) {
@@ -357,7 +393,8 @@
     // Remove the existing calendars except updating Ajax events.
     if (
         drupalSettings.calendar &&
-        settings.url !== '/fullcalendar-view-event-update'
+        settings.url !== '/fullcalendar-view-event-update' &&
+        settings.url.indexOf('_wrapper_format=drupal_modal') < 0
         ) {
       // Rebuild the calendars.
       drupalSettings.calendar.forEach(function(calendar) {

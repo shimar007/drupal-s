@@ -29,6 +29,12 @@ class CdnServiceProvider implements ServiceProviderInterface {
         //   banned, without having to run this middleware.
         ->addTag('http_middleware', ['priority' => 230]);
     }
+    // @todo Delete this when dropping Drupal 8 support in https://www.drupal.org/project/cdn/issues/3103682.
+    if (version_compare(\Drupal::VERSION, '9.0', '<')) {
+      // @see https://www.drupal.org/project/drupal/issues/3074585
+      $container->getDefinition('cdn.file_url_generator')
+        ->setArgument(0, '@app.root');
+    }
   }
 
   /**

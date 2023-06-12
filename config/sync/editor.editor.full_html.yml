@@ -53,10 +53,6 @@ settings:
             - Source
             - Templates
   plugins:
-    stylescombo:
-      styles: ''
-    language:
-      language_list: un
     templates:
       template_path: ''
       replace_content: 0

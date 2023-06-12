@@ -2,15 +2,56 @@
 
 namespace Drupal\smart_date_recur\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\Entity\ContentEntityConfirmFormBase;
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\smart_date_recur\Controller\Instances;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a deletion confirmation form for Smart Date Overrides.
  */
 class SmartDateOverrideDeleteForm extends ContentEntityConfirmFormBase {
+  /**
+   * The class resolver service.
+   *
+   * @var \Drupal\Core\DependencyInjection\ClassResolverInterface
+   */
+  protected $classResolver;
+
+  /**
+   * Constructs a deletion confirmation form for smart date overrides.
+   *
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository service.
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
+   *   The entity type bundle service.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
+   * @param \Drupal\Core\DependencyInjection\ClassResolverInterface $classResolver
+   *   The class resolver service.
+   */
+  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info, TimeInterface $time, ClassResolverInterface $classResolver) {
+    parent::__construct($entity_repository, $entity_type_bundle_info, $time);
+
+    $this->classResolver = $classResolver;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity.repository'),
+      $container->get('entity_type.bundle.info'),
+      $container->get('datetime.time'),
+      $container->get('class_resolver'),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -48,7 +89,8 @@ class SmartDateOverrideDeleteForm extends ContentEntityConfirmFormBase {
     $rrid = $this->entity->rrule->getString();
     /** @var \Drupal\smart_date_recur\Entity\SmartDateRule $rrule */
     $rrule = $entityTypeManager->getStorage('smart_date_rule')->load($rrid);
-    $instanceController = new Instances();
+    /** @var \Drupal\smart_date_recur\Controller\Instances $instanceController */
+    $instanceController = $this->classResolver->getInstanceFromDefinition(Instances::class);
     // Force refresh of parent entity.
     $instanceController->applyChanges($rrule);
     // Output message about operation performed.

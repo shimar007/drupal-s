@@ -68,7 +68,6 @@ Steps for creating a new release
     yarn run spellcheck ../modules/sandbox/webform/**/* > ~/webform-spell-check.txt
     cat ~/webform-spell-check.txt
 
-
 [File Permissions](https://www.drupal.org/comment/reply/2690335#comment-form)
 
     # Files should be 644 or -rw-r--r--
@@ -97,6 +96,20 @@ Run PHPStan with level 2 to catch all deprecations.
     cd ~/Sites/drupal_webform
     ./vendor/bin/phpstan --level=2 analyse web/modules/sandbox/webform > ~/webform-deprecated.txt
     cat ~/webform-deprecated.txt
+
+[Drupal Rector](https://github.com/palantirnet/drupal-rector)
+
+Install Drupal Rector
+
+    cd ~/Sites/drupal_webform
+    composer require palantirnet/drupal-rector --dev
+    cp vendor/palantirnet/drupal-rector/rector.php .
+
+Run Drupal Rector
+
+    cd ~/Sites/drupal_webform
+    ./vendor/bin/rector process web/modules/sandbox/webform --dry-run
+    ./vendor/bin/rector process web/modules/sandbox/webform
 
 3. Review accessibility
 -----------------------

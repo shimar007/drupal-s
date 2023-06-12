@@ -116,12 +116,12 @@ class FileUrlGenerator {
     if (!$scheme = StreamWrapperManager::getScheme($uri)) {
       $scheme = self::RELATIVE;
       $relative_url = '/' . $uri;
-      $relative_file_path = rawurldecode($relative_url);
-      $absolute_file_path = $this->root . $relative_file_path;
+      $relative_file_path = $relative_url;
+      $absolute_file_path = $this->root . $relative_url;
     }
     else {
       $relative_url = str_replace($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost() . $this->getBasePath(), '', $this->streamWrapperManager->getViaUri($uri)->getExternalUrl());
-      $relative_file_path = rawurldecode('/' . substr($uri, strlen($scheme . '://')));
+      $relative_file_path = '/' . substr($uri, strlen($scheme . '://'));
       $absolute_file_path = $scheme . '://' . $relative_file_path;
     }
 
@@ -155,8 +155,9 @@ class FileUrlGenerator {
    *   from a CDN. Otherwise, returns a CDN domain.
    */
   protected function getCdnDomain(string $uri) {
-    // Extension-specific mapping.
-    $file_extension = mb_strtolower(pathinfo($uri, PATHINFO_EXTENSION));
+    // Extension-specific mapping. Make sure file extension has any querystring
+    // or fragment removed before checking the lookup table.
+    $file_extension = preg_split('/[?#]/', mb_strtolower(pathinfo($uri, PATHINFO_EXTENSION)))[0];
     $lookup_table = $this->settings->getLookupTable();
     if (isset($lookup_table[$file_extension])) {
       $key = $file_extension;

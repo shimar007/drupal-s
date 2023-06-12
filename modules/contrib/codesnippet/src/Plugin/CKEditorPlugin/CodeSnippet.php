@@ -71,7 +71,13 @@ class CodeSnippet extends CKEditorPluginBase implements CKEditorPluginConfigurab
     $languages = $this->getLanguages();
     natcasesort($languages);
 
+    \Drupal::messenger()->addWarning(t('CodeSnippet now has an upgrade path to using CKEditor 5 in Drupal core. After upgrading, you no longer need the CodeSnippet module for CKEditor 4. <a href=":d10issue">See this thread for more information</a>.', [':d10issue' => 'https://www.drupal.org/project/drupal/issues/3356929']));
+
     $form['#attached']['library'][] = 'codesnippet/codesnippet.admin';
+
+    $form['message'] = [
+      '#markup' => t('CodeSnippet now has an upgrade path to using CKEditor 5 in Drupal core. After upgrading, you no longer need the CodeSnippet module for CKEditor 4. <a href=":d10issue">See this thread for more information</a>.', [':d10issue' => 'https://www.drupal.org/project/drupal/issues/3356929']),
+    ];
 
     $form['highlight_style'] = [
       '#type' => 'select',

@@ -15,5 +15,7 @@
     "support": {
         "issues": "https://www.drupal.org/project/issues/services"
     },
-    "require": {}
+    "require": {
+        "drupal/ctools": "^3.0 || ^4.0"
+    }
 }

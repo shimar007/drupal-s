@@ -364,14 +364,6 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'category' => 'element',
     ];
 
-    // Element: Webform Select Collection.
-    $projects['webform_select_collection'] = [
-      'title' => $this->t('Webform Select Collection'),
-      'description' => $this->t('Provides a webform element that groups multiple select elements into single collection.'),
-      'url' => Url::fromUri('https://www.drupal.org/project/webform_select_collection'),
-      'category' => 'element',
-    ];
-
     // Element: Webform Score.
     $projects['webform_score'] = [
       'title' => $this->t('Webform Score'),
@@ -1332,7 +1324,7 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
     ];
 
     // Mail: Webform Send Draft Link.
-    $projects['smtp'] = [
+    $projects['webform_send_draft_link'] = [
       'title' => $this->t('Webform Send Draft Link'),
       'description' => $this->t('Enables to send a link to a webform draft via email.'),
       'url' => Url::fromUri('https://www.drupal.org/project/webform_send_draft_link'),
@@ -1569,15 +1561,7 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
     ];
 
     /* ********************************************************************** */
-
-    // Submissions: Protected Submissions.
-    $projects['protected_submissions'] = [
-      'title' => $this->t('Protected Submissions'),
-      'description' => $this->t('Prevents submissions that contain undesired patterns.'),
-      'url' => Url::fromUri('https://www.drupal.org/project/protected_submissions'),
-      'category' => 'submission',
-    ];
-
+    
     // Submissions: Webform Auto Exports.
     $projects['coc_forms_auto_export'] = [
       'title' => $this->t('Webform Auto Exports'),

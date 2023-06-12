@@ -5,7 +5,7 @@ services:
 
   cdn.file_url_generator:
     class: Drupal\cdn\File\FileUrlGenerator
-    arguments: ['@app.root', '@stream_wrapper_manager', '@request_stack', '@private_key', '@cdn.settings']
+    arguments: ['%app.root%', '@stream_wrapper_manager', '@request_stack', '@private_key', '@cdn.settings']
 
   # Event subscribers.
   cdn.config_subscriber:

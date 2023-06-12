@@ -59,8 +59,9 @@ class WebformConditionTest extends EntityKernelTestBase {
     $this->assertEquals('The webform is not_test, test or other_test', $condition->summary());
 
     // Test Constructor injection.
-    $condition = $manager->createInstance('webform', ['webforms' => ['test' => 'test'], 'context' => ['webform' => $webform]]);
-    $this->assertTrue($condition->execute(), 'Constructor injection of context and configuration working as anticipated.');
+    $condition = $manager->createInstance('webform', ['webforms' => ['test' => 'test']])
+      ->setContextValue('webform', $webform);
+    $this->assertTrue($condition->execute(), 'Constructor injection of configuration working as anticipated.');
 
     // Check webform_submission context.
     /** @var \Drupal\webform\WebformSubmissionInterface $webform_submission */

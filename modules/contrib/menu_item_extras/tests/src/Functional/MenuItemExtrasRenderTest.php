@@ -50,7 +50,7 @@ class MenuItemExtrasRenderTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['menu_item_extras'];
+  protected static $modules = ['menu_item_extras'];
 
   /**
    * {@inheritdoc}

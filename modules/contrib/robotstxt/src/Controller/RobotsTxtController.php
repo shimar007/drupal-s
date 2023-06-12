@@ -72,7 +72,7 @@ class RobotsTxtController extends ControllerBase implements ContainerInjectionIn
     $content = array_filter($content);
     $content = implode("\n", $content);
 
-    $response = new CacheableResponse($content, Response::HTTP_OK, array('content-type' => 'text/plain'));
+    $response = new CacheableResponse($content, Response::HTTP_OK, ['content-type' => 'text/plain']);
     $meta_data = $response->getCacheableMetadata();
     $meta_data->addCacheTags(['robotstxt']);
     return $response;

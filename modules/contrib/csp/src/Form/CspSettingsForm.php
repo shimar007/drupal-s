@@ -14,6 +14,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form for editing Content Security Policy module settings.
+ *
+ * phpcs:disable Drupal.Arrays.Array.LongLineDeclaration
  */
 class CspSettingsForm extends ConfigFormBase {
 
@@ -38,7 +40,7 @@ class CspSettingsForm extends ConfigFormBase {
    */
   private static $keywordDirectiveMap = [
     // A violation’s sample will be populated with the first 40 characters of an
-    // inline script, event handler, or style that caused an violation.
+    // inline script, event handler, or style that caused a violation.
     // Violations which stem from an external file will not include a sample in
     // the violation report.
     // @see https://www.w3.org/TR/CSP3/#framework-violation
@@ -50,6 +52,7 @@ class CspSettingsForm extends ConfigFormBase {
     // script-src (or it’s fallback directive) is always used.
     // @see https://www.w3.org/TR/CSP3/#directive-script-src
     'unsafe-eval' => ['default-src', 'script-src', 'style-src'],
+    'wasm-unsafe-eval' => ['default-src', 'script-src'],
     // Unsafe-hashes only applies to inline attributes.
     'unsafe-hashes' => ['default-src', 'script-src', 'script-src-attr', 'style-src', 'style-src-attr'],
     'unsafe-inline' => ['default-src', 'script-src', 'script-src-attr', 'script-src-elem', 'style-src', 'style-src-attr', 'style-src-elem'],
@@ -111,16 +114,13 @@ class CspSettingsForm extends ConfigFormBase {
   private function getConfigurableDirectives() {
     // Exclude some directives
     // - Reporting directives are handled by plugins.
-    // - 'plugin-types' was removed from the CSP spec.
-    // - 'referrer' was deprecated prior to CSP Level 1 and not supported in
-    //   most browsers.
-    // - 'require-sri-for' was never publicly implemented, and dropped from the
-    //   SRI spec.
+    // - Other directives were removed from spec (see Csp class for details).
     $directives = array_diff(
       Csp::getDirectiveNames(),
       [
         'report-uri',
         'report-to',
+        'navigate-to',
         'plugin-types',
         'referrer',
         'require-sri-for',
@@ -143,6 +143,7 @@ class CspSettingsForm extends ConfigFormBase {
     $allKeywords = [
       'unsafe-inline',
       'unsafe-eval',
+      'wasm-unsafe-eval',
       'unsafe-hashes',
       'unsafe-allow-redirects',
       'strict-dynamic',
@@ -266,7 +267,7 @@ class CspSettingsForm extends ConfigFormBase {
             'any' => "Any",
             '' => '<em>n/a</em>',
           ],
-          '#default_value' => $sourceListBase !== NULL ? $sourceListBase : 'self',
+          '#default_value' => $sourceListBase ?? 'self',
         ];
         // Auto sources make a directive required, so remove the 'none' option.
         if (isset($autoDirectives[$directiveName])) {
@@ -349,6 +350,7 @@ class CspSettingsForm extends ConfigFormBase {
         '#type' => 'checkboxes',
         '#parents' => [$policyTypeKey, 'directives', 'sandbox', 'keys'],
         '#options' => [
+          'allow-downloads' => '<code>allow-downloads</code>',
           'allow-forms' => '<code>allow-forms</code>',
           'allow-modals' => '<code>allow-modals</code>',
           'allow-orientation-lock' => '<code>allow-orientation-lock</code>',
@@ -360,8 +362,19 @@ class CspSettingsForm extends ConfigFormBase {
           'allow-scripts' => '<code>allow-scripts</code>',
           'allow-top-navigation' => '<code>allow-top-navigation</code>',
           'allow-top-navigation-by-user-activation' => '<code>allow-top-navigation-by-user-activation</code>',
+          'allow-top-navigation-to-custom-protocols' => '<code>allow-top-navigation-to-custom-protocols</code>',
         ],
         '#default_value' => $config->get($policyTypeKey . '.directives.sandbox') ?: [],
+      ];
+
+      $form[$policyTypeKey]['directives']['webrtc']['options']['value'] = [
+        '#type' => 'radios',
+        '#parents' => [$policyTypeKey, 'directives', 'webrtc', 'value'],
+        '#options' => [
+          'allow' => "<code>'allow'</code>",
+          'block' => "<code>'block'</code>",
+        ],
+        '#default_value' => $config->get($policyTypeKey . '.directives.webrtc') ?? 'block',
       ];
 
       $form[$policyTypeKey]['reporting'] = [
@@ -638,6 +651,9 @@ class CspSettingsForm extends ConfigFormBase {
         ])) {
           $directiveOptions = array_keys(array_filter($directiveFormData['keys']));
         }
+        elseif ($directiveSchema === Csp::DIRECTIVE_SCHEMA_ALLOW_BLOCK) {
+          $directiveOptions = $directiveFormData['value'];
+        }
         elseif (in_array($directiveSchema, [
           Csp::DIRECTIVE_SCHEMA_SOURCE_LIST,
           Csp::DIRECTIVE_SCHEMA_ANCESTOR_SOURCE_LIST,
@@ -660,7 +676,7 @@ class CspSettingsForm extends ConfigFormBase {
         if (
           !empty($directiveOptions)
           ||
-          $directiveSchema == Csp::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST
+          $directiveSchema === Csp::DIRECTIVE_SCHEMA_OPTIONAL_TOKEN_LIST
         ) {
           $config->set($policyTypeKey . '.directives.' . $directiveName, $directiveOptions);
         }

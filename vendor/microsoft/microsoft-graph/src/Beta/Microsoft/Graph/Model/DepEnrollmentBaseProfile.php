@@ -199,6 +199,35 @@ class DepEnrollmentBaseProfile extends EnrollmentProfile
     }
 
     /**
+    * Gets the enabledSkipKeys
+    * enabledSkipKeys contains all the enabled skip keys as strings
+    *
+    * @return array|null The enabledSkipKeys
+    */
+    public function getEnabledSkipKeys()
+    {
+        if (array_key_exists("enabledSkipKeys", $this->_propDict)) {
+            return $this->_propDict["enabledSkipKeys"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the enabledSkipKeys
+    * enabledSkipKeys contains all the enabled skip keys as strings
+    *
+    * @param string[] $val The enabledSkipKeys
+    *
+    * @return DepEnrollmentBaseProfile
+    */
+    public function setEnabledSkipKeys($val)
+    {
+        $this->_propDict["enabledSkipKeys"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the isDefault
     * Indicates if this is the default profile
     *

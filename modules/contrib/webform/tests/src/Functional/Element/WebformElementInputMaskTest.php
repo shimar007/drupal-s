@@ -35,7 +35,7 @@ class WebformElementInputMaskTest extends WebformElementBrowserTestBase {
 
     // Check default values.
     $this->postSubmission($webform);
-    $assert_session->responseContains("currency: '$ 1.00'
+    $this->assertWebformYaml("currency: '$ 1.00'
 currency_negative: '-$ 1.00'
 currency_positive_negative: '$ 1.00'
 datetime: ''
@@ -75,7 +75,7 @@ module: ''");
       'module' => '999',
     ];
     $this->postSubmission($webform, $edit);
-    $assert_session->responseContains("currency: '$ 9.99'
+    $this->assertWebformYaml("currency: '$ 9.99'
 currency_negative: '-$ 9.99'
 currency_positive_negative: '-$ 9.99'
 datetime: '2007-06-09''T''17:46:21'

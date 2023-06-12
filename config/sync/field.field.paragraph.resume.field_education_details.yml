@@ -21,16 +21,16 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       education_details: education_details
+    negate: 0
     target_bundles_drag_drop:
       about_us:
         weight: 7
         enabled: false
       education_details:
-        enabled: true
         weight: 8
+        enabled: true
       home_page_header_:
         weight: 9
         enabled: false

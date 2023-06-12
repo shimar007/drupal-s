@@ -28,7 +28,7 @@ class LinkItemContentActiveTrailsCacheContext implements CalculatedCacheContextI
    * {@inheritdoc}
    */
   public function getContext($parameter = NULL) {
-    list($menu_name, $menu_link_id) = explode(':', $parameter);
+    [$menu_name, $menu_link_id] = explode(':', $parameter);
 
     if (!$menu_name) {
       throw new \LogicException('No menu name provided for menu.active_trails cache context.');
@@ -53,7 +53,7 @@ class LinkItemContentActiveTrailsCacheContext implements CalculatedCacheContextI
    * {@inheritdoc}
    */
   public function getCacheableMetadata($parameter = NULL) {
-    list($menu_name,) = explode(':', $parameter);
+    [$menu_name] = explode(':', $parameter);
 
     if (!$menu_name) {
       throw new \LogicException('No menu name provided for menu.active_trails cache context.');

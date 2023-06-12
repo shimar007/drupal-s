@@ -38,6 +38,12 @@ field.value.smartdate:
     default_date:
       type: string
       label: 'Default start date value'
+    min:
+      type: string
+      label: 'Minimum Date'
+    max:
+      type: string
+      label: 'Maximum Date'
 
 field.formatter.settings.smartdate_default:
   type: field.formatter.settings.datetime_default
@@ -67,6 +73,10 @@ field.formatter.settings.smartdate_default:
       type: boolean
       label: 'Add time wrapper'
       translation context: 'Smart date display'
+    localize:
+      type: boolean
+      label: 'Add JS localization'
+      translation context: 'Smart date display'
 
 field.formatter.settings.smartdate_duration:
   type: field.formatter.settings.smartdate_default
@@ -75,6 +85,18 @@ field.formatter.settings.smartdate_duration:
     duration_separator:
       type: string
       label: 'Duration Separator'
+      translation context: 'Smart date display'
+    unit:
+      type: string
+      label: 'Units'
+      translation context: 'Smart date display'
+    decimals:
+      type: integer
+      label: 'Decimals'
+      translation context: 'Smart date display'
+    suffix:
+      type: string
+      label: 'Duration Suffix'
       translation context: 'Smart date display'
 
 field.formatter.settings.smartdate_plain:
@@ -132,6 +154,14 @@ field.widget.settings.smartdate_default:
       type: boolean
       label: 'Hide end date unless different'
 
+field.widget.settings.smartdate_inline:
+  type: field.widget.settings.smartdate_default
+  label: 'Smart Date, date-only range widget settings'
+  mapping:
+    separator:
+      type: string
+      label: 'Separator string (separating start and end date)'
+
 field.widget.settings.smartdate_timezone:
   type: mapping
   label: 'Smart date timezone display format settings'
@@ -163,6 +193,12 @@ field.widget.settings.smartdate_timezone:
     hide_date:
       type: boolean
       label: 'Hide end date unless different'
+    separator:
+      type: string
+      label: 'Separator'
+    add_abbreviations:
+      type: string
+      label: 'Add abbreviations'
 
 smart_date.smart_date_format.*:
   type: config_entity

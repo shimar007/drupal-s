@@ -56,6 +56,34 @@ class ManagedTenant extends \Beta\Microsoft\Graph\Model\Entity
 
 
      /**
+     * Gets the appPerformances
+     *
+     * @return array|null The appPerformances
+     */
+    public function getAppPerformances()
+    {
+        if (array_key_exists("appPerformances", $this->_propDict)) {
+           return $this->_propDict["appPerformances"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the appPerformances
+    *
+    * @param AppPerformance[] $val The appPerformances
+    *
+    * @return ManagedTenant
+    */
+    public function setAppPerformances($val)
+    {
+        $this->_propDict["appPerformances"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the auditEvents
     * The collection of audit events across managed tenants.
      *
@@ -236,6 +264,34 @@ class ManagedTenant extends \Beta\Microsoft\Graph\Model\Entity
 
 
      /**
+     * Gets the deviceAppPerformances
+     *
+     * @return array|null The deviceAppPerformances
+     */
+    public function getDeviceAppPerformances()
+    {
+        if (array_key_exists("deviceAppPerformances", $this->_propDict)) {
+           return $this->_propDict["deviceAppPerformances"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the deviceAppPerformances
+    *
+    * @param DeviceAppPerformance[] $val The deviceAppPerformances
+    *
+    * @return ManagedTenant
+    */
+    public function setDeviceAppPerformances($val)
+    {
+        $this->_propDict["deviceAppPerformances"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the deviceCompliancePolicySettingStateSummaries
     * Summary information for device compliance policy setting states across managed tenants.
      *
@@ -261,6 +317,34 @@ class ManagedTenant extends \Beta\Microsoft\Graph\Model\Entity
     public function setDeviceCompliancePolicySettingStateSummaries($val)
     {
         $this->_propDict["deviceCompliancePolicySettingStateSummaries"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the deviceHealthStatuses
+     *
+     * @return array|null The deviceHealthStatuses
+     */
+    public function getDeviceHealthStatuses()
+    {
+        if (array_key_exists("deviceHealthStatuses", $this->_propDict)) {
+           return $this->_propDict["deviceHealthStatuses"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the deviceHealthStatuses
+    *
+    * @param DeviceHealthStatus[] $val The deviceHealthStatuses
+    *
+    * @return ManagedTenant
+    */
+    public function setDeviceHealthStatuses($val)
+    {
+        $this->_propDict["deviceHealthStatuses"] = $val;
         return $this;
     }
 
@@ -640,6 +724,34 @@ class ManagedTenant extends \Beta\Microsoft\Graph\Model\Entity
 
 
      /**
+     * Gets the managementTemplateCollectionTenantSummaries
+     *
+     * @return array|null The managementTemplateCollectionTenantSummaries
+     */
+    public function getManagementTemplateCollectionTenantSummaries()
+    {
+        if (array_key_exists("managementTemplateCollectionTenantSummaries", $this->_propDict)) {
+           return $this->_propDict["managementTemplateCollectionTenantSummaries"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the managementTemplateCollectionTenantSummaries
+    *
+    * @param ManagementTemplateCollectionTenantSummary[] $val The managementTemplateCollectionTenantSummaries
+    *
+    * @return ManagedTenant
+    */
+    public function setManagementTemplateCollectionTenantSummaries($val)
+    {
+        $this->_propDict["managementTemplateCollectionTenantSummaries"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the managementTemplates
     * The collection of baseline management templates across managed tenants.
      *
@@ -693,6 +805,34 @@ class ManagedTenant extends \Beta\Microsoft\Graph\Model\Entity
     public function setManagementTemplateSteps($val)
     {
         $this->_propDict["managementTemplateSteps"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the managementTemplateStepTenantSummaries
+     *
+     * @return array|null The managementTemplateStepTenantSummaries
+     */
+    public function getManagementTemplateStepTenantSummaries()
+    {
+        if (array_key_exists("managementTemplateStepTenantSummaries", $this->_propDict)) {
+           return $this->_propDict["managementTemplateStepTenantSummaries"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the managementTemplateStepTenantSummaries
+    *
+    * @param ManagementTemplateStepTenantSummary[] $val The managementTemplateStepTenantSummaries
+    *
+    * @return ManagedTenant
+    */
+    public function setManagementTemplateStepTenantSummaries($val)
+    {
+        $this->_propDict["managementTemplateStepTenantSummaries"] = $val;
         return $this;
     }
 

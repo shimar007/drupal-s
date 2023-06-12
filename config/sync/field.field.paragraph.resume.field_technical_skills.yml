@@ -21,9 +21,9 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       technical_skills: technical_skills
+    negate: 0
     target_bundles_drag_drop:
       about_us:
         weight: 5
@@ -35,6 +35,6 @@ settings:
         weight: 7
         enabled: false
       technical_skills:
-        enabled: true
         weight: 8
+        enabled: true
 field_type: entity_reference_revisions

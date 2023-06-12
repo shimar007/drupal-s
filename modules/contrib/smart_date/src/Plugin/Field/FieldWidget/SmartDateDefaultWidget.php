@@ -7,7 +7,7 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\smart_date\Plugin\Field\FieldType\SmartDateFieldItemList;
+use Drupal\smart_date\SmartDateDurationConfigTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -23,6 +23,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class SmartDateDefaultWidget extends SmartDateWidgetBase implements ContainerFactoryPluginInterface {
+
+  use SmartDateDurationConfigTrait;
 
   /**
    * The date format storage.
@@ -61,7 +63,7 @@ class SmartDateDefaultWidget extends SmartDateWidgetBase implements ContainerFac
       if ($default_duration_increments) {
         $defaults['default_duration_increments'] = $default_duration_increments;
       }
-      SmartDateFieldItemList::addDurationConfig($element, $defaults);
+      $this->addDurationConfig($element, $defaults);
     }
 
     return $element;

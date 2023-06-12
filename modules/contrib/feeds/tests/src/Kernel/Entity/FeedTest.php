@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\feeds\Kernel\Entity;
 
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\feeds\StateInterface;
 use Drupal\feeds\Entity\Feed;
 use Drupal\feeds\Event\FeedsEvents;
@@ -15,8 +16,6 @@ use Drupal\feeds\Plugin\Type\Parser\ParserInterface;
 use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\feeds\Kernel\FeedsKernelTestBase;
-use Drupal\Tests\feeds\Kernel\TestLogger;
-use Exception;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -35,7 +34,7 @@ class FeedTest extends FeedsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->feedType = $this->createFeedType([
@@ -253,7 +252,7 @@ class FeedTest extends FeedsKernelTestBase {
 
     // Now manually change the imported time of one node to be in the past.
     $node = Node::load(1);
-    $node->feeds_item->imported = \Drupal::time()->getRequestTime() - 3601;
+    $node->get('feeds_item')->getItemByFeed($feed)->imported = \Drupal::time()->getRequestTime() - 3601;
     $node->save();
 
     // Start batch expire again and assert that there is a batch now.
@@ -299,10 +298,10 @@ class FeedTest extends FeedsKernelTestBase {
       ->willReturn($dispatcher);
 
     $dispatcher->addListener(FeedsEvents::IMPORT_FINISHED, function (ImportFinishedEvent $event) {
-      throw new Exception();
+      throw new \Exception();
     });
 
-    $this->expectException(Exception::class);
+    $this->expectException(\Exception::class);
     $feed->finishImport();
   }
 
@@ -517,20 +516,20 @@ class FeedTest extends FeedsKernelTestBase {
     $feed_label = $feed->label();
     $feed_type_id = $this->feedType->id();
 
-    // Add a logger.
-    $test_logger = new TestLogger();
-    $this->container->get('logger.factory')->addLogger($test_logger);
-
     // Delete feed type and reload feed.
     $this->feedType->delete();
     $feed = $this->reloadEntity($feed);
 
     $feed->postDelete($this->container->get('entity_type.manager')->getStorage('feeds_feed'), [$feed]);
-    $logs = $test_logger->getMessages();
+    $logs = $this->logger->getMessages();
     $expected_logs = [
-      'Could not perform some post cleanups for feed ' . $feed_label . ' because of the following error: The feed type "' . $feed_type_id . '" for feed 1 no longer exists.',
+      RfcLogLevel::WARNING => [
+        'Could not perform some post cleanups for feed ' . $feed_label . ' because of the following error: The feed type "' . $feed_type_id . '" for feed 1 no longer exists.',
+      ],
     ];
     $this->assertEquals($expected_logs, $logs);
+    // Clear the logged messages so no failure is reported on tear down.
+    $this->logger->clearMessages();
   }
 
   /**

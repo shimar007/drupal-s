@@ -4,17 +4,25 @@ namespace Drupal\smart_date_recur\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\smart_date_recur\Controller\Instances;
 use Drupal\smart_date_recur\Entity\SmartDateOverride;
 use Drupal\smart_date_recur\Entity\SmartDateRule;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides an instance cancellation confirmation form for Smart Date.
  */
 class SmartDateRemoveInstanceForm extends ConfirmFormBase {
+  /**
+   * The class resolver service.
+   *
+   * @var \Drupal\Core\DependencyInjection\ClassResolverInterface
+   */
+  protected $classResolver;
 
   /**
    * ID of the rrule being used.
@@ -36,6 +44,25 @@ class SmartDateRemoveInstanceForm extends ConfirmFormBase {
    * @var int
    */
   protected $oid;
+
+  /**
+   * Constructs a smart date instance removal confirmation form.
+   *
+   * @param \Drupal\Core\DependencyInjection\ClassResolverInterface $classResolver
+   *   The class resolver service.
+   */
+  public function __construct(ClassResolverInterface $classResolver) {
+    $this->classResolver = $classResolver;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('class_resolver'),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -80,7 +107,8 @@ class SmartDateRemoveInstanceForm extends ConfirmFormBase {
    */
   public function ajaxSubmit(array &$form, FormStateInterface $form_state) {
     $form_state->disableRedirect();
-    $instanceController = new Instances();
+    /** @var \Drupal\smart_date_recur\Controller\Instances $instanceController */
+    $instanceController = $this->classResolver->getInstanceFromDefinition(Instances::class);
     $instanceController->setSmartDateRule($this->rrule);
     $instanceController->setUseAjax(TRUE);
     $response = new AjaxResponse();
@@ -140,12 +168,14 @@ class SmartDateRemoveInstanceForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $instanceController = new Instances();
+    /** @var \Drupal\smart_date_recur\Controller\Instances $instanceController */
+    $instanceController = $this->classResolver->getInstanceFromDefinition(Instances::class);
     $instanceController->setSmartDateRule($this->rrule);
     $instanceController->removeInstance($this->index, $this->oid);
 
     if (!isset($form['actions']['cancel'])) {
-      $instanceController = new Instances();
+      /** @var \Drupal\smart_date_recur\Controller\Instances $instanceController */
+      $instanceController = $this->classResolver->getInstanceFromDefinition(Instances::class);
       // Force refresh of parent entity.
       $instanceController->applyChanges($this->rrule);
       // Output message about operation performed.

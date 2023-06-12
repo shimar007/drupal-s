@@ -10,9 +10,9 @@ trait SmartDateRecurTrait {
   /**
    * Helper function to massage an array for inclusion in output.
    */
-  protected function massageForOutput($output, array $settings, $add_classes = NULL) {
-    if (!$add_classes) {
-      $add_classes = $this->getSetting('add_classes');
+  protected static function massageForOutput($output, array $settings, $add_classes = NULL) {
+    if ($add_classes === NULL) {
+      $add_classes = $settings['add_classes'] ?? FALSE;
     }
     if ($settings['date_first']) {
       // Time should be first so reverse the array.
@@ -20,7 +20,7 @@ trait SmartDateRecurTrait {
     }
     $temp_array['start'] = $output;
     if ($add_classes) {
-      $this->addRangeClasses($temp_array);
+      static::addRangeClasses($temp_array);
     }
     return $temp_array['start'];
   }
@@ -28,10 +28,10 @@ trait SmartDateRecurTrait {
   /**
    * Helper function to create a collapsed display of events within a day.
    */
-  protected function formatWithinDay(array $instances, array $settings) {
-    $settings_notime = $this->settingsFormatNoTime($settings);
-    $settings_nodate = $this->settingsFormatNoDate($settings);
-    $settings_notz = $this->settingsFormatNoTz($settings_nodate);
+  protected static function formatWithinDay(array $instances, array $settings) {
+    $settings_notime = static::settingsFormatNoTime($settings);
+    $settings_nodate = static::settingsFormatNoDate($settings);
+    $settings_notz = static::settingsFormatNoTz($settings_nodate);
     $output = [];
     foreach ($instances as $time_set) {
       $this_output = [];
@@ -47,7 +47,7 @@ trait SmartDateRecurTrait {
       $this_output['date']['#markup'] = static::formatSmartDate($last_time->value, $last_time->value, $settings_notime, $last_time->timezone, 'string');
       $this_output['#attributes']['class'] = ['smart-date--daily-times'];
       $this_output['#type'] = 'container';
-      $output[] = $this->massageForOutput($this_output, $settings);
+      $output[] = static::massageForOutput($this_output, $settings);
     }
     return $output;
   }

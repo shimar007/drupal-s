@@ -134,14 +134,18 @@ tr.even .smartdate--widget .form-type--select label {
   display: inline-block;
 }
 
+/* Shorten spacing for single values */
+.smartdate--widget .fieldset__legend .fieldset__label {
+  padding-bottom: 0;
+}
+
 /* Restyle Smart Date fieldsets to allow more room */
-.smartdate--widget.fieldset {
+.field-multiple-table .smartdate--widget.fieldset {
   border-width: 0 0 0 1px;
   border-radius: 0;
   box-shadow: none;
-  /* border-left: 1px solid #dedfe4; */
 }
-.smartdate--widget .fieldset__wrapper {
+.field-multiple-table .smartdate--widget .fieldset__wrapper {
   margin: 0 0 0 1.5rem;
 }
 /* Styles for the inline version */

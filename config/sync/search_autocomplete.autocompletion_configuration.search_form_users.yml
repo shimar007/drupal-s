@@ -1,6 +1,6 @@
-langcode: en
 _core:
   default_config_hash: g9NCIjKoz0Dn_IvvhopquSEzIXLlP7zRFEy_27ZxZYA
+langcode: en
 id: search_form_users
 uuid: 494cd0e8-c466-4830-82ec-1dbd79551550
 label: 'Search Form (users tab)'

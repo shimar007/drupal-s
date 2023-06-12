@@ -37,7 +37,7 @@ class AliasGet extends ServiceDefinitionBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('path.alias_manager'));
+    return new static($configuration, $plugin_id, $plugin_definition, $container->get('path_alias.manager'));
   }
 
   /**

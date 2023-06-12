@@ -19,7 +19,7 @@ class Frequency extends InOperator {
    */
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     parent::init($view, $display, $options);
-    $this->valueTitle = t('Frequency');
+    $this->valueTitle = $this->t('Frequency');
     // @todo Switch to getFrequencyLabelsOrNull to allow filtering on
     // non-recurring events. Currently returns no results if selected.
     $this->valueOptions = SmartDateRule::getFrequencyLabels();

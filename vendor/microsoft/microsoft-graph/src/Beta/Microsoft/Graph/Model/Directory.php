@@ -42,7 +42,7 @@ class Directory extends Entity
     /**
     * Sets the impactedResources
     *
-    * @param RecommendationResource[] $val The impactedResources
+    * @param ImpactedResource[] $val The impactedResources
     *
     * @return Directory
     */
@@ -55,6 +55,7 @@ class Directory extends Entity
 
      /**
      * Gets the recommendations
+    * List of recommended improvements to improve tenant posture.
      *
      * @return array|null The recommendations
      */
@@ -69,6 +70,7 @@ class Directory extends Entity
 
     /**
     * Sets the recommendations
+    * List of recommended improvements to improve tenant posture.
     *
     * @param Recommendation[] $val The recommendations
     *
@@ -231,6 +233,7 @@ class Directory extends Entity
 
      /**
      * Gets the inboundSharedUserProfiles
+    * A collection of external Azure AD users whose profile data has been shared with the Azure AD tenant. Nullable.
      *
      * @return array|null The inboundSharedUserProfiles
      */
@@ -245,6 +248,7 @@ class Directory extends Entity
 
     /**
     * Sets the inboundSharedUserProfiles
+    * A collection of external Azure AD users whose profile data has been shared with the Azure AD tenant. Nullable.
     *
     * @param InboundSharedUserProfile[] $val The inboundSharedUserProfiles
     *
@@ -259,6 +263,7 @@ class Directory extends Entity
 
      /**
      * Gets the onPremisesSynchronization
+    * A container for on-premises directory synchronization functionalities that are available for the organization.
      *
      * @return array|null The onPremisesSynchronization
      */
@@ -273,6 +278,7 @@ class Directory extends Entity
 
     /**
     * Sets the onPremisesSynchronization
+    * A container for on-premises directory synchronization functionalities that are available for the organization.
     *
     * @param OnPremisesDirectorySynchronization[] $val The onPremisesSynchronization
     *

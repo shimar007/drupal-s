@@ -346,10 +346,10 @@ function template_preprocess_webform_submission_information(array &$variables) {
   }
   elseif ($source_entity) {
     $entity_type = $source_entity->getEntityTypeId();
-    if (\Drupal::currentUser()->hasPermission("view webform node submissions any $entity_type")) {
+    if (\Drupal::currentUser()->hasPermission("view webform submissions any $entity_type")) {
       $variables['submissions_view'] = TRUE;
     }
-    elseif (\Drupal::currentUser()->hasPermission("view webform node submissions own $entity_type")
+    elseif (\Drupal::currentUser()->hasPermission("view webform submissions own $entity_type")
       && method_exists($source_entity, 'getOwnerId')
       && (int) $source_entity->getOwnerId() === (int) \Drupal::currentUser()->id()
     ) {
@@ -501,7 +501,7 @@ function _template_progress_webform_set_title(array &$variables, $strip_tags = F
   }
 
   // Strip all HTML tags from the title.
-  if ($strip_tags) {
+  if ($strip_tags && !empty($variables['title'])) {
     $variables['title'] = strip_tags($variables['title']);
   }
 }
@@ -942,7 +942,7 @@ function template_preprocess_webform_element_managed_file(array &$variables) {
     $file = $variables['file'];
     $variables['uri'] = $file->createFileUrl(FALSE);
     $variables['extension'] = strtolower(pathinfo($variables['uri'], PATHINFO_EXTENSION));
-    $variables['type'] = \Drupal::service('file.mime_type.guesser')->guess($variables['uri']);
+    $variables['type'] = \Drupal::service('file.mime_type.guesser')->guessMimeType($variables['uri']);
     $variables['file_link'] = [
       '#theme' => 'file_link',
       '#file' => $file,

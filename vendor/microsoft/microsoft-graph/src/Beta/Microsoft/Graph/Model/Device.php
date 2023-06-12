@@ -180,7 +180,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the deviceId
-    * Identifier set by Azure Device Registration Service at the time of registration. Supports $filter (eq, ne, not, startsWith).
+    * Unique Identifier set by Azure Device Registration Service at the time of registration. This is an alternate key that can be used to reference the device object. Also Supports $filter (eq, ne, not, startsWith).
     *
     * @return string|null The deviceId
     */
@@ -195,7 +195,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the deviceId
-    * Identifier set by Azure Device Registration Service at the time of registration. Supports $filter (eq, ne, not, startsWith).
+    * Unique Identifier set by Azure Device Registration Service at the time of registration. This is an alternate key that can be used to reference the device object. Also Supports $filter (eq, ne, not, startsWith).
     *
     * @param string $val The deviceId
     *
@@ -766,7 +766,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the physicalIds
-    * For internal use only. Not nullable. Supports $filter (eq, not, ge, le, startsWith, and counting empty collections).
+    * For internal use only. Not nullable. Supports $filter (eq, not, ge, le, startsWith, /$count eq 0, /$count ne 0.
     *
     * @return array|null The physicalIds
     */
@@ -781,7 +781,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the physicalIds
-    * For internal use only. Not nullable. Supports $filter (eq, not, ge, le, startsWith, and counting empty collections).
+    * For internal use only. Not nullable. Supports $filter (eq, not, ge, le, startsWith, /$count eq 0, /$count ne 0.
     *
     * @param string[] $val The physicalIds
     *
@@ -857,7 +857,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the systemLabels
-    * List of labels applied to the device by the system. Supports $filter (eq when counting empty collections).
+    * List of labels applied to the device by the system. Supports $filter (/$count eq 0, /$count ne 0).
     *
     * @return array|null The systemLabels
     */
@@ -872,7 +872,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the systemLabels
-    * List of labels applied to the device by the system. Supports $filter (eq when counting empty collections).
+    * List of labels applied to the device by the system. Supports $filter (/$count eq 0, /$count ne 0).
     *
     * @param string[] $val The systemLabels
     *
@@ -1150,7 +1150,7 @@ class Device extends DirectoryObject
 
      /**
      * Gets the registeredOwners
-    * The user that cloud joined the device or registered their personal device. The registered owner is set at the time of registration. Currently, there can be only one owner. Read-only. Nullable. Supports $expand.
+    * The user that cloud joined the device or registered their personal device. The registered owner is set at the time of registration. Read-only. Nullable. Supports $expand.
      *
      * @return array|null The registeredOwners
      */
@@ -1165,7 +1165,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the registeredOwners
-    * The user that cloud joined the device or registered their personal device. The registered owner is set at the time of registration. Currently, there can be only one owner. Read-only. Nullable. Supports $expand.
+    * The user that cloud joined the device or registered their personal device. The registered owner is set at the time of registration. Read-only. Nullable. Supports $expand.
     *
     * @param DirectoryObject[] $val The registeredOwners
     *

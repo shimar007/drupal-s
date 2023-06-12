@@ -16,7 +16,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
 
 /**
- * Class MenuLinkContentHelper.
+ * Class for service MenuLinkContentHelper.
  *
  * @package Drupal\menu_item_extras\Service
  */
@@ -177,9 +177,9 @@ class MenuLinkContentService implements MenuLinkContentServiceInterface {
     $original_storage_definitions = $this->entityLastInstalledSchemaRepository
       ->getLastInstalledFieldStorageDefinitions('menu_link_content');
 
-    $storage_definition = isset($storage_definitions['bundle']) ? $storage_definitions['bundle'] : NULL;
+    $storage_definition = $storage_definitions['bundle'] ?? NULL;
 
-    $original_storage_definition = isset($original_storage_definitions['bundle']) ? $original_storage_definitions['bundle'] : NULL;
+    $original_storage_definition = $original_storage_definitions['bundle'] ?? NULL;
 
     $this->fieldStorageDefinitionListener
       ->onFieldStorageDefinitionUpdate($storage_definition, $original_storage_definition);
@@ -252,7 +252,7 @@ class MenuLinkContentService implements MenuLinkContentServiceInterface {
         // option into 'menu_name' and 'parent',
         // if the form used the default parent selection widget.
         if (!empty($values['menu_parent'])) {
-          list($menu_name, $parent) = explode(':', $values['menu_parent'], 2);
+          [$menu_name, $parent] = explode(':', $values['menu_parent'], 2);
           $values['menu_name'] = $menu_name;
           $values['parent'] = $parent;
         }
@@ -307,7 +307,7 @@ class MenuLinkContentService implements MenuLinkContentServiceInterface {
     $entity->set('menu_name', $values['menu_name']);
     $entity->set('bundle', $values['menu_name']);
     $entity->set('parent', $values['parent']);
-    $entity->set('weight', isset($values['weight']) ? $values['weight'] : 0);
+    $entity->set('weight', $values['weight'] ?? 0);
     $entity->save();
 
     return $entity;

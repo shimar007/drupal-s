@@ -12,16 +12,6 @@ use Drupal\user\Entity\User;
 /**
  * Tests handling of menu links hierarchies.
  *
- * This test was took from \Drupal\Tests\menu_link_content\Kernel\MenuLinksTest.
- * We should extend it from after Drupal 8.6.x EOL.
- * The content class will be:
- * ```
- * public function __construct($name = NULL, array $data = [], $dataName = '') {
- *   static::$modules[] = 'menu_item_extras';
- *   parent::__construct($name, $data, $dataName);
- * }
- * ```
- *
  * @group menu_item_extras
  */
 class MenuLinksOriginTest extends KernelTestBase {
@@ -50,7 +40,7 @@ class MenuLinksOriginTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->menuLinkManager = \Drupal::service('plugin.manager.menu.link');
@@ -133,7 +123,7 @@ class MenuLinksOriginTest extends KernelTestBase {
    */
   public function assertMenuLinkParents($links, $expected_hierarchy) {
     foreach ($expected_hierarchy as $id => $parent) {
-      /* @var \Drupal\Core\Menu\MenuLinkInterface $menu_link_plugin  */
+      /** @var \Drupal\Core\Menu\MenuLinkInterface $menu_link_plugin  */
       $menu_link_plugin = $this->menuLinkManager->createInstance($links[$id]);
       $expected_parent = $links[$parent] ?? '';
       $message = new FormattableMarkup('Menu link %id has parent of %parent, expected %expected_parent.', [
@@ -231,7 +221,7 @@ class MenuLinksOriginTest extends KernelTestBase {
     // Start over, and move child-1 under child-2, and check that all the
     // children of child-1 have been moved too.
     $links = $this->createLinkHierarchy($module);
-    /* @var \Drupal\Core\Menu\MenuLinkInterface $menu_link_plugin  */
+    /** @var \Drupal\Core\Menu\MenuLinkInterface $menu_link_plugin  */
     $this->menuLinkManager->updateDefinition($links['child-1'], ['parent' => $links['child-2']]);
     // Verify that the entity was updated too.
     $menu_link_plugin = $this->menuLinkManager->createInstance($links['child-1']);

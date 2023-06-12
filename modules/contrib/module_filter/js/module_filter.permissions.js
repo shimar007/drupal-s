@@ -1,4 +1,8 @@
-(function($) {
+/**
+ * @file
+ */
+
+(function ($) {
 
   'use strict';
 
@@ -6,7 +10,7 @@
    * Filter enhancements.
    */
   Drupal.behaviors.moduleFilterPermissions = {
-    attach: function(context) {
+    attach: function (context) {
       var $input = $('input.table-filter-text', context).once('module-filter');
       if ($input.length) {
         var wrapperId = $input.attr('data-table');
@@ -19,7 +23,7 @@
         $input.winnow(wrapperId + ' ' + selector, {
           textSelector: 'td.module',
           buildIndex: [
-            function(item) {
+            function (item) {
               item.isModule = item.text != '';
 
               if (item.isModule) {
@@ -35,7 +39,7 @@
             }
           ],
           additionalOperators: {
-            perm: function(string, item) {
+            perm: function (string, item) {
               if (!item.isModule) {
                 if (item.permission == undefined) {
                   item.permission = $('.permission .title', item.element).text().toLowerCase();
@@ -50,7 +54,7 @@
         });
 
         var winnow = $input.data('winnow');
-        $input.bind('winnow:finish', function() {
+        $input.bind('winnow:finish', function () {
           if (winnow.results.length > 0) {
             for (var i in winnow.results) {
               if (winnow.results[i].isModule) {

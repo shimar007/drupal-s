@@ -18,7 +18,7 @@ class CdnStreamWrapperConstraintValidatorTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['file_test', 'file'];
+  protected static $modules = ['file_test', 'file'];
 
   /**
    * @covers ::validate

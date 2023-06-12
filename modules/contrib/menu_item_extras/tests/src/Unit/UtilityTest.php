@@ -6,7 +6,7 @@ use Drupal\menu_item_extras\Utility\Utility;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Class UtilityTest.
+ * Class For test Utility.
  *
  * @package Drupal\Tests\menu_item_extras\Unit
  *

@@ -6,7 +6,7 @@ use Drupal\Core\Menu\MenuLinkInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
 
 /**
- * Interface MenuLinkTreeHandlerInteface.
+ * Interface for class MenuLinkTreeHandler.
  *
  * @package Drupal\menu_item_extras\Service
  */

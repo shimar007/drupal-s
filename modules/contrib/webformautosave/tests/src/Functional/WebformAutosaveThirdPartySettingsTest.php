@@ -7,6 +7,7 @@ use Drupal\Tests\webform\Functional\WebformBrowserTestBase;
 /**
  * Tests for webformautosave third party settings.
  *
+ * @property \Drupal\user\Entity\User|false $adminUser
  * @group webformautosave
  */
 class WebformAutosaveThirdPartySettingsTest extends WebformBrowserTestBase {

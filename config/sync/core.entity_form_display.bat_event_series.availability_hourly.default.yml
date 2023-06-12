@@ -19,29 +19,29 @@ content:
   event_bat_unit_reference:
     type: entity_reference_autocomplete
     weight: 3
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
   event_dates:
     type: daterange_default
     weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   event_state_reference:
     type: entity_reference_autocomplete
     weight: 3
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
   label:
     type: string_textfield
     weight: -4
@@ -53,12 +53,12 @@ content:
   uid:
     type: entity_reference_autocomplete
     weight: 5
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
-    region: content
     third_party_settings: {  }
 hidden:
   field_event_webform_submission: true

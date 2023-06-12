@@ -1217,7 +1217,8 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
   public function getSubmissionForm(array $values = [], $operation = 'add') {
     // Test a single webform variant which is set via
     // ?_webform_handler[ELEMENT_KEY]={variant_id}.
-    $webform_variant = \Drupal::request()->query->get('_webform_variant') ?: [];
+    $query = \Drupal::request()->query->all();
+    $webform_variant = $query['_webform_variant'] ?? [];
     if ($webform_variant) {
       $is_add_operation = ($operation === 'add' && $this->access('update'));
       $is_test_operation = ($operation === 'test' && $this->access('test'));

@@ -24,7 +24,7 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'classy';
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}
@@ -40,7 +40,7 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $node_type = NodeType::create([
@@ -166,6 +166,9 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
     $page->pressButton('Save node');
     $assert_session->assertWaitOnAjaxRequest();
     $this->saveHtmlOutput();
+    $this->getSession()->switchToIFrame();
+    // wait for the table to finish loading.
+    $assert_session->waitForElement('css', '#drupal-off-canvas table .entity-browser-block-delta-order');
     // Verify we have selected in the block config the node that was created.
     $assert_session->elementTextContains('css', '#drupal-off-canvas table', 'First target node');
     // Insert the block in LB.
@@ -175,17 +178,16 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
     $this->saveHtmlOutput();
     // Verify it shows up in the LB preview.
     $assert_session->pageTextContains('You have unsaved changes');
-    $block_selector = '.layout-builder__layout .layout-builder__region .layout-builder-block.block-entity-browser-blockeu-test-browser';
-    $block = $assert_session->elementExists('css', $block_selector);
-    $rendered_node = $assert_session->elementExists('css', 'article.node', $block);
+    $block_selector = '.layout-builder__section .layout-builder__region .layout-builder-block article[role="article"]';
+    $rendered_node = $assert_session->elementExists('css', $block_selector);
     $this->assertStringContainsString('First target node', $rendered_node->getText());
     // Save the Layout and verify the node appears in the FE as well.
     $page->pressButton('Save layout');
     $this->saveHtmlOutput();
     $assert_session->pageTextContains('The layout override has been saved');
-    $block_selector = '.node__content .layout__region--content .block-entity-browser-blockeu-test-browser';
+    $block_selector = 'article[role="article"] .layout__region--content';
     $block = $assert_session->elementExists('css', $block_selector);
-    $rendered_node = $assert_session->elementExists('css', 'article.node', $block);
+    $rendered_node = $assert_session->elementExists('css', 'article[role="article"]', $block);
     $this->assertStringContainsStringIgnoringCase('First target node', $rendered_node->getText());
 
     $first_target_node = $this->getLastEntityOfType('node', TRUE);
@@ -223,20 +225,23 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
     $page->pressButton('Save node');
     $assert_session->assertWaitOnAjaxRequest();
     $this->saveHtmlOutput();
+    $this->getSession()->switchToIFrame();
+    // wait for the table to finish loading.
+    $assert_session->waitForElement('css', '#drupal-off-canvas table .entity-browser-block-delta-order');
     $assert_session->elementTextContains('css', '#drupal-off-canvas table', 'Second target node');
     $add_block_button = $assert_session->elementExists('css', '#drupal-off-canvas input[value="Add block"]');
     $add_block_button->press();
     $assert_session->assertNoElementAfterWait('css', '#drupal-off-canvas', 5000);
     $this->saveHtmlOutput();
     $assert_session->pageTextContains('You have unsaved changes');
-    $blocks = $page->findAll('css', '.layout-builder__layout .layout-builder__region .layout-builder-block.block-entity-browser-blockeu-test-browser');
-    $rendered_node = $assert_session->elementExists('css', 'article.node', $blocks[1]);
+    $blocks = $page->findAll('css', '.layout-builder__layout .layout-builder__region .layout-builder-block');
+    $rendered_node = $assert_session->elementExists('css', 'article[role="article"]', $blocks[2]);
     $this->assertStringContainsString('Second target node', $rendered_node->getText());
     $page->pressButton('Save layout');
     $this->saveHtmlOutput();
     $assert_session->pageTextContains('The layout override has been saved');
-    $blocks = $page->findAll('css', '.node__content .layout__region--content .block-entity-browser-blockeu-test-browser');
-    $rendered_node = $assert_session->elementExists('css', 'article.node', $blocks[1]);
+    $blocks = $page->findAll('css', 'article.contextual-region .layout__region.layout__region--content article[role="article"]');
+    $rendered_node = $blocks[1];
     $this->assertStringContainsString('Second target node', $rendered_node->getText());
 
     // Visit the node, click the "Usage" tab in there, and check usage is OK.
@@ -264,8 +269,8 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
     \Drupal::service('module_installer')->install(['contextual'], TRUE);
 
     $this->drupalGet("/node/{$host_node->id()}/layout");
-    $blocks = $page->findAll('css', '.layout-builder__layout .layout-builder__region .layout-builder-block.block-entity-browser-blockeu-test-browser');
-    $first_block = $blocks[0];
+    $blocks = $page->findAll('css', '.layout-builder__section .layout-builder__region .layout-builder-block');
+    $first_block = $blocks[1];
     $contextual_wrapper = $assert_session->elementExists('css', '.contextual', $first_block);
     $contextual_id = $contextual_wrapper->getAttribute('data-contextual-id');
     $this->clickContextualLink('div[data-contextual-id="' . $contextual_id . '"]', 'Remove block');

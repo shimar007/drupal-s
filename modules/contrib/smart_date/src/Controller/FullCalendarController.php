@@ -2,9 +2,13 @@
 
 namespace Drupal\smart_date\Controller;
 
+use Drupal\Core\Access\CsrfTokenGenerator;
+use Drupal\Core\DependencyInjection\ClassResolverInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\fullcalendar_view\Controller\CalendarEventController;
 use Drupal\smart_date_recur\Controller\Instances;
 use Drupal\smart_date_recur\Entity\SmartDateOverride;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,6 +16,12 @@ use Symfony\Component\HttpFoundation\Response;
  * Calendar Event Controller, overridden to handle Smart Date events.
  */
 class FullCalendarController extends CalendarEventController {
+  /**
+   * The class resolver service.
+   *
+   * @var \Drupal\Core\DependencyInjection\ClassResolverInterface
+   */
+  protected $classResolver;
 
   // Fullcalendar is using defaultTimedEventDuration parameter
   // for event objects without a specified end value:
@@ -25,6 +35,33 @@ class FullCalendarController extends CalendarEventController {
    * @var int
    */
   protected $defaultTimedEventDuration = 60 * 60;
+
+  /**
+   * Construct a FullCalendar controller.
+   *
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
+   *   Logger factory object.
+   * @param \Drupal\Core\Access\CsrfTokenGenerator $csrfToken
+   *   CSRF token factory object.
+   * @param \Drupal\Core\DependencyInjection\ClassResolverInterface $classResolver
+   *   The class resolver service.
+   */
+  public function __construct(LoggerChannelFactoryInterface $loggerFactory, CsrfTokenGenerator $csrfToken, ClassResolverInterface $classResolver) {
+    parent::__construct($loggerFactory, $csrfToken);
+
+    $this->classResolver = $classResolver;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('logger.factory'),
+      $container->get('csrf_token'),
+      $container->get('class_resolver'),
+    );
+  }
 
   /**
    * Update the event entity based on information passed in request.
@@ -118,7 +155,8 @@ class FullCalendarController extends CalendarEventController {
         $override = SmartDateOverride::create($values);
       }
       $override->save();
-      $instancesController = new Instances();
+      /** @var \Drupal\smart_date_recur\Controller\Instances $instancesController */
+      $instancesController = $this->classResolver->getInstanceFromDefinition(Instances::class);
       $instancesController->applyChanges($rule);
     }
     else {

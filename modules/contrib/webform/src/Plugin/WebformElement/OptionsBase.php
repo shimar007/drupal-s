@@ -785,7 +785,7 @@ abstract class OptionsBase extends WebformElementBase {
 
     $plugin_id = $this->getPluginId();
     $name = $element['#webform_key'];
-    $options = OptGroup::flattenOptions($element['#options']);
+    $options = isset($element['#options']) ? OptGroup::flattenOptions($element['#options']) : [];
     if ($this->getElementSelectorInputsOptions($element)) {
       $other_type = $this->getOptionsOtherType();
       $multiple = ($this->hasMultipleValues($element) && $other_type === 'select') ? '[]' : '';

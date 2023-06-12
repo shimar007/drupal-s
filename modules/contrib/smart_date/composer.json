@@ -11,7 +11,7 @@
     "source": "https://git.drupalcode.org/project/smart_date"
   },
   "require": {
-    "php": ">=7.1",
+    "php": ">=8.0",
     "simshaun/recurr": "^4"
   },
   "suggest": {

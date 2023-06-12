@@ -20,7 +20,7 @@ class WebformCompositeFormatTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['filter', 'address', 'webform'];
+  protected static $modules = [ 'address', 'webform'];
 
   /**
    * Webforms to load.

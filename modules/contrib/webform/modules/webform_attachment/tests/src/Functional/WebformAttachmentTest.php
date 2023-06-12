@@ -250,12 +250,12 @@ class WebformAttachmentTest extends WebformBrowserTestBase {
     // Check that attachment is enabled.
     $this->postSubmission($webform_attachment_states, ['attach' => TRUE]);
     $sent_email = $this->getLastEmail();
-    $this->assert(isset($sent_email['params']['attachments'][0]), 'Attachment enabled via #states');
+    $this->assertTrue(isset($sent_email['params']['attachments'][0]), 'Attachment enabled via #states');
 
     // Check that attachment is disabled.
     $this->postSubmission($webform_attachment_states, ['attach' => FALSE]);
     $sent_email = $this->getLastEmail();
-    $this->assert(!isset($sent_email['params']['attachments'][0]), 'Attachment disabled via #states');
+    $this->assertFalse(isset($sent_email['params']['attachments'][0]), 'Attachment disabled via #states');
   }
 
 }

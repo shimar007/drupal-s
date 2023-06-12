@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\cdn\Functional;
 
+use Drupal\cdn\File\FileUrlGenerator;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Site\Settings;
@@ -19,7 +20,7 @@ class CdnIntegrationTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'cdn', 'file', 'editor'];
+  protected static $modules = ['node', 'cdn', 'file', 'editor'];
 
   /**
    * {@inheritdoc}
@@ -29,7 +30,7 @@ class CdnIntegrationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create a text format that uses editor_file_reference, a node type with a
@@ -134,8 +135,10 @@ class CdnIntegrationTest extends BrowserTestBase {
    */
   protected function assertCssFileUsesRootRelativeUrl($css_file_url) {
     $this->drupalGet($css_file_url);
-    $this->assertSession()->responseContains('url(', 'CSS references other files.');
-    $this->assertSession()->responseContains('url(' . base_path() . 'core/misc/tree.png)', 'CSS references other files by root-relative URL, not CDN URL.');
+    // CSS references other files.
+    $this->assertSession()->responseContains('url(');
+    // CSS references other files by root-relative URL, not CDN URL.
+    $this->assertSession()->responseContains('url(' . base_path() . 'core/misc/tree.png)');
   }
 
   /**
@@ -205,23 +208,61 @@ class CdnIntegrationTest extends BrowserTestBase {
 
   /**
    * Tests that the cdn.farfuture.download route/controller work as expected.
+   *
+   * @dataProvider providerFarfuture
    */
-  public function testFarfuture() {
-    $druplicon_png_mtime = filemtime('public://druplicon ❤️.png');
-    $druplicon_png_security_token = Crypt::hmacBase64($druplicon_png_mtime . 'public' . UrlHelper::encodePath('/druplicon ❤️.png'), \Drupal::service('private_key')->get() . Settings::getHashSalt());
-    $druplicon_png_relative_security_token = Crypt::hmacBase64($druplicon_png_mtime . ':relative:' . UrlHelper::encodePath('/' . $this->siteDirectory . '/files/druplicon ❤️.png'), \Drupal::service('private_key')->get() . Settings::getHashSalt());
-    $this->drupalGet('/cdn/ff/' . $druplicon_png_security_token . '/' . $druplicon_png_mtime . '/public/druplicon ❤️.png');
-    $this->assertSession()->statusCodeEquals(200);
-    $this->drupalGet('/cdn/ff/' . $druplicon_png_relative_security_token . '/' . $druplicon_png_mtime . '/:relative:/' . $this->siteDirectory . '/files/druplicon ❤️.png');
+  public function testFarfuture(string $file_uri, string $expected_scheme, string $expected_file_path, string $expected_content_type) {
+    // TRICKY: the site directory is unknowable in data providers, so allow
+    // setting a special string that is replaced.
+    if ($expected_scheme === FileUrlGenerator::RELATIVE) {
+      $file_uri = str_replace('SITE_DIRECTORY', $this->siteDirectory, $file_uri);
+      $expected_file_path = str_replace('SITE_DIRECTORY', $this->siteDirectory, $expected_file_path);
+    }
+
+    $mtime = filemtime($file_uri);
+    $security_token = Crypt::hmacBase64($mtime . $expected_scheme . UrlHelper::encodePath('/' . $expected_file_path), \Drupal::service('private_key')->get() . Settings::getHashSalt());
+    $this->drupalGet('/cdn/ff/' . $security_token . '/' . $mtime . '/' . $expected_scheme . '/' . $expected_file_path);
     $this->assertSession()->statusCodeEquals(200);
     // Assert presence of headers that \Drupal\cdn\CdnFarfutureController sets.
     $this->assertSame('Wed, 20 Jan 1988 04:20:42 GMT', $this->getSession()->getResponseHeader('Last-Modified'));
     // Assert presence of headers that Symfony's BinaryFileResponse sets.
     $this->assertSame('bytes', $this->getSession()->getResponseHeader('Accept-Ranges'));
 
+    // Assert expected Content-Type.
+    $this->assertSame($expected_content_type, $this->getSession()->getResponseHeader('Content-Type'));
+
     // Any chance to the security token should cause a 403.
-    $this->drupalGet('/cdn/ff/' . substr($druplicon_png_security_token, 1) . '/' . $druplicon_png_mtime . '/public/druplicon ❤️.png');
+    $this->drupalGet('/cdn/ff/' . substr($security_token, 1) . '/' . $mtime . '/' . $expected_scheme . '/' . $expected_file_path);
     $this->assertSession()->statusCodeEquals(403);
+  }
+
+  public function providerFarfuture(): array {
+    return [
+      'image in public://' => [
+        'public://druplicon ❤️.png',
+        'public',
+        'druplicon ❤️.png',
+        'image/png',
+      ],
+      'image in public://, but accessed through a relative file path' => [
+        'SITE_DIRECTORY/files/druplicon ❤️.png',
+        FileUrlGenerator::RELATIVE,
+        'SITE_DIRECTORY/files/druplicon ❤️.png',
+        'image/png',
+      ],
+      'css' => [
+        'core/modules/system/css/system.maintenance.css',
+        FileUrlGenerator::RELATIVE,
+        'core/modules/system/css/system.maintenance.css',
+        'text/css; charset=UTF-8',
+      ],
+      'js' => [
+        'core/modules/system/js/system.modules.js',
+        FileUrlGenerator::RELATIVE,
+        'core/modules/system/js/system.modules.js',
+        'application/javascript',
+      ],
+    ];
   }
 
 }

@@ -5,11 +5,64 @@ namespace Drupal\fullcalendar_view;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Access\CsrfTokenGenerator;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\fullcalendar_view\TimezoneService;
 
 class FullcalendarViewPreprocess {
   use StringTranslationTrait;
 
   protected  static $viewIndex = 0;
+
+  /**
+   * The language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
+   * The CSRF token generator.
+   *
+   * @var \Drupal\Core\Access\CsrfTokenGenerator
+   */
+  protected $tokenGenerator;
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * Converted date from UTC date.
+   *
+   * @var \Drupal\fullcalendar_view\TimezoneService
+   */
+  protected $utcToLocal;
+
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager.
+   * @param \Drupal\Core\Access\CsrfTokenGenerator $token_generator
+   *   The CSRF token generator.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\fullcalendar_view\TimezoneService $utc_to_local
+   *   The date to utc date.
+   */
+  public function __construct(LanguageManagerInterface $language_manager, CsrfTokenGenerator $token_generator, EntityTypeManagerInterface $entity_type_manager, TimezoneService $utc_to_local) {
+    $this->languageManager = $language_manager;
+    $this->tokenGenerator = $token_generator;
+    $this->entityTypeManager = $entity_type_manager;
+    $this->utcToLocal = $utc_to_local;
+  }
+
   /**
    * Process the view variable array.
    *
@@ -26,14 +79,14 @@ class FullcalendarViewPreprocess {
     $fields = $view->field;
 
     // Get current language.
-    $language = \Drupal::languageManager()->getCurrentLanguage();
+    $language = $this->languageManager->getCurrentLanguage();
 
     // Current user.
     $user = $variables['user'];
     // CSRF token.
     $token = '';
     if (!$user->isAnonymous()) {
-      $token = \Drupal::csrfToken()->get($user->id());
+      $token = $this->tokenGenerator->get($user->id());
     }
     //
     // New event bundle type.
@@ -53,7 +106,7 @@ class FullcalendarViewPreprocess {
     }
 
     // Can the user add a new event?
-    $entity_manager = \Drupal::entityTypeManager();
+    $entity_manager = $this->entityTypeManager;
     $access_handler = $entity_manager->getAccessControlHandler($entity_type->id());
     $dbl_click_to_create = FALSE;
     if ($access_handler->createAccess($event_bundle_type)) {
@@ -107,14 +160,20 @@ class FullcalendarViewPreprocess {
     $start_field_option = $fields[$start_field]->options;
     $end_field_option = empty($end_field) ? NULL : $fields[$end_field]->options;
     // Custom timezone or user timezone.
-    $timezone = !empty($start_field_option['settings']['timezone_override']) ?
-    $start_field_option['settings']['timezone_override'] : date_default_timezone_get();
+    $timezone = !empty($start_field_option['settings']['timezone']) ?
+    $start_field_option['settings']['timezone'] : date_default_timezone_get();
     // Set the first day setting.
     $first_day = isset($options['firstDay']) ? intval($options['firstDay']) : 0;
     // Left side buttons.
     $left_buttons = Xss::filter($options['left_buttons']);
     // Right side buttons.
     $right_buttons = Xss::filter($options['right_buttons']);
+    // Slot Duration.
+    $slot_duration = empty($options['slotDuration']) ? '00:30:00' : Xss::filter($options['slotDuration']);
+    // Display time limit.
+    $minTime = !empty($options['minTime']) ? $options['minTime'] : '00:00:00';
+    $maxTime = !empty($options['maxTime']) ? $options['maxTime'] : '23:59:59';
+
     $entries = [];
 
     if (!empty($start_field)) {
@@ -125,7 +184,7 @@ class FullcalendarViewPreprocess {
         unset($title_allowed_tags[$tag_key]);
       }
       // Timezone conversion service.
-      $timezone_service = \Drupal::service('fullcalendar_view.timezone_conversion_service');
+      $timezone_service = $this->utcToLocal;
       // Save view results into entries array.
       foreach ($view->result as $row) {
         // Set the row_index property used by advancedRender function.
@@ -181,7 +240,7 @@ class FullcalendarViewPreprocess {
           $title = $fields[$options['title']]->advancedRender($row);
         }
         else {
-          $title = t('Invalid event title');
+          $title = $this->t('Invalid event title');
         }
         $link_url = strstr($title, 'href="');
         if ($link_url) {
@@ -303,7 +362,7 @@ class FullcalendarViewPreprocess {
             }
             else {
               // Without end date field, this event can't be resized.
-              $entry['eventDurationEditable'] = FALSE;
+              $entry['durationEditable'] = FALSE;
             }
             // Set the color for this event.
             if (isset($event_type) && isset($color_tax[$event_type])) {
@@ -338,10 +397,12 @@ class FullcalendarViewPreprocess {
         'header' => [
           'left' => $left_buttons,
           'center' => 'title',
-          'right' => $right_buttons
+          'right' => $right_buttons ?? 'dayGridMonth,timeGridWeek,timeGridDay,listYear'
         ],
         'eventTimeFormat' => $timeFormat,
         'firstDay' => $first_day,
+        'minTime' => $minTime,
+        'maxTime' => $maxTime,
         'locale' => $default_lang,
         'events' => $entries,
         'navLinks' => $options['nav_links'] !== 0,
@@ -349,6 +410,7 @@ class FullcalendarViewPreprocess {
         // Limits the number of events displayed on a day.
         'eventLimit' => isset($options['eventLimit']) ? intval($options['eventLimit']) : 2,
         'eventOverlap' => $options['allowEventOverlap'] !== 0,
+        'slotDuration' => $slot_duration,
       ];
       // Dialog options.
       // Other modules can override following options by custom plugin.
@@ -365,6 +427,10 @@ class FullcalendarViewPreprocess {
           'backgroundColor' => 'rgba(255,255,255,0.9)',
           'font-size' => '1rem'
         ]
+      ];
+      // Modal options.
+      $dialog_modal_options = [
+        'width' => '800',
       ];
 
       // Load the fullcalendar js library.
@@ -388,6 +454,8 @@ class FullcalendarViewPreprocess {
         // Open event links in dialog window.
         // If it is 1, event links in the calendar will open in a dialog window.
         'dialogWindow' => $options['dialogWindow'],
+        // Open event links in modal dialog.
+        'dialogModal' => $options['dialogModal'],
         // The bundle (content) type of a new event.
         'eventBundleType' => $event_bundle_type,
         // The machine name of start date field.
@@ -408,6 +476,8 @@ class FullcalendarViewPreprocess {
         'calendar_options' => json_encode($calendar_options),
         // The options of the pop-up dialog object.
         'dialog_options' => json_encode($dialog_options),
+        // The options of the pop-up modal dialog object.
+        'dialog_modal_options' => json_encode($dialog_modal_options),
       ];
     }
   }

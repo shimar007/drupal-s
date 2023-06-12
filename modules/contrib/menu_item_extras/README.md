@@ -1,13 +1,13 @@
 
 # CONTENTS OF THIS FILE
-  
+
  * Introduction
  * Requirements
  * Installation
  * Configuration
  * FAQ
  * Maintainers
- 
+
 ## INTRODUCTION
 
 Menu Item Extras provides extras for the Menu Items.
@@ -51,7 +51,8 @@ This module requires the following modules:
 ```
 
 2. Support for REST API
-We do not support it out of the box, check the issue https://www.drupal.org/project/menu_item_extras/issues/2959787
+We do not support it out of the box, check the issue
+https://www.drupal.org/project/menu_item_extras/issues/2959787
 ## MAINTAINERS
 
 - Andriy Khomych(andriy.khomych) https://www.drupal.org/u/andriy-khomych

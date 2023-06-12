@@ -90,17 +90,16 @@ class Admin implements \JsonSerializable
 
     /**
     * Gets the sharepoint
-    * A container for administrative resources to manage tenant-level settings for SharePoint and OneDrive.
     *
-    * @return \Beta\Microsoft\Graph\TenantAdmin\Model\Sharepoint|null The sharepoint
+    * @return Sharepoint|null The sharepoint
     */
     public function getSharepoint()
     {
         if (array_key_exists("sharepoint", $this->_propDict)) {
-            if (is_a($this->_propDict["sharepoint"], "\Beta\Microsoft\Graph\TenantAdmin\Model\Sharepoint") || is_null($this->_propDict["sharepoint"])) {
+            if (is_a($this->_propDict["sharepoint"], "\Beta\Microsoft\Graph\Model\Sharepoint") || is_null($this->_propDict["sharepoint"])) {
                 return $this->_propDict["sharepoint"];
             } else {
-                $this->_propDict["sharepoint"] = new \Beta\Microsoft\Graph\TenantAdmin\Model\Sharepoint($this->_propDict["sharepoint"]);
+                $this->_propDict["sharepoint"] = new Sharepoint($this->_propDict["sharepoint"]);
                 return $this->_propDict["sharepoint"];
             }
         }
@@ -109,9 +108,8 @@ class Admin implements \JsonSerializable
 
     /**
     * Sets the sharepoint
-    * A container for administrative resources to manage tenant-level settings for SharePoint and OneDrive.
     *
-    * @param \Beta\Microsoft\Graph\TenantAdmin\Model\Sharepoint $val The sharepoint
+    * @param Sharepoint $val The sharepoint
     *
     * @return Admin
     */
@@ -189,17 +187,17 @@ class Admin implements \JsonSerializable
 
     /**
     * Gets the windows
-    * A container for all Windows Update for Business deployment service functionality. Read-only.
+    * A container for all Windows administrator functionalities. Read-only.
     *
-    * @return \Beta\Microsoft\Graph\WindowsUpdates\Model\Windows|null The windows
+    * @return AdminWindows|null The windows
     */
     public function getWindows()
     {
         if (array_key_exists("windows", $this->_propDict)) {
-            if (is_a($this->_propDict["windows"], "\Beta\Microsoft\Graph\WindowsUpdates\Model\Windows") || is_null($this->_propDict["windows"])) {
+            if (is_a($this->_propDict["windows"], "\Beta\Microsoft\Graph\Model\AdminWindows") || is_null($this->_propDict["windows"])) {
                 return $this->_propDict["windows"];
             } else {
-                $this->_propDict["windows"] = new \Beta\Microsoft\Graph\WindowsUpdates\Model\Windows($this->_propDict["windows"]);
+                $this->_propDict["windows"] = new AdminWindows($this->_propDict["windows"]);
                 return $this->_propDict["windows"];
             }
         }
@@ -208,9 +206,9 @@ class Admin implements \JsonSerializable
 
     /**
     * Sets the windows
-    * A container for all Windows Update for Business deployment service functionality. Read-only.
+    * A container for all Windows administrator functionalities. Read-only.
     *
-    * @param \Beta\Microsoft\Graph\WindowsUpdates\Model\Windows $val The windows
+    * @param AdminWindows $val The windows
     *
     * @return Admin
     */

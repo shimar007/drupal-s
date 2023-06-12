@@ -24,28 +24,28 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       home_page_header_: home_page_header_
       about_us: about_us
       resume: resume
       add_form: add_form
+    negate: 0
     target_bundles_drag_drop:
-      home_page_header_:
-        enabled: true
-        weight: 2
       about_us:
-        enabled: true
         weight: 3
-      resume:
         enabled: true
-        weight: 6
       add_form:
-        enabled: true
         weight: 9
+        enabled: true
       education_details:
         weight: 10
         enabled: false
+      home_page_header_:
+        weight: 2
+        enabled: true
+      resume:
+        weight: 6
+        enabled: true
       technical_skills:
         weight: 13
         enabled: false

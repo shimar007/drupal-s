@@ -16,7 +16,7 @@ class WebformJqueryUiDatepickerTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['webform_jqueryui_datepicker', 'webform_jqueryui_datepicker_test'];
+  protected static $modules = ['webform_jqueryui_datepicker', 'webform_jqueryui_datepicker_test'];
 
   /**
    * Tests datepicker elements.

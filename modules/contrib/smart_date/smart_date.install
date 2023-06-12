@@ -141,10 +141,8 @@ function _smart_date_field_columns_add($field_type, array $specs, $update_defini
       $field_name => $field_storage_definition,
     ]);
     $table_names = $table_mapping->getDedicatedTableNames();
-    $columns = $table_mapping->getColumnNames($field_name);
 
     foreach ($table_names as $table_name) {
-      $field_schema = $field_storage_definition->getSchema();
       $schema = \Drupal::database()->schema();
       // If the table doesn't exist, no need to go any further.
       $table_exists = $schema->tableExists($table_name);

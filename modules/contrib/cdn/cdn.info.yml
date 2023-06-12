@@ -4,7 +4,7 @@ type: module
 package: "Web services"
 core_version_requirement: ^8.8 || ^9
 
-# Information added by Drupal.org packaging script on 2020-04-01
-version: '8.x-3.5'
+# Information added by Drupal.org packaging script on 2022-12-11
+version: '8.x-3.6'
 project: 'cdn'
-datestamp: 1585778367
+datestamp: 1670801782

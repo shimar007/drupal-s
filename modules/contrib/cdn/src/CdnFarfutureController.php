@@ -87,6 +87,10 @@ class CdnFarfutureController {
 
     $response = new BinaryFileResponse($file_to_stream, 200, $this->getFarfutureHeaders(), TRUE, NULL, FALSE, FALSE);
     $response->isNotModified($request);
+    // @todo Remove once the CDN module requires a version of Drupal core that includes https://www.drupal.org/project/drupal/issues/3172550.
+    if ($mime_type = \Drupal::service('file.mime_type.guesser')->guessMimeType($relative_file_path)) {
+      $response->headers->set('Content-Type', $mime_type);
+    }
     return $response;
   }
 
@@ -132,6 +136,10 @@ class CdnFarfutureController {
 
     $response = new BinaryFileResponse(substr($relative_file_path, 1), 200, $this->getFarfutureHeaders(), TRUE, NULL, FALSE, FALSE);
     $response->isNotModified($request);
+    // @todo Remove once the CDN module requires a version of Drupal core that includes https://www.drupal.org/project/drupal/issues/3172550.
+    if ($mime_type = \Drupal::service('file.mime_type.guesser')->guessMimeType($relative_file_path)) {
+      $response->headers->set('Content-Type', $mime_type);
+    }
     return $response;
   }
 

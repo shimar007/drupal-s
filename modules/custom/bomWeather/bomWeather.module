@@ -11,7 +11,7 @@ function importWeather() {
 /**
  * Implements hook_cron().
  */
-function bomWeather_cron() {
-    bomWeather::importData();
-}
+// function bomWeather_cron() {
+//     bomWeather::importData();
+// }
 ?>

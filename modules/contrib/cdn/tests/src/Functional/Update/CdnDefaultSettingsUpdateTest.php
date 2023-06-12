@@ -39,12 +39,12 @@ class CdnDefaultSettingsUpdateTest extends UpdatePathTestBase {
     ];
     $expected_updated_mapping = [
       'type' => 'simple',
-      'domain' => 'cdn.example.com',
       'conditions' => [
         'not' => [
           'extensions' => ['css', 'js'],
         ],
       ],
+      'domain' => 'cdn.example.com',
     ];
 
     // Make sure we have the expected values before the update.
@@ -70,10 +70,10 @@ class CdnDefaultSettingsUpdateTest extends UpdatePathTestBase {
 
     $expected_mapping = [
       'type' => 'simple',
-      'domain' => 'cdn.example.com',
       'conditions' => [
         'extensions' => ['zip'],
       ],
+      'domain' => 'cdn.example.com',
     ];
 
     // Make sure we have the expected values before the update.

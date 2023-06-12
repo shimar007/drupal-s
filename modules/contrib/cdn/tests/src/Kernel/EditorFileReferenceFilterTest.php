@@ -18,7 +18,7 @@ class EditorFileReferenceFilterTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'system',
     'filter',
     'editor',
@@ -36,7 +36,7 @@ class EditorFileReferenceFilterTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->installConfig(['system', 'cdn']);
     $this->config('cdn.settings')

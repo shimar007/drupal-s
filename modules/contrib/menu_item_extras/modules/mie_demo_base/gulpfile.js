@@ -1,8 +1,10 @@
-/* eslint-disable */
+/**
+ * @file
+ * Eslint-disable .*/
 
 'use strict';
 
-/** SETUP */
+/* SETUP */
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const notify = require("gulp-notify");
@@ -13,16 +15,16 @@ const gutil = require('gulp-util');
 const glob = require('glob');
 const path = require('path');
 const plumber = require('gulp-plumber');
-// SASS
+// SASS.
 const sass = require('gulp-sass');
 const sassLint = require('gulp-sass-lint');
 const icomoonBuilder = require('gulp-icomoon-builder');
 const autoprefixer = require('gulp-autoprefixer');
-// JS
+// JS.
 const jshint = require('gulp-jshint');
 const jshintStylish = require('jshint-stylish');
 
-/** CONFIGURATION */
+/* CONFIGURATION */
 const configs = {
   bowerDir: './bower_components',
   npmDir: './node_modules',
@@ -39,14 +41,14 @@ const configs = {
 
   testEnv: false
 };
-configs.sassIncludePaths = [`${configs.npmDir}/foundation-sites/scss`];
+configs.sassIncludePaths = [`${configs.npmDir} / foundation - sites / scss`];
 
 const webpackBundleConfig = require('./webpack.bundle.config')(configs);
 const webpackStandaloneConfig = require('./webpack.standalone.config')(configs);
 
-/** TASKS */
+/* TASKS */
 
-/** SCSS TASKS */
+/* SCSS TASKS */
 gulp.task('scss-lint', () => {
   gulp.src(configs.sassDocSrc)
     .pipe(sassLint({
@@ -63,12 +65,13 @@ gulp.task('scss-compile', () => {
       sass({
         includePaths: configs.sassIncludePaths
       })
-      // Catch any SCSS errors and prevent them from crashing gulp
+        // Catch any SCSS errors and prevent them from crashing gulp.
         .on('error', function (error) {
           console.error('>>> ERROR', error);
           if (process.env.NODE_ENV && process.env.NODE_ENV === 'test') {
             process.exit.bind(process, 1);
-          } else {
+          }
+          else {
             notify().write(error);
             this.emit('end');
           }
@@ -79,20 +82,26 @@ gulp.task('scss-compile', () => {
     .pipe(gulp.dest('./css/'));
 });
 
-/** JS TASKS */
+/* JS TASKS */
 gulp.task('js-lint', () => {
   return gulp.src(configs.allScripts)
     .pipe(jshint())
     .pipe(jshint.reporter(jshintStylish))
-    // Use gulp-notify as jshint reporter
+    // Use gulp-notify as jshint reporter.
     .pipe(process.env.NODE_ENV && process.env.NODE_ENV === 'test' ? jshint.reporter('fail') : gutil.noop())
     .pipe(notify(function (file) {
-      if (!file.jshint) return false;
-      // Don't show something if success
-      if (file.jshint.success) return false;
+      if (!file.jshint) {
+        return false;
+      }
+      // Don't show something if success.
+      if (file.jshint.success) {
+        return false;
+      }
 
       let errors = file.jshint.results.map(function (data) {
-        if (data.error) return `(${data.error.line}: ${data.error.character}) ${data.error.reason}`;
+        if (data.error) {
+          return `(${data.error.line}: ${data.error.character}) ${data.error.reason}`;
+        }
       }).join("\n");
 
       return `${file.relative} (${file.jshint.results.length} errors)\n ${errors}`;
@@ -105,7 +114,8 @@ gulp.task('js-bundle', () => {
       gutil.log(error.message);
       if (process.env.NODE_ENV && process.env.NODE_ENV === 'test') {
         process.exit.bind(process, 1);
-      } else {
+      }
+      else {
         this.emit('end');
       }
     }))
@@ -115,7 +125,9 @@ gulp.task('js-bundle', () => {
 
 gulp.task('js-standalone', done => {
   glob(configs.standaloneScripts, {}, (err, files) => {
-    if (err) done(err);
+    if (err) {
+      done(err);
+    }
     files.map(entry => webpackStandaloneConfig.entry[path.basename(entry)] = entry);
 
     gulp.src(configs.standaloneScripts)
@@ -123,7 +135,8 @@ gulp.task('js-standalone', done => {
         gutil.log(error.message);
         if (process.env.NODE_ENV && process.env.NODE_ENV === 'test') {
           process.exit.bind(process, 1);
-        } else {
+        }
+        else {
           this.emit('end');
         }
       }))
@@ -135,7 +148,7 @@ gulp.task('js-standalone', done => {
   });
 });
 
-/** BUILD FONTS */
+/* BUILD FONTS */
 gulp.task('build-fonts', () => {
   gulp.src(configs.icomoon)
     .pipe(icomoonBuilder({
@@ -165,15 +178,15 @@ gulp.task('test', () => {
   gulp.start('js-standalone');
 });
 
-/** WATCHER */
+/* WATCHER */
 gulp.task('watch', () => {
-  // SASS Watch
+  // SASS Watch.
   watch(configs.sassDocSrc, () => {
     gulp.start('scss-lint');
     gulp.start('scss-compile');
   });
 
-  // JS Watch
+  // JS Watch.
   /*watch(configs.allScripts, () => {
    gulp.start('js-lint');
    });*/
@@ -184,7 +197,7 @@ gulp.task('watch', () => {
     gulp.start('js-bundle');
   });
 
-  // Fonts Watch
+  // Fonts Watch.
   watch(configs.icomoon, () => {
     gulp.start('build-fonts');
   });

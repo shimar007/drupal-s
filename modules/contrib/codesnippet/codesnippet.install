@@ -31,5 +31,14 @@ function codesnippet_requirements($phase) {
     }
   }
 
+  if ($phase == 'runtime') {
+    $requirements['codesnippet_d10'] = [
+      'title' => t('CodeSnippet'),
+      'value' => t('Upgrading to CKEditor 5'),
+      'severity' => REQUIREMENT_WARNING,
+      'description' => t('CodeSnippet now has an upgrade path to using CKEditor 5 in Drupal core. After upgrading, you no longer need the CodeSnippet module for CKEditor 4. <a href=":d10issue">See this thread for more information</a>.', [':d10issue' => 'https://www.drupal.org/project/drupal/issues/3356929']),
+    ];
+  }
+
   return $requirements;
 }

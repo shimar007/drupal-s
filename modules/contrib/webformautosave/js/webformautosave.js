@@ -72,17 +72,20 @@
     store.webform = $('form.webform-submission-form');
     store.submit = $(form).find('[data-autosave-trigger="submit"]');
 
-    // Add input and focus event listeners to each input.
+    // Add input, change and focus event listeners to each input.
     $(
       once(
-        'webformAutosaveBehavior',
-        'input:not([data-autosave-trigger="submit"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])',
-        context,
+        'webformAutosaveBehaviorFiles',
+        'body',
+        context
       ),
     )
-      .on('input', inputHandler)
+      // Add an input listener to most inputs.
+      .on('input', 'input:not([data-autosave-trigger="submit"]):not([type="file"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])', inputHandler)
+      // Add a change listener to file inputs.
+      .on('change', 'input[type="file"]', inputHandler)
       // eslint-disable-next-line func-names
-      .on('focus', function () {
+      .on('focus', 'input:not([data-autosave-trigger="submit"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])', function () {
         store.focusedElement = $(this);
       });
 
@@ -109,7 +112,7 @@
       // Let's bind an input event to our inputs once.
       if ($(webformForm).length) {
         // eslint-disable-next-line func-names
-        $(webformForm).each(function (form) {
+        $(once('webformAutosaveBindHandler', webformForm)).each(function (form) {
           bindAutosaveHandlers(form, context);
         });
       }

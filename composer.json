@@ -51,7 +51,7 @@
         "drupal/webform_views": "^5.0@alpha",
         "drupal/entity_reference_revisions": "^1.6",
         "drupal/cdn": "^3.3",
-        "drupal/advagg": "^4.0",
+        "drupal/advagg": "^6.0@alpha",
         "drupal/ckeditor_templates": "^1.1",
         "drupal/masonry": "^1.0",
         "drupal/masonry_views": "^1.0",

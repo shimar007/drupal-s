@@ -67,9 +67,6 @@ class WebformLibrariesTest extends WebformBrowserTestBase {
     // Exclude optional libraries.
     $this->drupalGet('/admin/structure/webform/config/libraries');
     $edit = [
-      'excluded_libraries[ckeditor.fakeobjects]' => FALSE,
-      'excluded_libraries[ckeditor.image]' => FALSE,
-      'excluded_libraries[ckeditor.link]' => FALSE,
       'excluded_libraries[codemirror]' => FALSE,
       'excluded_libraries[choices]' => FALSE,
       'excluded_libraries[jquery.inputmask]' => FALSE,
