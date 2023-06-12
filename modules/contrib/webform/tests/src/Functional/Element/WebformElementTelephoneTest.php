@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\webform\Functional\Element;
 
-use Drupal\Core\Extension\ExtensionNameLengthException;
-
 /**
  * Tests for telephone element.
  *
@@ -17,8 +15,7 @@ class WebformElementTelephoneTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform'];
-  // protected static $modules = ['webform', 'telephone_validation'];
+  public static $modules = ['webform', 'telephone_validation'];
 
   /**
    * Webforms to load.
@@ -26,22 +23,6 @@ class WebformElementTelephoneTest extends WebformElementBrowserTestBase {
    * @var array
    */
   protected static $testWebforms = ['test_element_telephone'];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-
-    try {
-      /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
-      $module_installer = \Drupal::service('module_installer');
-      $module_installer->install(['telephone_validation']);
-    }
-    catch (\Exception $exception) {
-      // Do nothing.
-    }
-  }
 
   /**
    * Test telephone element.
@@ -62,11 +43,6 @@ class WebformElementTelephoneTest extends WebformElementBrowserTestBase {
 
     // Check USE telephone validation.
     $assert_session->responseContains('<input data-drupal-selector="edit-tel-validation-national" aria-describedby="edit-tel-validation-national--description" type="tel" id="edit-tel-validation-national" name="tel_validation_national" value="" size="30" maxlength="128" class="form-tel" />');
-
-    // Make the telephone_validation.module is installed.
-    if (!\Drupal::moduleHandler()->moduleExists('telephone_validation')) {
-      return;
-    }
 
     // Check telephone validation missing plus sign.
     $this->drupalGet('/webform/test_element_telephone');

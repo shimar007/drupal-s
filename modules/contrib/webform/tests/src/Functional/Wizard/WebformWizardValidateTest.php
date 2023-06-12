@@ -14,7 +14,7 @@ class WebformWizardValidateTest extends WebformWizardTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_test_element'];
+  public static $modules = ['webform', 'webform_test_element'];
 
   /**
    * Webforms to load.

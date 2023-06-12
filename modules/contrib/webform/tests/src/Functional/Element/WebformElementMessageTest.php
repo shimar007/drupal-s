@@ -16,7 +16,7 @@ class WebformElementMessageTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_test_message_custom'];
+  public static $modules = ['webform_test_message_custom'];
 
   /**
    * Webforms to load.

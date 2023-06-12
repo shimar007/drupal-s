@@ -162,7 +162,8 @@ class WebformOptions extends ConfigEntityBase implements WebformOptionsInterface
    */
   public function hasAlterHooks() {
     $hook_name = 'webform_options_' . $this->id() . '_alter';
-    return \Drupal::moduleHandler()->hasImplementations($hook_name);
+    $alter_hooks = \Drupal::moduleHandler()->getImplementations($hook_name);
+    return (count($alter_hooks)) ? TRUE : FALSE;
   }
 
   /**

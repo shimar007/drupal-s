@@ -33,11 +33,11 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
   protected $routerBuilder;
 
   /**
-   * The webform libraries manager.
+   * The (drush) command-line service.
    *
-   * @var \Drupal\webform\WebformLibrariesManagerInterface
+   * @var \Drupal\webform\Commands\WebformCliService
    */
-  protected $librariesManager;
+  protected $cliService;
 
   /**
    * {@inheritdoc}
@@ -54,7 +54,7 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
     $instance->renderCache = $container->get('cache.render');
     $instance->moduleHandler = $container->get('module_handler');
     $instance->routerBuilder = $container->get('router.builder');
-    $instance->librariesManager = $container->get('webform.libraries_manager');
+    $instance->cliService = $container->get('webform.cli_service');
     return $instance;
   }
 
@@ -90,30 +90,13 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
       '#default_value' => $config->get('ui.toolbar_item'),
       '#access' => $this->moduleHandler->moduleExists('toolbar'),
     ];
-    if ($this->librariesManager->isExcluded('tippyjs')) {
-      $form['ui']['description_help'] = [
-        '#type' => 'value',
-        '#value' => $config->get('ui.description_help'),
-      ];
-      $form['ui']['description_help_disabled'] = [
-        '#type' => 'checkbox',
-        '#title' => $this->t('Display element description as help text (tooltip)'),
-        '#description' => $this->t("If checked, all element descriptions will be moved to help text (tooltip).")
-          . '<br/><br/><em>'
-          . $this->t('This behavior is disabled when the <a href=":href">Tippy.js library is disabled</a.', [':href' => Url::fromRoute('webform.config.libraries')->toString()]) . '</em>',
-        '#default_value' => $config->get('ui.description_help'),
-        '#disabled' => TRUE,
-      ];
-    }
-    else {
-      $form['ui']['description_help'] = [
-        '#type' => 'checkbox',
-        '#title' => $this->t('Display element description as help text (tooltip)'),
-        '#description' => $this->t("If checked, all element descriptions will be moved to help text (tooltip)."),
-        '#return_value' => TRUE,
-        '#default_value' => $config->get('ui.description_help'),
-      ];
-    }
+    $form['ui']['description_help'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Display element description as help text (tooltip)'),
+      '#description' => $this->t("If checked, all element descriptions will be moved to help text (tooltip)."),
+      '#return_value' => TRUE,
+      '#default_value' => $config->get('ui.description_help'),
+    ];
     $form['ui']['details_save'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Save details open/close state'),
@@ -339,9 +322,6 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
 
       $this->messenger()->addMessage($this->t('Repairing admin configuration…'));
       _webform_update_admin_settings(TRUE);
-
-      $this->messenger()->addMessage($this->t('Repairing webform HTML editor…'));
-      _webform_update_html_editor();
 
       $this->messenger()->addMessage($this->t('Repairing webform settings…'));
       _webform_update_webform_settings();

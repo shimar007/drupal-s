@@ -21,7 +21,7 @@ class WebformElementCaptchaTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'captcha', 'image_captcha'];
+  public static $modules = ['webform', 'captcha', 'image_captcha'];
 
   /**
    * Test CAPTCHA element.

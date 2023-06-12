@@ -16,7 +16,7 @@ class WebformNodeAccessClosedTest extends WebformNodeBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_node'];
+  public static $modules = ['webform', 'webform_node'];
 
   /**
    * Tests webform node closed access.

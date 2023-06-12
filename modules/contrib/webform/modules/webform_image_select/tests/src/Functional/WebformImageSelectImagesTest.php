@@ -19,7 +19,7 @@ class WebformImageSelectImagesTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_image_select', 'webform_image_select_test'];
+  public static $modules = ['webform_image_select', 'webform_image_select_test'];
 
   /**
    * Tests webform image select images entity.

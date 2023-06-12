@@ -7,8 +7,7 @@ webform_cards:
     js/webform_cards.js: { }
   dependencies:
     - core/drupal
-    - core/jquery
-    - core/once
+    - core/jquery.once
     - webform/webform.scroll
 
 webform_cards.admin:
@@ -17,8 +16,7 @@ webform_cards.admin:
     js/webform_cards.admin.js: { }
   dependencies:
     - core/drupal
-    - core/jquery
-    - core/once
+    - core/jquery.once
 
 webform_cards.test:
   version: VERSION
@@ -26,5 +24,4 @@ webform_cards.test:
     js/webform_cards.test.js: { }
   dependencies:
     - core/drupal
-    - core/jquery
-    - core/once
+    - core/jquery.once

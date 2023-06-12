@@ -17,7 +17,7 @@ class WebformTokenSubmissionValueTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['taxonomy'];
+  public static $modules = ['taxonomy'];
 
   /**
    * Webforms to load.
@@ -29,7 +29,7 @@ class WebformTokenSubmissionValueTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create 'tags' vocabulary.

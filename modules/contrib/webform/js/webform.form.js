@@ -3,7 +3,7 @@
  * JavaScript behaviors for webforms.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -23,7 +23,8 @@
         var $form = $(e.currentTarget);
         $form.removeAttr('data-drupal-form-submit-last');
       }
-      $(once('webform-single-submit', 'body'))
+      $('body')
+        .once('webform-single-submit')
         .on('submit.singleSubmit', 'form.webform-remove-single-submit', onFormSubmit);
     }
   };
@@ -43,7 +44,9 @@
       // Not using context so that inputs loaded via Ajax will have autosubmit
       // disabled.
       // @see http://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
-      $(once('webform-disable-autosubmit', $('.js-webform-disable-autosubmit input').not(':button, :submit, :reset, :image, :file')))
+      $('.js-webform-disable-autosubmit input')
+        .not(':button, :submit, :reset, :image, :file')
+        .once('webform-disable-autosubmit')
         .on('keyup keypress', function (e) {
           if (e.which === 13) {
             e.preventDefault();
@@ -66,7 +69,7 @@
    **/
   Drupal.behaviors.webformRequiredError = {
     attach: function (context) {
-      $(once('webform-required-error', $(context).find(':input[data-webform-required-error], :input[data-webform-pattern-error]')))
+      $(context).find(':input[data-webform-required-error], :input[data-webform-pattern-error]').once('webform-required-error')
         .on('invalid', function () {
           this.setCustomValidity('');
           if (this.valid) {
@@ -98,4 +101,4 @@
       .each(function () {this.setCustomValidity('');});
   });
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

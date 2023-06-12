@@ -22,7 +22,7 @@ class WebformUiPathProcessorTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     $this->pathProcessor = new WebformUiPathProcessor();
@@ -44,7 +44,9 @@ class WebformUiPathProcessorTest extends UnitTestCase {
    */
   public function testUnmatchedQueryString() {
     $options = [];
-    $request = $this->createMock(Request::class);
+    $request = $this->getMockBuilder(Request::class)
+      ->disableOriginalConstructor()
+      ->getMock();
     $request->method('getQueryString')
       ->willReturn('foo');
 
@@ -58,7 +60,9 @@ class WebformUiPathProcessorTest extends UnitTestCase {
    */
   public function testMatchedQueryString() {
     $options = [];
-    $request = $this->createMock(Request::class);
+    $request = $this->getMockBuilder(Request::class)
+      ->disableOriginalConstructor()
+      ->getMock();
     $request->method('getQueryString')
       ->willReturn('_wrapper_format=drupal_dialog&destination=/admin/structure/webform');
 

@@ -16,7 +16,7 @@ class WebformBrowserTestBaseTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'block', 'user'];
+  public static $modules = ['webform', 'block', 'user'];
 
   /**
    * Webforms to load.
@@ -28,7 +28,7 @@ class WebformBrowserTestBaseTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
   }
 

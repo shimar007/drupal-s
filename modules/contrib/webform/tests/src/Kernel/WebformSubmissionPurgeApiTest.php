@@ -19,7 +19,7 @@ class WebformSubmissionPurgeApiTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'system',
     'user',
     'path',
@@ -32,7 +32,7 @@ class WebformSubmissionPurgeApiTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('path_alias');
     $this->installSchema('webform', ['webform']);

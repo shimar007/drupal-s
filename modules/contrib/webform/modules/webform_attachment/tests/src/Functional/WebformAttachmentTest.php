@@ -19,7 +19,7 @@ class WebformAttachmentTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['token', 'webform_attachment', 'webform_attachment_test'];
+  public static $modules = ['token', 'webform_attachment', 'webform_attachment_test'];
 
   /**
    * Tests webform attachment.
@@ -250,12 +250,12 @@ class WebformAttachmentTest extends WebformBrowserTestBase {
     // Check that attachment is enabled.
     $this->postSubmission($webform_attachment_states, ['attach' => TRUE]);
     $sent_email = $this->getLastEmail();
-    $this->assertTrue(isset($sent_email['params']['attachments'][0]), 'Attachment enabled via #states');
+    $this->assert(isset($sent_email['params']['attachments'][0]), 'Attachment enabled via #states');
 
     // Check that attachment is disabled.
     $this->postSubmission($webform_attachment_states, ['attach' => FALSE]);
     $sent_email = $this->getLastEmail();
-    $this->assertFalse(isset($sent_email['params']['attachments'][0]), 'Attachment disabled via #states');
+    $this->assert(!isset($sent_email['params']['attachments'][0]), 'Attachment disabled via #states');
   }
 
 }

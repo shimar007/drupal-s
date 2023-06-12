@@ -28,7 +28,9 @@ class WebformSourceEntityAccessTest extends WebformAccessTestBase {
     ]);
 
     // Mock node.
-    $node = $this->createMock('Drupal\node\NodeInterface');
+    $node = $this->getMockBuilder('Drupal\node\NodeInterface')
+      ->disableOriginalConstructor()
+      ->getMock();
     $node->expects($this->any())
       ->method('access')
       ->willReturn(AccessResult::neutral());
@@ -37,13 +39,17 @@ class WebformSourceEntityAccessTest extends WebformAccessTestBase {
     $webform = $this->createMock('Drupal\webform\WebformInterface');
 
     // Mock webform node.
-    $webform_node = $this->createMock('Drupal\node\NodeInterface');
+    $webform_node = $this->getMockBuilder('Drupal\node\NodeInterface')
+      ->disableOriginalConstructor()
+      ->getMock();
     $webform_node->expects($this->any())
       ->method('access')
       ->willReturn(AccessResult::allowed());
 
     // Mock entity reference manager.
-    $entity_reference_manager = $this->createMock('Drupal\webform\WebformEntityReferenceManagerInterface');
+    $entity_reference_manager = $this->getMockBuilder('Drupal\webform\WebformEntityReferenceManagerInterface')
+      ->disableOriginalConstructor()
+      ->getMock();
     $entity_reference_manager->expects($this->any())
       ->method('getWebform')
       ->will($this->returnValueMap([

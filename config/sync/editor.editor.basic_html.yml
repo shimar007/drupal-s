@@ -1,4 +1,4 @@
-uuid: 704d10d4-cb01-49f6-a84f-9683aecc28b5
+uuid: c4925918-9ea9-4e1c-875e-d80c38b05b37
 langcode: en
 status: true
 dependencies:
@@ -6,8 +6,6 @@ dependencies:
     - filter.format.basic_html
   module:
     - ckeditor
-_core:
-  default_config_hash: AqlPmO16LvJI4D0Ih6u4GFQIzqr5OnLgAUSjcUGWk2g
 format: basic_html
 editor: ckeditor
 settings:
@@ -20,7 +18,7 @@ settings:
             - Bold
             - Italic
         -
-          name: Linking
+          name: Links
           items:
             - DrupalLink
             - DrupalUnlink
@@ -35,51 +33,12 @@ settings:
             - Blockquote
             - DrupalImage
         -
-          name: 'Block Formatting'
-          items:
-            - Format
-        -
           name: Tools
           items:
             - Source
-            - CodeSnippet
-  plugins:
-    codesnippet:
-      highlight_style: github
-      highlight_languages:
-        apache: apache
-        bash: bash
-        css: css
-        coffeescript: coffeescript
-        dart: dart
-        dockerfile: dockerfile
-        dust: dust
-        gherkin: gherkin
-        go: go
-        haml: haml
-        handlebars: handlebars
-        ini: ini
-        json: json
-        java: java
-        javascript: javascript
-        less: less
-        makefile: makefile
-        markdown: markdown
-        nginx: nginx
-        php: php
-        perl: perl
-        powershell: powershell
-        puppet: puppet
-        python: python
-        ruby: ruby
-        scss: scss
-        sql: sql
-        twig: twig
-        typescript: typescript
-        xml: xml
-        yaml: yaml
+  plugins: {  }
 image_upload:
-  status: true
+  status: false
   scheme: public
   directory: inline-images
   max_size: ''

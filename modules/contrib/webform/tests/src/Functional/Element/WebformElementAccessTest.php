@@ -17,7 +17,7 @@ class WebformElementAccessTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_ui'];
+  public static $modules = ['webform', 'webform_ui'];
 
   /**
    * Webforms to load.
@@ -183,22 +183,22 @@ class WebformElementAccessTest extends WebformElementBrowserTestBase {
       // Check anonymous role access.
       $this->drupalLogout();
       $this->drupalGet($url['path'], $url['options']);
-      $assert_session->responseNotContains($raw);
+      $assert_session->responseNotContains($raw, 'Anonymous user can not access token');
 
       // Check authenticated role access.
       $this->drupalLogin($normal_user);
       $this->drupalGet($url['path'], $url['options']);
-      $assert_session->responseNotContains($raw);
+      $assert_session->responseNotContains($raw, 'Authenticated user can not access token');
 
       // Check admin webform access.
       $this->drupalLogin($this->rootUser);
       $this->drupalGet($url['path'], $url['options']);
-      $assert_session->responseContains($raw);
+      $assert_session->responseContains($raw, 'Admin webform user can access token');
 
       // Check admin submission access.
       $this->drupalLogin($admin_submission_user);
       $this->drupalGet($url['path'], $url['options']);
-      $assert_session->responseContains($raw);
+      $assert_session->responseContains($raw, 'Admin submission user can access token');
     }
 
     /* #access */

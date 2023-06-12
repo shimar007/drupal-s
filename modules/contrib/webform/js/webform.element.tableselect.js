@@ -5,7 +5,7 @@
  * @see core/misc/tableselect.es6.js
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -16,7 +16,9 @@
    */
   Drupal.behaviors.webformTableSelect = {
     attach: function (context) {
-      $(once('webform-tableselect', 'table.js-webform-tableselect', context))
+      $(context)
+        .find('table.js-webform-tableselect')
+        .once('webform-tableselect')
         .each(Drupal.webformTableSelect);
     }
   };
@@ -61,4 +63,4 @@
     });
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

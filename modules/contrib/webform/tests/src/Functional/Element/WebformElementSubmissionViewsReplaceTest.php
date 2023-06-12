@@ -14,7 +14,7 @@ class WebformElementSubmissionViewsReplaceTest extends WebformElementBrowserTest
    *
    * @var array
    */
-  protected static $modules = ['views', 'node', 'webform', 'webform_node'];
+  public static $modules = ['views', 'node', 'webform', 'webform_node'];
 
   /**
    * Webforms to load.

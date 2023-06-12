@@ -17,7 +17,7 @@ class WebformElementTermReferenceTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['taxonomy'];
+  public static $modules = ['taxonomy'];
 
   /**
    * Webforms to load.
@@ -29,7 +29,7 @@ class WebformElementTermReferenceTest extends WebformElementBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create 'tags' vocabulary.

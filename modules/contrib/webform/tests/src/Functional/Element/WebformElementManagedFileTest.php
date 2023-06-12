@@ -18,7 +18,7 @@ class WebformElementManagedFileTest extends WebformElementManagedFileTestBase {
    *
    * @var array
    */
-  protected static $modules = ['file', 'webform'];
+  public static $modules = ['file', 'webform'];
 
   /**
    * Webforms to load.
@@ -48,7 +48,7 @@ class WebformElementManagedFileTest extends WebformElementManagedFileTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->webform = Webform::load('test_element_managed_file');
@@ -382,7 +382,7 @@ class WebformElementManagedFileTest extends WebformElementManagedFileTestBase {
     $this->assertEquals($submission->getElementData($key), $second, 'Test new file was upload to the current submission');
 
     // Check that test file was deleted from the disk and database.
-    $this->assertFileDoesNotExist($file->getFileUri(), 'Test file deleted from disk');
+    $this->assertFileNotExists($file->getFileUri(), 'Test file deleted from disk');
     $this->assertEquals(0, \Drupal::database()->query('SELECT COUNT(fid) AS total FROM {file_managed} WHERE fid = :fid', [':fid' => $fid])->fetchField(), 'Test file 0 deleted from database');
     $this->assertEquals(0, \Drupal::database()->query('SELECT COUNT(fid) AS total FROM {file_usage} WHERE fid = :fid', [':fid' => $fid])->fetchField(), 'Test file 0 deleted from database');
 
@@ -396,11 +396,11 @@ class WebformElementManagedFileTest extends WebformElementManagedFileTestBase {
     $submission->delete();
 
     // Check that test file 1 was deleted from the disk and database.
-    $this->assertFileDoesNotExist($new_file->getFileUri(), 'Test new file deleted from disk');
+    $this->assertFileNotExists($new_file->getFileUri(), 'Test new file deleted from disk');
     $this->assertEquals(0, \Drupal::database()->query('SELECT COUNT(fid) AS total FROM {file_managed} WHERE fid = :fid', [':fid' => $new_fid])->fetchField(), 'Test new file deleted from database');
 
     // Check that empty file directory was deleted.
-    $this->assertFileDoesNotExist('private://webform/test_element_managed_file/' . $sid . '/');
+    $this->assertFileNotExists('private://webform/test_element_managed_file/' . $sid . '/');
   }
 
 }

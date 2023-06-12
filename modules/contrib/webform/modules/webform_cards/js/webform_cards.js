@@ -24,7 +24,7 @@
         ? $(context)
         : $('form.webform-submission-form', context);
 
-      $(once('webform-cards', $forms)).each(function () {
+      $forms.once('webform-cards').each(function () {
         // Form.
         var $form = $(this);
 

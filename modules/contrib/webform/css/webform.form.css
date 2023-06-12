@@ -45,17 +45,6 @@ html.js .js-webform-visually-hidden[style*="display: none"] {
 }
 
 /**
- * Description.
- */
-.webform-element-description p:first-child {
-  margin-top: 0;
-}
-
-.webform-element-description p:last-child {
-  margin-bottom: 0;
-}
-
-/**
  * Container inline
  */
 .form-item .container-inline {
@@ -71,7 +60,7 @@ html.js .js-webform-visually-hidden[style*="display: none"] {
 }
 
 /**
- * Element title inline.
+ * Element title inline.z
  */
 .webform-element--title-inline > label {
   display: inline;

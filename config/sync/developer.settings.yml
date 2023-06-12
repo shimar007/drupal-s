@@ -8,5 +8,5 @@ logo:
   path: 'public://shiva-developer.png'
 favicon:
   use_default: 0
-  path: 'public://favicon.ico'
+  path: 'public://favicon_0.ico'
   mimetype: image/vnd.microsoft.icon

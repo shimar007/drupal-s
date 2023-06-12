@@ -1,8 +1,9 @@
 <?php
 
+// phpcs:ignoreFile
+
 namespace Drupal\webform_devel\Commands;
 
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\State\StateInterface;
 use Drupal\user\UserDataInterface;
@@ -15,13 +16,6 @@ use Psr\Log\LogLevel;
  * Webform devel commandfile.
  */
 class WebformDevelCommands extends DrushCommands {
-
-  /**
-   * The file system service.
-   *
-   * @var \Drupal\Core\File\FileSystemInterface
-   */
-  protected $fileSystem;
 
   /**
    * Provides the state system.
@@ -40,16 +34,13 @@ class WebformDevelCommands extends DrushCommands {
   /**
    * The construct method.
    *
-   * @param \Drupal\Core\File\FileSystemInterface $file_system
-   *   File system service.
    * @param \Drupal\Core\State\StateInterface $state
    *   Provides the state system.
    * @param \Drupal\user\UserDataInterface $user_data
    *   The user data service.
    */
-  public function __construct(FileSystemInterface $file_system, StateInterface $state, UserDataInterface $user_data) {
+  public function __construct(StateInterface $state, UserDataInterface $user_data) {
     parent::__construct();
-    $this->fileSystem = $file_system;
     $this->state = $state;
     $this->userData = $user_data;
   }
@@ -60,10 +51,10 @@ class WebformDevelCommands extends DrushCommands {
    * @command webform:devel:config:update
    * @aliases wfdcu,webform-devel-reset
    */
-  public function develConfigUpdate() {
+  public function drush_webform_devel_config_update() {
     \Drupal::moduleHandler()->loadInclude('webform', 'inc', 'includes/webform.install');
 
-    $files = $this->fileSystem->scanDirectory(__DIR__ . '/../../../../', '/^webform\.webform\..*\.yml$/');
+    $files = \Drupal::service('file_system')->scanDirectory(__DIR__ . '/../../../../', '/^webform\.webform\..*\.yml$/');
     $total = 0;
     foreach ($files as $filename => $file) {
       try {
@@ -113,7 +104,7 @@ class WebformDevelCommands extends DrushCommands {
    *
    * @see drush_webform_devel_reset()
    */
-  public function develReset() {
+  public function drush_webform_devel_reset() {
     if (!$this->io()->confirm(dt("Are you sure you want repair the Webform module's admin settings and webforms?"))) {
       throw new UserAbortException();
     }

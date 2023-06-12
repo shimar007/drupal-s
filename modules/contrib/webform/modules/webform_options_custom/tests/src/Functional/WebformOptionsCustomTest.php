@@ -16,7 +16,7 @@ class WebformOptionsCustomTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'webform',
     'webform_options_custom',
     'webform_options_custom_test',

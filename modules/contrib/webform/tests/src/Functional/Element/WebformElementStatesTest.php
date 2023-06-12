@@ -30,7 +30,7 @@ class WebformElementStatesTest extends WebformElementBrowserTestBase {
     $this->drupalGet('/webform/test_element_states');
     $this->submitForm([], 'Submit');
 
-    $this->assertWebformYaml("states_basic:
+    $assert_session->responseContains("states_basic:
   enabled:
     selector_01:
       checked: true

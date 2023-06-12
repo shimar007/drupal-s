@@ -3,7 +3,7 @@
  * JavaScript behaviors for Text format integration.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -14,7 +14,7 @@
    */
   Drupal.behaviors.webformTextFormat = {
     attach: function (context) {
-      $(once('webform-text-format', '.js-text-format-wrapper textarea', context)).each(function () {
+      $(context).find('.js-text-format-wrapper textarea').once('webform-text-format').each(function () {
         if (!window.CKEDITOR) {
           return;
         }
@@ -42,4 +42,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

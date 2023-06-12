@@ -3,7 +3,7 @@
  * JavaScript behaviors for managed file uploads.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -15,7 +15,8 @@
   Drupal.behaviors.webformManagedFileAutoUpload = {
     attach: function attach(context) {
       // Add submit handler to file upload form.
-      $(once('webform-auto-file-upload', 'form', context))
+      $(context).find('form')
+        .once('webform-auto-file-upload')
         .on('submit', function (event) {
           var $form = $(this);
           if ($form.data('webform-auto-file-uploads') > 0 && blockSubmit($form)) {
@@ -58,7 +59,7 @@
         };
       }
 
-      $(once('webform-auto-file-upload', 'input[type="file"]', context)).on('change', function () {
+      $(context).find('input[type="file"]').once('webform-auto-file-upload').on('change', function () {
         // Track file upload.
         $(this).data('webform-auto-file-upload', true);
 
@@ -113,4 +114,4 @@
     return result;
   }
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

@@ -16,7 +16,6 @@ use Drupal\webform\Plugin\WebformElementFileDownloadAccessInterface;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\HeaderUtils;
 
 /**
  * Provides a 'signature' element.
@@ -409,7 +408,7 @@ class WebformSignature extends WebformElementBase implements WebformElementFileD
         'Content-Type' => 'image/png',
         'Content-Length' => $filesize,
         'Cache-Control' => 'private',
-        'Content-Disposition' => HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_INLINE, (string) $filename),
+        'Content-Disposition' => 'inline; filename="' . Unicode::mimeHeaderEncode($filename) . '"',
       ];
     }
     elseif ($access === FALSE) {

@@ -16,7 +16,7 @@ class WebformCompositeTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_ui'];
+  public static $modules = ['webform_ui'];
 
   /**
    * Webforms to load.

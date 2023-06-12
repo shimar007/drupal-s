@@ -23,12 +23,12 @@ class WebformStatesHiddenTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [ 'file', 'webform'];
+  public static $modules = ['filter', 'file', 'webform'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create filters.

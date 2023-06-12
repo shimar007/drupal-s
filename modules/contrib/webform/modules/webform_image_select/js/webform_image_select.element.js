@@ -3,7 +3,7 @@
  * JavaScript behaviors for webform_image_select and jQuery Image Picker integration.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -23,7 +23,7 @@
         return;
       }
 
-      $(once('webform-image-select', '.js-webform-image-select', context)).each(function () {
+      $('.js-webform-image-select', context).once('webform-image-select').each(function () {
         var $select = $(this);
         var isMultiple = $select.attr('multiple');
 
@@ -121,4 +121,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

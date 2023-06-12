@@ -15,7 +15,7 @@ class WebformEntityPrintAttachmentFunctionalTest extends WebformEntityPrintFunct
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['webform_entity_print_attachment_test'];
+  public static $modules = ['webform_entity_print_attachment_test'];
 
   /**
    * Test entity print attachment.

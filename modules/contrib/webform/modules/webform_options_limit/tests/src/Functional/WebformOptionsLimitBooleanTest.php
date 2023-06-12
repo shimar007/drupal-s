@@ -15,7 +15,7 @@ class WebformOptionsLimitBooleanTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'webform',
     'webform_options_limit',
     'webform_options_limit_test',

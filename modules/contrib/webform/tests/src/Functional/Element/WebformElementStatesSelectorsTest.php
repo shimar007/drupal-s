@@ -18,7 +18,7 @@ class WebformElementStatesSelectorsTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [ 'file', 'language', 'taxonomy', 'node', 'webform'];
+  public static $modules = ['filter', 'file', 'language', 'taxonomy', 'node', 'webform'];
 
   /**
    * Webforms to load.
@@ -30,7 +30,7 @@ class WebformElementStatesSelectorsTest extends WebformElementBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create 'tags' vocabulary.

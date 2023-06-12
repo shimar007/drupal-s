@@ -3,7 +3,7 @@
  * JavaScript behaviors for element #states.
  */
 
-(function ($, Drupal, drupalSettings, once) {
+(function ($, Drupal, drupalSettings) {
 
   'use strict';
 
@@ -14,7 +14,7 @@
    */
   Drupal.behaviors.webformElementStates = {
     attach: function (context) {
-      $(once('webform-element-states-condition', '.webform-states-table--condition', context)).each(function () {
+      $(context).find('.webform-states-table--condition').once('webform-element-states-condition').each(function () {
         var $condition = $(this);
         var $selector = $condition.find('.webform-states-table--selector select');
         var $value = $condition.find('.webform-states-table--value input');
@@ -54,7 +54,7 @@
       // should be checked and disabled.
       var $state = $(context).find('.webform-states-table--state select');
       if ($state.length) {
-        $(once('webform-element-states-state', $state))
+        $state.once('webform-element-states-state')
           .on('change', toggleRequiredCheckbox);
         toggleRequiredCheckbox();
       }
@@ -101,4 +101,4 @@
     $input.trigger('change');
   }
 
-})(jQuery, Drupal, drupalSettings, once);
+})(jQuery, Drupal, drupalSettings);

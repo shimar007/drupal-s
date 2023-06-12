@@ -18,7 +18,7 @@ class WebformViewsBulkFormTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_test_views'];
+  public static $modules = ['webform', 'webform_test_views'];
 
   /**
    * Tests the webform views bulk form.

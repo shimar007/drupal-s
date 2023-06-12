@@ -3,7 +3,7 @@
  * JavaScript behaviors for computed elements.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -21,7 +21,7 @@
   Drupal.behaviors.webformComputed = {
     attach: function (context) {
       // Find computed elements and build trigger selectors.
-      $(once('webform-computed', '.js-webform-computed', context)).each(function () {
+      $(context).find('.js-webform-computed').once('webform-computed').each(function () {
         // Get computed element and form.
         var $element = $(this);
         var $form = $element.closest('form');
@@ -70,7 +70,8 @@
 
         // Make sure triggers are within the computed element's form
         // and only initialized once.
-        $triggers = $(once('webform-computed-triggers-' + computedElement.id, computedElement.form.find($triggers)));
+        $triggers = computedElement.form.find($triggers)
+          .once('webform-computed-triggers-' + computedElement.id);
         // Double check that there are triggers which need to be initialized.
         if (!$triggers.length) {
           return;
@@ -141,4 +142,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

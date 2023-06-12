@@ -12,7 +12,7 @@ class WebformExampleFunctionalTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['webform'];
+  public static $modules = ['webform'];
 
   /**
    * Test get.

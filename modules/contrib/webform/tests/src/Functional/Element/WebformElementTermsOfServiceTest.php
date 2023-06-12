@@ -14,7 +14,7 @@ class WebformElementTermsOfServiceTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_ui'];
+  public static $modules = ['webform_ui'];
 
   /**
    * Webforms to load.

@@ -17,7 +17,7 @@ class WebformVariantElementTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'webform', 'webform_ui', 'webform_test_variant'];
+  public static $modules = ['block', 'webform', 'webform_ui', 'webform_test_variant'];
 
   /**
    * Webforms to load.
@@ -29,7 +29,7 @@ class WebformVariantElementTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->placeBlocks();
   }

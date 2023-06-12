@@ -16,12 +16,12 @@ class WebformHandlerExcludedTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'webform'];
+  public static $modules = ['block', 'webform'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->drupalPlaceBlock('local_actions_block');
   }

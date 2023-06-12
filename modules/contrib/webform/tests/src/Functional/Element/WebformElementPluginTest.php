@@ -17,7 +17,7 @@ class WebformElementPluginTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_test_element'];
+  public static $modules = ['webform', 'webform_test_element'];
 
   /**
    * Webforms to load.

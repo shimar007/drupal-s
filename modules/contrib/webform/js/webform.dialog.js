@@ -3,7 +3,7 @@
  * JavaScript behaviors for webform dialogs.
  */
 
-(function ($, Drupal, drupalSettings, once) {
+(function ($, Drupal, drupalSettings) {
 
   'use strict';
 
@@ -36,7 +36,7 @@
    */
   Drupal.behaviors.webformDialog = {
     attach: function (context) {
-      $(once('webform-dialog', 'a.webform-dialog', context)).each(function () {
+      $('a.webform-dialog', context).once('webform-dialog').each(function () {
         var $a = $(this);
 
         // Get default options.
@@ -94,4 +94,4 @@
     }
   };
 
-})(jQuery, Drupal, drupalSettings, once);
+})(jQuery, Drupal, drupalSettings);

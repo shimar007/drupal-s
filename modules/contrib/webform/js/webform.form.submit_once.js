@@ -3,7 +3,7 @@
  * JavaScript behaviors for preventing duplicate webform submissions.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -23,7 +23,7 @@
       $form.find('.form-actions .ajax-progress.ajax-progress-throbber').remove();
     },
     attach: function (context) {
-      $(once('webform-submit-once', '.js-webform-submit-once', context)).each(function () {
+      $('.js-webform-submit-once', context).once('webform-submit-once').each(function () {
         var $form = $(this);
         // Remove data-webform-submitted.
         $form.removeData('webform-submitted');
@@ -65,4 +65,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

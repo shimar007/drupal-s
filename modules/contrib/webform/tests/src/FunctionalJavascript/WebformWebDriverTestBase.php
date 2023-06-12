@@ -22,14 +22,14 @@ abstract class WebformWebDriverTestBase extends WebDriverTestBase {
    * @var string
    * @see https://www.drupal.org/node/3083055
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'classy';
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  protected static $modules = ['webform'];
+  public static $modules = ['webform'];
 
   /**
    * Webforms to load.
@@ -41,7 +41,7 @@ abstract class WebformWebDriverTestBase extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->loadWebforms(static::$testWebforms);
   }
@@ -49,7 +49,7 @@ abstract class WebformWebDriverTestBase extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function tearDown(): void {
+  protected function tearDown() {
     $this->purgeSubmissions();
     parent::tearDown();
   }

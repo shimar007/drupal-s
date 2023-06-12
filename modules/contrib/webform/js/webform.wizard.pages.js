@@ -3,7 +3,7 @@
  * JavaScript behaviors for webform wizard pages.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -17,7 +17,7 @@
    */
   Drupal.behaviors.webformWizardPagesLink = {
     attach: function (context) {
-      $(once('webform-wizard-pages-links', '.js-webform-wizard-pages-links', context)).each(function () {
+      $('.js-webform-wizard-pages-links', context).once('webform-wizard-pages-links').each(function () {
         var $pages = $(this);
         var $form = $pages.closest('form');
 
@@ -64,4 +64,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

@@ -8,8 +8,7 @@ webform_toggles.element:
   dependencies:
     - core/drupal
     - webform_toggles/libraries.jquery.toggles
-    - core/jquery
-    - core/once
+    - core/jquery.once
 
 # External libraries.
 

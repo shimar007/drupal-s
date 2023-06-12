@@ -18,7 +18,7 @@ class WebformExampleElementTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_example_element'];
+  public static $modules = ['webform_example_element'];
 
   /**
    * Tests webform example element.

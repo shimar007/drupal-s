@@ -15,7 +15,7 @@ class WebformOptionsLimitSourceEntityTest extends WebformNodeBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'webform',
     'webform_node',
     'webform_options_limit',

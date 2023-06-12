@@ -3,7 +3,7 @@
  * JavaScript behaviors for Chosen integration.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -46,7 +46,9 @@
         };
       }
 
-      $(once('webform-chosen', 'select.js-webform-chosen, .js-webform-chosen select', context))
+      $(context)
+        .find('select.js-webform-chosen, .js-webform-chosen select')
+        .once('webform-chosen')
         .each(function () {
           var $select = $(this);
           // Check for .chosen-enable to prevent the chosen.module and
@@ -99,4 +101,4 @@
     $chosen.trigger('chosen:updated');
   });
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

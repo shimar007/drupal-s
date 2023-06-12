@@ -18,7 +18,7 @@ class WebformSettingsLimitsTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'block'];
+  public static $modules = ['webform', 'block'];
 
   /**
    * Webforms to load.
@@ -30,7 +30,7 @@ class WebformSettingsLimitsTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Place webform test blocks.

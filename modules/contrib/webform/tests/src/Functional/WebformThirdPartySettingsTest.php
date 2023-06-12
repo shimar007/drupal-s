@@ -16,7 +16,7 @@ class WebformThirdPartySettingsTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node', 'webform'];
+  public static $modules = ['node', 'webform'];
 
   /**
    * Tests webform third party settings.

@@ -3,7 +3,7 @@
  * JavaScript behaviors for Webform UI.
  */
 
-(function ($, Drupal, drupalSettings, once) {
+(function ($, Drupal, drupalSettings) {
 
   'use strict';
 
@@ -16,7 +16,7 @@
    */
   Drupal.behaviors.webformUiElementsToggleWeight = {
     attach: function (context, settings) {
-      $(once('webform-ui-elements-toggle-weight', 'form.webform-edit-form', context)).each(function () {
+      $(context).find('form.webform-edit-form').once('webform-ui-elements-toggle-weight').each(function () {
         var $form = $(this);
         $form.find('.tabledrag-toggle-weight-wrapper').prependTo($form);
       });
@@ -36,7 +36,7 @@
    */
   Drupal.behaviors.webformUiElementsActionsSecondary = {
     attach: function (context, settings) {
-      $(once('webform-ui-elements-webform-actions-secondary', '.action-links .button--secondary', context)).each(function () {
+      $(context).find('.action-links .button--secondary').once('webform-ui-elements-webform-actions-secondary').each(function () {
         $(this).removeClass('button--primary');
       });
     }
@@ -49,7 +49,9 @@
    */
   Drupal.behaviors.webformUiElementsKeyboard = {
     attach: function (context, settings) {
-      var $table = $(once('webform-ui-elements-keyboard', '.webform-ui-elements-table', context));
+      var $table = $(context)
+        .find('.webform-ui-elements-table')
+        .once('webform-ui-elements-keyboard');
 
       // Disable autosubmit when Enter is pressed on 'Required' checkboxes.
       $table.find('td input:checkbox')
@@ -161,4 +163,4 @@
     }
   };
 
-})(jQuery, Drupal, drupalSettings, once);
+})(jQuery, Drupal, drupalSettings);

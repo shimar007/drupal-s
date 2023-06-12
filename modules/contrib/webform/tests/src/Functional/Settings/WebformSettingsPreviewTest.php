@@ -22,7 +22,7 @@ class WebformSettingsPreviewTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Exclude Progress tracker so that the default progress bar is displayed.

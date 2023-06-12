@@ -12,18 +12,18 @@ use Drupal\webform\Entity\Webform;
 class WebformSubmissionViewsTest extends WebformBrowserTestBase {
 
   /**
-   * Set default theme to starterkit to have view specific classes.
+   * Set default theme to classy to have view specific classes.
    *
    * @var string
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  protected static $modules = ['views', 'webform'];
+  public static $modules = ['views', 'webform'];
 
   /**
    * Webforms to load.

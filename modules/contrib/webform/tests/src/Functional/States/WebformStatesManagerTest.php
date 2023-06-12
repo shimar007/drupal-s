@@ -16,7 +16,7 @@ class WebformStatesManagerTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_test_states'];
+  public static $modules = ['webform', 'webform_test_states'];
 
   /**
    * Webforms to load.

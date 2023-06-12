@@ -20,7 +20,7 @@ class WebformSubmissionLogNodeTest extends WebformNodeBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'webform', 'webform_node', 'webform_submission_log'];
+  public static $modules = ['block', 'webform', 'webform_node', 'webform_submission_log'];
 
   /**
    * Webforms to load.

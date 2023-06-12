@@ -1,4 +1,4 @@
-uuid: d4968666-5fca-4845-80cf-7cdee7f24a3b
+uuid: db42ee90-e3d2-43ae-99eb-aa399923e1bf
 langcode: en
 status: true
 dependencies:
@@ -6,8 +6,6 @@ dependencies:
     - filter.format.full_html
   module:
     - ckeditor
-_core:
-  default_config_hash: 967ijj7p6i7rwrYl7r08WQFeCY_c23YAh0h8u-w_CXM
 format: full_html
 editor: ckeditor
 settings:
@@ -17,15 +15,13 @@ settings:
         -
           name: Formatting
           items:
+            - Styles
             - Bold
             - Italic
+            - Underline
             - Strike
-            - Superscript
-            - Subscript
-            - '-'
-            - RemoveFormat
         -
-          name: Linking
+          name: Links
           items:
             - DrupalLink
             - DrupalUnlink
@@ -39,59 +35,15 @@ settings:
           items:
             - Blockquote
             - DrupalImage
-            - Table
-            - HorizontalRule
-        -
-          name: 'Block Formatting'
-          items:
-            - Format
         -
           name: Tools
           items:
-            - ShowBlocks
-            - CodeSnippet
             - Source
-            - Templates
   plugins:
-    templates:
-      template_path: ''
-      replace_content: 0
-    codesnippet:
-      highlight_style: github
-      highlight_languages:
-        apache: apache
-        bash: bash
-        css: css
-        coffeescript: coffeescript
-        dart: dart
-        dockerfile: dockerfile
-        dust: dust
-        gherkin: gherkin
-        go: go
-        haml: haml
-        handlebars: handlebars
-        ini: ini
-        json: json
-        java: java
-        javascript: javascript
-        less: less
-        makefile: makefile
-        markdown: markdown
-        nginx: nginx
-        php: php
-        perl: perl
-        powershell: powershell
-        puppet: puppet
-        python: python
-        ruby: ruby
-        scss: scss
-        sql: sql
-        twig: twig
-        typescript: typescript
-        xml: xml
-        yaml: yaml
+    stylescombo:
+      styles: ''
 image_upload:
-  status: true
+  status: false
   scheme: public
   directory: inline-images
   max_size: ''

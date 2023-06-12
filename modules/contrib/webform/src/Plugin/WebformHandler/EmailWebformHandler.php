@@ -9,7 +9,6 @@ use Drupal\Core\Form\OptGroup;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
 use Drupal\webform\Element\WebformAjaxElementTrait;
-use Drupal\webform\Element\WebformHtmlEditor;
 use Drupal\webform\Element\WebformMessage;
 use Drupal\webform\Element\WebformSelectOther;
 use Drupal\webform\Plugin\WebformElement\WebformCompositeBase;
@@ -947,8 +946,7 @@ class EmailWebformHandler extends WebformHandlerBase implements WebformHandlerMe
       // Apply optional global format to body.
       // NOTE: $message['body'] is not passed-thru Xss::filter() to allow
       // style tags to be supported.
-      $format = $this->configFactory->get('webform.settings')->get('html_editor.mail_format');
-      if ($format && $format !== WebformHtmlEditor::DEFAULT_FILTER_FORMAT) {
+      if ($format = $this->configFactory->get('webform.settings')->get('html_editor.mail_format')) {
         $build = [
           '#type' => 'processed_text',
           '#text' => $message['body'],
@@ -1393,6 +1391,7 @@ class EmailWebformHandler extends WebformHandlerBase implements WebformHandlerMe
     }
     // Preload HTML Editor and CodeMirror so that they can be properly
     // initialized when loaded via Ajax.
+    $element['#attached']['library'][] = 'webform/webform.element.html_editor';
     $element['#attached']['library'][] = 'webform/webform.element.codemirror.text';
 
     return $element;

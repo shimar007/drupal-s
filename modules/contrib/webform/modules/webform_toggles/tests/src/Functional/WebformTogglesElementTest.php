@@ -16,7 +16,7 @@ class WebformTogglesElementTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_toggles', 'webform_toggles_test'];
+  public static $modules = ['webform_toggles', 'webform_toggles_test'];
 
   /**
    * Test toggles element.

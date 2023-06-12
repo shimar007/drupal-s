@@ -3,7 +3,7 @@
  * JavaScript behaviors for Choices integration.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -24,7 +24,9 @@
         return;
       }
 
-      $(once('webform-choices', 'select.js-webform-choices, .js-webform-choices select', context))
+      $(context)
+        .find('select.js-webform-choices, .js-webform-choices select')
+        .once('webform-choices')
         .each(function () {
           var $select = $(this);
           var options = {
@@ -90,4 +92,4 @@
     });
   });
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

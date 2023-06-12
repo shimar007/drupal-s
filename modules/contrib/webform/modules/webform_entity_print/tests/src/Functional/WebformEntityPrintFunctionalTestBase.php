@@ -12,7 +12,7 @@ abstract class WebformEntityPrintFunctionalTestBase extends WebformBrowserTestBa
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'entity_print_test',
     'webform',
     'webform_entity_print',
@@ -21,7 +21,7 @@ abstract class WebformEntityPrintFunctionalTestBase extends WebformBrowserTestBa
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Use test print engine.

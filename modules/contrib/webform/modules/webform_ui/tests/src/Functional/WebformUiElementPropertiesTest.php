@@ -17,7 +17,7 @@ class WebformUiElementPropertiesTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['file', 'taxonomy', 'webform', 'webform_ui'];
+  public static $modules = ['filter', 'file', 'taxonomy', 'webform', 'webform_ui'];
 
   /**
    * Webforms to load.
@@ -37,7 +37,7 @@ class WebformUiElementPropertiesTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create filters.

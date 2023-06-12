@@ -17,7 +17,7 @@ class WebformSettingsAdminTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'captcha', 'node', 'toolbar', 'views', 'webform', 'webform_ui', 'webform_node'];
+  public static $modules = ['block', 'captcha', 'node', 'toolbar', 'views', 'webform', 'webform_ui', 'webform_node'];
 
   /**
    * Webforms to load.
@@ -29,7 +29,7 @@ class WebformSettingsAdminTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->drupalPlaceBlock('local_actions_block');
   }

@@ -3,7 +3,7 @@
  * JavaScript behaviors for color element integration.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -14,7 +14,7 @@
    */
   Drupal.behaviors.webformColor = {
     attach: function (context) {
-      $(once('webform-color', '.form-color:not(.form-color-output)', context)).each(function () {
+      $(context).find('.form-color:not(.form-color-output)').once('webform-color').each(function () {
         var $element = $(this);
         // Handle browser that don't support the HTML5 color input.
         if (Modernizr.inputtypes.color === false) {
@@ -51,4 +51,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

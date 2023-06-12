@@ -2,7 +2,7 @@
  * @file
  * Attaches behaviors for the Clientside Validation jQuery module.
  */
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -13,11 +13,13 @@
    */
   Drupal.behaviors.webformClientSideValidationNoValidation = {
     attach: function (context) {
-      $(once('webformClientSideValidationNoValidate', 'form[data-webform-clientside-validation-novalidate]', context))
+      $(context)
+        .find('form[data-webform-clientside-validation-novalidate]')
+        .once('webformClientSideValidationNoValidate')
         .each(function () {
           $(this).validate().destroy();
         });
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

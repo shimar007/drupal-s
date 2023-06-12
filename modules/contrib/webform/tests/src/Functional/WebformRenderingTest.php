@@ -19,7 +19,7 @@ class WebformRenderingTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [ 'webform'];
+  public static $modules = ['filter', 'webform'];
 
   /**
    * Webforms to load.
@@ -31,7 +31,7 @@ class WebformRenderingTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create filters.

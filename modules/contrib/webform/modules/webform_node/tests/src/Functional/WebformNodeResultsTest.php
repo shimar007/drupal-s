@@ -19,12 +19,12 @@ class WebformNodeResultsTest extends WebformNodeBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'webform', 'webform_node'];
+  public static $modules = ['block', 'webform', 'webform_node'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Place blocks.

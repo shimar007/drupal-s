@@ -17,12 +17,12 @@ class WebformBlockContextTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'webform', 'webform_node', 'webform_test_block_context'];
+  public static $modules = ['block', 'webform', 'webform_node', 'webform_test_block_context'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Manually install blocks.

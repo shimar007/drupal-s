@@ -3,7 +3,7 @@
  * Attaches behaviors for the Clientside Validation jQuery module.
  */
 
-(function ($, drupalSettings, once) {
+(function ($, drupalSettings) {
 
   'use strict';
 
@@ -19,7 +19,8 @@
    */
   Drupal.behaviors.webformClientSideValidationAjax = {
     attach: function (context) {
-      $(once('webform-clientside-validation-ajax', 'form.webform-submission-form .form-actions input[type="submit"]:not([formnovalidate])'))
+      $('form.webform-submission-form .form-actions :submit:not([formnovalidate])')
+        .once('webform-clientside-validation-ajax')
         .addClass('cv-validate-before-ajax');
     }
   };
@@ -40,7 +41,7 @@
     }
   };
 
-  $(once('webform_cvjquery', document)).on('cv-jquery-validate-options-update', function (event, options) {
+  $(document).once('webform_cvjquery').on('cv-jquery-validate-options-update', function (event, options) {
     options.errorElement = 'strong';
     options.showErrors = function (errorMap, errorList) {
       // Show errors using defaultShowErrors().
@@ -96,7 +97,7 @@
 
       // Add custom clear error handling to checkboxes to remove the
       // error message, when any checkbox is checked.
-      $(once('webform-clientside-validation-form-checkboxes', '.form-checkboxes', this.currentForm)).each(function () {
+      $(this.currentForm).find('.form-checkboxes').once('webform-clientside-validation-form-checkboxes').each(function () {
         var $container = $(this);
         $container.find('input:checkbox').click( function () {
           var state = $container.find('input:checkbox:checked').length ? 'hide' : 'show';
@@ -112,4 +113,4 @@
     };
   });
 
-})(jQuery, drupalSettings, once);
+})(jQuery, drupalSettings);

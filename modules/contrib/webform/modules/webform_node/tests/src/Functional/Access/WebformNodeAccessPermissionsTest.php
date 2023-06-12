@@ -17,7 +17,7 @@ class WebformNodeAccessPermissionsTest extends WebformNodeBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_node'];
+  public static $modules = ['webform', 'webform_node'];
 
   /**
    * Webforms to load.
@@ -265,9 +265,8 @@ class WebformNodeAccessPermissionsTest extends WebformNodeBrowserTestBase {
 
     // Create a wizard submission.
     $this->drupalLogin($submission_own_account);
-    $this->drupalGet('/node/' . $wizard_nid);
-    $this->submitForm([], 'Next >');
-    $this->submitForm([], 'Submit');
+    $this->drupalPostForm('/node/' . $wizard_nid, [], 'Next >');
+    $this->drupalPostForm(NULL, [], 'Submit');
     $wizard_sid = $this->getLastSubmissionId($wizard_webform);
     $this->drupalLogout();
 

@@ -16,7 +16,7 @@ class WebformElementManagedFileLimitTest extends WebformElementManagedFileTestBa
    *
    * @var array
    */
-  protected static $modules = ['file', 'webform'];
+  public static $modules = ['file', 'webform'];
 
   /**
    * Webforms to load.

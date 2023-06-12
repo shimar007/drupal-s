@@ -17,7 +17,7 @@ class WebformDialogHelperTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['system', 'user', 'webform'];
+  public static $modules = ['system', 'user', 'webform'];
 
   /**
    * Test get modal dialog attributes.

@@ -21,14 +21,14 @@ abstract class WebformBrowserTestBase extends BrowserTestBase {
    *
    * @var string
    */
-  protected $defaultTheme = 'stable9';
+  protected $defaultTheme = 'stable';
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  protected static $modules = ['webform'];
+  public static $modules = ['webform'];
 
   /**
    * Webforms to load.
@@ -40,7 +40,7 @@ abstract class WebformBrowserTestBase extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->loadWebforms(static::$testWebforms);
   }
@@ -48,7 +48,7 @@ abstract class WebformBrowserTestBase extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function tearDown(): void {
+  protected function tearDown() {
     $this->purgeSubmissions();
     parent::tearDown();
   }

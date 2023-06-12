@@ -3,7 +3,7 @@
  * JavaScript behaviors for custom webform #states.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -323,7 +323,8 @@
    */
   Drupal.behaviors.webformCheckboxesRequired = {
     attach: function (context) {
-      $(once('webform-checkboxes-required', '.js-form-type-checkboxes.required, .js-form-type-webform-checkboxes-other.required, .js-webform-type-checkboxes.required, .js-webform-type-webform-checkboxes-other.required, .js-webform-type-webform-radios-other.checkboxes', context))
+      $('.js-form-type-checkboxes.required, .js-form-type-webform-checkboxes-other.required, .js-webform-type-checkboxes.required, .js-webform-type-webform-checkboxes-other.required, .js-webform-type-webform-radios-other.checkboxes', context)
+        .once('webform-checkboxes-required')
         .each(function () {
           var $element = $(this);
           $element.find('input[type="checkbox"]').on('click', statesCheckboxesRequiredEventHandler);
@@ -341,7 +342,8 @@
    */
   Drupal.behaviors.webformRadiosRequired = {
     attach: function (context) {
-      $(once('webform-radios-required', '.js-form-type-radios, .js-form-type-webform-radios-other, .js-webform-type-radios, .js-webform-type-webform-radios-other, .js-webform-type-webform-entity-radios, .js-webform-type-webform-scale', context))
+      $('.js-form-type-radios, .js-form-type-webform-radios-other, .js-webform-type-radios, .js-webform-type-webform-radios-other, .js-webform-type-webform-entity-radios, .js-webform-type-webform-scale', context)
+        .once('webform-radios-required')
         .each(function () {
           var $element = $(this);
           setTimeout(function () {radiosRequired($element);});
@@ -358,7 +360,8 @@
    */
   Drupal.behaviors.webformTableSelectRequired = {
     attach: function (context) {
-      $(once('webform-tableselect-required','.js-webform-tableselect.required', context))
+      $('.js-webform-tableselect.required', context)
+        .once('webform-tableselect-required')
         .each(function () {
           var $element = $(this);
           var $tbody = $element.find('tbody');
@@ -641,4 +644,4 @@
     }
   }
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

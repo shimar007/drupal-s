@@ -10,7 +10,6 @@ dependencies:
     - field.field.node.article.field_image
     - field.field.node.article.field_meta_tags
     - field.field.node.article.field_tags
-    - field.field.node.article.field_test_price_range
     - image.style.medium
     - node.type.article
   module:
@@ -61,5 +60,4 @@ hidden:
   feeds_item: true
   field_meta_tags: true
   field_tags: true
-  field_test_price_range: true
   search_api_excerpt: true

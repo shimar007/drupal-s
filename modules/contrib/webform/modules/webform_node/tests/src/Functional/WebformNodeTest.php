@@ -19,7 +19,7 @@ class WebformNodeTest extends WebformNodeBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'webform', 'webform_node'];
+  public static $modules = ['block', 'webform', 'webform_node'];
 
   /**
    * Webforms to load.
@@ -31,7 +31,7 @@ class WebformNodeTest extends WebformNodeBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Place webform test blocks.

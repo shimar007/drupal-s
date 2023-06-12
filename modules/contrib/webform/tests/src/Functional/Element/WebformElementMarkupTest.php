@@ -14,7 +14,7 @@ class WebformElementMarkupTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_test_markup'];
+  public static $modules = ['webform', 'webform_test_markup'];
 
   /**
    * Webforms to load.

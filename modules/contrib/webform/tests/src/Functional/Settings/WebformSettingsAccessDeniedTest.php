@@ -19,7 +19,7 @@ class WebformSettingsAccessDeniedTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'webform'];
+  public static $modules = ['block', 'webform'];
 
   /**
    * Webforms to load.
@@ -31,7 +31,7 @@ class WebformSettingsAccessDeniedTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Place blocks.

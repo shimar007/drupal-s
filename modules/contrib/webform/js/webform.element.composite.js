@@ -3,7 +3,7 @@
  * JavaScript behaviors for composite element builder.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -14,7 +14,7 @@
    */
   Drupal.behaviors.webformElementComposite = {
     attach: function (context) {
-      $(once('webform-composite-types', '[data-composite-types]')).each(function () {
+      $('[data-composite-types]').once('webform-composite-types').each(function () {
         var $element = $(this);
         var $type = $element.closest('tr').find('.js-webform-composite-type');
 
@@ -39,4 +39,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

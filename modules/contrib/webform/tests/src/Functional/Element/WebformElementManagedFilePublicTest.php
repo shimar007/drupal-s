@@ -23,12 +23,12 @@ class WebformElementManagedFilePublicTest extends WebformElementBrowserTestBase 
    *
    * @var array
    */
-  protected static $modules = ['file', 'webform', 'webform_ui'];
+  public static $modules = ['file', 'webform', 'webform_ui'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Set public file upload support for testing.

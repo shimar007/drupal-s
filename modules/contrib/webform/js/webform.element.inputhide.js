@@ -3,7 +3,7 @@
  * JavaScript behaviors for input hiding.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -19,14 +19,16 @@
       // Apply chrome fix to prevent password input from being autofilled.
       // @see https://stackoverflow.com/questions/15738259/disabling-chrome-autofill
       if (isChrome) {
-        $(once('webform-input-hide-chrome-workaround', 'form:has(input.js-webform-input-hide)', context))
+        $(context).find('form:has(input.js-webform-input-hide)')
+          .once('webform-input-hide-chrome-workaround')
           .each(function () {
             $(this).prepend('<input style="display:none" type="text" name="chrome_autocomplete_username"/><input style="display:none" type="password" name="chrome_autocomplete_password"/>');
           });
       }
 
       // Convert text based inputs to password input on blur.
-      $(once('webform-input-hide', 'input.js-webform-input-hide', context))
+      $(context).find('input.js-webform-input-hide')
+        .once('webform-input-hide')
         .each(function () {
           var type = this.type;
           // Initialize input hiding.
@@ -46,4 +48,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

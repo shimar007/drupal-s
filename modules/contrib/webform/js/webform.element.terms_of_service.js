@@ -3,7 +3,7 @@
  * JavaScript behaviors for terms of service.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -19,7 +19,7 @@
    */
   Drupal.behaviors.webformTermsOfService = {
     attach: function (context) {
-      $(once('webform-terms-of-service', '.js-form-type-webform-terms-of-service', context)).each(function () {
+      $(context).find('.js-form-type-webform-terms-of-service').once('webform-terms-of-service').each(function () {
         var $element = $(this);
         var $a = $element.find('label a');
         var $details = $element.find('.webform-terms-of-service-details');
@@ -80,4 +80,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

@@ -13,16 +13,19 @@ class WebformNodeUninstallValidatorTest extends UnitTestCase {
   /**
    * A mock webform node uninstall validator.
    *
-   * @var \Drupal\webform_node\WebformNodeUninstallValidator|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\webform_node\WebformNodeUninstallValidator|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $webformNodeUninstallValidator;
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
-    $this->webformNodeUninstallValidator = $this->createPartialMock('Drupal\webform_node\WebformNodeUninstallValidator', ['hasWebformNodes']);
+    $this->webformNodeUninstallValidator = $this->getMockBuilder('Drupal\webform_node\WebformNodeUninstallValidator')
+      ->disableOriginalConstructor()
+      ->setMethods(['hasWebformNodes'])
+      ->getMock();
     $this->webformNodeUninstallValidator->setStringTranslation($this->getStringTranslationStub());
   }
 

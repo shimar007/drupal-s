@@ -16,7 +16,7 @@ abstract class WebformAccessBrowserTestBase extends WebformNodeBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_access'];
+  public static $modules = ['webform', 'webform_access'];
 
   /**
    * Webform node[].
@@ -49,7 +49,7 @@ abstract class WebformAccessBrowserTestBase extends WebformNodeBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create webform nodes.

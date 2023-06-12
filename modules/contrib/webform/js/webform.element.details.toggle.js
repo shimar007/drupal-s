@@ -3,7 +3,7 @@
  * JavaScript behaviors for details element.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -18,7 +18,7 @@
    */
   Drupal.behaviors.webformDetailsToggle = {
     attach: function (context) {
-      $(once('webform-details-toggle', '.js-webform-details-toggle', context)).each(function () {
+      $('.js-webform-details-toggle', context).once('webform-details-toggle').each(function () {
         var $form = $(this);
         var $tabs = $form.find('.webform-tabs');
 
@@ -115,4 +115,4 @@
     Drupal.announce(text);
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

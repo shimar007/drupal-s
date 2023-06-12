@@ -17,6 +17,6 @@ abstract class WebformNodeBrowserTestBase extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_node'];
+  public static $modules = ['webform', 'webform_node'];
 
 }

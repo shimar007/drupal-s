@@ -11,13 +11,11 @@ use Drupal\webform\Utility\WebformLogicHelper;
 use Drupal\webform\Utility\WebformXss;
 use Drupal\webform\Utility\WebformYaml;
 use Drupal\webform\WebformSubmissionInterface;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 
 /**
  * Twig extension with some useful functions and filters.
  */
-class WebformTwigExtension extends AbstractExtension {
+class WebformTwigExtension extends \Twig_Extension {
 
   /**
    * Twig options.
@@ -34,9 +32,9 @@ class WebformTwigExtension extends AbstractExtension {
    */
   public function getFunctions() {
     return [
-      new TwigFunction('webform_html_editor_check_markup', [$this, 'webformHtmlEditorCheckMarkup']),
-      new TwigFunction('webform_debug', [$this, 'webformDebug']),
-      new TwigFunction('webform_token', [$this, 'webformToken']),
+      new \Twig_SimpleFunction('webform_html_editor_check_markup', [$this, 'webformHtmlEditorCheckMarkup']),
+      new \Twig_SimpleFunction('webform_debug', [$this, 'webformDebug']),
+      new \Twig_SimpleFunction('webform_token', [$this, 'webformToken']),
     ];
   }
 

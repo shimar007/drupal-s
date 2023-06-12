@@ -3,7 +3,7 @@
  * JavaScript behaviors for multiple element.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -16,7 +16,7 @@
     attach: function (context, settings) {
       for (var base in settings.tableDrag) {
         if (settings.tableDrag.hasOwnProperty(base)) {
-          $(once('webform-multiple-table-drag', '.js-form-type-webform-multiple #' + base, context)).each(function () {
+          $(context).find('.js-form-type-webform-multiple #' + base).once('webform-multiple-table-drag').each(function () {
             var $tableDrag = $(this);
             var $toggleWeight = $tableDrag.prev().prev('.tabledrag-toggle-weight-wrapper');
             if ($toggleWeight.length) {
@@ -36,7 +36,7 @@
    */
   Drupal.behaviors.webformMultipleAdd = {
     attach: function (context, settings) {
-      $(once('webform-multiple-add', '.js-webform-multiple-add', context)).each(function () {
+      $(context).find('.js-webform-multiple-add').once('webform-multiple-add').each(function () {
         var $submit = $(this).find('input[type="submit"], button');
         var $number = $(this).find('input[type="number"]');
         $number.keyup(function (event) {
@@ -50,4 +50,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

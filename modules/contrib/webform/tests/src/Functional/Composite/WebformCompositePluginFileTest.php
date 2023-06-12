@@ -19,7 +19,7 @@ class WebformCompositePluginFileTest extends WebformElementManagedFileTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_test_element'];
+  public static $modules = ['webform_test_element'];
 
   /**
    * Webforms to load.

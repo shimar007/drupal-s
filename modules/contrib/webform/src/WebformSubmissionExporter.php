@@ -9,7 +9,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformState;
-use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -28,13 +27,6 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
   use StringTranslationTrait;
   use WebformAjaxElementTrait;
   use WebformEntityStorageTrait;
-
-  /**
-   * The language manager.
-   *
-   * @var \Drupal\Core\Language\LanguageManagerInterface
-   */
-  protected $languageManager;
 
   /**
    * The configuration object factory.
@@ -137,10 +129,8 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
    *   The webform element manager.
    * @param \Drupal\webform\Plugin\WebformExporterManagerInterface $exporter_manager
    *   The results exporter manager.
-   * @param \Drupal\Core\Language\LanguageManagerInterface|null $language_manager
-   *   The language manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, FileSystemInterface $file_system, EntityTypeManagerInterface $entity_type_manager, StreamWrapperManagerInterface $stream_wrapper_manager, ArchiverManager $archiver_manager, WebformElementManagerInterface $element_manager, WebformExporterManagerInterface $exporter_manager, LanguageManagerInterface $language_manager = NULL) {
+  public function __construct(ConfigFactoryInterface $config_factory, FileSystemInterface $file_system, EntityTypeManagerInterface $entity_type_manager, StreamWrapperManagerInterface $stream_wrapper_manager, ArchiverManager $archiver_manager, WebformElementManagerInterface $element_manager, WebformExporterManagerInterface $exporter_manager) {
     $this->configFactory = $config_factory;
     $this->fileSystem = $file_system;
     $this->entityTypeManager = $entity_type_manager;
@@ -148,8 +138,6 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
     $this->archiverManager = $archiver_manager;
     $this->elementManager = $element_manager;
     $this->exporterManager = $exporter_manager;
-    // @todo [Webform 7.x] Require the language manager as an injected dependency.
-    $this->languageManager = $language_manager ?: \Drupal::languageManager();
   }
 
   /**
@@ -286,7 +274,6 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
       'range_start' => '',
       'range_end' => '',
       'uid' => '',
-      'langcode' => '',
       'order' => 'asc',
       'state' => 'all',
       'locked' => '',
@@ -609,8 +596,7 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
         '#options' => [
           'all' => $this->t('All'),
           'latest' => $this->t('Latest'),
-          'submitted_by' => $this->t('Submitted by'),
-          'language' => $this->t('Language'),
+          'uid' => $this->t('Submitted by'),
           'serial' => $this->t('Submission number'),
           'sid' => $this->t('Submission ID'),
           'date' => $this->t('Created date'),
@@ -619,10 +605,6 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
         ],
         '#default_value' => $export_options['range_type'],
       ];
-      // Hide language option is only one language is available.
-      if (count($this->languageManager->getLanguages()) === 1) {
-        unset($form['export']['download']['range_type']['#options']['language']);
-      }
       $form['export']['download']['latest'] = [
         '#type' => 'container',
         '#attributes' => ['class' => ['container-inline']],
@@ -643,7 +625,7 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
         '#attributes' => ['class' => ['container-inline']],
         '#states' => [
           'visible' => [
-            ':input[name="range_type"]' => ['value' => 'submitted_by'],
+            ':input[name="range_type"]' => ['value' => 'uid'],
           ],
         ],
         'uid' => [
@@ -653,27 +635,7 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
           '#default_value' => $export_options['uid'],
           '#states' => [
             'visible' => [
-              ':input[name="range_type"]' => ['value' => 'submitted_by'],
-            ],
-          ],
-        ],
-      ];
-      $form['export']['download']['language'] = [
-        '#type' => 'container',
-        '#attributes' => ['class' => ['container-inline']],
-        '#states' => [
-          'visible' => [
-            ':input[name="range_type"]' => ['value' => 'language'],
-          ],
-        ],
-        'langcode' => [
-          '#title' => $this->t('Language'),
-          '#type' => 'language_select',
-          '#default_value' => $export_options['langcode'],
-          '#empty_option' => $this->t('- Select -'),
-          '#states' => [
-            'visible' => [
-              ':input[name="range_type"]' => ['value' => 'language'],
+              ':input[name="range_type"]' => ['value' => 'uid'],
             ],
           ],
         ],
@@ -949,10 +911,7 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
     $webform = $this->getWebform();
     $source_entity = $this->getSourceEntity();
 
-    $query = $this->getSubmissionStorage()
-      ->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('webform_id', $webform->id());
+    $query = $this->getSubmissionStorage()->getQuery()->condition('webform_id', $webform->id());
 
     // Filter by source entity or submitted to.
     if ($source_entity) {
@@ -1004,11 +963,6 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
     // Filter by UID.
     if (!is_null($export_options['uid']) && $export_options['uid'] !== '') {
       $query->condition('uid', $export_options['uid'], '=');
-    }
-
-    // Filter by language.
-    if (!empty($export_options['langcode'])) {
-      $query->condition('langcode', $export_options['langcode']);
     }
 
     // Filter by (completion) state.

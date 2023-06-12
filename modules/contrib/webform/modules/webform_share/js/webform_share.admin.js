@@ -3,7 +3,7 @@
  * JavaScript behaviors for webform share admin.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -14,7 +14,7 @@
    */
   Drupal.behaviors.webformShareAdminCopy = {
     attach: function (context) {
-      $(once('webform-share-admin-copy', '.js-webform-share-admin-copy', context)).each(function () {
+      $(context).find('.js-webform-share-admin-copy').once('webform-share-admin-copy').each(function () {
         var $container = $(this);
         var $textarea = $container.find('textarea');
         var $button = $container.find(':submit, :button');
@@ -33,4 +33,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

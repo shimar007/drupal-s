@@ -22,7 +22,7 @@ class WebformResultsExportController extends ControllerBase implements Container
   /**
    * The MIME type guesser.
    *
-   * @var \Symfony\Component\Mime\MimeTypesInterface
+   * @var \Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface
    */
   protected $mimeTypeGuesser;
 

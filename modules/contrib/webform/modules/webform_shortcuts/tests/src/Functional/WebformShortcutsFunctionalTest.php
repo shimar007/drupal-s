@@ -14,7 +14,7 @@ class WebformShortcutsFunctionalTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'block',
     'webform',
     'webform_ui',
@@ -24,7 +24,7 @@ class WebformShortcutsFunctionalTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->placeBlocks();
   }

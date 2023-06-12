@@ -3,7 +3,7 @@
  * JavaScript behaviors for Telephone element.
  */
 
-(function ($, Drupal, drupalSettings, once) {
+(function ($, Drupal, drupalSettings) {
 
   'use strict';
 
@@ -23,7 +23,7 @@
         return;
       }
 
-      $(once('webform-telephone-international', 'input.js-webform-telephone-international', context)).each(function () {
+      $(context).find('input.js-webform-telephone-international').once('webform-telephone-international').each(function () {
         var $telephone = $(this);
 
         // Add error message container.
@@ -99,4 +99,4 @@
     }
   };
 
-})(jQuery, Drupal, drupalSettings, once);
+})(jQuery, Drupal, drupalSettings);

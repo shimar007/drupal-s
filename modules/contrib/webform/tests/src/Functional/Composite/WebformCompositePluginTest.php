@@ -16,7 +16,7 @@ class WebformCompositePluginTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_test_element'];
+  public static $modules = ['webform_test_element'];
 
   /**
    * Webforms to load.

@@ -21,7 +21,7 @@ class WebformSubmissionLogTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_submission_log'];
+  public static $modules = ['webform', 'webform_submission_log'];
 
   /**
    * Webforms to load.

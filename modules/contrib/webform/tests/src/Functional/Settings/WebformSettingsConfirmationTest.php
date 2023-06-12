@@ -32,7 +32,7 @@ class WebformSettingsConfirmationTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Set page.front (aka <front>) to /node instead of /user/login.

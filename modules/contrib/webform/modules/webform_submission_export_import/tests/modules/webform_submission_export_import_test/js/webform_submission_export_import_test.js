@@ -3,7 +3,7 @@
  * JavaScript behaviors for Webform Export/Import Test module.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -14,7 +14,8 @@
    */
   Drupal.behaviors.webformSubmissionExportImportTest = {
     attach: function (context) {
-      $(once('webform-export-import-test', '#edit-import-url--description a', context))
+      $('#edit-import-url--description a', context)
+        .once('webform-export-import-test')
         .on('click', function () {
           $('#edit-import-url').val(this.href);
           $('#webform-submission-export-import-upload-form').trigger('submit');
@@ -23,4 +24,4 @@
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

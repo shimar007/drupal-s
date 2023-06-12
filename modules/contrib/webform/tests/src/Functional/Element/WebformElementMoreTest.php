@@ -53,7 +53,12 @@ class WebformElementMoreTest extends WebformElementBrowserTestBase {
     $assert_session->responseContains('<div id="edit-more-datetime--more" class="js-webform-element-more webform-element-more">');
 
     // Check fieldset more.
-    $assert_session->responseContains('<div id="edit-more-fieldset--description" data-drupal-field-elements="description" class="webform-element-description">{This is a description}</div>');
+    if (floatval(\Drupal::VERSION) >= 9) {
+      $assert_session->responseContains('<div id="edit-more-fieldset--description" data-drupal-field-elements="description" class="webform-element-description">{This is a description}</div>');
+    }
+    else {
+      $assert_session->responseContains('<div id="edit-more-fieldset--description" class="webform-element-description">{This is a description}</div>');
+    }
     $assert_session->responseContains('<div id="edit-more-fieldset--more" class="js-webform-element-more webform-element-more">');
 
     // Check details more.

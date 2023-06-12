@@ -17,7 +17,7 @@ class WebformElementTableTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_ui', 'file'];
+  public static $modules = ['webform', 'webform_ui', 'file'];
 
   /**
    * Webforms to load.

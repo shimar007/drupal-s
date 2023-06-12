@@ -29,7 +29,7 @@ class WebformTestElementController extends ControllerBase {
     ];
 
     // Populate webform properties using query string parameters.
-    $properties = ['sid', 'default_data', 'information', 'action', 'lazy'];
+    $properties = ['sid', 'default_data', 'information', 'action'];
     foreach ($properties as $property) {
       if ($value = $request->query->get($property)) {
         switch ($value) {

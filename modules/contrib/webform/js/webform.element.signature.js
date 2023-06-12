@@ -3,7 +3,7 @@
  * JavaScript behaviors for signature pad integration.
  */
 
-(function ($, Drupal, debounce, once) {
+(function ($, Drupal, debounce) {
 
   'use strict';
 
@@ -23,7 +23,7 @@
         return;
       }
 
-      $(once('webform-signature', 'input.js-webform-signature', context)).each(function () {
+      $(context).find('input.js-webform-signature').once('webform-signature').each(function () {
         var $input = $(this);
         var value = $input.val();
         var $wrapper = $input.parent();
@@ -104,4 +104,4 @@
     }
   };
 
-})(jQuery, Drupal, Drupal.debounce, once);
+})(jQuery, Drupal, Drupal.debounce);

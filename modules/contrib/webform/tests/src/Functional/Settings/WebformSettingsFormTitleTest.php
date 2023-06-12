@@ -19,7 +19,7 @@ class WebformSettingsFormTitleTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'node'];
+  public static $modules = ['webform', 'node'];
 
   /**
    * Tests form title.

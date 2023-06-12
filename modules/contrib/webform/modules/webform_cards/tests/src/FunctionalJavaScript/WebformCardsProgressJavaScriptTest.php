@@ -17,7 +17,7 @@ class WebformCardsProgressJavaScriptTest extends WebformWebDriverTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform', 'webform_cards', 'webform_cards_test'];
+  public static $modules = ['webform', 'webform_cards', 'webform_cards_test'];
 
   /**
    * Test webform cards progress.

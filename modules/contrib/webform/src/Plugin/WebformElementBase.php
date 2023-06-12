@@ -913,10 +913,13 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
       'webform' => $webform,
       'webform_submission' => $webform_submission,
     ];
-    \Drupal::moduleHandler()->invokeAllWith('webform_element_access', function (callable $hook, string $module) use (&$access_result, $operation, $element, $account, $context) {
+    $modules = \Drupal::moduleHandler()
+      ->getImplementations('webform_element_access');
+    foreach ($modules as $module) {
+      $hook = $module . '_webform_element_access';
       $hook_result = $hook($operation, $element, $account, $context);
       $access_result = $access_result->orIf($hook_result);
-    });
+    }
 
     // Grant access as provided by webform, webform handler(s) and/or
     // hook_webform_element_access() implementation.
@@ -1400,7 +1403,11 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
     $value = $this->getValue($element, $webform_submission, $options);
 
     // Get items.
-    $items = $this->getItems($type, $element, $webform_submission, $options);
+    $items = [];
+    $item_function = 'format' . $type . 'Item';
+    foreach (array_keys($value) as $delta) {
+      $items[] = $this->$item_function($element, $webform_submission, ['delta' => $delta] + $options);
+    }
 
     // Get template.
     $template = trim($element['#format_items_' . $name]);
@@ -1429,7 +1436,17 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
    *   The element's items as HTML.
    */
   protected function formatHtmlItems(array &$element, WebformSubmissionInterface $webform_submission, array $options = []) {
-    $items = $this->getItems('Html', $element, $webform_submission, $options);
+    $value = $this->getValue($element, $webform_submission, $options);
+
+    // Get items.
+    $items = [];
+    foreach (array_keys($value) as $delta) {
+      $item = $this->formatHtmlItem($element, $webform_submission, ['delta' => $delta] + $options);
+      if ($item) {
+        $items[] = $item;
+      }
+    }
+
     if (empty($items)) {
       return [];
     }
@@ -1510,7 +1527,17 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
    *   The element's items as text.
    */
   protected function formatTextItems(array &$element, WebformSubmissionInterface $webform_submission, array $options = []) {
-    $items = $this->getItems('Text', $element, $webform_submission, $options);
+    $value = $this->getValue($element, $webform_submission, $options);
+
+    // Get items.
+    $items = [];
+    foreach (array_keys($value) as $delta) {
+      $item = $this->formatTextItem($element, $webform_submission, ['delta' => $delta] + $options);
+      if ($item) {
+        $items[] = $item;
+      }
+    }
+
     if (empty($items)) {
       return '';
     }
@@ -1672,45 +1699,6 @@ class WebformElementBase extends PluginBase implements WebformElementInterface, 
     }
 
     return $value;
-  }
-
-
-  /**
-   * Get element's submission value items.
-   *
-   * @param string $type
-   *   The format type, HTML or Text.
-   * @param array $element
-   *   An element.
-   * @param \Drupal\webform\WebformSubmissionInterface $webform_submission
-   *   A webform submission.
-   * @param array $options
-   *   An array of options.
-   *
-   * @return array
-   *   The element's submission value items.
-   */
-  protected function getItems($type, array &$element, WebformSubmissionInterface $webform_submission, array $options = []) {
-    $name = strtolower($type);
-
-    $value = $this->getValue($element, $webform_submission, $options);
-
-    $item_function = 'format' . $type . 'Item';
-
-    $items = [];
-    foreach (array_keys($value) as $delta) {
-      if ($this->getItemFormat($element) === 'custom' && !empty($element['#format_' . $name])) {
-        $item = $this->formatCustomItem($type, $element, $webform_submission, ['delta' => $delta] + $options);
-      }
-      else {
-        $item = $this->$item_function($element, $webform_submission, ['delta' => $delta] + $options);
-      }
-      if ($item) {
-        $items[] = $item;
-      }
-    }
-
-    return $items;
   }
 
   /**

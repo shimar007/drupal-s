@@ -15,7 +15,7 @@ class WebformOptionsLimitTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'webform',
     'webform_options_limit',
     'webform_options_limit_test',
@@ -90,11 +90,11 @@ class WebformOptionsLimitTest extends WebformBrowserTestBase {
     $assert_session->responseContains('<option value="O">O [0 remaining]</option>');
 
     // Check that table select multiple is NOT available.
-    $assert_session->fieldNotExists('edit-options-limit-tableselect-multiple-u');
+    $this->assertNoFieldById('edit-options-limit-tableselect-multiple-u', 'U');
     $assert_session->responseContains('<td>U [0 remaining]</td>');
 
     // Check that table select single is available.
-    $assert_session->fieldNotExists('edit-options-limit-tableselect-single-x');
+    $this->assertNoFieldById('edit-options-limit-tableselect-multiple-x', 'X');
     $assert_session->responseContains('<td>X</td>');
     $assert_session->responseContains('<td> [0 remaining]</td>');
 

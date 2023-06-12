@@ -17,7 +17,7 @@ class WebformElementComputedTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [ 'webform'];
+  public static $modules = ['filter', 'webform'];
 
   /**
    * Webforms to load.
@@ -33,7 +33,7 @@ class WebformElementComputedTest extends WebformElementBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create filters.

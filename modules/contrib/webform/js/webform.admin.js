@@ -3,7 +3,7 @@
  * JavaScript behaviors for admin pages.
  */
 
-(function ($, Drupal, debounce, once) {
+(function ($, Drupal, debounce) {
 
   'use strict';
 
@@ -14,7 +14,7 @@
    */
   Drupal.behaviors.webformFilterAutocomplete = {
     attach: function (context) {
-      $(once('webform-autocomplete', '.webform-filter-form input.form-autocomplete', context))
+      $('.webform-filter-form input.form-autocomplete', context).once('webform-autocomplete')
         .each(function () {
           // If input value is an autocomplete match, reset the input to its
           // default value.
@@ -42,7 +42,7 @@
     attach: function (context) {
       // Only attach the click event handler to the entire table and determine
       // which row triggers the event.
-      $(once('webform-results-table', '.webform-results-table', context)).on('click', function (event) {
+      $('.webform-results-table', context).once('webform-results-table').on('click', function (event) {
         if (event.target.tagName === 'A' || event.target.tagName === 'BUTTON' || event.target.tagName === 'INPUT') {
           return true;
         }
@@ -70,4 +70,4 @@
     }
   };
 
-})(jQuery, Drupal, Drupal.debounce, once);
+})(jQuery, Drupal, Drupal.debounce);

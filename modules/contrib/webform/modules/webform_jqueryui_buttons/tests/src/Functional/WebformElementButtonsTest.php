@@ -16,7 +16,7 @@ class WebformElementButtonsTest extends WebformElementBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['webform_jqueryui_buttons', 'webform_jqueryui_buttons_test'];
+  public static $modules = ['webform_jqueryui_buttons', 'webform_jqueryui_buttons_test'];
 
   /**
    * Tests buttons elements.

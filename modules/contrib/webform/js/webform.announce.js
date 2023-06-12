@@ -3,7 +3,7 @@
  * JavaScript behaviors for announcing changes.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -24,10 +24,10 @@
    */
   Drupal.behaviors.webformAnnounce = {
     attach: function (context) {
-      $(once('data-webform-announce', '[data-webform-announce]', context)).each(function () {
+      $('[data-webform-announce]', context).once('data-webform-announce').each(function () {
         Drupal.announce($(this).data('webform-announce'));
       });
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

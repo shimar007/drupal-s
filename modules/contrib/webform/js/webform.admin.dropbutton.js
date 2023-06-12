@@ -3,7 +3,7 @@
  * Dropbutton feature.
  */
 
-(function ($, Drupal, once) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -19,8 +19,8 @@
   Drupal.behaviors.dropButton = {
     attach: function (context, settings) {
       dropButton.attach(context, settings);
-      $(once('webform-dropbutton', '.webform-dropbutton .dropbutton-wrapper', context)).css('visibility', 'visible');
+      $(context).find('.webform-dropbutton .dropbutton-wrapper').once('webform-dropbutton').css('visibility', 'visible');
     }
   };
 
-})(jQuery, Drupal, once);
+})(jQuery, Drupal);

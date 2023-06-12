@@ -19,7 +19,7 @@ class WebformSubmissionViewTest extends WebformBrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [ 'node', 'webform'];
+  public static $modules = ['filter', 'node', 'webform'];
 
   /**
    * Webforms to load.
@@ -31,7 +31,7 @@ class WebformSubmissionViewTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create filters.
@@ -88,7 +88,7 @@ class WebformSubmissionViewTest extends WebformBrowserTestBase {
       'language_select' => 'English (en)',
     ];
     foreach ($elements as $label => $value) {
-      $assert_session->responseContains("<label>$label</label>" . PHP_EOL . "        $value");
+      $assert_session->responseContains("<label>$label</label>" . PHP_EOL . "        $value", new FormattableMarkup('Found @label: @value', ['@label' => $label, '@value' => $value]));
     }
 
     // Check details element.

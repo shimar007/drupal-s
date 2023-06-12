@@ -21,7 +21,7 @@ class WebformEntityTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['system', 'path', 'path_alias', 'webform', 'user', 'field'];
+  public static $modules = ['system', 'path', 'path_alias', 'webform', 'user', 'field'];
 
   /**
    * Tests some of the methods.
