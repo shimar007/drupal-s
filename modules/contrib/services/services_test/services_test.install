@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the services_test module.
+ */
+
+/**
+ * Uninstall the services_test module.
+ */
+function services_test_8401(&$sandbox) {
+  if (\Drupal::service('module_handler')->moduleExists('services_test')) {
+    \Drupal::service('module_installer')->uninstall(['services_test'], FALSE);
+  }
+}

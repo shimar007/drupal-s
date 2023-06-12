@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Implements hook_requirements().
+ */
+function csp_extras_requirements($phase) {
+  $requirements = [];
+
+  if ($phase == 'runtime' && version_compare(\Drupal::VERSION, '10.1', '>=')) {
+    $requirements['csp_extras'] = [
+      'title' => t('CSP Extras'),
+      'value' => t('Module is not required in Drupal ^10.1'),
+      'severity' => REQUIREMENT_WARNING,
+    ];
+  }
+
+  return $requirements;
+}

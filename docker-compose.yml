@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  php-apache:
+    container_name: shivakumar-profile-local-php
+    ports:
+      - "80:80"
+    build: './build/php'
+    volumes:
+      - ./:/var/www/html
+    extra_hosts:
+      - "drupal-s.local:127.0.0.1"
+    hostname: drupal-s.local
+    networks:
+      - php-mysql
+    depends_on:
+      - mysql
+  mysql:
+    container_name: shivakumar-profile-local-mysql
+    build: './build/mysql'
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_PASSWORD: "password"
+      MYSQL_DATABASE: "shivakumarr"
+      MYSQL_USERNAME: "shivakumarr"
+    ports:
+      - "3306:3306"
+    volumes:
+      - newPhpMySql:/var/lib/mysql
+    networks:
+      - php-mysql
+volumes:
+  newPhpMySql:
+networks:
+  php-mysql:
+    driver: bridge
