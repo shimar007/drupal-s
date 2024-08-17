@@ -130,11 +130,14 @@ class IndexOverviewForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, IndexInterface $search_api_index = NULL) {
     try {
       // Display hint about using the new Search API Solr Autocomplete module.
+      // See search_api_autocomplete_requirements().
       if (interface_exists(SolrBackendInterface::class)
           && $search_api_index->hasValidServer()
           && $search_api_index->getServerInstance()->getBackend() instanceof SolrBackendInterface
-          && version_compare(SolrBackendInterface::SEARCH_API_SOLR_SCHEMA_VERSION, '4.2.5', '>=')
-          && !$this->moduleHandler->moduleExists('search_api_solr_autocomplete')) {
+          && !$this->moduleHandler->moduleExists('search_api_solr_autocomplete')
+          && (method_exists(SolrBackendInterface::class, 'getPreferredSchemaVersion')
+              || version_compare(SolrBackendInterface::SEARCH_API_SOLR_SCHEMA_VERSION, '4.2.5', '>='))
+      ) {
         $this->messenger->addWarning($this->t('When using a Solr server as the search backend, it is recommended to enable the "Search API Solr Autocomplete" module for improved autocomplete functionality.'));
       }
     }
@@ -309,7 +312,7 @@ class IndexOverviewForm extends FormBase {
           $url = Url::fromRoute('user.admin_permissions', [], $options);
           if ($url->access()) {
             $vars[':perm_url'] = $url->toString();
-            $messages = $this->t('The settings have been saved. Please remember to set the <a href=":perm_url">permissions</a> for the newly enabled searches.', $vars);
+            $messages = $this->t('The settings have been saved. Remember to set the <a href=":perm_url">permissions</a> for the newly enabled searches.', $vars);
           }
         }
         $search->setStatus($enabled);

@@ -55,7 +55,7 @@ class CrossTenantAccessPolicy extends TenantRelationshipAccessPolicyBase
 
     /**
     * Gets the default
-    * Defines the default configuration for how your organization interacts with external Azure Active Directory organizations.
+    * Defines the default configuration for how your organization interacts with external Microsoft Entra organizations.
     *
     * @return CrossTenantAccessPolicyConfigurationDefault|null The default
     */
@@ -74,7 +74,7 @@ class CrossTenantAccessPolicy extends TenantRelationshipAccessPolicyBase
 
     /**
     * Sets the default
-    * Defines the default configuration for how your organization interacts with external Azure Active Directory organizations.
+    * Defines the default configuration for how your organization interacts with external Microsoft Entra organizations.
     *
     * @param CrossTenantAccessPolicyConfigurationDefault $val The default
     *
@@ -89,7 +89,7 @@ class CrossTenantAccessPolicy extends TenantRelationshipAccessPolicyBase
 
      /**
      * Gets the partners
-    * Defines partner-specific configurations for external Azure Active Directory organizations.
+    * Defines partner-specific configurations for external Microsoft Entra organizations.
      *
      * @return array|null The partners
      */
@@ -104,7 +104,7 @@ class CrossTenantAccessPolicy extends TenantRelationshipAccessPolicyBase
 
     /**
     * Sets the partners
-    * Defines partner-specific configurations for external Azure Active Directory organizations.
+    * Defines partner-specific configurations for external Microsoft Entra organizations.
     *
     * @param CrossTenantAccessPolicyConfigurationPartner[] $val The partners
     *
@@ -113,6 +113,39 @@ class CrossTenantAccessPolicy extends TenantRelationshipAccessPolicyBase
     public function setPartners($val)
     {
         $this->_propDict["partners"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the templates
+    * Represents the base policy in the directory for multi-tenant organization settings.
+    *
+    * @return PolicyTemplate|null The templates
+    */
+    public function getTemplates()
+    {
+        if (array_key_exists("templates", $this->_propDict)) {
+            if (is_a($this->_propDict["templates"], "\Beta\Microsoft\Graph\Model\PolicyTemplate") || is_null($this->_propDict["templates"])) {
+                return $this->_propDict["templates"];
+            } else {
+                $this->_propDict["templates"] = new PolicyTemplate($this->_propDict["templates"]);
+                return $this->_propDict["templates"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the templates
+    * Represents the base policy in the directory for multi-tenant organization settings.
+    *
+    * @param PolicyTemplate $val The templates
+    *
+    * @return CrossTenantAccessPolicy
+    */
+    public function setTemplates($val)
+    {
+        $this->_propDict["templates"] = $val;
         return $this;
     }
 

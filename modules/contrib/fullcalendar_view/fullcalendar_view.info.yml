@@ -2,13 +2,13 @@ name: Full Calendar View Plugin
 type: module
 description: 'A view plugin to present contents in FullCalendar view.'
 package: Views
-core_version_requirement: ^9.2.0 || ^10
+core_version_requirement: ^9.2.0 || ^10 || ^11
 
 dependencies:
   - drupal:views
   - drupal:datetime
 
-# Information added by Drupal.org packaging script on 2023-04-03
-version: '5.1.12'
+# Information added by Drupal.org packaging script on 2024-08-09
+version: '5.2.1'
 project: 'fullcalendar_view'
-datestamp: 1680506581
+datestamp: 1723181915

@@ -8,8 +8,8 @@ use Drupal\Core\Routing\RequestHelper;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 use Drupal\redirect\RedirectChecker;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -80,12 +80,12 @@ class RouteNormalizerRequestSubscriber implements EventSubscriberInterface {
    *   page.
    * - Requested path has an alias: redirect to alias.
    *
-   * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
    *   The Event to process.
    */
-  public function onKernelRequestRedirect(GetResponseEvent $event) {
+  public function onKernelRequestRedirect(RequestEvent $event) {
 
-    if (!$this->config->get('route_normalizer_enabled') || !$event->isMasterRequest()) {
+    if (!$this->config->get('route_normalizer_enabled') || !$event->isMainRequest()) {
       return;
     }
 
@@ -106,7 +106,7 @@ class RouteNormalizerRequestSubscriber implements EventSubscriberInterface {
 
       // Strip off query parameters added by the route such as a CSRF token.
       if (strpos($redirect_uri, '?') !== FALSE) {
-        $redirect_uri  = strtok($redirect_uri, '?');
+        $redirect_uri = strtok($redirect_uri, '?');
       }
 
       // Append back the request query string from $_SERVER.
@@ -134,7 +134,7 @@ class RouteNormalizerRequestSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events[KernelEvents::REQUEST][] = ['onKernelRequestRedirect', 30];
     return $events;
   }

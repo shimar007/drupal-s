@@ -26,6 +26,7 @@ class AccessPackageSubject extends Entity
 {
     /**
     * Gets the altSecId
+    * Not Supported.
     *
     * @return string|null The altSecId
     */
@@ -40,6 +41,7 @@ class AccessPackageSubject extends Entity
 
     /**
     * Sets the altSecId
+    * Not Supported.
     *
     * @param string $val The altSecId
     *
@@ -48,6 +50,39 @@ class AccessPackageSubject extends Entity
     public function setAltSecId($val)
     {
         $this->_propDict["altSecId"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the cleanupScheduledDateTime
+    * The date and time the subject is marked to be blocked from sign in or deleted. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time.
+    *
+    * @return \DateTime|null The cleanupScheduledDateTime
+    */
+    public function getCleanupScheduledDateTime()
+    {
+        if (array_key_exists("cleanupScheduledDateTime", $this->_propDict)) {
+            if (is_a($this->_propDict["cleanupScheduledDateTime"], "\DateTime") || is_null($this->_propDict["cleanupScheduledDateTime"])) {
+                return $this->_propDict["cleanupScheduledDateTime"];
+            } else {
+                $this->_propDict["cleanupScheduledDateTime"] = new \DateTime($this->_propDict["cleanupScheduledDateTime"]);
+                return $this->_propDict["cleanupScheduledDateTime"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the cleanupScheduledDateTime
+    * The date and time the subject is marked to be blocked from sign in or deleted. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time.
+    *
+    * @param \DateTime $val The cleanupScheduledDateTime
+    *
+    * @return AccessPackageSubject
+    */
+    public function setCleanupScheduledDateTime($val)
+    {
+        $this->_propDict["cleanupScheduledDateTime"] = $val;
         return $this;
     }
 
@@ -140,7 +175,7 @@ class AccessPackageSubject extends Entity
 
     /**
     * Gets the objectId
-    * The object identifier of the subject. null if the subject is not yet a user in the tenant.
+    * The object identifier of the subject. null if the subject isn't yet a user in the tenant. Alternate key.
     *
     * @return string|null The objectId
     */
@@ -155,7 +190,7 @@ class AccessPackageSubject extends Entity
 
     /**
     * Sets the objectId
-    * The object identifier of the subject. null if the subject is not yet a user in the tenant.
+    * The object identifier of the subject. null if the subject isn't yet a user in the tenant. Alternate key.
     *
     * @param string $val The objectId
     *
@@ -225,6 +260,7 @@ class AccessPackageSubject extends Entity
 
     /**
     * Gets the subjectLifecycle
+    * The lifecycle of the subject user, if a guest. The possible values are: notDefined, notGoverned, governed, unknownFutureValue.
     *
     * @return AccessPackageSubjectLifecycle|null The subjectLifecycle
     */
@@ -243,6 +279,7 @@ class AccessPackageSubject extends Entity
 
     /**
     * Sets the subjectLifecycle
+    * The lifecycle of the subject user, if a guest. The possible values are: notDefined, notGoverned, governed, unknownFutureValue.
     *
     * @param AccessPackageSubjectLifecycle $val The subjectLifecycle
     *

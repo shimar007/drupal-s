@@ -202,6 +202,35 @@ class Participant extends Entity
     }
 
     /**
+    * Gets the preferredDisplayName
+    * The participant's preferred display name that overrides the original display name.
+    *
+    * @return string|null The preferredDisplayName
+    */
+    public function getPreferredDisplayName()
+    {
+        if (array_key_exists("preferredDisplayName", $this->_propDict)) {
+            return $this->_propDict["preferredDisplayName"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the preferredDisplayName
+    * The participant's preferred display name that overrides the original display name.
+    *
+    * @param string $val The preferredDisplayName
+    *
+    * @return Participant
+    */
+    public function setPreferredDisplayName($val)
+    {
+        $this->_propDict["preferredDisplayName"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the recordingInfo
     * Information on whether the participant has recording capability.
     *

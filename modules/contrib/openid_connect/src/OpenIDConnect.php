@@ -5,7 +5,7 @@ namespace Drupal\openid_connect;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Extension\ModuleHandler;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -75,7 +75,7 @@ class OpenIDConnect {
   /**
    * The module handler.
    *
-   * @var \Drupal\Core\Extension\ModuleHandler
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   protected $moduleHandler;
 
@@ -119,7 +119,7 @@ class OpenIDConnect {
    *   The email validator service.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
-   * @param \Drupal\Core\Extension\ModuleHandler $module_handler
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger
    *   A logger channel factory instance.
@@ -135,7 +135,7 @@ class OpenIDConnect {
     UserDataInterface $user_data,
     EmailValidatorInterface $email_validator,
     MessengerInterface $messenger,
-    ModuleHandler $module_handler,
+    ModuleHandlerInterface $module_handler,
     LoggerChannelFactoryInterface $logger,
     FileSystemInterface $fileSystem
   ) {
@@ -498,7 +498,6 @@ class OpenIDConnect {
     /** @var \Drupal\user\UserInterface $account */
     $account = $this->userStorage->create([
       'name' => $this->generateUsername($sub, $userinfo, $client_name),
-      'pass' => user_password(),
       'mail' => $userinfo['email'],
       'init' => $userinfo['email'],
       'status' => $status,

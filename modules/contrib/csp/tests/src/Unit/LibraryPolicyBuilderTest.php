@@ -2,10 +2,12 @@
 
 namespace Drupal\Tests\csp\Unit;
 
+use Drupal\Core\Asset\Exception\IncompleteLibraryDefinitionException;
 use Drupal\Core\Asset\LibraryDiscovery;
 use Drupal\Core\Cache\MemoryBackend;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Extension\ThemeHandler;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\csp\LibraryPolicyBuilder;
 use Drupal\Tests\UnitTestCase;
 
@@ -51,6 +53,13 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
   protected $libraryDiscovery;
 
   /**
+   * Mock Logger Channel.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $logger;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp(): void {
@@ -60,6 +69,7 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
     $this->moduleHandler = $this->createMock(ModuleHandler::class);
     $this->themeHandler = $this->createMock(ThemeHandler::class);
     $this->libraryDiscovery = $this->createMock(LibraryDiscovery::class);
+    $this->logger = $this->createMock(LoggerChannelInterface::class);
   }
 
   /**
@@ -82,7 +92,13 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
       ->with('core')
       ->willReturn([]);
 
-    $libraryPolicy = new LibraryPolicyBuilder($this->cache, $this->moduleHandler, $this->themeHandler, $this->libraryDiscovery);
+    $libraryPolicy = new LibraryPolicyBuilder(
+      $this->cache,
+      $this->moduleHandler,
+      $this->themeHandler,
+      $this->libraryDiscovery,
+      $this->logger
+    );
 
     $this->assertEquals(
       [],
@@ -117,7 +133,7 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
       ->method('getLibrariesByExtension')
       ->willReturnMap($extensionMap);
 
-    // Test a few behaviours:
+    // Test a few behaviors:
     // - local files are ignored.
     // - script domains are sorted.
     // - duplicate style domains are filtered.
@@ -152,7 +168,13 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
       ->with('stark', 'test')
       ->willReturn($libraryInfo);
 
-    $libraryPolicy = new LibraryPolicyBuilder($this->cache, $this->moduleHandler, $this->themeHandler, $this->libraryDiscovery);
+    $libraryPolicy = new LibraryPolicyBuilder(
+      $this->cache,
+      $this->moduleHandler,
+      $this->themeHandler,
+      $this->libraryDiscovery,
+      $this->logger
+    );
 
     $this->assertEquals(
       [
@@ -214,7 +236,13 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
       ->with('stark', 'test')
       ->willReturn($libraryInfo);
 
-    $libraryPolicy = new LibraryPolicyBuilder($this->cache, $this->moduleHandler, $this->themeHandler, $this->libraryDiscovery);
+    $libraryPolicy = new LibraryPolicyBuilder(
+      $this->cache,
+      $this->moduleHandler,
+      $this->themeHandler,
+      $this->libraryDiscovery,
+      $this->logger
+    );
 
     $this->assertEquals(
       [
@@ -223,6 +251,109 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
       ],
       $libraryPolicy->getSources()
     );
+  }
+
+  /**
+   * Handle if a library has an asset provided by a local route tagged external.
+   *
+   * @covers ::getSources
+   * @covers ::getExtensionSources
+   * @covers ::getLibrarySources
+   */
+  public function testLibraryWithLocalRouteExternal() {
+
+    $this->moduleHandler->expects($this->any())
+      ->method('getModuleList')
+      ->willReturn([]);
+    $this->themeHandler->expects($this->any())
+      ->method('listInfo')
+      ->willReturn([
+        'stark' => (object) ['name' => 'stark'],
+      ]);
+
+    $extensionMap = [
+      ['core', []],
+      ['stark', ['test' => []]],
+    ];
+    $this->libraryDiscovery->expects($this->any())
+      ->method('getLibrariesByExtension')
+      ->willReturnMap($extensionMap);
+
+    $libraryInfo = [
+      'js' => [
+        [
+          'type' => 'external',
+          'data' => '/test/file.js',
+        ],
+        [
+          'type' => 'external',
+          'data' => 'http://js.example.com/js/script.js',
+        ],
+      ],
+      'css' => [
+        [
+          'type' => 'external',
+          'data' => '/test/file.css',
+        ],
+      ],
+    ];
+    $this->libraryDiscovery->expects($this->atLeastOnce())
+      ->method('getLibraryByName')
+      ->with('stark', 'test')
+      ->willReturn($libraryInfo);
+
+    $libraryPolicy = new LibraryPolicyBuilder(
+      $this->cache,
+      $this->moduleHandler,
+      $this->themeHandler,
+      $this->libraryDiscovery,
+      $this->logger
+    );
+
+    $this->assertEquals(
+      [
+        'script-src' => ['js.example.com'],
+        'script-src-elem' => ['js.example.com'],
+      ],
+      $libraryPolicy->getSources()
+    );
+  }
+
+  /**
+   * Handle if a library has an invalid library definition.
+   *
+   * @covers ::getSources
+   * @covers ::getExtensionSources
+   */
+  public function testInvalidLibraryDefinition() {
+    $this->moduleHandler->expects($this->any())
+      ->method('getModuleList')
+      ->willReturn([]);
+    $this->themeHandler->expects($this->any())
+      ->method('listInfo')
+      ->willReturn([
+        'stark' => (object) ['name' => 'stark'],
+      ]);
+    $this->libraryDiscovery->expects($this->any())
+      ->method('getLibrariesByExtension')
+      ->willReturnCallback(function (string $extension) {
+        if ($extension == 'stark') {
+          throw new IncompleteLibraryDefinitionException();
+        }
+        return [];
+      });
+
+    $libraryPolicy = new LibraryPolicyBuilder(
+      $this->cache,
+      $this->moduleHandler,
+      $this->themeHandler,
+      $this->libraryDiscovery,
+      $this->logger
+    );
+
+    $this->logger->expects($this->once())
+      ->method('warning');
+    $libraryPolicy->getSources();
   }
 
 }

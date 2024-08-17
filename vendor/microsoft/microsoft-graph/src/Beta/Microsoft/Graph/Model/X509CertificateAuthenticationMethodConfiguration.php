@@ -60,7 +60,7 @@ class X509CertificateAuthenticationMethodConfiguration extends AuthenticationMet
 
      /**
      * Gets the certificateUserBindings
-    * Defines fields in the X.509 certificate that map to attributes of the Azure AD user object in order to bind the certificate to the user. The priority of the object determines the order in which the binding is carried out. The first binding that matches will be used and the rest ignored.
+    * Defines fields in the X.509 certificate that map to attributes of the Microsoft Entra user object in order to bind the certificate to the user. The priority of the object determines the order in which the binding is carried out. The first binding that matches will be used and the rest ignored.
      *
      * @return array|null The certificateUserBindings
      */
@@ -75,7 +75,7 @@ class X509CertificateAuthenticationMethodConfiguration extends AuthenticationMet
 
     /**
     * Sets the certificateUserBindings
-    * Defines fields in the X.509 certificate that map to attributes of the Azure AD user object in order to bind the certificate to the user. The priority of the object determines the order in which the binding is carried out. The first binding that matches will be used and the rest ignored.
+    * Defines fields in the X.509 certificate that map to attributes of the Microsoft Entra user object in order to bind the certificate to the user. The priority of the object determines the order in which the binding is carried out. The first binding that matches will be used and the rest ignored.
     *
     * @param X509CertificateUserBinding[] $val The certificateUserBindings
     *
@@ -84,6 +84,39 @@ class X509CertificateAuthenticationMethodConfiguration extends AuthenticationMet
     public function setCertificateUserBindings($val)
     {
         $this->_propDict["certificateUserBindings"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the issuerHintsConfiguration
+    * Determines whether issuer(CA) hints are sent back to the client side to filter the certificates shown in certificate picker.
+    *
+    * @return X509CertificateIssuerHintsConfiguration|null The issuerHintsConfiguration
+    */
+    public function getIssuerHintsConfiguration()
+    {
+        if (array_key_exists("issuerHintsConfiguration", $this->_propDict)) {
+            if (is_a($this->_propDict["issuerHintsConfiguration"], "\Beta\Microsoft\Graph\Model\X509CertificateIssuerHintsConfiguration") || is_null($this->_propDict["issuerHintsConfiguration"])) {
+                return $this->_propDict["issuerHintsConfiguration"];
+            } else {
+                $this->_propDict["issuerHintsConfiguration"] = new X509CertificateIssuerHintsConfiguration($this->_propDict["issuerHintsConfiguration"]);
+                return $this->_propDict["issuerHintsConfiguration"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the issuerHintsConfiguration
+    * Determines whether issuer(CA) hints are sent back to the client side to filter the certificates shown in certificate picker.
+    *
+    * @param X509CertificateIssuerHintsConfiguration $val The issuerHintsConfiguration
+    *
+    * @return X509CertificateAuthenticationMethodConfiguration
+    */
+    public function setIssuerHintsConfiguration($val)
+    {
+        $this->_propDict["issuerHintsConfiguration"] = $val;
         return $this;
     }
 

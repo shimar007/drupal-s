@@ -2,14 +2,13 @@
 
 namespace Drupal\adsense_oldcode\Form;
 
+use Drupal\adsense_oldcode\Plugin\AdsenseAd\OldSearchAd;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
-use Drupal\adsense_oldcode\Plugin\AdsenseAd\OldSearchAd;
-
 /**
- * Class AdsenseOldSearchSettings.
+ * Form for the older adsense search ads settings.
  */
 class AdsenseOldSearchSettings extends ConfigFormBase {
 
@@ -229,8 +228,8 @@ class AdsenseOldSearchSettings extends ConfigFormBase {
       '#type' => 'details',
       '#open' => FALSE,
       '#title' => $this->t('Custom channels'),
-      '#description' => $this->t('Enter up to !channels custom channels that you have configured in Google AdSense. If you are not using custom channels, or you are only using URL channels, then leave this empty.',
-        ['!channels' => ADSENSE_OLDCODE_MAX_CHANNELS]),
+      '#description' => $this->t('Enter up to @channels custom channels that you have configured in Google AdSense. If you are not using custom channels, or you are only using URL channels, then leave this empty.',
+        ['@channels' => ADSENSE_OLDCODE_MAX_CHANNELS]),
     ];
 
     for ($channel = 1; $channel <= ADSENSE_OLDCODE_MAX_CHANNELS; $channel++) {

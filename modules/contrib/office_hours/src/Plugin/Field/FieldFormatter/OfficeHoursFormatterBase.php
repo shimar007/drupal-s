@@ -2,13 +2,18 @@
 
 namespace Drupal\office_hours\Plugin\Field\FieldFormatter;
 
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\office_hours\Controller\StatusUpdateController;
 use Drupal\office_hours\OfficeHoursCacheHelper;
 use Drupal\office_hours\OfficeHoursDateHelper;
 use Drupal\office_hours\Plugin\Field\FieldType\OfficeHoursItem;
@@ -28,11 +33,34 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
   private $entityTypeManager;
 
   /**
+   * Indicates whether cache data must be attached. (FALSE for subformatters).
+   *
+   * @var bool
+   */
+  public $attachCache = TRUE;
+
+  /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager, AccountInterface $current_user, ModuleHandlerInterface $module_handler) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
     $this->entityTypeManager = $entity_type_manager;
+    $this->currentUser = $current_user;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -47,7 +75,9 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
       $configuration['label'],
       $configuration['view_mode'],
       $configuration['third_party_settings'],
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('current_user'),
+      $container->get('module_handler')
     );
   }
 
@@ -61,6 +91,7 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
       'compress' => FALSE,
       'grouped' => FALSE,
       'show_closed' => 'all',
+      'show_empty' => FALSE,
       'closed_format' => 'Closed',
       'all_day_format' => 'All day open',
       'separator' => [
@@ -76,6 +107,7 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
         'closed_text' => 'Currently closed',
       ],
       'exceptions' => [
+        'replace_exceptions' => FALSE,
         'restrict_exceptions_to_num_days' => 7,
         'date_format' => 'long',
         'title' => 'Exception hours',
@@ -96,9 +128,15 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
   protected function mergeDefaults() {
     // Override parent, since that does not support sub-arrays.
     if (isset($this->settings['exceptions'])) {
+      if (!is_array($this->settings['exceptions'])) {
+        $this->settings['exceptions'] = [];
+      }
       $this->settings['exceptions'] += static::defaultSettings()['exceptions'];
     }
     if (isset($this->settings['schema'])) {
+      if (!is_array($this->settings['schema'])) {
+        $this->settings['schema'] = [];
+      }
       $this->settings['schema'] += static::defaultSettings()['schema'];
     }
     parent::mergeDefaults();
@@ -116,21 +154,20 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
 
     /*
     // Find timezone fields, to be used in 'Current status'-option.
-    $fields = field_info_instances( (isset($form['#entity_type'])
-      ? $form['#entity_type']
-      : NULL), (isset($form['#bundle']) ? $form['#bundle'] : NULL));
     $timezone_fields = [];
+    $fields = field_info_instances(
+      $form['#entity_type'] ?? NULL,
+      $form['#bundle'] ?? NULL
+    );
     foreach ($fields as $field_name => $timezone_instance) {
-      if ($field_name == $field['field_name']) {
-        continue;
-      }
-      $timezone_field = field_read_field($field_name);
-
-      if (in_array($timezone_field['type'], ['tzfield'])) {
-        $timezone_fields[$timezone_instance['field_name']]
-        = $timezone_instance['label']
-        . ' ('
-        . $timezone_instance['field_name'] . ')';
+      if ($field_name !== $field['field_name']) {
+        $timezone_field = field_read_field($field_name);
+        if (in_array($timezone_field['type'], ['tzfield'])) {
+          $timezone_fields[$timezone_instance['field_name']]
+          = $timezone_instance['label']
+          . ' ('
+          . $timezone_instance['field_name'] . ')';
+        }
       }
     }
     if ($timezone_fields) {
@@ -198,6 +235,13 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
       '#description' => $this->t('E.g., Mon: 7:00-19:00; Tue: 7:00-19:00 becomes Mon-Tue: 7:00-19:00.'),
       '#required' => FALSE,
     ];
+    $element['show_empty'] = [
+      '#title' => $this->t('Show the hours, even when fully empty'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['show_empty'],
+      '#description' => $this->t('If not set, the field is hidden when no time slots are maintained.'),
+      '#required' => FALSE,
+    ];
     $element['closed_format'] = [
       '#title' => $this->t('Empty day notation'),
       '#type' => 'textfield',
@@ -237,7 +281,9 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
       '#type' => 'textfield',
       '#size' => 10,
       '#default_value' => $settings['separator']['days'],
-      '#description' => $this->t('This separator will be placed between the days. Use &#39&ltbr&gt&#39 to show each day on a new line.'),
+      '#description' => $this->t("This separator will be placed between the days.
+        Use &#39&ltbr&gt&#39 or &#39&lthr&gt&#39 to show each day on a new line.
+        &#39&ltdiv&gt&#39 or &#39&ltspan&gt&#39 are accepted, too."),
     ];
     $element['separator']['grouped_days'] = [
       '#type' => 'textfield',
@@ -314,12 +360,22 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
     foreach ($formats as $format) {
       $options[$format->id()] = $format->get('label');
     }
+    $element['exceptions']['replace_exceptions'] = [
+      '#title' => $this->t('Replace weekday time slots with exception dates'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['exceptions']['replace_exceptions'],
+      '#description' => $this->t("The normal weekday time slots will be replaced
+        with time slots from an exception date, if any exists.
+        This will generate a 'rolling' calendar for the regular week
+        (On Wednesday, the next tuesday will be replaced,
+        not the previous tuesday). Seasonal weeks are not affected."),
+    ];
     $element['exceptions']['restrict_exceptions_to_num_days'] = [
       '#title' => $this->t('Restrict exceptions display to x days in future'),
       '#type' => 'number',
       '#default_value' => $settings['exceptions']['restrict_exceptions_to_num_days'],
       '#min' => 0,
-      '#max' => 99,
+      '#max' => OfficeHoursItem::EXCEPTION_HORIZON_MAX,
       '#step' => 1,
       '#description' => $this->t("To enable Exception days, set a non-zero number (to be used in the formatter) and select an 'Exceptions' widget."),
       '#required' => TRUE,
@@ -364,10 +420,10 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
       '#open' => FALSE,
     ];
     $element['schema']['enabled'] = [
-      '#title' => $this->t('Enable Schema.org openingHours support'),
+      '#title' => $this->t('Add an additional Schema.org openingHours formatter'),
       '#type' => 'checkbox',
       '#default_value' => $settings['schema']['enabled'],
-      '#description' => $this->t('Enable meta tags with property for Schema.org openingHours.'),
+      '#description' => $this->t('Enable meta tags with property for https://schema.org/openingHours.'),
       '#required' => FALSE,
     ];
 
@@ -400,18 +456,104 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
     $summary = parent::settingsSummary();
 
     $settings = $this->getSettings();
+    $date = strtotime('today midnight');
+    $weekday = OfficeHoursDateHelper::getWeekday($date);
+    $first_day = OfficeHoursDateHelper::getFirstDay($settings['office_hours_first_day']);
 
-    // @todo Return more info, like Date module does.
+    // @todo Avoid this duplicate declaration.
+    $show_options = [
+      'all' => $this->t('Show all days'),
+      'open' => $this->t('Show only open days'),
+      'next' => $this->t('Show next open day'),
+      'none' => $this->t('Hide all days'),
+      'current' => $this->t('Show only current day'),
+    ];
     $summary[] = $this->t('Display Office hours in different formats.');
 
-    $label = OfficeHoursItem::formatLabel($settings, ['day' => strtotime('today midnight')]);
-    $summary[] = $this->t("Show '@title' until @time days in the future.", [
-      '@time' => $settings['exceptions']['restrict_exceptions_to_num_days'],
-      '@date' => $settings['exceptions']['date_format'],
-      '@title' => $settings['exceptions']['title'] == '' ? $this->t('Exception days') : $this->t($settings['exceptions']['title']),
-    ]) . ' ' . $this->t("Example: $label");
+    $summary[] = $this->t("@show and time slots as @label @time, starting with @first_day.", [
+      '@show' =>
+        $show_options[$settings['show_closed']],
+      '@label' => OfficeHoursItem::formatLabel(
+        $settings['day_format'], ['day' => $weekday]),
+      '@time' => OfficeHoursDateHelper::format('1100', OfficeHoursDateHelper::getTimeFormat(
+        $settings['time_format']), FALSE),
+      '@first_day' => OfficeHoursItem::formatLabel(
+        $settings['day_format'], ['day' => $first_day]),
+    ]);
+
+    $summary[] = $this->t("Show '@title' until @time days in the future. Example: @label.", [
+      '@time' =>
+        $settings['exceptions']['restrict_exceptions_to_num_days'],
+      '@title' => $this->t(
+        $settings['exceptions']['title'] ?: 'Exception days'),
+      '@label' => OfficeHoursItem::formatLabel(
+        $settings['exceptions']['date_format'], ['day' => $date]),
+    ]);
+
+    $current_status = $settings['current_status']['position'];
+    $summary[] = $this->t("Show @yesno current opening status @status the time slots.", [
+      '@yesno' => $current_status == '' ? $this->t('no') : '',
+      '@status' => $current_status == 'after' ? $this->t($current_status) : $this->t('before'),
+    ]);
+
+    $summary[] = $this->t("A schema.org/openingHours formatter is @yesno added.", [
+      '@yesno' =>
+        $settings['schema']['enabled'] ? '' : $this->t('not'),
+    ]);
 
     return $summary;
+  }
+
+  /**
+   * Returns the protected field definition.
+   *
+   * @return \Drupal\Core\Field\FieldDefinitionInterface
+   *   The wrapped field definition.
+   */
+  public function getFieldDefinition() {
+    return $this->fieldDefinition;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function viewElements(FieldItemListInterface $items, $langcode) {
+    /** @var \Drupal\office_hours\Plugin\Field\FieldType\OfficeHoursItemListInterface $items */
+    $elements = [];
+
+    $formatter_settings = $this->getSettings();
+    // Hide the formatter if no data is filled for this entity,
+    // or if empty fields must be hidden.
+    if ($items->isEmpty() && !$formatter_settings['show_empty']) {
+      return $elements;
+    }
+
+    $elements[] = [
+      '#theme' => 'office_hours',
+      '#parent' => $items->getFieldDefinition(),
+      '#weight' => 10,
+      // Pass filtered office_hours structures to twig theming.
+      '#office_hours' => [],
+      // Pass (unfiltered) office_hours items to twig theming.
+      '#office_hours_field' => $items,
+      // Pass formatting options to twig theming.
+      '#is_open' => $items->isOpen(),
+      '#item_separator' => Xss::filter(
+        $formatter_settings['separator']['days'], ['br', 'hr', 'span', 'div']
+      ),
+      '#slot_separator' => $formatter_settings['separator']['more_hours'],
+      '#attributes' => [
+        'class' => ['office-hours'],
+      ],
+      // '#empty' => $this->t('This location has no opening hours.'),
+      '#attached' => [
+        'library' => [
+          'office_hours/office_hours_formatter',
+        ],
+      ],
+    ];
+
+    return $elements;
   }
 
   /**
@@ -427,18 +569,22 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
    * @return array
    *   A formatter element.
    */
-  protected function addSchemaFormatter(OfficeHoursItemListInterface $items, $langcode, array $elements) {
+  protected function attachSchemaFormatter(OfficeHoursItemListInterface $items, $langcode, array &$elements) {
+
     if (empty($this->settings['schema']['enabled'])) {
       return $elements;
     }
 
     $formatter = new OfficeHoursFormatterSchema(
       $this->pluginId, $this->pluginDefinition, $this->fieldDefinition,
-      $this->settings, $this->viewMode, $this->label, $this->thirdPartySettings, $this->entityTypeManager);
+      $this->settings, $this->viewMode, $this->label, $this->thirdPartySettings, $this->entityTypeManager,
+      $this->currentUser, $this->moduleHandler);
+    $formatter->attachCache = FALSE;
+    $element = $formatter->viewElements($items, $langcode);
+    $element = reset($element);
+    $element['#weight'] = 0;
 
-    $new_element = $formatter->viewElements($items, $langcode);
-    $elements[] = $new_element[0];
-    unset($elements['#cache']);
+    $elements[] = $element;
     return $elements;
   }
 
@@ -455,103 +601,95 @@ abstract class OfficeHoursFormatterBase extends FormatterBase implements Contain
    * @return array
    *   A formatter element.
    */
-  protected function addStatusFormatter(OfficeHoursItemListInterface $items, $langcode, array $elements) {
+  protected function attachStatusFormatter(OfficeHoursItemListInterface $items, $langcode, array &$elements) {
+    $position = $this->settings['current_status']['position'];
 
-    if (empty($this->settings['current_status']['position'])) {
+    if (empty($position)) {
       return $elements;
     }
 
     $formatter = new OfficeHoursFormatterStatus(
       $this->pluginId, $this->pluginDefinition, $this->fieldDefinition,
-      $this->settings, $this->viewMode, $this->label, $this->thirdPartySettings, $this->entityTypeManager);
+      $this->settings, $this->viewMode, $this->label, $this->thirdPartySettings, $this->entityTypeManager,
+      $this->currentUser, $this->moduleHandler);
+    $formatter->attachCache = FALSE;
+    $element = $formatter->viewElements($items, $langcode);
+    $element = reset($element);
+    $element['#weight'] = $position == 'before' ? -10 : 999999;
 
-    $new_element = $formatter->viewElements($items, $langcode);
-    unset($new_element['#cache']);
-
-    switch ($new_element[0]['#position']) {
-      case 'before':
-        array_unshift($elements, $new_element[0]);
-        break;
-
-      case'after':
-        array_push($elements, $new_element[0]);
-        break;
-
-      default:
-        break;
-    }
-
+    $elements[] = $element;
     return $elements;
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function getSetting($key) {
-    if ($key !== 'display_status') {
-      return parent::getSetting($key);
-    }
-
-    // Determine if this entity display must be formatted.
-    // Return TRUE if render caching must be active.
-    // This is the case when:
-    // - a Status formatter (open/closed) is used.
-    // - only the currently open day is displayed.
-    // Note: Also, on the entity itself, it must be checked whether
-    // Exception days are used. If so, then caching is also needed.
-    if ($this->settings['current_status']['position'] !== '') {
-      return TRUE;
-    }
-    switch ($this->settings['show_closed']) {
-      case 'all':
-      case 'open':
-      case 'none':
-        // These caches never expire, since they are always correct.
-        return FALSE;
-
-      case 'current':
-      case 'next':
-      default:
-        return TRUE;
-    }
-  }
-
-  /**
-   * Add a ['#cache']['max-age'] attribute to $elements, if necessary.
+   * Add caching data to $elements, if necessary.
+   *
+   * Enable dynamic field update in office_hours_status_update.js.
    *
    * @param \Drupal\office_hours\Plugin\Field\FieldType\OfficeHoursItemListInterface $items
    *   The office hours.
-   * @param array $elements
-   *   The list of formatters.
+   * @param string $langcode
+   *   The required language code.
+   *
+   * @return array
+   *   An array of 'attachments' for the formatter element.
    */
-  protected function addCacheMaxAge(OfficeHoursItemListInterface $items, array &$elements) {
-    $settings = $this->getSettings();
-    // $third_party_settings = $this->getThirdPartySettings();
-    //
-    // Take the 'open/closed' indicator, if set, since it is the lowest.
-    // Overwrite field settings for 'next' formatter'.
-    // Only in these cases, we need the formatted office hours.
-    // @todo Use $items, not $office_hours in cacheHelper->getCacheMaxAge().
-    $cache_needed = (bool) $this->getSetting('display_status');
-    if ($cache_needed || $items->hasExceptionDays()) {
-      if ($settings['current_status']['position'] !== '') {
-        $settings['show_closed'] = 'next';
-      }
-      $field_settings = $items->getFieldDefinition()->getSettings();
-      $office_hours = $items->getRows($settings, $field_settings, []);
+  protected function attachCacheData(OfficeHoursItemListInterface $items, $langcode) {
+    $elements = [];
 
-      $cache_helper = new OfficeHoursCacheHelper($settings, $items, $office_hours);
+    $formatter_settings = $this->getSettings();
+    $cache_helper = new OfficeHoursCacheHelper($formatter_settings, $items);
 
-      $max_age = $cache_helper->getCacheMaxAge();
-      if ($max_age !== Cache::PERMANENT) {
-        // @see https://www.drupal.org/docs/drupal-apis/cache-api
-        $elements['#cache'] = [
-          'max-age' => $max_age,
-          'tags' => $cache_helper->getCacheTags(),
-          // 'contexts' => $cache_helper->getCacheContexts(),
-        ];
+    if (!$cache_helper->isCacheNeeded()) {
+      // If no cache needed, do not bother.
+      return $elements;
+    }
+
+    $max_age = $cache_helper->getCacheMaxAge();
+
+    if ($max_age == Cache::PERMANENT) {
+      // If page is valid forever, do not bother.
+      return $elements;
+    }
+
+    // Attach Javascript for isolated field update,
+    // when page cache is not refreshed on time.
+    if ($this->currentUser->isAnonymous()) {
+      $view_mode = $this->viewMode;
+      // Fetch layout_builder data.
+      $third_party_settings = $this->thirdPartySettings;
+      $elements = StatusUpdateController::attachStatusUpdate($items, $langcode, $view_mode, $third_party_settings, $elements);
+    }
+
+    // Manipulate '#cache' max_age when page_cache module enabled.
+    if ($this->currentUser->isAnonymous()) {
+      if ($this->moduleHandler->moduleExists('page_cache')) {
+        // The Internal Page Cache module handles
+        // page cache for anonymous users.
+        // It should be used for small/medium websites
+        // when external page cache is not available.
+        // However, it caches a page always,
+        // which is unwanted for office_hours,
+        // where the open/closed status can change any minute.
+        // Setting the max-age to 0 prevents the caching.
+        //
+        // Note: this is a workaround. IMO the page_cache module is flawed.
+        // @see https://www.drupal.org/project/office_hours/issues/3351280
+        // where js callback is implemented, to re-read the field each call.
+        // @see https://www.drupal.org/project/drupal/issues/2835068
+        $max_age = 0;
       }
     }
+
+    // Attach '#cache' data.
+    // @see https://www.drupal.org/docs/drupal-apis/cache-api
+    $elements['#cache'] = [
+      'max-age' => $max_age,
+      'tags' => $cache_helper->getCacheTags(),
+      // 'contexts' => $cache_helper->getCacheContexts(),
+    ];
+
+    return $elements;
   }
 
 }

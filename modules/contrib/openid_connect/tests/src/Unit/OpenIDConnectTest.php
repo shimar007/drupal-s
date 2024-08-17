@@ -7,7 +7,7 @@ namespace Drupal\Tests\openid_connect\Unit;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandler;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
@@ -36,6 +36,8 @@ use Psr\Log\InvalidArgumentException;
  * @group openid_connect
  */
 class OpenIDConnectTest extends UnitTestCase {
+
+  use OpenIDConnectTestHelperTrait;
 
   /**
    * Mock of the config factory.
@@ -138,7 +140,7 @@ class OpenIDConnectTest extends UnitTestCase {
   /**
    * {@inheritDoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $oldFileMock = $this->createMock(File::class);
@@ -182,14 +184,14 @@ class OpenIDConnectTest extends UnitTestCase {
 
     $emailValidator = $this
       ->getMockBuilder('\Drupal\Component\Utility\EmailValidator')
-      ->setMethods(NULL);
+      ->onlyMethods([]);
     $this->emailValidator = $emailValidator->getMock();
 
     $this->messenger = $this
       ->createMock(MessengerInterface::class);
 
     $this->moduleHandler = $this
-      ->createMock(ModuleHandler::class);
+      ->createMock(ModuleHandlerInterface::class);
 
     $this->logger = $this
       ->createMock(LoggerChannelFactoryInterface::class);
@@ -267,7 +269,7 @@ class OpenIDConnectTest extends UnitTestCase {
 
     $actualPropertiesIgnored = $this->openIdConnect->userPropertiesIgnore([]);
 
-    $this->assertArrayEquals($expectedResults, $actualPropertiesIgnored);
+    $this->assertEqualsCanonicalizing($expectedResults, $actualPropertiesIgnored);
   }
 
   /**
@@ -478,10 +480,10 @@ class OpenIDConnectTest extends UnitTestCase {
     if ($duplicate) {
       $this->userStorage->expects($this->exactly(2))
         ->method('loadByProperties')
-        ->withConsecutive(
-          [['name' => $expectedUserName]],
-          [['name' => "{$expectedUserName}_1"]]
-        )
+        ->with(self::callback(self::consecutive([
+          ['name' => $expectedUserName],
+          ['name' => "{$expectedUserName}_1"],
+        ])))
         ->willReturnOnConsecutiveCalls([1], []);
     }
     else {
@@ -653,11 +655,11 @@ class OpenIDConnectTest extends UnitTestCase {
 
           $this->moduleHandler->expects($this->any())
             ->method('invokeAll')
-            ->withConsecutive(
-              ['openid_connect_pre_authorize'],
-              ['openid_connect_userinfo_save'],
-              ['openid_connect_post_authorize']
-            )
+            ->with(self::callback(self::consecutive([
+              'openid_connect_pre_authorize',
+              'openid_connect_userinfo_save',
+              'openid_connect_post_authorize',
+            ])))
             ->willReturnOnConsecutiveCalls(
               $moduleHandlerResults,
               TRUE,
@@ -675,10 +677,10 @@ class OpenIDConnectTest extends UnitTestCase {
 
             $immutableConfig->expects($this->exactly(2))
               ->method('get')
-              ->withConsecutive(
-                ['always_save_userinfo'],
-                ['userinfo_mappings']
-              )
+              ->with(self::callback(self::consecutive([
+                'always_save_userinfo',
+                'userinfo_mappings',
+              ])))
               ->willReturnOnConsecutiveCalls(
                 TRUE,
                 ['mail', 'name']
@@ -879,7 +881,7 @@ class OpenIDConnectTest extends UnitTestCase {
         $this->logger,
         $this->fileSystem,
       ])
-      ->setMethods([
+      ->onlyMethods([
         'userPropertiesIgnore',
         'createUser',
       ])
@@ -1328,11 +1330,11 @@ class OpenIDConnectTest extends UnitTestCase {
 
           $this->moduleHandler->expects($this->exactly(3))
             ->method('invokeAll')
-            ->withConsecutive(
-              ['openid_connect_pre_authorize'],
-              ['openid_connect_userinfo_save'],
-              ['openid_connect_post_authorize']
-            )
+            ->with(self::callback(self::consecutive([
+              'openid_connect_pre_authorize',
+              'openid_connect_userinfo_save',
+              'openid_connect_post_authorize',
+            ])))
             ->willReturnOnConsecutiveCalls(
               [],
               TRUE,
@@ -1343,10 +1345,10 @@ class OpenIDConnectTest extends UnitTestCase {
         else {
           $this->moduleHandler->expects($this->exactly(2))
             ->method('invokeAll')
-            ->withConsecutive(
-              ['openid_connect_pre_authorize'],
-              ['openid_connect_post_authorize']
-            )
+            ->with(self::callback(self::consecutive([
+              'openid_connect_pre_authorize',
+              'openid_connect_post_authorize',
+            ])))
             ->willReturnOnConsecutiveCalls(
               [],
               TRUE
@@ -1356,13 +1358,18 @@ class OpenIDConnectTest extends UnitTestCase {
         $immutableConfig = $this
           ->createMock(ImmutableConfig::class);
 
-        $immutableConfig->expects($this->atLeastOnce())
+        $invoked = $this->atLeastOnce();
+        $immutableConfig->expects($invoked)
           ->method('get')
-          ->withConsecutive(['always_save_userinfo'], ['userinfo_mappings'])
-          ->willReturnOnConsecutiveCalls(
-            $userData['always_save'],
-            $mappings
-          );
+          ->willReturnCallback(function ($key) use ($userData, $mappings, $invoked) {
+            if ($key === 'always_save_userinfo' && $invoked->getInvocationCount() === 1) {
+              return $userData['always_save'];
+            }
+            if ($key === 'userinfo_mappings' && $invoked->getInvocationCount() === 2) {
+              return $mappings;
+            }
+            return NULL;
+          });
 
         $this->configFactory->expects($this->atLeastOnce())
           ->method('get')

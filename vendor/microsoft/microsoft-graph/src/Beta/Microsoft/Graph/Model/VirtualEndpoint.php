@@ -56,6 +56,34 @@ class VirtualEndpoint extends Entity
 
 
      /**
+     * Gets the bulkActions
+     *
+     * @return array|null The bulkActions
+     */
+    public function getBulkActions()
+    {
+        if (array_key_exists("bulkActions", $this->_propDict)) {
+           return $this->_propDict["bulkActions"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the bulkActions
+    *
+    * @param CloudPcBulkAction[] $val The bulkActions
+    *
+    * @return VirtualEndpoint
+    */
+    public function setBulkActions($val)
+    {
+        $this->_propDict["bulkActions"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the cloudPCs
     * Cloud managed virtual desktops.
      *
@@ -174,6 +202,36 @@ class VirtualEndpoint extends Entity
     public function setExternalPartnerSettings($val)
     {
         $this->_propDict["externalPartnerSettings"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the frontLineServicePlans
+    * Front-line service plans for a Cloud PC.
+     *
+     * @return array|null The frontLineServicePlans
+     */
+    public function getFrontLineServicePlans()
+    {
+        if (array_key_exists("frontLineServicePlans", $this->_propDict)) {
+           return $this->_propDict["frontLineServicePlans"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the frontLineServicePlans
+    * Front-line service plans for a Cloud PC.
+    *
+    * @param CloudPcFrontLineServicePlan[] $val The frontLineServicePlans
+    *
+    * @return VirtualEndpoint
+    */
+    public function setFrontLineServicePlans($val)
+    {
+        $this->_propDict["frontLineServicePlans"] = $val;
         return $this;
     }
 
@@ -366,7 +424,6 @@ class VirtualEndpoint extends Entity
 
      /**
      * Gets the sharedUseServicePlans
-    * Cloud PC shared-use service plans.
      *
      * @return array|null The sharedUseServicePlans
      */
@@ -381,7 +438,6 @@ class VirtualEndpoint extends Entity
 
     /**
     * Sets the sharedUseServicePlans
-    * Cloud PC shared-use service plans.
     *
     * @param CloudPcSharedUseServicePlan[] $val The sharedUseServicePlans
     *

@@ -4,9 +4,13 @@
 
 Extension for [PHPStan](https://phpstan.org/) to allow analysis of Drupal code.
 
+PHPStan is able to [discover symbols](https://phpstan.org/user-guide/discovering-symbols) by using autoloading provided 
+by Composer. However, Drupal does not provide autoloading information for modules and themes. This project registers 
+those namespaces so that PHPStan can properly discover symbols in your Drupal code base automatically.
+
 ## Sponsors
 
-<a href="https://www.undpaul.de/"><img src="https://www.undpaul.de/themes/custom/undpaul3/logo.svg" alt="undpaul" width="250" /></a>
+<a href="https://www.undpaul.de/"><img src="https://www.undpaul.de/themes/custom/undpaul3/logo.svg" alt="undpaul" width="250" /></a> <a href="https://www.optasy.com/"><img src="https://optasy.com/themes/custom/optasy/img/logo_optasy.png" alt="Optasy" width="250"></a> <a href="https://www.fame.fi/"><img src="https://www.fame.fi/assets/images/fame-logo.png" alt="Fame Helsinki" width="250" ></a>
 
 [Would you like to sponsor?](https://github.com/sponsors/mglaman)
 
@@ -49,19 +53,8 @@ parameters:
 
 ## Deprecation testing
 
-Add the deprecation rules to your Drupal project's dependencies
-
-```
-composer require --dev phpstan/phpstan-deprecation-rules
-```
-
-Edit your `phpstan.neon` to look like the following:
-
-```
-includes:
-	- vendor/mglaman/phpstan-drupal/extension.neon
-	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
-```
+This project depends on `phpstan/phpstan-deprecation-rules` which adds deprecation rules. We provide Drupal-specific 
+deprecated scope resolvers.
 
 To only handle deprecation testing, use a `phpstan.neon` like this:
 
@@ -80,7 +73,36 @@ includes:
 	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
 ```
 
+To disable deprecation rules while using `phpstan/extension-installer`, you can do the following:
+
+```json
+{
+  "extra": {
+    "phpstan/extension-installer": {
+      "ignore": [
+        "phpstan/phpstan-deprecation-rules"
+      ]
+    }
+  }
+}
+```
+
+See the `extension-installer` documentation for more information: https://github.com/phpstan/extension-installer#ignoring-a-particular-extension
+
 ## Adapting to your project
+
+### Customizing rules
+
+#### Disabling checks for extending `@internal` classes
+
+You can disable the `ClassExtendsInternalClassRule` rule by adding the following to your `phpstan.neon`:
+
+```neon
+parameters: 
+    drupal:
+        rules:
+            classExtendsInternalClassRule: false
+```
 
 ### Specifying your Drupal project's root
 
@@ -184,11 +206,12 @@ For example, the Paragraphs module could have the following `entity_mapping.neon
 
 ```neon
 parameters:
-	entityMapping:
-		paragraph:
-			class: Drupal\paragraphs\Entity\Paragraph
-		paragraphs_type:
-			class: Drupal\paragraphs\Entity\ParagraphsType
+	drupal:
+		entityMapping:
+			paragraph:
+				class: Drupal\paragraphs\Entity\Paragraph
+			paragraphs_type:
+				class: Drupal\paragraphs\Entity\ParagraphsType
 ```
 
 Then in the `composer.json` for Paragraphs, the `entity_mapping.neon` would be provided as a PHPStan include

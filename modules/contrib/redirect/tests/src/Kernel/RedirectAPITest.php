@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\redirect\Kernel;
 
 use Drupal\language\Entity\ConfigurableLanguage;
@@ -27,16 +29,17 @@ class RedirectAPITest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['redirect', 'link', 'field', 'system', 'user', 'language', 'views', 'path_alias'];
+  protected static $modules = ['redirect', 'link', 'field', 'system', 'user', 'language', 'views', 'path_alias'];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->installEntitySchema('redirect');
     $this->installEntitySchema('user');
+    $this->installEntitySchema('path_alias');
     $this->installConfig(['redirect']);
 
     $language = ConfigurableLanguage::createFromLangcode('de');
@@ -85,7 +88,7 @@ class RedirectAPITest extends KernelTestBase {
       $this->assertEquals($redirect->getSourceUrl(), '/another-url?key1=val1');
     }
     else {
-      $this->fail(t('Failed to find matching redirect.'));
+      $this->fail('Failed to find matching redirect.');
     }
 
     // Load the redirect based on url.
@@ -95,7 +98,7 @@ class RedirectAPITest extends KernelTestBase {
       $this->assertEquals($redirect->getSourceUrl(), '/another-url?key1=val1');
     }
     else {
-      $this->fail(t('Failed to find redirect by source path.'));
+      $this->fail('Failed to find redirect by source path.');
     }
 
     // Test passthrough_querystring.
@@ -194,7 +197,7 @@ class RedirectAPITest extends KernelTestBase {
     foreach ($test_cases as $index => $test_case) {
       $output = $test_case['input'];
       redirect_sort_recursive($output, $test_case['callback']);
-      $this->assertIdentical($output, $test_case['expected']);
+      $this->assertSame($test_case['expected'], $output);
     }
   }
 
@@ -237,7 +240,6 @@ class RedirectAPITest extends KernelTestBase {
       $this->fail('Failed to detect a redirect loop.');
     }
     catch (RedirectLoopException $e) {
-      $this->pass('Properly detected a redirect loop.');
     }
   }
 
@@ -265,22 +267,6 @@ class RedirectAPITest extends KernelTestBase {
 
     $found = $repository->findMatchingRedirect('source-redirect');
     $this->assertEquals($target->id(), $found->id());
-  }
-
-  /**
-   * Test redirect_parse_url().
-   */
-  public function testParseURL() {
-    //$test_cases = array(
-    //  array(
-    //    'input' => array('b' => 'aa', 'c' => array('c2' => 'aa', 'c1' => 'aa'), 'a' => 'aa'),
-    //    'expected' => array('a' => 'aa', 'b' => 'aa', 'c' => array('c1' => 'aa', 'c2' => 'aa')),
-    //  ),
-    //);
-    //foreach ($test_cases as $index => $test_case) {
-    //  $output = redirect_parse_url($test_case['input']);
-    //  $this->assertIdentical($output, $test_case['expected']);
-    //}
   }
 
   /**

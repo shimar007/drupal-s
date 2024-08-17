@@ -26,6 +26,96 @@ class AttackSimulationRoot extends Entity
 {
 
      /**
+     * Gets the endUserNotifications
+    * Represents an end user's notification for an attack simulation training.
+     *
+     * @return array|null The endUserNotifications
+     */
+    public function getEndUserNotifications()
+    {
+        if (array_key_exists("endUserNotifications", $this->_propDict)) {
+           return $this->_propDict["endUserNotifications"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the endUserNotifications
+    * Represents an end user's notification for an attack simulation training.
+    *
+    * @param EndUserNotification[] $val The endUserNotifications
+    *
+    * @return AttackSimulationRoot
+    */
+    public function setEndUserNotifications($val)
+    {
+        $this->_propDict["endUserNotifications"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the landingPages
+    * Represents an attack simulation training landing page.
+     *
+     * @return array|null The landingPages
+     */
+    public function getLandingPages()
+    {
+        if (array_key_exists("landingPages", $this->_propDict)) {
+           return $this->_propDict["landingPages"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the landingPages
+    * Represents an attack simulation training landing page.
+    *
+    * @param LandingPage[] $val The landingPages
+    *
+    * @return AttackSimulationRoot
+    */
+    public function setLandingPages($val)
+    {
+        $this->_propDict["landingPages"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the loginPages
+    * Represents an attack simulation training login page.
+     *
+     * @return array|null The loginPages
+     */
+    public function getLoginPages()
+    {
+        if (array_key_exists("loginPages", $this->_propDict)) {
+           return $this->_propDict["loginPages"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the loginPages
+    * Represents an attack simulation training login page.
+    *
+    * @param LoginPage[] $val The loginPages
+    *
+    * @return AttackSimulationRoot
+    */
+    public function setLoginPages($val)
+    {
+        $this->_propDict["loginPages"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the operations
     * Represents an attack simulation training operation.
      *
@@ -141,6 +231,36 @@ class AttackSimulationRoot extends Entity
     public function setSimulations($val)
     {
         $this->_propDict["simulations"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the trainings
+    * Represents details about attack simulation trainings.
+     *
+     * @return array|null The trainings
+     */
+    public function getTrainings()
+    {
+        if (array_key_exists("trainings", $this->_propDict)) {
+           return $this->_propDict["trainings"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the trainings
+    * Represents details about attack simulation trainings.
+    *
+    * @param Training[] $val The trainings
+    *
+    * @return AttackSimulationRoot
+    */
+    public function setTrainings($val)
+    {
+        $this->_propDict["trainings"] = $val;
         return $this;
     }
 

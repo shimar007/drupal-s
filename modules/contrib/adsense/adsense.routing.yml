@@ -25,6 +25,7 @@ adsense_cse.results:
     _title: 'Search Results'
     _controller: '\Drupal\adsense\Controller\CseResultsController::display'
   requirements:
+    # Search results are public.
     _access: 'TRUE'
 adsense_csev2.results:
   path: '/csev2/results/{slot}'
@@ -32,4 +33,5 @@ adsense_csev2.results:
     _title: 'Search Results'
     _controller: '\Drupal\adsense\Controller\CseV2ResultsController::display'
   requirements:
+    # Search results are public.
     _access: 'TRUE'

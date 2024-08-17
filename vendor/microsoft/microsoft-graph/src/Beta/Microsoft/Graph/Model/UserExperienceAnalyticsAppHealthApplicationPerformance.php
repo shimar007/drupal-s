@@ -26,7 +26,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 {
     /**
     * Gets the activeDeviceCount
-    * The number of devices where the app has been active. Valid values -2147483648 to 2147483647
+    * The health score of the application. Valid values 0 to 100. Supports: $filter, $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @return int|null The activeDeviceCount
     */
@@ -41,7 +41,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the activeDeviceCount
-    * The number of devices where the app has been active. Valid values -2147483648 to 2147483647
+    * The health score of the application. Valid values 0 to 100. Supports: $filter, $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @param int $val The activeDeviceCount
     *
@@ -55,7 +55,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Gets the appCrashCount
-    * The number of crashes for the app. Valid values -2147483648 to 2147483647
+    * The number of crashes for the application. Valid values 0 to 2147483647. Supports: $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @return int|null The appCrashCount
     */
@@ -70,7 +70,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the appCrashCount
-    * The number of crashes for the app. Valid values -2147483648 to 2147483647
+    * The number of crashes for the application. Valid values 0 to 2147483647. Supports: $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @param int $val The appCrashCount
     *
@@ -84,7 +84,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Gets the appDisplayName
-    * The friendly name of the application.
+    * The friendly name of the application. Possible values are: Outlook, Excel. Supports: $select, $OrderBy. Read-only.
     *
     * @return string|null The appDisplayName
     */
@@ -99,7 +99,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the appDisplayName
-    * The friendly name of the application.
+    * The friendly name of the application. Possible values are: Outlook, Excel. Supports: $select, $OrderBy. Read-only.
     *
     * @param string $val The appDisplayName
     *
@@ -113,7 +113,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Gets the appHangCount
-    * The number of hangs for the app. Valid values -2147483648 to 2147483647
+    * The number of hangs for the application. Supports: $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @return int|null The appHangCount
     */
@@ -128,7 +128,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the appHangCount
-    * The number of hangs for the app. Valid values -2147483648 to 2147483647
+    * The number of hangs for the application. Supports: $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @param int $val The appHangCount
     *
@@ -142,7 +142,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Gets the appHealthScore
-    * The health score of the app. Valid values -1.79769313486232E+308 to 1.79769313486232E+308
+    * The health score of the application. Valid values 0 to 100. Supports: $filter, $select, $OrderBy. Read-only. Valid values -1.79769313486232E+308 to 1.79769313486232E+308
     *
     * @return float|null The appHealthScore
     */
@@ -157,7 +157,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the appHealthScore
-    * The health score of the app. Valid values -1.79769313486232E+308 to 1.79769313486232E+308
+    * The health score of the application. Valid values 0 to 100. Supports: $filter, $select, $OrderBy. Read-only. Valid values -1.79769313486232E+308 to 1.79769313486232E+308
     *
     * @param float $val The appHealthScore
     *
@@ -170,37 +170,8 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
     }
 
     /**
-    * Gets the appHealthStatus
-    * The overall health status of the app.
-    *
-    * @return string|null The appHealthStatus
-    */
-    public function getAppHealthStatus()
-    {
-        if (array_key_exists("appHealthStatus", $this->_propDict)) {
-            return $this->_propDict["appHealthStatus"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the appHealthStatus
-    * The overall health status of the app.
-    *
-    * @param string $val The appHealthStatus
-    *
-    * @return UserExperienceAnalyticsAppHealthApplicationPerformance
-    */
-    public function setAppHealthStatus($val)
-    {
-        $this->_propDict["appHealthStatus"] = $val;
-        return $this;
-    }
-
-    /**
     * Gets the appName
-    * The name of the application.
+    * The name of the application. Possible values are: outlook.exe, excel.exe. Supports: $select, $OrderBy. Read-only.
     *
     * @return string|null The appName
     */
@@ -215,7 +186,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the appName
-    * The name of the application.
+    * The name of the application. Possible values are: outlook.exe, excel.exe. Supports: $select, $OrderBy. Read-only.
     *
     * @param string $val The appName
     *
@@ -229,7 +200,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Gets the appPublisher
-    * The publisher of the application.
+    * The publisher of the application. Supports: $select, $OrderBy. Read-only.
     *
     * @return string|null The appPublisher
     */
@@ -244,7 +215,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the appPublisher
-    * The publisher of the application.
+    * The publisher of the application. Supports: $select, $OrderBy. Read-only.
     *
     * @param string $val The appPublisher
     *
@@ -258,7 +229,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Gets the appUsageDuration
-    * The total usage time of the application in minutes. Valid values -2147483648 to 2147483647
+    * The total usage time of the application in minutes. Valid values 0 to 2147483647. Supports: $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @return int|null The appUsageDuration
     */
@@ -273,7 +244,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the appUsageDuration
-    * The total usage time of the application in minutes. Valid values -2147483648 to 2147483647
+    * The total usage time of the application in minutes. Valid values 0 to 2147483647. Supports: $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @param int $val The appUsageDuration
     *
@@ -287,7 +258,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Gets the meanTimeToFailureInMinutes
-    * The mean time to failure for the app in minutes. Valid values -2147483648 to 2147483647
+    * The mean time to failure for the application in minutes. Valid values 0 to 2147483647. Supports: $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @return int|null The meanTimeToFailureInMinutes
     */
@@ -302,7 +273,7 @@ class UserExperienceAnalyticsAppHealthApplicationPerformance extends Entity
 
     /**
     * Sets the meanTimeToFailureInMinutes
-    * The mean time to failure for the app in minutes. Valid values -2147483648 to 2147483647
+    * The mean time to failure for the application in minutes. Valid values 0 to 2147483647. Supports: $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @param int $val The meanTimeToFailureInMinutes
     *

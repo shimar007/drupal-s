@@ -139,7 +139,7 @@ function adsense_revenue_sharing_basic_get_profile_client_id($uid) {
         break;
 
       case 'profile':
-        // @TODO: adapt this to the profile module.
+        // @todo adapt this to the profile module.
         /* @codingStandardsIgnoreStart
         $client_id = isset($user->{$profile_field[1]}) ? $user->{$profile_field[1]} : NULL;
         @codingStandardsIgnoreEnd */

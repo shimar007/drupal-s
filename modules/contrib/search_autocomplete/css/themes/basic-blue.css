@@ -21,11 +21,13 @@ ul[data-sa-theme="basic-blue"] {
   font-family: 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif;
   min-width: 350px;
 }
-ul[data-sa-theme="basic-blue"] a.ui-menu-item-wrapper,
-ul[data-sa-theme="basic-blue"] a.ui-menu-item-wrapper.ui-state-active {
+ul[data-sa-theme="basic-blue"] .ui-state-active,
+ul[data-sa-theme="basic-blue"] .ui-menu-item-wrapper,
+ul[data-sa-theme="basic-blue"] .ui-menu-item-wrapper.ui-state-active {
   display: block;
   background: none;
   border: none;
+  margin: 0;
 }
 
 /* Suggestion menu elements */

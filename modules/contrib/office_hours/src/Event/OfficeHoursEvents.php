@@ -3,25 +3,46 @@
 namespace Drupal\office_hours\Event;
 
 /**
- * Defines events for the office_hours module.
+ * Office hours Events.
+ *
+ * @package Drupal\office_hours\Event
  *
  * @see \Drupal\Core\Config\ConfigCrudEvent
  */
 final class OfficeHoursEvents {
 
   /**
-   * Name of the event fired when a new incident is reported.
-   *
-   * This event allows modules to perform an action whenever a new incident is
-   * reported via the incident report form. The event listener method receives a
-   * \Drupal\events_example\Event\IncidentReportEvent instance.
+   * Event dispatched when Office hours of an entity are changed or displayed.
    *
    * @Event
    *
-   * @see \Drupal\office_hours\Event\OfficeHoursUpdateEvent
+   * @see \Drupal\office_hours\Event\OfficeHoursEvent
    *
    * @var string
    */
-  const OFFICE_HOURS_UPDATE = 'office_hours.hours_update';
+
+  const UPDATE = 'office_hours.update';
+
+  /**
+   * Event PRE_FORMAT: e.g., adding a holiday for all locations in a region.
+   *
+   * @Event
+   *
+   * @see \Drupal\office_hours\Event\OfficeHoursEvent
+   *
+   * @var string
+   */
+  const PRE_FORMAT = 'office_hours.pre_format';
+
+  /**
+   * Event POST_FORMAT: e.g., changing time format from 'am' to non-php 'A.M.'.
+   *
+   * @Event
+   *
+   * @see \Drupal\office_hours\Event\OfficeHoursEvent
+   *
+   * @var string
+   */
+  const POST_FORMAT = 'office_hours.post_format';
 
 }

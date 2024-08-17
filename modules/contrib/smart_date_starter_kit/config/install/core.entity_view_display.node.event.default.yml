@@ -15,26 +15,28 @@ bundle: event
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 2
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
   field_when:
-    weight: 1
+    type: smartdate_default
     label: above
     settings:
       timezone_override: ''
+      format_type: medium
       format: default
       force_chronological: false
-      format_type: medium
+      add_classes: false
+      time_wrapper: true
     third_party_settings: {  }
-    type: smartdate_default
+    weight: 1
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden: {  }

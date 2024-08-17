@@ -17,7 +17,7 @@ class FullcalendarViewPreprocess {
   protected  static $viewIndex = 0;
 
   /**
-   * The language manager.
+   * The language manager object for retrieving the correct language code.
    *
    * @var \Drupal\Core\Language\LanguageManagerInterface
    */
@@ -48,7 +48,7 @@ class FullcalendarViewPreprocess {
    * Constructor.
    *
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
-   *   The language manager.
+   *   The language manager object for retrieving the correct language code.
    * @param \Drupal\Core\Access\CsrfTokenGenerator $token_generator
    *   The CSRF token generator.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -393,6 +393,8 @@ class FullcalendarViewPreprocess {
         'plugins' => [ 'moment','interaction', 'dayGrid', 'timeGrid', 'list', 'rrule' ],
         'timeZone' => $timezone,
         'defaultView' => isset($options['default_view']) ? $options['default_view'] : 'dayGridMonth',
+        'defaultMobileView' => isset($options['default_mobile_view']) ? $options['default_mobile_view'] : 'listYear',
+        'mobileWidth' => isset($options['mobile_width']) ? $options['mobile_width'] : 768,
         'defaultDate' => empty($default_date) ? date('Y-m-d') : $default_date,
         'header' => [
           'left' => $left_buttons,
@@ -456,6 +458,8 @@ class FullcalendarViewPreprocess {
         'dialogWindow' => $options['dialogWindow'],
         // Open event links in modal dialog.
         'dialogModal' => $options['dialogModal'],
+        // Open event links in sidebar canvas.
+        'dialogCanvas' => $options['dialogCanvas'],
         // The bundle (content) type of a new event.
         'eventBundleType' => $event_bundle_type,
         // The machine name of start date field.
@@ -479,7 +483,36 @@ class FullcalendarViewPreprocess {
         // The options of the pop-up modal dialog object.
         'dialog_modal_options' => json_encode($dialog_modal_options),
       ];
+
+
+      if (!empty($options['fetchGoogleHolidays'])) {
+        $options['googleHolidaysSettings']['googleCalendarGroup'] = $this->localizeGoogleCalendarId(
+          $options['googleHolidaysSettings']['googleCalendarGroup'],
+          $this->languageManager->getCurrentLanguage()->getId(),
+        );
+
+        $variables['#attached']['library'][] = 'fullcalendar_view/libraries.fullcalendar.google_calendar';
+        $variables['#attached']['drupalSettings']['fullCalendarView'][$view_index] += [
+          'fetchGoogleHolidays' => !empty($options['fetchGoogleHolidays']),
+          'googleCalendarAPIKey' => $options['googleHolidaysSettings']['googleCalendarAPIKey'] ?? '',
+          'googleCalendarGroup' => $options['googleHolidaysSettings']['googleCalendarGroup'] ?? '',
+          'renderGoogleHolidaysAsBackground' => !empty($options['googleHolidaysSettings']['renderGoogleHolidaysAsBackground']),
+        ];
+      }
     }
+  }
+
+/**
+   * @param string $calendar_id
+   * @param string $langcode
+   *
+   * @return string
+   */
+  protected function localizeGoogleCalendarId($calendar_id, $langcode) {
+    $parts = explode('.', $calendar_id);
+    $parts[0] = $langcode;
+
+    return implode('.', $parts);
   }
 
   /**

@@ -23,6 +23,32 @@ namespace Beta\Microsoft\Graph\Model;
 */
 class CloudPcPartnerAgentInstallResult extends Entity
 {
+    /**
+    * Gets the errorMessage
+    *
+    * @return string|null The errorMessage
+    */
+    public function getErrorMessage()
+    {
+        if (array_key_exists("errorMessage", $this->_propDict)) {
+            return $this->_propDict["errorMessage"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the errorMessage
+    *
+    * @param string $val The value of the errorMessage
+    *
+    * @return CloudPcPartnerAgentInstallResult
+    */
+    public function setErrorMessage($val)
+    {
+        $this->_propDict["errorMessage"] = $val;
+        return $this;
+    }
 
     /**
     * Gets the installStatus
@@ -58,7 +84,7 @@ class CloudPcPartnerAgentInstallResult extends Entity
     }
     /**
     * Gets the isThirdPartyPartner
-    * Indicates if the partner agent is a third party. When 'TRUE', the agent is a third-party (non-Microsoft) agent.  When 'FALSE', the agent is a Microsoft agent or is not known.  The default value is 'FALSE'.
+    * Indicates if the partner agent is a third party. When 'TRUE' the agent is a third-party (non-Microsoft) agent and when 'FALSE' the agent is a Microsoft agent or isn't known.  The default value is 'FALSE'
     *
     * @return bool|null The isThirdPartyPartner
     */
@@ -73,7 +99,7 @@ class CloudPcPartnerAgentInstallResult extends Entity
 
     /**
     * Sets the isThirdPartyPartner
-    * Indicates if the partner agent is a third party. When 'TRUE', the agent is a third-party (non-Microsoft) agent.  When 'FALSE', the agent is a Microsoft agent or is not known.  The default value is 'FALSE'.
+    * Indicates if the partner agent is a third party. When 'TRUE' the agent is a third-party (non-Microsoft) agent and when 'FALSE' the agent is a Microsoft agent or isn't known.  The default value is 'FALSE'
     *
     * @param bool $val The value of the isThirdPartyPartner
     *
@@ -87,7 +113,7 @@ class CloudPcPartnerAgentInstallResult extends Entity
 
     /**
     * Gets the partnerAgentName
-    * Indicates the name of a partner agent and includes first-party and third-party. Currently, Citrix is the only third-party value. Read-Only.
+    * The name of the partner agent, whether first party or third party. Possible values for third-party partners are Citrix and VMware. Read-Only.
     *
     * @return CloudPcPartnerAgentName|null The partnerAgentName
     */
@@ -106,7 +132,7 @@ class CloudPcPartnerAgentInstallResult extends Entity
 
     /**
     * Sets the partnerAgentName
-    * Indicates the name of a partner agent and includes first-party and third-party. Currently, Citrix is the only third-party value. Read-Only.
+    * The name of the partner agent, whether first party or third party. Possible values for third-party partners are Citrix and VMware. Read-Only.
     *
     * @param CloudPcPartnerAgentName $val The value to assign to the partnerAgentName
     *
@@ -119,7 +145,7 @@ class CloudPcPartnerAgentInstallResult extends Entity
     }
     /**
     * Gets the retriable
-    * Indicates if the partner agent is a third party. When 'TRUE', the agent is a third-party (non-Microsoft) agent. When 'FALSE', the agent is a Microsoft agent or is not known. The default value is 'FALSE'.
+    * Indicates if the partner agent is a third party. When 'TRUE' the agent is a third-party (non-Microsoft) agent and when 'FALSE' the agent is a Microsoft agent or isn't known. The default value is 'FALSE'
     *
     * @return bool|null The retriable
     */
@@ -134,7 +160,7 @@ class CloudPcPartnerAgentInstallResult extends Entity
 
     /**
     * Sets the retriable
-    * Indicates if the partner agent is a third party. When 'TRUE', the agent is a third-party (non-Microsoft) agent. When 'FALSE', the agent is a Microsoft agent or is not known. The default value is 'FALSE'.
+    * Indicates if the partner agent is a third party. When 'TRUE' the agent is a third-party (non-Microsoft) agent and when 'FALSE' the agent is a Microsoft agent or isn't known. The default value is 'FALSE'
     *
     * @param bool $val The value of the retriable
     *

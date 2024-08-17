@@ -2,14 +2,13 @@
 
 namespace Drupal\adsense\Form;
 
+use Drupal\adsense\Plugin\AdsenseAd\CustomSearchAd;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
-use Drupal\adsense\Plugin\AdsenseAd\CustomSearchAd;
-
 /**
- * Class AdsenseCseSettings.
+ * Form for the adsense CSE settings.
  */
 class AdsenseCseSettings extends ConfigFormBase {
 

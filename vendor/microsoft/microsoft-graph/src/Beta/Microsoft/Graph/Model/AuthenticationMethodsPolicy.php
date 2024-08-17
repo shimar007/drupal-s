@@ -117,7 +117,7 @@ class AuthenticationMethodsPolicy extends Entity
 
     /**
     * Gets the policyMigrationState
-    * The state of migration of the authentication methods policy from the legacy multifactor authentication and self-service password reset (SSPR) policies. The possible values are: premigration - means the authentication methods policy is used for authentication only, legacy policies are respected. migrationInProgress - means the authentication methods policy is used for both authenication and SSPR, legacy policies are respected. migrationComplete - means the authentication methods policy is used for authentication and SSPR, legacy policies are ignored. unknownFutureValue - Evolvable enumeration sentinel value. Do not use.
+    * The state of migration of the authentication methods policy from the legacy multifactor authentication and self-service password reset (SSPR) policies. The possible values are: premigration - means the authentication methods policy is used for authentication only, legacy policies are respected. migrationInProgress - means the authentication methods policy is used for both authentication and SSPR, legacy policies are respected. migrationComplete - means the authentication methods policy is used for authentication and SSPR, legacy policies are ignored. unknownFutureValue - Evolvable enumeration sentinel value. Don't use.
     *
     * @return AuthenticationMethodsPolicyMigrationState|null The policyMigrationState
     */
@@ -136,7 +136,7 @@ class AuthenticationMethodsPolicy extends Entity
 
     /**
     * Sets the policyMigrationState
-    * The state of migration of the authentication methods policy from the legacy multifactor authentication and self-service password reset (SSPR) policies. The possible values are: premigration - means the authentication methods policy is used for authentication only, legacy policies are respected. migrationInProgress - means the authentication methods policy is used for both authenication and SSPR, legacy policies are respected. migrationComplete - means the authentication methods policy is used for authentication and SSPR, legacy policies are ignored. unknownFutureValue - Evolvable enumeration sentinel value. Do not use.
+    * The state of migration of the authentication methods policy from the legacy multifactor authentication and self-service password reset (SSPR) policies. The possible values are: premigration - means the authentication methods policy is used for authentication only, legacy policies are respected. migrationInProgress - means the authentication methods policy is used for both authentication and SSPR, legacy policies are respected. migrationComplete - means the authentication methods policy is used for authentication and SSPR, legacy policies are ignored. unknownFutureValue - Evolvable enumeration sentinel value. Don't use.
     *
     * @param AuthenticationMethodsPolicyMigrationState $val The policyMigrationState
     *
@@ -236,6 +236,39 @@ class AuthenticationMethodsPolicy extends Entity
     public function setRegistrationEnforcement($val)
     {
         $this->_propDict["registrationEnforcement"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the reportSuspiciousActivitySettings
+    * Enable users to report unexpected voice call or phone app notification multi-factor authentication prompts as suspicious.
+    *
+    * @return ReportSuspiciousActivitySettings|null The reportSuspiciousActivitySettings
+    */
+    public function getReportSuspiciousActivitySettings()
+    {
+        if (array_key_exists("reportSuspiciousActivitySettings", $this->_propDict)) {
+            if (is_a($this->_propDict["reportSuspiciousActivitySettings"], "\Beta\Microsoft\Graph\Model\ReportSuspiciousActivitySettings") || is_null($this->_propDict["reportSuspiciousActivitySettings"])) {
+                return $this->_propDict["reportSuspiciousActivitySettings"];
+            } else {
+                $this->_propDict["reportSuspiciousActivitySettings"] = new ReportSuspiciousActivitySettings($this->_propDict["reportSuspiciousActivitySettings"]);
+                return $this->_propDict["reportSuspiciousActivitySettings"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the reportSuspiciousActivitySettings
+    * Enable users to report unexpected voice call or phone app notification multi-factor authentication prompts as suspicious.
+    *
+    * @param ReportSuspiciousActivitySettings $val The reportSuspiciousActivitySettings
+    *
+    * @return AuthenticationMethodsPolicy
+    */
+    public function setReportSuspiciousActivitySettings($val)
+    {
+        $this->_propDict["reportSuspiciousActivitySettings"] = $val;
         return $this;
     }
 

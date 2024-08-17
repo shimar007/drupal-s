@@ -6,6 +6,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Cast;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleErrorBuilder;
 use function sprintf;
 
 /**
@@ -14,6 +15,14 @@ use function sprintf;
 class UsageOfDeprecatedCastRule implements Rule
 {
 
+	/** @var DeprecatedScopeHelper */
+	private $deprecatedScopeHelper;
+
+	public function __construct(DeprecatedScopeHelper $deprecatedScopeHelper)
+	{
+		$this->deprecatedScopeHelper = $deprecatedScopeHelper;
+	}
+
 	public function getNodeType(): string
 	{
 		return Cast::class;
@@ -21,7 +30,7 @@ class UsageOfDeprecatedCastRule implements Rule
 
 	public function processNode(Node $node, Scope $scope): array
 	{
-		if (DeprecatedScopeHelper::isScopeDeprecated($scope)) {
+		if ($this->deprecatedScopeHelper->isScopeDeprecated($scope)) {
 			return [];
 		}
 
@@ -36,17 +45,21 @@ class UsageOfDeprecatedCastRule implements Rule
 		}
 		$description = $method->getDeprecatedDescription();
 		if ($description === null) {
-			return [sprintf(
-				'Casting class %s to string is deprecated.',
-				$method->getDeclaringClass()->getName()
-			)];
+			return [
+				RuleErrorBuilder::message(sprintf(
+					'Casting class %s to string is deprecated.',
+					$method->getDeclaringClass()->getName()
+				))->identifier('class.toStringDeprecated')->build(),
+			];
 		}
 
-		return [sprintf(
-			"Casting class %s to string is deprecated.:\n%s",
-			$method->getDeclaringClass()->getName(),
-			$description
-		)];
+		return [
+			RuleErrorBuilder::message(sprintf(
+				"Casting class %s to string is deprecated.:\n%s",
+				$method->getDeclaringClass()->getName(),
+				$description
+			))->identifier('class.toStringDeprecated')->build(),
+		];
 	}
 
 }

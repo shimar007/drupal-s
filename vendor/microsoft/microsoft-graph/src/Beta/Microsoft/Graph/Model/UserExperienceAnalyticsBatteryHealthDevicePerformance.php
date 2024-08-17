@@ -26,7 +26,7 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
 {
     /**
     * Gets the batteryAgeInDays
-    * Estimated battery age. Unit in days. Valid values -2147483648 to 2147483647
+    * Estimated battery age. Unit in days. Valid values 0 to 2147483647
     *
     * @return int|null The batteryAgeInDays
     */
@@ -41,7 +41,7 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
 
     /**
     * Sets the batteryAgeInDays
-    * Estimated battery age. Unit in days. Valid values -2147483648 to 2147483647
+    * Estimated battery age. Unit in days. Valid values 0 to 2147483647
     *
     * @param int $val The batteryAgeInDays
     *
@@ -54,8 +54,37 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
     }
 
     /**
+    * Gets the deviceBatteryCount
+    * Number of batteries in a user device. Valid values 1 to 2147483647
+    *
+    * @return int|null The deviceBatteryCount
+    */
+    public function getDeviceBatteryCount()
+    {
+        if (array_key_exists("deviceBatteryCount", $this->_propDict)) {
+            return $this->_propDict["deviceBatteryCount"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the deviceBatteryCount
+    * Number of batteries in a user device. Valid values 1 to 2147483647
+    *
+    * @param int $val The deviceBatteryCount
+    *
+    * @return UserExperienceAnalyticsBatteryHealthDevicePerformance
+    */
+    public function setDeviceBatteryCount($val)
+    {
+        $this->_propDict["deviceBatteryCount"] = intval($val);
+        return $this;
+    }
+
+    /**
     * Gets the deviceBatteryHealthScore
-    * A weighted average of a device’s maximum capacity score and runtime estimate score. Values range from 0-100. Valid values -2147483648 to 2147483647
+    * A weighted average of a device’s maximum capacity score and runtime estimate score. Values range from 0-100. Valid values 0 to 2147483647
     *
     * @return int|null The deviceBatteryHealthScore
     */
@@ -70,7 +99,7 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
 
     /**
     * Sets the deviceBatteryHealthScore
-    * A weighted average of a device’s maximum capacity score and runtime estimate score. Values range from 0-100. Valid values -2147483648 to 2147483647
+    * A weighted average of a device’s maximum capacity score and runtime estimate score. Values range from 0-100. Valid values 0 to 2147483647
     *
     * @param int $val The deviceBatteryHealthScore
     *
@@ -142,7 +171,7 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
 
     /**
     * Gets the estimatedRuntimeInMinutes
-    * The estimated runtime of the device when the battery is fully charged. Unit in minutes. Valid values -2147483648 to 2147483647
+    * The estimated runtime of the device when the battery is fully charged. Unit in minutes. Valid values 0 to 2147483647
     *
     * @return int|null The estimatedRuntimeInMinutes
     */
@@ -157,7 +186,7 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
 
     /**
     * Sets the estimatedRuntimeInMinutes
-    * The estimated runtime of the device when the battery is fully charged. Unit in minutes. Valid values -2147483648 to 2147483647
+    * The estimated runtime of the device when the battery is fully charged. Unit in minutes. Valid values 0 to 2147483647
     *
     * @param int $val The estimatedRuntimeInMinutes
     *
@@ -166,6 +195,35 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
     public function setEstimatedRuntimeInMinutes($val)
     {
         $this->_propDict["estimatedRuntimeInMinutes"] = intval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the fullBatteryDrainCount
+    * Number of times the battery has been discharged an amount that equals 100% of its capacity, but not necessarily by discharging it from 100% to 0%. Valid values 0 to 2147483647
+    *
+    * @return int|null The fullBatteryDrainCount
+    */
+    public function getFullBatteryDrainCount()
+    {
+        if (array_key_exists("fullBatteryDrainCount", $this->_propDict)) {
+            return $this->_propDict["fullBatteryDrainCount"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the fullBatteryDrainCount
+    * Number of times the battery has been discharged an amount that equals 100% of its capacity, but not necessarily by discharging it from 100% to 0%. Valid values 0 to 2147483647
+    *
+    * @param int $val The fullBatteryDrainCount
+    *
+    * @return UserExperienceAnalyticsBatteryHealthDevicePerformance
+    */
+    public function setFullBatteryDrainCount($val)
+    {
+        $this->_propDict["fullBatteryDrainCount"] = intval($val);
         return $this;
     }
 
@@ -233,7 +291,7 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
 
     /**
     * Gets the maxCapacityPercentage
-    * Ratio of current capacity and design capacity of the battery with the lowest capacity. Unit in percentage and values range from 0-100. Valid values -2147483648 to 2147483647
+    * Ratio of current capacity and design capacity of the battery with the lowest capacity. Unit in percentage and values range from 0-100. Valid values 0 to 2147483647
     *
     * @return int|null The maxCapacityPercentage
     */
@@ -248,7 +306,7 @@ class UserExperienceAnalyticsBatteryHealthDevicePerformance extends Entity
 
     /**
     * Sets the maxCapacityPercentage
-    * Ratio of current capacity and design capacity of the battery with the lowest capacity. Unit in percentage and values range from 0-100. Valid values -2147483648 to 2147483647
+    * Ratio of current capacity and design capacity of the battery with the lowest capacity. Unit in percentage and values range from 0-100. Valid values 0 to 2147483647
     *
     * @param int $val The maxCapacityPercentage
     *

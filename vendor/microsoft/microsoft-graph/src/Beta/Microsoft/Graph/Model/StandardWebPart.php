@@ -25,6 +25,35 @@ namespace Beta\Microsoft\Graph\Model;
 class StandardWebPart extends WebPart
 {
     /**
+    * Gets the containerTextWebPartId
+    * The instance identifier of the container text webPart. It only works for inline standard webPart in rich text webParts.
+    *
+    * @return string|null The containerTextWebPartId
+    */
+    public function getContainerTextWebPartId()
+    {
+        if (array_key_exists("containerTextWebPartId", $this->_propDict)) {
+            return $this->_propDict["containerTextWebPartId"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the containerTextWebPartId
+    * The instance identifier of the container text webPart. It only works for inline standard webPart in rich text webParts.
+    *
+    * @param string $val The containerTextWebPartId
+    *
+    * @return StandardWebPart
+    */
+    public function setContainerTextWebPartId($val)
+    {
+        $this->_propDict["containerTextWebPartId"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the data
     * Data of the webPart.
     *
@@ -59,7 +88,7 @@ class StandardWebPart extends WebPart
 
     /**
     * Gets the webPartType
-    * A Guid which indicates the type of the webParts
+    * A Guid that indicates the webPart type.
     *
     * @return string|null The webPartType
     */
@@ -74,7 +103,7 @@ class StandardWebPart extends WebPart
 
     /**
     * Sets the webPartType
-    * A Guid which indicates the type of the webParts
+    * A Guid that indicates the webPart type.
     *
     * @param string $val The webPartType
     *

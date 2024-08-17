@@ -15,6 +15,7 @@ namespace League\Csv;
 
 use InvalidArgumentException;
 use php_user_filter;
+
 use function array_map;
 use function in_array;
 use function str_replace;
@@ -28,6 +29,11 @@ use function strlen;
 /**
  * A stream filter to improve enclosure character usage.
  *
+ * DEPRECATION WARNING! This class will be removed in the next major point release
+ *
+ * @deprecated since version 9.10.0
+ * @see Writer::forceEnclosure()
+ *
  * @see https://tools.ietf.org/html/rfc4180#section-2
  * @see https://bugs.php.net/bug.php?id=38301
  */
@@ -36,7 +42,7 @@ class EncloseField extends php_user_filter
     public const FILTERNAME = 'convert.league.csv.enclosure';
 
     /** Default sequence. */
-    protected string $sequence;
+    protected string $sequence = '';
     /** Characters that triggers enclosure in PHP. */
     protected static string $force_enclosure = "\n\r\t ";
 

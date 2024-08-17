@@ -2,10 +2,14 @@
 
 namespace Drupal\sitemap\Plugin\Sitemap;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Menu\MenuLinkTree;
+use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\sitemap\SitemapBase;
 use Drupal\system\Entity\Menu as MenuEntity;
-use Drupal\Core\Menu\MenuTreeParameters;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a sitemap for an individual menu.
@@ -26,6 +30,38 @@ use Drupal\Core\Menu\MenuTreeParameters;
 class Menu extends SitemapBase {
 
   /**
+   * An entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * A service to load, transform, and render menu link trees.
+   *
+   * @var \Drupal\Core\Menu\MenuLinkTree
+   */
+  protected MenuLinkTree $menuLinkTree;
+
+  /**
+   * A module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected ModuleHandlerInterface $moduleHandler;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    $instance->entityTypeManager = $container->get('entity_type.manager');
+    $instance->menuLinkTree = $container->get('sitemap.menu.link_tree');
+    $instance->moduleHandler = $container->get('module_handler');
+    return $instance;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
@@ -33,14 +69,17 @@ class Menu extends SitemapBase {
 
     // Provide the menu name as the default title.
     $menu_name = $this->getPluginDefinition()['menu'];
-    $menu = \Drupal::entityTypeManager()->getStorage('menu')->load($menu_name);
+    $menu = $this->entityTypeManager->getStorage('menu')->load($menu_name);
     $form['title']['#default_value'] = $this->settings['title'] ?? $menu->label();
 
     $form['show_disabled'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Show disabled menu items'),
       '#default_value' => $this->settings['show_disabled'] ?? FALSE,
-      '#description' => $this->t('When selected, disabled menu links will also be shown.'),
+      '#description' => $this->t('When selected, disabled menu links will also be shown.<br><strong>Warning</strong>: Showing disabled menu links will reveal information that would normally require the sitemap viewer to have the %permission permission!', [
+        '%permission' => $this->t('Administer menus and menu links'),
+      ]),
+      '#access' => $this->currentUser->hasPermission('show disabled menu items on sitemap'),
     ];
 
     return $form;
@@ -50,7 +89,6 @@ class Menu extends SitemapBase {
    * {@inheritdoc}
    */
   public function view() {
-    $menuLinkTree = \Drupal::service('sitemap.menu.link_tree');
     $menu_id = $this->pluginDefinition['menu'];
     $menu = MenuEntity::load($menu_id);
     // Retrieve the expanded tree.
@@ -59,22 +97,22 @@ class Menu extends SitemapBase {
       $parameters->onlyEnabledLinks();
     }
 
-    $tree = $menuLinkTree->load($menu_id, $parameters);
+    $tree = $this->menuLinkTree->load($menu_id, $parameters);
     $manipulators = [
       ['callable' => 'menu.default_tree_manipulators:checkAccess'],
       ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
     ];
-    $tree = $menuLinkTree->transform($tree, $manipulators);
+    $tree = $this->menuLinkTree->transform($tree, $manipulators);
 
     // Add an alter hook so that other modules can manipulate the
     // menu tree prior to rendering.
     // @todo Document
     $alter_mid = preg_replace('/[^a-z0-9_]+/', '_', $menu_id);
-    \Drupal::moduleHandler()->alter([
+    $this->moduleHandler->alter([
       'sitemap_menu_tree', 'sitemap_menu_tree_' . $alter_mid,
     ], $tree, $menu);
 
-    $menu_display = $menuLinkTree->build($tree);
+    $menu_display = $this->menuLinkTree->build($tree);
 
     return ($tree) ? [
       '#theme' => 'sitemap_item',

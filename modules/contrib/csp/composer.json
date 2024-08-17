@@ -11,8 +11,8 @@
     "source": "https://git.drupalcode.org/project/csp"
   },
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.4",
     "ext-json": "*",
-    "drupal/core": "^9.5 || ^10"
+    "drupal/core": "^9.5 || ~10.0.0 || ^10.1.3"
   }
 }

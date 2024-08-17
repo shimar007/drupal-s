@@ -26,7 +26,7 @@ class DirectoryAudit extends Entity
 {
     /**
     * Gets the activityDateTime
-    * Indicates the date and time the activity was performed. The Timestamp type is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
+    * Indicates the date and time the activity was performed. The Timestamp type is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Supports $filter (eq, ge, le) and $orderby.
     *
     * @return \DateTime|null The activityDateTime
     */
@@ -45,7 +45,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the activityDateTime
-    * Indicates the date and time the activity was performed. The Timestamp type is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
+    * Indicates the date and time the activity was performed. The Timestamp type is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Supports $filter (eq, ge, le) and $orderby.
     *
     * @param \DateTime $val The activityDateTime
     *
@@ -59,7 +59,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Gets the activityDisplayName
-    * Indicates the activity name or the operation name (E.g. 'Create User', 'Add member to group'). For a list of activities logged, refer to Azure Ad activity list.
+    * Indicates the activity name or the operation name (for example 'Create User', 'Add member to group'). For a list of activities logged, refer to Microsoft Entra audit log categories and activities. Supports $filter (eq, startswith).
     *
     * @return string|null The activityDisplayName
     */
@@ -74,7 +74,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the activityDisplayName
-    * Indicates the activity name or the operation name (E.g. 'Create User', 'Add member to group'). For a list of activities logged, refer to Azure Ad activity list.
+    * Indicates the activity name or the operation name (for example 'Create User', 'Add member to group'). For a list of activities logged, refer to Microsoft Entra audit log categories and activities. Supports $filter (eq, startswith).
     *
     * @param string $val The activityDisplayName
     *
@@ -89,7 +89,7 @@ class DirectoryAudit extends Entity
 
      /**
      * Gets the additionalDetails
-    * Indicates additional details on the activity.
+    * Indicates more details on the activity.
      *
      * @return array|null The additionalDetails
      */
@@ -104,7 +104,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the additionalDetails
-    * Indicates additional details on the activity.
+    * Indicates more details on the activity.
     *
     * @param KeyValue[] $val The additionalDetails
     *
@@ -118,7 +118,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Gets the category
-    * Indicates which resource category that's targeted by the activity. For example: UserManagement, GroupManagement, ApplicationManagement, RoleManagement.
+    * Indicates which resource category that's targeted by the activity. For example: UserManagement, GroupManagement, ApplicationManagement, RoleManagement. For a list of categories for activities logged, refer to Microsoft Entra audit log categories and activities.
     *
     * @return string|null The category
     */
@@ -133,7 +133,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the category
-    * Indicates which resource category that's targeted by the activity. For example: UserManagement, GroupManagement, ApplicationManagement, RoleManagement.
+    * Indicates which resource category that's targeted by the activity. For example: UserManagement, GroupManagement, ApplicationManagement, RoleManagement. For a list of categories for activities logged, refer to Microsoft Entra audit log categories and activities.
     *
     * @param string $val The category
     *
@@ -147,7 +147,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Gets the correlationId
-    * Indicates a unique ID that helps correlate activities that span across various services. Can be used to trace logs across services.
+    * Indicates a unique ID that helps correlate activities that span across various services. Can be used to trace logs across services. Supports $filter (eq).
     *
     * @return string|null The correlationId
     */
@@ -162,7 +162,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the correlationId
-    * Indicates a unique ID that helps correlate activities that span across various services. Can be used to trace logs across services.
+    * Indicates a unique ID that helps correlate activities that span across various services. Can be used to trace logs across services. Supports $filter (eq).
     *
     * @param string $val The correlationId
     *
@@ -176,7 +176,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Gets the initiatedBy
-    * Indicates information about the user or app initiated the activity.
+    * Indicates information about the user or app initiated the activity. Supports $filter (eq) for user/id, user/displayName, user/userPrincipalName, app/appId, app/displayName; and $filter (startswith) for user/userPrincipalName.
     *
     * @return AuditActivityInitiator|null The initiatedBy
     */
@@ -195,7 +195,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the initiatedBy
-    * Indicates information about the user or app initiated the activity.
+    * Indicates information about the user or app initiated the activity. Supports $filter (eq) for user/id, user/displayName, user/userPrincipalName, app/appId, app/displayName; and $filter (startswith) for user/userPrincipalName.
     *
     * @param AuditActivityInitiator $val The initiatedBy
     *
@@ -209,7 +209,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Gets the loggedByService
-    * Indicates information on which service initiated the activity (For example: Self-service Password Management, Core Directory, B2C, Invited Users, Microsoft Identity Manager, Privileged Identity Management.
+    * Indicates information on which service initiated the activity (For example: Self-service Password Management, Core Directory, B2C, Invited Users, Microsoft Identity Manager, Privileged Identity Management. Supports $filter (eq).
     *
     * @return string|null The loggedByService
     */
@@ -224,7 +224,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the loggedByService
-    * Indicates information on which service initiated the activity (For example: Self-service Password Management, Core Directory, B2C, Invited Users, Microsoft Identity Manager, Privileged Identity Management.
+    * Indicates information on which service initiated the activity (For example: Self-service Password Management, Core Directory, B2C, Invited Users, Microsoft Identity Manager, Privileged Identity Management. Supports $filter (eq).
     *
     * @param string $val The loggedByService
     *
@@ -238,7 +238,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Gets the operationType
-    * Indicates the type of operation that was performed. The possible values include but are not limited to the following: Add, Assign, Update, Unassign, and Delete.
+    * Indicates the type of operation that was performed. The possible values include but aren't limited to the following: Add, Assign, Update, Unassign, and Delete.
     *
     * @return string|null The operationType
     */
@@ -253,7 +253,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the operationType
-    * Indicates the type of operation that was performed. The possible values include but are not limited to the following: Add, Assign, Update, Unassign, and Delete.
+    * Indicates the type of operation that was performed. The possible values include but aren't limited to the following: Add, Assign, Update, Unassign, and Delete.
     *
     * @param string $val The operationType
     *
@@ -330,7 +330,7 @@ class DirectoryAudit extends Entity
 
      /**
      * Gets the targetResources
-    * Information about the resource that changed due to the activity.
+    * Information about the resource that changed due to the activity. Supports $filter (eq) for id and displayName; and $filter (startswith) for displayName.
      *
      * @return array|null The targetResources
      */
@@ -345,7 +345,7 @@ class DirectoryAudit extends Entity
 
     /**
     * Sets the targetResources
-    * Information about the resource that changed due to the activity.
+    * Information about the resource that changed due to the activity. Supports $filter (eq) for id and displayName; and $filter (startswith) for displayName.
     *
     * @param TargetResource[] $val The targetResources
     *

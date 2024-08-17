@@ -25,7 +25,7 @@ class UserAccount extends \Microsoft\Graph\Model\Entity
 {
     /**
     * Gets the accountName
-    * The user account's displayed name.
+    * The displayed name of the user account.
     *
     * @return string|null The accountName
     */
@@ -40,7 +40,7 @@ class UserAccount extends \Microsoft\Graph\Model\Entity
 
     /**
     * Sets the accountName
-    * The user account's displayed name.
+    * The displayed name of the user account.
     *
     * @param string $val The value of the accountName
     *
@@ -53,7 +53,7 @@ class UserAccount extends \Microsoft\Graph\Model\Entity
     }
     /**
     * Gets the azureAdUserId
-    * The user object identifier in Azure AD.
+    * The user object identifier in Microsoft Entra ID.
     *
     * @return string|null The azureAdUserId
     */
@@ -68,7 +68,7 @@ class UserAccount extends \Microsoft\Graph\Model\Entity
 
     /**
     * Sets the azureAdUserId
-    * The user object identifier in Azure AD.
+    * The user object identifier in Microsoft Entra ID.
     *
     * @param string $val The value of the azureAdUserId
     *
@@ -81,6 +81,7 @@ class UserAccount extends \Microsoft\Graph\Model\Entity
     }
     /**
     * Gets the displayName
+    * The user display name in Microsoft Entra ID.
     *
     * @return string|null The displayName
     */
@@ -95,6 +96,7 @@ class UserAccount extends \Microsoft\Graph\Model\Entity
 
     /**
     * Sets the displayName
+    * The user display name in Microsoft Entra ID.
     *
     * @param string $val The value of the displayName
     *
@@ -135,7 +137,7 @@ class UserAccount extends \Microsoft\Graph\Model\Entity
     }
     /**
     * Gets the userPrincipalName
-    * The user principal name of the account in Azure AD.
+    * The user principal name of the account in Microsoft Entra ID.
     *
     * @return string|null The userPrincipalName
     */
@@ -150,7 +152,7 @@ class UserAccount extends \Microsoft\Graph\Model\Entity
 
     /**
     * Sets the userPrincipalName
-    * The user principal name of the account in Azure AD.
+    * The user principal name of the account in Microsoft Entra ID.
     *
     * @param string $val The value of the userPrincipalName
     *

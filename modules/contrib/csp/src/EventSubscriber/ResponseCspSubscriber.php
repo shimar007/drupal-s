@@ -3,12 +3,15 @@
 namespace Drupal\csp\EventSubscriber;
 
 use Drupal\Component\Plugin\Exception\PluginException;
+use Drupal\Core\Asset\LibraryDependencyResolverInterface;
 use Drupal\Core\Cache\CacheableResponseInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Render\AttachmentsInterface;
 use Drupal\csp\Csp;
 use Drupal\csp\CspEvents;
 use Drupal\csp\Event\PolicyAlterEvent;
 use Drupal\csp\LibraryPolicyBuilder;
+use Drupal\csp\Nonce;
 use Drupal\csp\ReportingHandlerPluginManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -49,6 +52,20 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
   private $eventDispatcher;
 
   /**
+   * The Library Dependency Resolver service.
+   *
+   * @var \Drupal\Core\Asset\LibraryDependencyResolverInterface
+   */
+  private $libraryDependencyResolver;
+
+  /**
+   * The Nonce service.
+   *
+   * @var \Drupal\csp\Nonce
+   */
+  private $nonce;
+
+  /**
    * Constructs a new ResponseSubscriber object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
@@ -59,25 +76,70 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
    *   The Reporting Handler Plugin Manager service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   The Event Dispatcher Service.
+   * @param \Drupal\csp\Nonce|null $nonce
+   *   The nonce service.
    */
   public function __construct(
     ConfigFactoryInterface $configFactory,
     LibraryPolicyBuilder $libraryPolicyBuilder,
     ReportingHandlerPluginManager $reportingHandlerPluginManager,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
+    $nonce = NULL
   ) {
     $this->configFactory = $configFactory;
     $this->libraryPolicyBuilder = $libraryPolicyBuilder;
     $this->reportingHandlerPluginManager = $reportingHandlerPluginManager;
     $this->eventDispatcher = $eventDispatcher;
+
+    if ($nonce instanceof LibraryDependencyResolverInterface) {
+      @trigger_error("The LibraryDependencyResolver service is deprecated in csp:8.x-1.24 and will be removed in csp:2.0.0. See https://www.drupal.org/project/csp/issues/3409450", E_USER_DEPRECATED);
+      $nonce = func_get_arg(4);
+    }
+    if (empty($nonce) || !($nonce instanceof Nonce)) {
+      @trigger_error("Omitting the Nonce service is deprecated in csp:8.x-1.22 and will be required in csp:2.0.0. See https://www.drupal.org/project/csp/issues/3018679", E_USER_DEPRECATED);
+      $nonce = \Drupal::service('csp.nonce');
+    }
+    $this->nonce = $nonce;
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
-    $events[KernelEvents::RESPONSE] = ['onKernelResponse'];
+  public static function getSubscribedEvents(): array {
+    $events[KernelEvents::RESPONSE] = [
+      // Nonce value needs to be added before settings are rendered to the page
+      // by \Drupal\Core\EventSubscriber\HtmlResponseSubscriber.
+      ['applyDrupalSettingsNonce', 1],
+      // Policy needs to be generated after placeholder library info is bubbled
+      // up and rendered to the page.
+      ['onKernelResponse'],
+    ];
     return $events;
+  }
+
+  /**
+   * Add a nonce value to drupalSettings.
+   *
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
+   *   The Response Event.
+   */
+  public function applyDrupalSettingsNonce(ResponseEvent $event): void {
+    if (!$event->isMainRequest()) {
+      return;
+    }
+
+    $response = $event->getResponse();
+    if (!($response instanceof AttachmentsInterface)) {
+      return;
+    }
+
+    $response->addAttachments([
+      'drupalSettings' => [
+        'csp' => [
+          'nonce' => $this->nonce->getValue(),
+        ],
+      ],
+    ]);
   }
 
   /**
@@ -86,7 +148,7 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
    * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The Response event.
    */
-  public function onKernelResponse(ResponseEvent $event) {
+  public function onKernelResponse(ResponseEvent $event): void {
     if (!$event->isMainRequest()) {
       return;
     }
@@ -112,8 +174,8 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
 
       foreach (($cspConfig->get($policyType . '.directives') ?: []) as $directiveName => $directiveOptions) {
 
-        if (is_bool($directiveOptions)) {
-          $policy->setDirective($directiveName, TRUE);
+        if (Csp::DIRECTIVES[$directiveName] == Csp::DIRECTIVE_SCHEMA_BOOLEAN) {
+          $policy->setDirective($directiveName, (bool) $directiveOptions);
           continue;
         }
 

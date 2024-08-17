@@ -60,6 +60,9 @@ field.formatter.settings.office_hours:
     grouped:
       type: boolean
       label: 'Group consecutive days with same hours into one set'
+    show_empty:
+      type: boolean
+      label: 'Show, even when fully empty.'
     show_closed:
       type: string
       label: 'Number of days to show'
@@ -108,6 +111,9 @@ field.formatter.settings.office_hours:
         title:
           type: label
           label: 'Title for exceptions'
+        replace_exceptions:
+          type: boolean
+          label: 'Replace weekday time slots with exception dates'
         restrict_exceptions_to_num_days:
           type: integer
           label: 'Restrict exceptions display to x days in future'
@@ -172,3 +178,7 @@ field.value.office_hours:
     comment:
       type: text
       label: 'Comment'
+
+views.filter.office_hours_is_open:
+  type: views.filter.in_operator
+  label: 'Office hours open/closed status filter'

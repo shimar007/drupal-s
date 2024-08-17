@@ -25,7 +25,12 @@ class OfficeHoursDatetime extends Datetime {
       '#date_date_element' => 'none', // {'none'|'date'}
       '#date_date_format' => 'none',
       '#date_time_element' => 'time', // {'none'|'time'|'text'}
-      // @todo Timezone must no be added. See comments in parent class.
+      // For HTML5, only 'H:i' is supported.
+      // Hence, field setting 'time_format' / '#date_time_format' is discarded.
+      /* @see www.drupal.org/project/drupal/issues/2723159 */
+      /* @see www.drupal.org/project/drupal/issues/2841297 */
+      '#date_time_format' => 'H:i',
+      // @todo Add Timezone.
       '#date_timezone' => '+0000',
     ];
 
@@ -45,11 +50,7 @@ class OfficeHoursDatetime extends Datetime {
    * - H = 24-hour format of an hour with leading zeros    00 through 23
    */
   public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
-    // For HTML5, only 'H:i' is supported.
-    // Hence, field setting 'time_format' / '#date_time_format' is discarded.
-    /** @see www.drupal.org/project/drupal/issues/2723159 */
-    /** @see www.drupal.org/project/drupal/issues/2841297 */
-    $time_format = TRUE ? 'H:i' : $element['#date_time_format'];
+    $time_format = $element['#date_time_format'];
     $time = OfficeHoursDateHelper::format($element['#default_value'], $time_format);
 
     // $input = parent::valueCallback($element, $input, $form_state);
@@ -68,28 +69,31 @@ class OfficeHoursDatetime extends Datetime {
    * {@inheritdoc}
    */
   public static function processDatetime(&$element, FormStateInterface $form_state, &$complete_form) {
+    $time_format = $element['#date_time_format'];
+    $increment = $element['#field_settings']['increment'];
+    // Run this before parent call.
+    $time_example = static::formatExample($time_format, $increment);
+
     $element = parent::processDatetime($element, $form_state, $complete_form);
-    // For HTML5, only 'H:i' is supported.
-    // So, discard field setting 'time_format' / '#date_time_format' .
-    $time_format = TRUE ? 'H:i' : $element['#date_time_format'];
-    // $increment = $element['#date_increment'];
-    $increment = $element['#field_settings']["increment"];
+
     // @todo Add from-to time range, plus more details from settings.
     $validate = $element['#field_settings']['valhrs'];
     $required_start = $element['#field_settings']['required_start'];
     $limit_start = $element['#field_settings']['limit_start'];
     $required_end = $element['#field_settings']['required_end'];
-    $limit_end = $element['#field_settings']['limit_end']; // if empty and valhrs, then 24:00
+    $limit_end = $element['#field_settings']['limit_end'];
 
     // Fix the convention: minutes vs. seconds.
-    $element['time']['#attributes']['step'] =  $increment * 60;
+    $element['time']['#attributes']['step'] = $increment * 60;
     // Add a more precise hover text.
-    $element['time']['#attributes']['title'] = t('Time, with an increment of @step minutes (e.g. @format)', [
-        '@step' => $increment,
-        '@format' => static::formatExample($time_format, $increment),
-      ]
-    );
-
+    $element['time']['#attributes']['title'] = \Drupal::translation()->formatPlural(
+      $increment,
+      'Time, with an increment of one minute (e.g. @format)',
+      'Time, with an increment of @count minutes (e.g. @format)',
+      [
+        '@count' => $increment,
+        '@format' => $time_example,
+      ]);
     return $element;
   }
 
@@ -97,32 +101,24 @@ class OfficeHoursDatetime extends Datetime {
    * {@inheritdoc}
    */
   public static function validateDatetime(&$element, FormStateInterface $form_state, &$complete_form) {
-    /*
-    // Get the 'time' sub-array.
-    $input_exists = FALSE;
-    $input = NestedArray::getValue($form_state->getValues(), $element['#parents'], $input_exists);
-    // Generate the 'object' sub-array.
-    $input = static::valueCallback($element, $input, $form_state);
-
-    // Continue with default processing.
-    // parent::validateDatetime($element, $form_state, $complete_form);
-     */
+    // This function must exist, but can remain empty,
+    // since no additional validations are needed.
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function formatExample($format = 'H:i', $step = 5) {
-    // return parent::formatExample($format = 'H:i');
+  public static function formatExample($format, $step = 5) {
     // Overwrite parent function, to adhere to field settings.
     // Note: make sure the parent static::$dateExample is NOT overwritten.
     static $officeHoursTimeExample = NULL;
     if (!$officeHoursTimeExample) {
       // Round to a time, respecting increment. Avoid problem for '1360' time.
+      // @todo Still contains an error when rounding to i.e., 15 minutes.
       $now = new DrupalDateTime("now + $step minutes");
       $time_format = 'H:i';
 
-      $next_time = floor($now->format('Hi') / $step) * $step;
+      $next_time = (int) floor($now->format('Hi') / $step) * $step;
       $officeHoursTimeExample = OfficeHoursDateHelper::format($next_time, $time_format);
     }
     return $officeHoursTimeExample;
@@ -131,23 +127,6 @@ class OfficeHoursDatetime extends Datetime {
   /**
    * Mimic Core/TypedData/ComplexDataInterface.
    */
-
-  /**
-   * Returns the data from a widget.
-   *
-   * @param mixed $element
-   *   A string or array for time.
-   * @param string $format
-   *   Required time format.
-   *
-   * @return string
-   *   Return value.
-   *
-   * @deprecated@see in 8.x-1.5 and replaced by OfficeHoursDateHelper::format().
-   */
-  public static function get($element, $format = 'Hi') {
-    return OfficeHoursDateHelper::format($element, $format);
-  }
 
   /**
    * Determines whether the data structure is empty.

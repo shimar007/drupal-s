@@ -45,6 +45,9 @@ adsense.settings:
     adsense_managed_async:
       type: boolean
       label: 'Use asynchronous code'
+    adsense_managed_defer:
+      type: boolean
+      label: 'Defer script execution'
     adsense_cse_logo:
       type: string
       label: 'Logo type'

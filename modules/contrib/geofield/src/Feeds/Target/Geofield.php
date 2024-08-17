@@ -3,12 +3,12 @@
 namespace Drupal\geofield\Feeds\Target;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\FieldTargetDefinition;
 use Drupal\feeds\Plugin\Type\Target\FieldTargetBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a geofield field mapper.
@@ -111,7 +111,7 @@ class Geofield extends FieldTargetBase implements ContainerFactoryPluginInterfac
       $count_of_coordinates = count($coordinates['lat']);
       for ($i = 0; $i < $count_of_coordinates; $i++) {
         // If either Latitude or Longitude is not null/zero then set a POINT.
-        if (!empty($coordinates['lon'][$i]) || !empty($coordinates['lon'][$i])) {
+        if (!empty($coordinates['lat'][$i]) || !empty($coordinates['lon'][$i])) {
           $results[]['value'] = "POINT (" . $coordinates['lon'][$i] . " " . $coordinates['lat'][$i] . ")";
         }
       }
@@ -140,6 +140,21 @@ class Geofield extends FieldTargetBase implements ContainerFactoryPluginInterfac
     if (count($values['lat'] ?? []) != count($values['lon'] ?? [])) {
       throw new EmptyFeedException('Latitude and Longitude should be a pair. Change your file and import again.');
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSummary() {
+
+    $summary = parent::getSummary();
+
+    $summary[] = [
+      '#markup' => $this->t('<b>Instructions: </b>Use ONLY Centroid
+Latitude & Centroid Longitude in case of Lat/Lon coupled values<br>OR ONLY Geometry in case of WKT or GeoJson format. Don\'t use both.'),
+    ];
+
+    return $summary;
   }
 
 }

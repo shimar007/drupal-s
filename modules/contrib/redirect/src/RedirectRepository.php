@@ -40,6 +40,8 @@ class RedirectRepository {
    *   The entity type manager.
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory.
    */
   public function __construct(EntityTypeManagerInterface $manager, Connection $connection, ConfigFactoryInterface $config_factory) {
     $this->manager = $manager;
@@ -57,8 +59,8 @@ class RedirectRepository {
    * @param $language
    *   The language for which is the redirect.
    *
-   * @return \Drupal\redirect\Entity\Redirect
-   *   The matched redirect entity.
+   * @return \Drupal\redirect\Entity\Redirect|null
+   *   The matched redirect entity or NULL if no redirect was found.
    *
    * @throws \Drupal\redirect\Exception\RedirectLoopException
    */
@@ -107,7 +109,7 @@ class RedirectRepository {
   /**
    * Helper function to find recursive redirects.
    *
-   * @param \Drupal\redirect\Entity\Redirect
+   * @param \Drupal\redirect\Entity\Redirect $redirect
    *   The redirect object.
    * @param string $language
    *   The language to use.
@@ -133,6 +135,7 @@ class RedirectRepository {
    */
   public function findBySourcePath($source_path) {
     $ids = $this->manager->getStorage('redirect')->getQuery()
+      ->accessCheck(TRUE)
       ->condition('redirect_source.path', $source_path, 'LIKE')
       ->execute();
     return $this->manager->getStorage('redirect')->loadMultiple($ids);
@@ -150,6 +153,7 @@ class RedirectRepository {
   public function findByDestinationUri(array $destination_uri) {
     $storage = $this->manager->getStorage('redirect');
     $ids = $storage->getQuery()
+      ->accessCheck(TRUE)
       ->condition('redirect_redirect.uri', $destination_uri, 'IN')
       ->execute();
     return $storage->loadMultiple($ids);
@@ -176,7 +180,8 @@ class RedirectRepository {
    * @return \Drupal\redirect\Entity\Redirect[]
    *   List of redirect entities.
    */
-  public function loadMultiple(array $redirect_ids = NULL) {
+  public function loadMultiple(?array $redirect_ids = NULL) {
     return $this->manager->getStorage('redirect')->loadMultiple($redirect_ids);
   }
+
 }

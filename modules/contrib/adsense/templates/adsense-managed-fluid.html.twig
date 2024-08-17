@@ -4,8 +4,12 @@
  * AdSense fluid managed ad HTML code.
  */
 #}
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- {{ format }} -->
+{% if not defer %}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-{{ client }}"
+     crossorigin="anonymous"></script>
+{% else %}
+  {{ attach_library('adsense/adsense.adsbygoogle') }}
+{% endif %}
 <ins class="adsbygoogle"
      style="{{ style }}"
      {% if not layout_key %}
@@ -18,5 +22,5 @@
      data-ad-client="ca-{{ client }}"
      data-ad-slot="{{ slot }}"></ins>
 <script>
-(adsbygoogle = window.adsbygoogle || []).push({});
+     (adsbygoogle = window.adsbygoogle || []).push({});
 </script>

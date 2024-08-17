@@ -172,7 +172,7 @@ class SynchronizationTemplate extends Entity
 
      /**
      * Gets the metadata
-    * Additional extension properties. Unless mentioned explicitly, metadata values should not be changed.
+    * Additional extension properties. Unless mentioned explicitly, metadata values shouldn't be changed.
      *
      * @return array|null The metadata
      */
@@ -187,9 +187,9 @@ class SynchronizationTemplate extends Entity
 
     /**
     * Sets the metadata
-    * Additional extension properties. Unless mentioned explicitly, metadata values should not be changed.
+    * Additional extension properties. Unless mentioned explicitly, metadata values shouldn't be changed.
     *
-    * @param MetadataEntry[] $val The metadata
+    * @param SynchronizationMetadataEntry[] $val The metadata
     *
     * @return SynchronizationTemplate
     */

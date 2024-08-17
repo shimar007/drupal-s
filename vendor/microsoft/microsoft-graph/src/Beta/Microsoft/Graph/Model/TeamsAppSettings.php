@@ -55,7 +55,7 @@ class TeamsAppSettings extends Entity
 
     /**
     * Gets the isChatResourceSpecificConsentEnabled
-    * Indicates whether resource-specific consent for chats/meetings has been enabled for the tenant. If true, Teams apps that are allowed in the tenant and require resource-specific permissions can be installed inside chats and meetings. If false, the installation of any Teams app that requires resource-specific permissions in a chat or a meeting will be blocked.
+    * Indicates whether resource-specific consent for chats/meetings has been enabled for the tenant. True indicates that Teams apps that are allowed in the tenant and require resource-specific permissions can be installed inside chats and meetings. False blocks the installation of any Teams app that requires resource-specific permissions in a chat or a meeting.
     *
     * @return bool|null The isChatResourceSpecificConsentEnabled
     */
@@ -70,7 +70,7 @@ class TeamsAppSettings extends Entity
 
     /**
     * Sets the isChatResourceSpecificConsentEnabled
-    * Indicates whether resource-specific consent for chats/meetings has been enabled for the tenant. If true, Teams apps that are allowed in the tenant and require resource-specific permissions can be installed inside chats and meetings. If false, the installation of any Teams app that requires resource-specific permissions in a chat or a meeting will be blocked.
+    * Indicates whether resource-specific consent for chats/meetings has been enabled for the tenant. True indicates that Teams apps that are allowed in the tenant and require resource-specific permissions can be installed inside chats and meetings. False blocks the installation of any Teams app that requires resource-specific permissions in a chat or a meeting.
     *
     * @param bool $val The isChatResourceSpecificConsentEnabled
     *
@@ -79,6 +79,35 @@ class TeamsAppSettings extends Entity
     public function setIsChatResourceSpecificConsentEnabled($val)
     {
         $this->_propDict["isChatResourceSpecificConsentEnabled"] = boolval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the isUserPersonalScopeResourceSpecificConsentEnabled
+    * Indicates whether resource-specific consent for personal scope in Teams apps has been enabled for the tenant. True indicates that Teams apps that are allowed in the tenant and require resource-specific permissions can be installed in the personal scope. False blocks the installation of any Teams app that requires resource-specific permissions in the personal scope.
+    *
+    * @return bool|null The isUserPersonalScopeResourceSpecificConsentEnabled
+    */
+    public function getIsUserPersonalScopeResourceSpecificConsentEnabled()
+    {
+        if (array_key_exists("isUserPersonalScopeResourceSpecificConsentEnabled", $this->_propDict)) {
+            return $this->_propDict["isUserPersonalScopeResourceSpecificConsentEnabled"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isUserPersonalScopeResourceSpecificConsentEnabled
+    * Indicates whether resource-specific consent for personal scope in Teams apps has been enabled for the tenant. True indicates that Teams apps that are allowed in the tenant and require resource-specific permissions can be installed in the personal scope. False blocks the installation of any Teams app that requires resource-specific permissions in the personal scope.
+    *
+    * @param bool $val The isUserPersonalScopeResourceSpecificConsentEnabled
+    *
+    * @return TeamsAppSettings
+    */
+    public function setIsUserPersonalScopeResourceSpecificConsentEnabled($val)
+    {
+        $this->_propDict["isUserPersonalScopeResourceSpecificConsentEnabled"] = boolval($val);
         return $this;
     }
 

@@ -57,7 +57,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Gets the automaticUserConsentSettings
-    * Determines the partner-specific configuration for automatic user consent settings. Unless specifically configured, the inboundAllowed and outboundAllowed properties are null and inherit from the default settings, which is always false.
+    * Determines the partner-specific configuration for automatic user consent settings. Unless configured, the inboundAllowed and outboundAllowed properties are null and inherit from the default settings, which is always false.
     *
     * @return InboundOutboundPolicyConfiguration|null The automaticUserConsentSettings
     */
@@ -76,7 +76,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Sets the automaticUserConsentSettings
-    * Determines the partner-specific configuration for automatic user consent settings. Unless specifically configured, the inboundAllowed and outboundAllowed properties are null and inherit from the default settings, which is always false.
+    * Determines the partner-specific configuration for automatic user consent settings. Unless configured, the inboundAllowed and outboundAllowed properties are null and inherit from the default settings, which is always false.
     *
     * @param InboundOutboundPolicyConfiguration $val The automaticUserConsentSettings
     *
@@ -90,7 +90,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Gets the b2bCollaborationInbound
-    * Defines your partner-specific configuration for users from other organizations accessing your resources via Azure AD B2B collaboration.
+    * Defines your partner-specific configuration for users from other organizations accessing your resources via Microsoft Entra B2B collaboration.
     *
     * @return CrossTenantAccessPolicyB2BSetting|null The b2bCollaborationInbound
     */
@@ -109,7 +109,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Sets the b2bCollaborationInbound
-    * Defines your partner-specific configuration for users from other organizations accessing your resources via Azure AD B2B collaboration.
+    * Defines your partner-specific configuration for users from other organizations accessing your resources via Microsoft Entra B2B collaboration.
     *
     * @param CrossTenantAccessPolicyB2BSetting $val The b2bCollaborationInbound
     *
@@ -123,7 +123,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Gets the b2bCollaborationOutbound
-    * Defines your partner-specific configuration for users in your organization going outbound to access resources in another organization via Azure AD B2B collaboration.
+    * Defines your partner-specific configuration for users in your organization going outbound to access resources in another organization via Microsoft Entra B2B collaboration.
     *
     * @return CrossTenantAccessPolicyB2BSetting|null The b2bCollaborationOutbound
     */
@@ -142,7 +142,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Sets the b2bCollaborationOutbound
-    * Defines your partner-specific configuration for users in your organization going outbound to access resources in another organization via Azure AD B2B collaboration.
+    * Defines your partner-specific configuration for users in your organization going outbound to access resources in another organization via Microsoft Entra B2B collaboration.
     *
     * @param CrossTenantAccessPolicyB2BSetting $val The b2bCollaborationOutbound
     *
@@ -189,7 +189,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Gets the b2bDirectConnectOutbound
-    * Defines your partner-specific configuration for users in your organization going outbound to access resources in another organization via Azure AD B2B direct connect.
+    * Defines your partner-specific configuration for users in your organization going outbound to access resources in another organization via Microsoft Entra B2B direct connect.
     *
     * @return CrossTenantAccessPolicyB2BSetting|null The b2bDirectConnectOutbound
     */
@@ -208,7 +208,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Sets the b2bDirectConnectOutbound
-    * Defines your partner-specific configuration for users in your organization going outbound to access resources in another organization via Azure AD B2B direct connect.
+    * Defines your partner-specific configuration for users in your organization going outbound to access resources in another organization via Microsoft Entra B2B direct connect.
     *
     * @param CrossTenantAccessPolicyB2BSetting $val The b2bDirectConnectOutbound
     *
@@ -222,7 +222,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Gets the inboundTrust
-    * Determines the partner-specific configuration for trusting other Conditional Access claims from external Azure AD organizations.
+    * Determines the partner-specific configuration for trusting other Conditional Access claims from external Microsoft Entra organizations.
     *
     * @return CrossTenantAccessPolicyInboundTrust|null The inboundTrust
     */
@@ -241,7 +241,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Sets the inboundTrust
-    * Determines the partner-specific configuration for trusting other Conditional Access claims from external Azure AD organizations.
+    * Determines the partner-specific configuration for trusting other Conditional Access claims from external Microsoft Entra organizations.
     *
     * @param CrossTenantAccessPolicyInboundTrust $val The inboundTrust
     *
@@ -250,6 +250,35 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
     public function setInboundTrust($val)
     {
         $this->_propDict["inboundTrust"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the isInMultiTenantOrganization
+    * Identifies whether a tenant is a member of a multitenant organization.
+    *
+    * @return bool|null The isInMultiTenantOrganization
+    */
+    public function getIsInMultiTenantOrganization()
+    {
+        if (array_key_exists("isInMultiTenantOrganization", $this->_propDict)) {
+            return $this->_propDict["isInMultiTenantOrganization"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isInMultiTenantOrganization
+    * Identifies whether a tenant is a member of a multitenant organization.
+    *
+    * @param bool $val The isInMultiTenantOrganization
+    *
+    * @return CrossTenantAccessPolicyConfigurationPartner
+    */
+    public function setIsInMultiTenantOrganization($val)
+    {
+        $this->_propDict["isInMultiTenantOrganization"] = boolval($val);
         return $this;
     }
 
@@ -284,7 +313,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Gets the tenantId
-    * The tenant identifier for the partner Azure AD organization. Read-only. Key.
+    * The tenant identifier for the partner Microsoft Entra organization. Read-only. Key.
     *
     * @return string|null The tenantId
     */
@@ -299,7 +328,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Sets the tenantId
-    * The tenant identifier for the partner Azure AD organization. Read-only. Key.
+    * The tenant identifier for the partner Microsoft Entra organization. Read-only. Key.
     *
     * @param string $val The tenantId
     *
@@ -313,6 +342,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Gets the tenantRestrictions
+    * Defines the partner-specific tenant restrictions configuration for your organization users accessing a partner organization using partner supplied identities on your network or devices.
     *
     * @return CrossTenantAccessPolicyTenantRestrictions|null The tenantRestrictions
     */
@@ -331,6 +361,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Sets the tenantRestrictions
+    * Defines the partner-specific tenant restrictions configuration for your organization users accessing a partner organization using partner supplied identities on your network or devices.
     *
     * @param CrossTenantAccessPolicyTenantRestrictions $val The tenantRestrictions
     *
@@ -344,7 +375,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Gets the identitySynchronization
-    * Defines the cross-tenant policy for the synchronization of users from a partner tenant. Use this user synchronization policy to streamline collaboration between users in a multi-tenant organization by automating the creation, update, and deletion of users from one tenant to another.
+    * Defines the cross-tenant policy for the synchronization of users from a partner tenant. Use this user synchronization policy to streamline collaboration between users in a multitenant organization by automating the creation, update, and deletion of users from one tenant to another.
     *
     * @return CrossTenantIdentitySyncPolicyPartner|null The identitySynchronization
     */
@@ -363,7 +394,7 @@ class CrossTenantAccessPolicyConfigurationPartner implements \JsonSerializable
 
     /**
     * Sets the identitySynchronization
-    * Defines the cross-tenant policy for the synchronization of users from a partner tenant. Use this user synchronization policy to streamline collaboration between users in a multi-tenant organization by automating the creation, update, and deletion of users from one tenant to another.
+    * Defines the cross-tenant policy for the synchronization of users from a partner tenant. Use this user synchronization policy to streamline collaboration between users in a multitenant organization by automating the creation, update, and deletion of users from one tenant to another.
     *
     * @param CrossTenantIdentitySyncPolicyPartner $val The identitySynchronization
     *

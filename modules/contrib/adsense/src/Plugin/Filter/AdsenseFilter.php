@@ -11,7 +11,6 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
-use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -106,7 +105,7 @@ class AdsenseFilter extends FilterBase implements ContainerFactoryPluginInterfac
               try {
                 $module_blocks = $this->blockStorage->loadByProperties(['id' => $match[1]]);
               }
-              catch (Exception $e) {
+              catch (\Exception $e) {
                 $module_blocks = [];
               }
 
@@ -155,7 +154,7 @@ class AdsenseFilter extends FilterBase implements ContainerFactoryPluginInterfac
               $ad_text = $this->renderer->render($ad_array);
               $text = preg_replace('/\\' . $match[0] . '/', $ad_text, $text);
             }
-            catch (Exception $e) {
+            catch (\Exception $e) {
               // Do nothing.
             }
           }

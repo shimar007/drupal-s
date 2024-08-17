@@ -110,4 +110,37 @@ class WorkbookComment extends Entity
         return $this;
     }
 
+    /**
+    * Gets the task
+    * The task associated with the comment. Read-only. Nullable.
+    *
+    * @return WorkbookDocumentTask|null The task
+    */
+    public function getTask()
+    {
+        if (array_key_exists("task", $this->_propDict)) {
+            if (is_a($this->_propDict["task"], "\Beta\Microsoft\Graph\Model\WorkbookDocumentTask") || is_null($this->_propDict["task"])) {
+                return $this->_propDict["task"];
+            } else {
+                $this->_propDict["task"] = new WorkbookDocumentTask($this->_propDict["task"]);
+                return $this->_propDict["task"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the task
+    * The task associated with the comment. Read-only. Nullable.
+    *
+    * @param WorkbookDocumentTask $val The task
+    *
+    * @return WorkbookComment
+    */
+    public function setTask($val)
+    {
+        $this->_propDict["task"] = $val;
+        return $this;
+    }
+
 }

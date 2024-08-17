@@ -194,6 +194,9 @@ function search_autocomplete_library_info_build() {
           "css/themes/$file->filename" => [],
         ],
       ],
+      'dependencies' => [
+        'search_autocomplete/search_autocomplete.purify'
+      ]
     ];
   }
 

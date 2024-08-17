@@ -291,7 +291,7 @@ class CredentialUserRegistrationsSummary extends \Beta\Microsoft\Graph\Model\Ent
 
     /**
     * Gets the tenantId
-    * The Azure Active Directory tenant identifier for the managed tenant. Required. Read-only.
+    * The Microsoft Entra tenant identifier for the managed tenant. Required. Read-only.
     *
     * @return string|null The tenantId
     */
@@ -306,7 +306,7 @@ class CredentialUserRegistrationsSummary extends \Beta\Microsoft\Graph\Model\Ent
 
     /**
     * Sets the tenantId
-    * The Azure Active Directory tenant identifier for the managed tenant. Required. Read-only.
+    * The Microsoft Entra tenant identifier for the managed tenant. Required. Read-only.
     *
     * @param string $val The tenantId
     *
@@ -315,6 +315,35 @@ class CredentialUserRegistrationsSummary extends \Beta\Microsoft\Graph\Model\Ent
     public function setTenantId($val)
     {
         $this->_propDict["tenantId"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the tenantLicenseType
+    * The license type associated with the tenant; for example, AADFree, AADPremium1, AADPremium2.
+    *
+    * @return string|null The tenantLicenseType
+    */
+    public function getTenantLicenseType()
+    {
+        if (array_key_exists("tenantLicenseType", $this->_propDict)) {
+            return $this->_propDict["tenantLicenseType"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the tenantLicenseType
+    * The license type associated with the tenant; for example, AADFree, AADPremium1, AADPremium2.
+    *
+    * @param string $val The tenantLicenseType
+    *
+    * @return CredentialUserRegistrationsSummary
+    */
+    public function setTenantLicenseType($val)
+    {
+        $this->_propDict["tenantLicenseType"] = $val;
         return $this;
     }
 

@@ -1,9 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\redirect\Kernel\Migrate\d7\PathRedirectTestBase.
- */
+declare(strict_types=1);
 
 namespace Drupal\Tests\redirect\Kernel\Migrate\d7;
 
@@ -20,7 +17,15 @@ abstract class PathRedirectTestBase extends MigrateDrupalTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['redirect', 'link', 'path_alias'];
+  protected static $modules = ['redirect', 'link', 'path_alias'];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+    $this->installEntitySchema('path_alias');
+  }
 
   /**
    * Asserts various aspects of a redirect entity.
@@ -35,7 +40,7 @@ abstract class PathRedirectTestBase extends MigrateDrupalTestBase {
    *   The expected status code.
    */
   protected function assertEntity($id, $source_url, $redirect_url, $status_code) {
-    /** @var Redirect $redirect */
+    /** @var \Drupal\redirect\Entity\Redirect $redirect */
     $redirect = Redirect::load($id);
     $this->assertSame($this->getMigration('d7_path_redirect')
       ->getIdMap()

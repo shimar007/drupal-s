@@ -98,7 +98,7 @@ class MinifyHTMLExit implements EventSubscriberInterface {
       $this->currentPath = func_get_arg(4);
 
       if ($this->config) {
-        $this->token = 'MINIFYHTML_' . md5($this->time->getRequestTime());
+        $this->token = 'MINIFYHTML_' . random_int(0, $this->time->getRequestTime()) . '-';
         $arg_error = FALSE;
       }
     }

@@ -26,7 +26,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 {
     /**
     * Gets the activeDevices
-    * Number of active devices for that model. Valid values -2147483648 to 2147483647
+    * Number of active devices for that model. Valid values 0 to 2147483647
     *
     * @return int|null The activeDevices
     */
@@ -41,7 +41,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Sets the activeDevices
-    * Number of active devices for that model. Valid values -2147483648 to 2147483647
+    * Number of active devices for that model. Valid values 0 to 2147483647
     *
     * @param int $val The activeDevices
     *
@@ -55,7 +55,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Gets the averageBatteryAgeInDays
-    * The mean of the battery age for all devices of a given model in a tenant. Unit in days. Valid values -2147483648 to 2147483647
+    * The mean of the battery age for all devices of a given model in a tenant. Unit in days. Valid values 0 to 2147483647
     *
     * @return int|null The averageBatteryAgeInDays
     */
@@ -70,7 +70,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Sets the averageBatteryAgeInDays
-    * The mean of the battery age for all devices of a given model in a tenant. Unit in days. Valid values -2147483648 to 2147483647
+    * The mean of the battery age for all devices of a given model in a tenant. Unit in days. Valid values 0 to 2147483647
     *
     * @param int $val The averageBatteryAgeInDays
     *
@@ -84,7 +84,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Gets the averageEstimatedRuntimeInMinutes
-    * The mean of the estimated runtimes on full charge for all devices of a given model. Unit in minutes. Valid values -2147483648 to 2147483647
+    * The mean of the estimated runtimes on full charge for all devices of a given model. Unit in minutes. Valid values 0 to 2147483647
     *
     * @return int|null The averageEstimatedRuntimeInMinutes
     */
@@ -99,7 +99,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Sets the averageEstimatedRuntimeInMinutes
-    * The mean of the estimated runtimes on full charge for all devices of a given model. Unit in minutes. Valid values -2147483648 to 2147483647
+    * The mean of the estimated runtimes on full charge for all devices of a given model. Unit in minutes. Valid values 0 to 2147483647
     *
     * @param int $val The averageEstimatedRuntimeInMinutes
     *
@@ -113,7 +113,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Gets the averageMaxCapacityPercentage
-    * The mean of the maximum capacity for all devices of a given model. Maximum capacity measures the full charge vs. design capacity for a device’s batteries.. Valid values -2147483648 to 2147483647
+    * The mean of the maximum capacity for all devices of a given model. Maximum capacity measures the full charge vs. design capacity for a device’s batteries.. Valid values 0 to 2147483647
     *
     * @return int|null The averageMaxCapacityPercentage
     */
@@ -128,7 +128,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Sets the averageMaxCapacityPercentage
-    * The mean of the maximum capacity for all devices of a given model. Maximum capacity measures the full charge vs. design capacity for a device’s batteries.. Valid values -2147483648 to 2147483647
+    * The mean of the maximum capacity for all devices of a given model. Maximum capacity measures the full charge vs. design capacity for a device’s batteries.. Valid values 0 to 2147483647
     *
     * @param int $val The averageMaxCapacityPercentage
     *
@@ -170,6 +170,122 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
     }
 
     /**
+    * Gets the meanFullBatteryDrainCount
+    * The mean of number of times the battery has been discharged an amount that equals 100% of its capacity for all devices of a given model in a tenant. Valid values 0 to 2147483647
+    *
+    * @return int|null The meanFullBatteryDrainCount
+    */
+    public function getMeanFullBatteryDrainCount()
+    {
+        if (array_key_exists("meanFullBatteryDrainCount", $this->_propDict)) {
+            return $this->_propDict["meanFullBatteryDrainCount"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the meanFullBatteryDrainCount
+    * The mean of number of times the battery has been discharged an amount that equals 100% of its capacity for all devices of a given model in a tenant. Valid values 0 to 2147483647
+    *
+    * @param int $val The meanFullBatteryDrainCount
+    *
+    * @return UserExperienceAnalyticsBatteryHealthModelPerformance
+    */
+    public function setMeanFullBatteryDrainCount($val)
+    {
+        $this->_propDict["meanFullBatteryDrainCount"] = intval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the medianEstimatedRuntimeInMinutes
+    * The median of the estimated runtimes on full charge for all devices of a given model. Unit in minutes. Valid values 0 to 2147483647
+    *
+    * @return int|null The medianEstimatedRuntimeInMinutes
+    */
+    public function getMedianEstimatedRuntimeInMinutes()
+    {
+        if (array_key_exists("medianEstimatedRuntimeInMinutes", $this->_propDict)) {
+            return $this->_propDict["medianEstimatedRuntimeInMinutes"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the medianEstimatedRuntimeInMinutes
+    * The median of the estimated runtimes on full charge for all devices of a given model. Unit in minutes. Valid values 0 to 2147483647
+    *
+    * @param int $val The medianEstimatedRuntimeInMinutes
+    *
+    * @return UserExperienceAnalyticsBatteryHealthModelPerformance
+    */
+    public function setMedianEstimatedRuntimeInMinutes($val)
+    {
+        $this->_propDict["medianEstimatedRuntimeInMinutes"] = intval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the medianFullBatteryDrainCount
+    * The median of number of times the battery has been discharged an amount that equals 100% of its capacity for all devices of a given model in a tenant. Valid values 0 to 2147483647
+    *
+    * @return int|null The medianFullBatteryDrainCount
+    */
+    public function getMedianFullBatteryDrainCount()
+    {
+        if (array_key_exists("medianFullBatteryDrainCount", $this->_propDict)) {
+            return $this->_propDict["medianFullBatteryDrainCount"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the medianFullBatteryDrainCount
+    * The median of number of times the battery has been discharged an amount that equals 100% of its capacity for all devices of a given model in a tenant. Valid values 0 to 2147483647
+    *
+    * @param int $val The medianFullBatteryDrainCount
+    *
+    * @return UserExperienceAnalyticsBatteryHealthModelPerformance
+    */
+    public function setMedianFullBatteryDrainCount($val)
+    {
+        $this->_propDict["medianFullBatteryDrainCount"] = intval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the medianMaxCapacityPercentage
+    * The median of the maximum capacity for all devices of a given model. Maximum capacity measures the full charge vs. design capacity for a device’s batteries.. Valid values 0 to 2147483647
+    *
+    * @return int|null The medianMaxCapacityPercentage
+    */
+    public function getMedianMaxCapacityPercentage()
+    {
+        if (array_key_exists("medianMaxCapacityPercentage", $this->_propDict)) {
+            return $this->_propDict["medianMaxCapacityPercentage"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the medianMaxCapacityPercentage
+    * The median of the maximum capacity for all devices of a given model. Maximum capacity measures the full charge vs. design capacity for a device’s batteries.. Valid values 0 to 2147483647
+    *
+    * @param int $val The medianMaxCapacityPercentage
+    *
+    * @return UserExperienceAnalyticsBatteryHealthModelPerformance
+    */
+    public function setMedianMaxCapacityPercentage($val)
+    {
+        $this->_propDict["medianMaxCapacityPercentage"] = intval($val);
+        return $this;
+    }
+
+    /**
     * Gets the model
     * The model name of the device.
     *
@@ -200,7 +316,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Gets the modelBatteryHealthScore
-    * A weighted average of a model’s maximum capacity score and runtime estimate score. Values range from 0-100. Valid values -2147483648 to 2147483647
+    * A weighted average of a model’s maximum capacity score and runtime estimate score. Values range from 0-100. Valid values 0 to 2147483647
     *
     * @return int|null The modelBatteryHealthScore
     */
@@ -215,7 +331,7 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
 
     /**
     * Sets the modelBatteryHealthScore
-    * A weighted average of a model’s maximum capacity score and runtime estimate score. Values range from 0-100. Valid values -2147483648 to 2147483647
+    * A weighted average of a model’s maximum capacity score and runtime estimate score. Values range from 0-100. Valid values 0 to 2147483647
     *
     * @param int $val The modelBatteryHealthScore
     *
@@ -224,6 +340,39 @@ class UserExperienceAnalyticsBatteryHealthModelPerformance extends Entity
     public function setModelBatteryHealthScore($val)
     {
         $this->_propDict["modelBatteryHealthScore"] = intval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the modelHealthStatus
+    * The overall battery health status of a given model in a tenant. Possible values are: unknown, insufficientData, needsAttention, meetingGoals, unknownFutureValue.
+    *
+    * @return UserExperienceAnalyticsHealthState|null The modelHealthStatus
+    */
+    public function getModelHealthStatus()
+    {
+        if (array_key_exists("modelHealthStatus", $this->_propDict)) {
+            if (is_a($this->_propDict["modelHealthStatus"], "\Beta\Microsoft\Graph\Model\UserExperienceAnalyticsHealthState") || is_null($this->_propDict["modelHealthStatus"])) {
+                return $this->_propDict["modelHealthStatus"];
+            } else {
+                $this->_propDict["modelHealthStatus"] = new UserExperienceAnalyticsHealthState($this->_propDict["modelHealthStatus"]);
+                return $this->_propDict["modelHealthStatus"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the modelHealthStatus
+    * The overall battery health status of a given model in a tenant. Possible values are: unknown, insufficientData, needsAttention, meetingGoals, unknownFutureValue.
+    *
+    * @param UserExperienceAnalyticsHealthState $val The modelHealthStatus
+    *
+    * @return UserExperienceAnalyticsBatteryHealthModelPerformance
+    */
+    public function setModelHealthStatus($val)
+    {
+        $this->_propDict["modelHealthStatus"] = $val;
         return $this;
     }
 

@@ -8,7 +8,16 @@ use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
+use PHPUnit\Framework\Test;
+use function count;
+use function in_array;
+use function interface_exists;
+use function method_exists;
+use function substr_compare;
 
+/**
+ * @implements Rule<Node\Stmt\Class_>
+ */
 final class BrowserTestBaseDefaultThemeRule implements Rule
 {
 
@@ -19,10 +28,9 @@ final class BrowserTestBaseDefaultThemeRule implements Rule
 
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!interface_exists(\PHPUnit\Framework\Test::class)) {
+        if (!interface_exists(Test::class)) {
             return [];
         }
-        assert($node instanceof Node\Stmt\Class_);
         if ($node->extends === null) {
             return [];
         }
@@ -38,7 +46,8 @@ final class BrowserTestBaseDefaultThemeRule implements Rule
 
         // Do some cheap preflight tests to make sure the class is in a
         // namespace that makes sense to inspect.
-        $parts = $node->namespacedName->parts;
+        // @phpstan-ignore-next-line
+        $parts = method_exists($node->namespacedName, 'getParts') ? $node->namespacedName->getParts() : $node->namespacedName->parts;
         // The namespace is too short to be a test so skip inspection.
         if (count($parts) < 3) {
             return [];
@@ -62,6 +71,7 @@ final class BrowserTestBaseDefaultThemeRule implements Rule
 
         $excludedTestTypes = TypeCombinator::union(
             new ObjectType('Drupal\\FunctionalTests\\Update\\UpdatePathTestBase'),
+            new ObjectType('Drupal\\FunctionalTests\\Installer\\InstallerConfigDirectoryTestBase'),
             new ObjectType('Drupal\\FunctionalTests\\Installer\\InstallerExistingConfigTestBase')
         );
         if ($excludedTestTypes->isSuperTypeOf($classType)->yes()) {
@@ -94,7 +104,7 @@ final class BrowserTestBaseDefaultThemeRule implements Rule
         if ($defaultTheme === null || $defaultTheme === '') {
             return [
                 RuleErrorBuilder::message('Drupal\Tests\BrowserTestBase::$defaultTheme is required. See https://www.drupal.org/node/3083055, which includes recommendations on which theme to use.')
-                    ->line($node->getLine())->build(),
+                    ->line($node->getStartLine())->build(),
             ];
         }
         return [];

@@ -84,7 +84,7 @@ class WorkbookWorksheet extends Entity
 
     /**
     * Gets the visibility
-    * The Visibility of the worksheet. The possible values are: Visible, Hidden, VeryHidden.
+    * The visibility of the worksheet. The possible values are: Visible, Hidden, VeryHidden.
     *
     * @return string|null The visibility
     */
@@ -99,7 +99,7 @@ class WorkbookWorksheet extends Entity
 
     /**
     * Sets the visibility
-    * The Visibility of the worksheet. The possible values are: Visible, Hidden, VeryHidden.
+    * The visibility of the worksheet. The possible values are: Visible, Hidden, VeryHidden.
     *
     * @param string $val The visibility
     *
@@ -261,6 +261,36 @@ class WorkbookWorksheet extends Entity
     public function setTables($val)
     {
         $this->_propDict["tables"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the tasks
+    * Collection of document tasks on this worksheet. Read-only.
+     *
+     * @return array|null The tasks
+     */
+    public function getTasks()
+    {
+        if (array_key_exists("tasks", $this->_propDict)) {
+           return $this->_propDict["tasks"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the tasks
+    * Collection of document tasks on this worksheet. Read-only.
+    *
+    * @param WorkbookDocumentTask[] $val The tasks
+    *
+    * @return WorkbookWorksheet
+    */
+    public function setTasks($val)
+    {
+        $this->_propDict["tasks"] = $val;
         return $this;
     }
 

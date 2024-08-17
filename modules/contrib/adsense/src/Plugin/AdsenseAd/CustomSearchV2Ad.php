@@ -2,8 +2,8 @@
 
 namespace Drupal\adsense\Plugin\AdsenseAd;
 
-use Drupal\adsense\SearchAdBase;
 use Drupal\adsense\PublisherId;
+use Drupal\adsense\SearchAdBase;
 
 /**
  * Provides an AdSense custom search engine form.

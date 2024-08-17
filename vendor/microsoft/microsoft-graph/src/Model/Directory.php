@@ -26,6 +26,36 @@ class Directory extends Entity
 {
 
      /**
+     * Gets the deviceLocalCredentials
+    * The credentials of the device's local administrator account backed up to Microsoft Entra ID.
+     *
+     * @return array|null The deviceLocalCredentials
+     */
+    public function getDeviceLocalCredentials()
+    {
+        if (array_key_exists("deviceLocalCredentials", $this->_propDict)) {
+           return $this->_propDict["deviceLocalCredentials"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the deviceLocalCredentials
+    * The credentials of the device's local administrator account backed up to Microsoft Entra ID.
+    *
+    * @param DeviceLocalCredentialInfo[] $val The deviceLocalCredentials
+    *
+    * @return Directory
+    */
+    public function setDeviceLocalCredentials($val)
+    {
+        $this->_propDict["deviceLocalCredentials"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the administrativeUnits
     * Conceptual container for user and group directory objects.
      *
@@ -57,6 +87,7 @@ class Directory extends Entity
 
      /**
      * Gets the attributeSets
+    * Group of related custom security attribute definitions.
      *
      * @return array|null The attributeSets
      */
@@ -71,6 +102,7 @@ class Directory extends Entity
 
     /**
     * Sets the attributeSets
+    * Group of related custom security attribute definitions.
     *
     * @param AttributeSet[] $val The attributeSets
     *
@@ -85,6 +117,7 @@ class Directory extends Entity
 
      /**
      * Gets the customSecurityAttributeDefinitions
+    * Schema of a custom security attributes (key-value pairs).
      *
      * @return array|null The customSecurityAttributeDefinitions
      */
@@ -99,6 +132,7 @@ class Directory extends Entity
 
     /**
     * Sets the customSecurityAttributeDefinitions
+    * Schema of a custom security attributes (key-value pairs).
     *
     * @param CustomSecurityAttributeDefinition[] $val The customSecurityAttributeDefinitions
     *

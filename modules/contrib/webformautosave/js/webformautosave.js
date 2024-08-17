@@ -73,27 +73,32 @@
     store.submit = $(form).find('[data-autosave-trigger="submit"]');
 
     // Add input, change and focus event listeners to each input.
-    $(
-      once(
-        'webformAutosaveBehaviorFiles',
-        'body',
-        context
-      ),
-    )
+    $(once('webformAutosaveBehaviorFiles', 'body', context))
       // Add an input listener to most inputs.
-      .on('input', 'input:not([data-autosave-trigger="submit"]):not([type="file"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])', inputHandler)
+      .on(
+        'input',
+        'input:not([data-autosave-trigger="submit"]):not([type="file"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])',
+        inputHandler,
+      )
       // Add a change listener to file inputs.
-      .on('change', 'input[type="file"]', inputHandler)
-      // eslint-disable-next-line func-names
-      .on('focus', 'input:not([data-autosave-trigger="submit"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])', function () {
-        store.focusedElement = $(this);
-      });
-
-    // Remove the active class and perform other actions when ajax is complete.
-    $(once('webformAutosaveBehaviorAjaxComplete', 'body')).ajaxComplete(
-      ajaxCompleteHandler,
-    );
+      .on(
+        'change',
+        'input[type="file"], select:not([data-autosave-trigger="submit"])',
+        inputHandler,
+      )
+      .on('keydown keyup paste blur', '.ck-editor__editable', inputHandler)
+      .on(
+        'focus',
+        'input:not([data-autosave-trigger="submit"]), select:not([data-autosave-trigger="submit"]), textarea:not([data-autosave-trigger="submit"])',
+        // eslint-disable-next-line func-names
+        function () {
+          store.focusedElement = $(this);
+        },
+      );
   }
+
+  // Remove the active class and perform other actions when ajax is complete.
+  $(document).on('ajaxComplete', ajaxCompleteHandler);
 
   /**
    * Setup our default behaviors for the webformautosave module.
@@ -112,16 +117,20 @@
       // Let's bind an input event to our inputs once.
       if ($(webformForm).length) {
         // eslint-disable-next-line func-names
-        $(once('webformAutosaveBindHandler', webformForm)).each(function (form) {
-          bindAutosaveHandlers(form, context);
-        });
+        $(once('webformAutosaveBindHandler', webformForm)).each(
+          function bindHandlers(form) {
+            bindAutosaveHandlers(form, context);
+          },
+        );
       }
       // Ensure the wrapper for our draft submit is hidden.
       // eslint-disable-next-line func-names
-      $(once('webformAutosaveHideWrapper', webformForm)).each(function () {
-        // Ensure the wrapper is hidden.
-        $(webformForm).find('.webformautosave-trigger--wrapper').hide();
-      });
+      $(once('webformAutosaveHideWrapper', webformForm)).each(
+        function hideDraftSubmit() {
+          // Ensure the wrapper is hidden.
+          $(webformForm).find('.webformautosave-trigger--wrapper').hide();
+        },
+      );
     },
   };
 })(jQuery, Drupal, drupalSettings);

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Installation hooks for CSP Extras module.
+ */
+
+/**
  * Implements hook_requirements().
  */
 function csp_extras_requirements($phase) {

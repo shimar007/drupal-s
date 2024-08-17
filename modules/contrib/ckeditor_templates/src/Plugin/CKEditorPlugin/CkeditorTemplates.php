@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editor\Entity\Editor;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Extension\ThemeExtensionList;
 
 /**
  * Defines the "Templates" plugin.
@@ -28,11 +29,18 @@ class CkeditorTemplates extends CKEditorPluginBase implements CKEditorPluginConf
   private $configFactoryService;
 
   /**
+   * Drupal Theme Extension List.
+   *
+   * @var \Drupal\Core\Extension\ThemeExtensionList
+   */
+  private $themeExtensionList;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $configuration, $plugin_id, $plugin_definition, $container->get('config.factory')
+      $configuration, $plugin_id, $plugin_definition, $container->get('config.factory'), $container->get('extension.list.theme')
     );
   }
 
@@ -47,11 +55,14 @@ class CkeditorTemplates extends CKEditorPluginBase implements CKEditorPluginConf
    *   The plugin implementation definition.
    * @param \Drupal\Core\Config\ConfigFactory $configFactoryService
    *   Drupal Configuration Factory Service.
+   * @param \Drupal\Core\Extension\ThemeExtensionList $themeExtensionList
+   *   Drupal Theme Extension List Service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactory $configFactoryService) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactory $configFactoryService, ThemeExtensionList $themeExtensionList) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->configFactoryService = $configFactoryService;
+    $this->themeExtensionList = $themeExtensionList;
   }
 
   /**
@@ -172,9 +183,9 @@ class CkeditorTemplates extends CKEditorPluginBase implements CKEditorPluginConf
     $defaultThemConfig = $this->configFactoryService->get('system.theme');
     $defaultThemeName = $defaultThemConfig->get('default');
 
-    $defaultThemeFileAbsolutePath = DRUPAL_ROOT . '/' . drupal_get_path('theme', $defaultThemeName) . '/templates/ckeditor_templates.js';
+    $defaultThemeFileAbsolutePath = DRUPAL_ROOT . '/' . $this->themeExtensionList->getPath($defaultThemeName) . '/templates/ckeditor_templates.js';
     if (file_exists($defaultThemeFileAbsolutePath)) {
-      $defaultPath = base_path() . drupal_get_path('theme', $defaultThemeName) . '/templates/ckeditor_templates.js';
+      $defaultPath = base_path() . $this->themeExtensionList->getPath($defaultThemeName) . '/templates/ckeditor_templates.js';
     }
 
     return [$defaultPath];

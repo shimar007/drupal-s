@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\redirect\Unit;
 
 use Drupal\Tests\UnitTestCase;
 use Drupal\redirect\EventSubscriber\RouteNormalizerRequestSubscriber;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -21,7 +23,7 @@ class RouteNormalizerRequestSubscriberTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $kill_switch = $this->createMock('\Drupal\Core\PageCache\ResponsePolicy\KillSwitch');
@@ -69,7 +71,7 @@ class RouteNormalizerRequestSubscriberTest extends UnitTestCase {
     $request_uri = 'https://example.com/route-to-normalize';
     $request_query = [];
 
-    $event = $this->getGetResponseEventStub($request_uri, http_build_query($request_query), HttpKernelInterface::MASTER_REQUEST, TRUE);
+    $event = $this->getGetResponseEventStub($request_uri, http_build_query($request_query), HttpKernelInterface::MAIN_REQUEST, TRUE);
     // We set '_disable_route_normalizer' as a request attribute and expect to leave onKernelRequestRedirect at the beginning,
     // i.e. $this->redirectChecker->canRedirect($request) should never be called.
     $subscriber = $this->getSubscriber($request_uri, TRUE, FALSE);
@@ -140,8 +142,7 @@ class RouteNormalizerRequestSubscriberTest extends UnitTestCase {
    * @return \Drupal\Core\Routing\UrlGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected function getUrlGeneratorStub($request_uri, $call_expected = TRUE) {
-    $url_generator = $this->getMockBuilder('\Drupal\Core\Routing\UrlGeneratorInterface')
-      ->getMock();
+    $url_generator = $this->createMock('\Drupal\Core\Routing\UrlGeneratorInterface');
 
     $options = ['absolute' => TRUE];
 
@@ -163,8 +164,7 @@ class RouteNormalizerRequestSubscriberTest extends UnitTestCase {
    * @return \Drupal\Core\Path\PathMatcherInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected function getPathMatcherStub($call_expected = TRUE) {
-    $path_matcher = $this->getMockBuilder('\Drupal\Core\Path\PathMatcherInterface')
-      ->getMock();
+    $path_matcher = $this->createMock('\Drupal\Core\Path\PathMatcherInterface');
 
     $expectation = $call_expected ? $this->once() : $this->never();
 
@@ -184,9 +184,7 @@ class RouteNormalizerRequestSubscriberTest extends UnitTestCase {
    * @return \Drupal\redirect\RedirectChecker|\PHPUnit\Framework\MockObject\MockObject
    */
   protected function getRedirectCheckerStub($call_expected = TRUE) {
-    $redirect_checker = $this->getMockBuilder('\Drupal\redirect\RedirectChecker')
-      ->disableOriginalConstructor()
-      ->getMock();
+    $redirect_checker = $this->createMock('\Drupal\redirect\RedirectChecker');
 
     $expectation = $call_expected ? $this->once() : $this->never();
 
@@ -209,18 +207,17 @@ class RouteNormalizerRequestSubscriberTest extends UnitTestCase {
    * @param bool $set_request_attribute
    *   If true, the request attribute '_disable_route_normalizer' will be set.
    *
-   * @return \Symfony\Component\HttpKernel\Event\GetResponseEvent
+   * @return \Symfony\Component\HttpKernel\Event\RequestEvent
    */
-  protected function getGetResponseEventStub($path_info, $query_string, $request_type = HttpKernelInterface::MASTER_REQUEST, $set_request_attribute = FALSE) {
+  protected function getGetResponseEventStub($path_info, $query_string, $request_type = HttpKernelInterface::MAIN_REQUEST, $set_request_attribute = FALSE) {
     $request = Request::create($path_info . '?' . $query_string, 'GET', [], [], [], ['SCRIPT_NAME' => 'index.php', 'SCRIPT_FILENAME' => 'index.php']);
 
     if ($set_request_attribute === TRUE) {
       $request->attributes->add(['_disable_route_normalizer' => TRUE]);
     }
 
-    $http_kernel = $this->getMockBuilder('\Symfony\Component\HttpKernel\HttpKernelInterface')
-      ->getMock();
-    return new GetResponseEvent($http_kernel, $request, $request_type);
+    $http_kernel = $this->createMock('\Symfony\Component\HttpKernel\HttpKernelInterface');
+    return new RequestEvent($http_kernel, $request, $request_type);
   }
 
 }

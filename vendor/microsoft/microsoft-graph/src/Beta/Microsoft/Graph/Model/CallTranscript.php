@@ -26,7 +26,7 @@ class CallTranscript extends Entity
 {
     /**
     * Gets the content
-    * A field that represents the content of the transcript. Read-only.
+    * The content of the transcript. Read-only.
     *
     * @return \GuzzleHttp\Psr7\Stream|null The content
     */
@@ -45,7 +45,7 @@ class CallTranscript extends Entity
 
     /**
     * Sets the content
-    * A field that represents the content of the transcript. Read-only.
+    * The content of the transcript. Read-only.
     *
     * @param \GuzzleHttp\Psr7\Stream $val The content
     *
@@ -91,8 +91,99 @@ class CallTranscript extends Entity
     }
 
     /**
+    * Gets the meetingId
+    * The unique identifier of the online meeting related to this transcript. Read-only.
+    *
+    * @return string|null The meetingId
+    */
+    public function getMeetingId()
+    {
+        if (array_key_exists("meetingId", $this->_propDict)) {
+            return $this->_propDict["meetingId"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the meetingId
+    * The unique identifier of the online meeting related to this transcript. Read-only.
+    *
+    * @param string $val The meetingId
+    *
+    * @return CallTranscript
+    */
+    public function setMeetingId($val)
+    {
+        $this->_propDict["meetingId"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the meetingOrganizer
+    * The identity information of the organizer of the onlineMeeting related to this transcript. Read-only.
+    *
+    * @return IdentitySet|null The meetingOrganizer
+    */
+    public function getMeetingOrganizer()
+    {
+        if (array_key_exists("meetingOrganizer", $this->_propDict)) {
+            if (is_a($this->_propDict["meetingOrganizer"], "\Beta\Microsoft\Graph\Model\IdentitySet") || is_null($this->_propDict["meetingOrganizer"])) {
+                return $this->_propDict["meetingOrganizer"];
+            } else {
+                $this->_propDict["meetingOrganizer"] = new IdentitySet($this->_propDict["meetingOrganizer"]);
+                return $this->_propDict["meetingOrganizer"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the meetingOrganizer
+    * The identity information of the organizer of the onlineMeeting related to this transcript. Read-only.
+    *
+    * @param IdentitySet $val The meetingOrganizer
+    *
+    * @return CallTranscript
+    */
+    public function setMeetingOrganizer($val)
+    {
+        $this->_propDict["meetingOrganizer"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the meetingOrganizerId
+    * The unique identifier of the organizer of the onlineMeeting related to this transcript. Read-only.
+    *
+    * @return string|null The meetingOrganizerId
+    */
+    public function getMeetingOrganizerId()
+    {
+        if (array_key_exists("meetingOrganizerId", $this->_propDict)) {
+            return $this->_propDict["meetingOrganizerId"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the meetingOrganizerId
+    * The unique identifier of the organizer of the onlineMeeting related to this transcript. Read-only.
+    *
+    * @param string $val The meetingOrganizerId
+    *
+    * @return CallTranscript
+    */
+    public function setMeetingOrganizerId($val)
+    {
+        $this->_propDict["meetingOrganizerId"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the metadataContent
-    * A field that represents the time-aligned metadata of the utterances in the transcript. Read-only.
+    * The time-aligned metadata of the utterances in the transcript. Read-only.
     *
     * @return \GuzzleHttp\Psr7\Stream|null The metadataContent
     */
@@ -111,7 +202,7 @@ class CallTranscript extends Entity
 
     /**
     * Sets the metadataContent
-    * A field that represents the time-aligned metadata of the utterances in the transcript. Read-only.
+    * The time-aligned metadata of the utterances in the transcript. Read-only.
     *
     * @param \GuzzleHttp\Psr7\Stream $val The metadataContent
     *
@@ -120,6 +211,35 @@ class CallTranscript extends Entity
     public function setMetadataContent($val)
     {
         $this->_propDict["metadataContent"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the transcriptContentUrl
+    * The URL which can be used to access the content of the transcript. Read-only.
+    *
+    * @return string|null The transcriptContentUrl
+    */
+    public function getTranscriptContentUrl()
+    {
+        if (array_key_exists("transcriptContentUrl", $this->_propDict)) {
+            return $this->_propDict["transcriptContentUrl"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the transcriptContentUrl
+    * The URL which can be used to access the content of the transcript. Read-only.
+    *
+    * @param string $val The transcriptContentUrl
+    *
+    * @return CallTranscript
+    */
+    public function setTranscriptContentUrl($val)
+    {
+        $this->_propDict["transcriptContentUrl"] = $val;
         return $this;
     }
 

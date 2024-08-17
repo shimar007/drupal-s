@@ -6,6 +6,7 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Render\HtmlResponse;
 use Drupal\csp\EventSubscriber\ResponseCspSubscriber;
 use Drupal\csp\LibraryPolicyBuilder;
+use Drupal\csp\Nonce;
 use Drupal\csp\ReportingHandlerPluginManager;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -58,6 +59,13 @@ class ResponseCspSubscriberWebRtcTest extends UnitTestCase {
   private $eventDispatcher;
 
   /**
+   * The Nonce service.
+   *
+   * @var \PHPUnit\Framework\MockObject\MockObject|\Drupal\csp\Nonce
+   */
+  private $nonce;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp(): void {
@@ -86,6 +94,8 @@ class ResponseCspSubscriberWebRtcTest extends UnitTestCase {
     $this->reportingHandlerPluginManager = $this->createMock(ReportingHandlerPluginManager::class);
 
     $this->eventDispatcher = $this->createMock(EventDispatcher::class);
+
+    $this->nonce = $this->createMock(Nonce::class);
   }
 
   /**
@@ -117,7 +127,8 @@ class ResponseCspSubscriberWebRtcTest extends UnitTestCase {
       $configFactory,
       $this->libraryPolicy,
       $this->reportingHandlerPluginManager,
-      $this->eventDispatcher
+      $this->eventDispatcher,
+      $this->nonce
     );
 
     $this->response->headers->expects($this->never())
@@ -169,7 +180,8 @@ class ResponseCspSubscriberWebRtcTest extends UnitTestCase {
       $configFactory,
       $this->libraryPolicy,
       $this->reportingHandlerPluginManager,
-      $this->eventDispatcher
+      $this->eventDispatcher,
+      $this->nonce
     );
 
     $this->response->headers->expects($this->once())

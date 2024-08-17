@@ -13,7 +13,7 @@ use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class AdsenseManagedSettings.
+ * Form for the adsense managed ads settings.
  */
 class AdsenseManagedSettings extends ConfigFormBase {
 
@@ -79,6 +79,13 @@ class AdsenseManagedSettings extends ConfigFormBase {
       '#default_value' => $config->get('adsense_managed_async'),
       '#description' => $this->t('This will enable the asynchronous ad code type. [@moreinfo]',
         ['@moreinfo' => Link::fromTextAndUrl($this->t('More information'), Url::fromUri('https://support.google.com/adsense/answer/3221666'))->toString()]),
+    ];
+
+    $form['adsense_managed_defer'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Defer javascript loading?'),
+      '#default_value' => $config->get('adsense_managed_defer'),
+      '#description' => $this->t('This will defer the execution of the ad script until the page is loaded'),
     ];
 
     $form['adsense_managed_page_level_ads_enabled'] = [

@@ -124,7 +124,7 @@ class ConditionalAccessSessionControls extends Entity
     }
     /**
     * Gets the disableResilienceDefaults
-    * Session control that determines whether it is acceptable for Azure AD to extend existing sessions based on information collected prior to an outage or not.
+    * Session control that determines whether it's acceptable for Microsoft Entra ID to extend existing sessions based on information collected prior to an outage or not.
     *
     * @return bool|null The disableResilienceDefaults
     */
@@ -139,7 +139,7 @@ class ConditionalAccessSessionControls extends Entity
 
     /**
     * Sets the disableResilienceDefaults
-    * Session control that determines whether it is acceptable for Azure AD to extend existing sessions based on information collected prior to an outage or not.
+    * Session control that determines whether it's acceptable for Microsoft Entra ID to extend existing sessions based on information collected prior to an outage or not.
     *
     * @param bool $val The value of the disableResilienceDefaults
     *
@@ -186,6 +186,7 @@ class ConditionalAccessSessionControls extends Entity
 
     /**
     * Gets the secureSignInSession
+    * Session control to require sign in sessions to be bound to a device.
     *
     * @return SecureSignInSessionControl|null The secureSignInSession
     */
@@ -204,6 +205,7 @@ class ConditionalAccessSessionControls extends Entity
 
     /**
     * Sets the secureSignInSession
+    * Session control to require sign in sessions to be bound to a device.
     *
     * @param SecureSignInSessionControl $val The value to assign to the secureSignInSession
     *

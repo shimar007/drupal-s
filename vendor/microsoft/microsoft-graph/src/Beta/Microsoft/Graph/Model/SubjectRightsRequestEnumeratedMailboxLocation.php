@@ -36,7 +36,6 @@ class SubjectRightsRequestEnumeratedMailboxLocation extends SubjectRightsRequest
 
     /**
     * Gets the upns
-    * Collection of mailboxes that should be included in the search. Includes the UPN (user principal name) of each mailbox, for example, Monica.Thompson@contoso.com.
     *
     * @return string|null The upns
     */
@@ -51,7 +50,6 @@ class SubjectRightsRequestEnumeratedMailboxLocation extends SubjectRightsRequest
 
     /**
     * Sets the upns
-    * Collection of mailboxes that should be included in the search. Includes the UPN (user principal name) of each mailbox, for example, Monica.Thompson@contoso.com.
     *
     * @param string $val The value of the upns
     *
@@ -60,6 +58,34 @@ class SubjectRightsRequestEnumeratedMailboxLocation extends SubjectRightsRequest
     public function setUpns($val)
     {
         $this->_propDict["upns"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the userPrincipalNames
+    * Collection of mailboxes that should be included in the search. Includes the user principal name (UPN) of each mailbox, for example, Monica.Thompson@contoso.com.
+    *
+    * @return string|null The userPrincipalNames
+    */
+    public function getUserPrincipalNames()
+    {
+        if (array_key_exists("userPrincipalNames", $this->_propDict)) {
+            return $this->_propDict["userPrincipalNames"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the userPrincipalNames
+    * Collection of mailboxes that should be included in the search. Includes the user principal name (UPN) of each mailbox, for example, Monica.Thompson@contoso.com.
+    *
+    * @param string $val The value of the userPrincipalNames
+    *
+    * @return SubjectRightsRequestEnumeratedMailboxLocation
+    */
+    public function setUserPrincipalNames($val)
+    {
+        $this->_propDict["userPrincipalNames"] = $val;
         return $this;
     }
 }

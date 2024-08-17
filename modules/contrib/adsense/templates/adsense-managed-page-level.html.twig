@@ -4,7 +4,12 @@
  * AdSense auto ads HTML code.
  */
 #}
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+{% if not defer %}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-{{ client }}"
+     crossorigin="anonymous"></script>
+{% else %}
+  {{ attach_library('adsense/adsense.adsbygoogle') }}
+{% endif %}
 <script>
   (adsbygoogle = window.adsbygoogle || []).push({
     google_ad_client: "ca-{{ client }}",

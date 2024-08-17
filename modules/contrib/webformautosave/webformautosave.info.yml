@@ -7,7 +7,7 @@ dependencies:
   - webform:webform
   - webform:webform_submission_log
 
-# Information added by Drupal.org packaging script on 2023-01-24
-version: '2.0.1'
+# Information added by Drupal.org packaging script on 2024-02-06
+version: '2.0.2'
 project: 'webformautosave'
-datestamp: 1674586151
+datestamp: 1707261621

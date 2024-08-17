@@ -5,7 +5,8 @@ namespace Drupal\adsense_oldcode\Plugin\Block;
 use Drupal\adsense\AdBlockInterface;
 use Drupal\adsense_oldcode\Plugin\AdsenseAd\OldSearchAd;
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -22,14 +23,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class OldSearchAdBlock extends BlockBase implements AdBlockInterface, ContainerFactoryPluginInterface {
 
   /**
-   * Configuration.
+   * Stores the configuration factory.
    *
-   * @var \Drupal\Core\Config\ImmutableConfig
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
-  protected $config;
+  protected $configFactory;
 
   /**
-   * Creates a new AdsenseAdBase instance.
+   * Creates a new OldCodeAdBlock instance.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -37,12 +38,12 @@ class OldSearchAdBlock extends BlockBase implements AdBlockInterface, ContainerF
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Config\ImmutableConfig $config
-   *   The configuration.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The factory for configuration objects.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ImmutableConfig $config) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->config = $config;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -53,7 +54,7 @@ class OldSearchAdBlock extends BlockBase implements AdBlockInterface, ContainerF
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('config.factory')->get('adsense_search.settings')
+      $container->get('config.factory')
     );
   }
 
@@ -89,7 +90,7 @@ class OldSearchAdBlock extends BlockBase implements AdBlockInterface, ContainerF
 
     $channel_list = [];
     for ($channel = 1; $channel <= ADSENSE_OLDCODE_MAX_CHANNELS; $channel++) {
-      $title = $this->config->get('adsense_ad_channel_' . $channel);
+      $title = $this->configFactory->get('adsense_oldcode.settings')->get('adsense_ad_channel_' . $channel);
       if (!empty($title)) {
         $channel_list[$channel] = $title;
       }
@@ -116,9 +117,28 @@ class OldSearchAdBlock extends BlockBase implements AdBlockInterface, ContainerF
   /**
    * {@inheritdoc}
    */
+  public function getCacheContexts() {
+    return Cache::mergeContexts(parent::getCacheContexts(),
+      $this->configFactory->get('adsense.settings')->getCacheContexts(),
+      $this->configFactory->get('adsense_oldcode.settings')->getCacheContexts(),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTags() {
+    return Cache::mergeTags(parent::getCacheTags(),
+      $this->configFactory->get('adsense.settings')->getCacheTags(),
+      $this->configFactory->get('adsense_oldcode.settings')->getCacheTags()
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getCacheMaxAge() {
-    /*return Cache::PERMANENT;*/
-    return 0;
+    return Cache::PERMANENT;
   }
 
 }

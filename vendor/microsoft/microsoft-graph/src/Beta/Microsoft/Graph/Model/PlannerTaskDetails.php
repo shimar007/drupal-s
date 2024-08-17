@@ -58,6 +58,39 @@ class PlannerTaskDetails extends PlannerDelta
     }
 
     /**
+    * Gets the completionRequirements
+    * Contains detailed information about requirements on the task.
+    *
+    * @return PlannerTaskCompletionRequirementDetails|null The completionRequirements
+    */
+    public function getCompletionRequirements()
+    {
+        if (array_key_exists("completionRequirements", $this->_propDict)) {
+            if (is_a($this->_propDict["completionRequirements"], "\Beta\Microsoft\Graph\Model\PlannerTaskCompletionRequirementDetails") || is_null($this->_propDict["completionRequirements"])) {
+                return $this->_propDict["completionRequirements"];
+            } else {
+                $this->_propDict["completionRequirements"] = new PlannerTaskCompletionRequirementDetails($this->_propDict["completionRequirements"]);
+                return $this->_propDict["completionRequirements"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the completionRequirements
+    * Contains detailed information about requirements on the task.
+    *
+    * @param PlannerTaskCompletionRequirementDetails $val The completionRequirements
+    *
+    * @return PlannerTaskDetails
+    */
+    public function setCompletionRequirements($val)
+    {
+        $this->_propDict["completionRequirements"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the description
     * Description of the task.
     *
@@ -88,7 +121,7 @@ class PlannerTaskDetails extends PlannerDelta
 
     /**
     * Gets the notes
-    * Rich text description of the task. To be used by HTML-aware clients. For backwards compatibility, a plain-text version of the HTML description will be synced to the 'description' field. If this field has not previously been set but 'description' has been, the existing description will be synchronized to 'notes' with minimal whitespace-preserving HTML markup. Setting both 'description' and 'notes' is an error and will result in an exception.
+    * Rich text description of the task. To be used by HTML-aware clients. For backwards compatibility, a plain-text version of the HTML description will be synced to the 'description' field. If this field hasn't previously been set but 'description' has been, the existing description is synchronized to 'notes' with minimal whitespace-preserving HTML markup. Setting both 'description' and 'notes' is an error and will result in an exception.
     *
     * @return ItemBody|null The notes
     */
@@ -107,7 +140,7 @@ class PlannerTaskDetails extends PlannerDelta
 
     /**
     * Sets the notes
-    * Rich text description of the task. To be used by HTML-aware clients. For backwards compatibility, a plain-text version of the HTML description will be synced to the 'description' field. If this field has not previously been set but 'description' has been, the existing description will be synchronized to 'notes' with minimal whitespace-preserving HTML markup. Setting both 'description' and 'notes' is an error and will result in an exception.
+    * Rich text description of the task. To be used by HTML-aware clients. For backwards compatibility, a plain-text version of the HTML description will be synced to the 'description' field. If this field hasn't previously been set but 'description' has been, the existing description is synchronized to 'notes' with minimal whitespace-preserving HTML markup. Setting both 'description' and 'notes' is an error and will result in an exception.
     *
     * @param ItemBody $val The notes
     *

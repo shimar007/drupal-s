@@ -22,19 +22,13 @@ class OfficeHoursDatelist extends Datelist {
     $info = [
       '#input' => TRUE,
       '#tree' => TRUE,
-      '#element_validate' => [[static::class, 'validateOfficeHoursDatelist']],
-      '#process' => [[static::class, 'processOfficeHoursDatelist']],
       // @see Drupal\Core\Datetime\Element\Datelist.
-      '#date_part_order' => ['year', 'month', 'day', 'hour', 'minute'],
+      '#date_part_order' => ['hour', 'minute', 'ampm'],
       '#date_year_range' => '1900:2050',
+      '#date_time_element' => 'time',
+      // @todo Add Timezone.
       '#date_timezone' => '+0000',
-      // Callbacks, used to add a jQuery time picker or an 'all_day' checkbox.
-      '#date_time_callbacks' => [],
     ];
-
-    // #process, #validate bottom-up.
-    $info['#element_validate'] = array_merge($parent_info['#element_validate'], $info['#element_validate']);
-    $info['#process'] = array_merge($parent_info['#process'], $info['#process']);
 
     return $info + $parent_info;
   }
@@ -78,7 +72,7 @@ class OfficeHoursDatelist extends Datelist {
           $timezone = $element['#date_timezone'];
           // The Date function needs a fixed format, so format $time to '0030'.
           $time = OfficeHoursDateHelper::format($time, 'Hi');
-          $date = OfficeHoursDateHelper::createFromFormat('Gi', $time, $timezone);
+          $date = OfficeHoursDateHelper::createFromFormat('Hi', $time, $timezone);
         }
       }
       catch (\Exception $e) {
@@ -105,13 +99,22 @@ class OfficeHoursDatelist extends Datelist {
    * @return array
    *   The screen element.
    */
-  public static function processOfficeHoursDatelist(array &$element, FormStateInterface $form_state, array &$complete_form) {
-    $element['hour']['#options'] = $element['#hour_options'];
+  public static function processDatelist(&$element, FormStateInterface $form_state, &$complete_form) {
+    $element = parent::processDatelist($element, $form_state, $complete_form);
+
+    $time_format = $element['#field_settings']['time_format'];
+    $limit_start = $element['#field_settings']['limit_start'];
+    $limit_end = $element['#field_settings']['limit_end'];
+
+    // Get the valid, restricted hours.
+    // Date API doesn't provide a straight method for this.
+    $element['hour']['#options'] = OfficeHoursDateHelper::hours($time_format, FALSE, $limit_start, $limit_end);
+
     return $element;
   }
 
   /**
-   * Validate the hours selector element.
+   * Validate the hours selector element. This overrides parent function.
    *
    * @param array $element
    *   The form element to process.
@@ -120,16 +123,33 @@ class OfficeHoursDatelist extends Datelist {
    * @param array $complete_form
    *   The complete form structure.
    */
-  public static function validateOfficeHoursDatelist(array &$element, FormStateInterface $form_state, array &$complete_form) {
+  public static function validateDatelist(&$element, FormStateInterface $form_state, &$complete_form) {
+    // This overrides parent::validateDatelist() function.
     $input = $element['#value'];
+    $value = NULL;
 
-    $value = '';
-    if (isset($input['object']) && $input['object']) {
+    // @todo Get proper title.
+    $title = static::getElementTitle($element, $complete_form);
+
+    $is_empty = empty($input['hour']) && empty($input['minute']) && (!isset($element['#date_part_order']['ampm']) || empty($input['ampm']));
+    $all_empty = static::checkEmptyInputs($input, $element['#date_part_order']);
+
+    // If there's empty input, set it to empty.
+    if ($is_empty) {
+      $form_state->setValueForElement($element, NULL);
+    }
+    elseif (!empty($all_empty)) {
+      foreach ($all_empty as $value) {
+        $form_state->setError($element, t('The %field time is incomplete.', ['%field' => $title]));
+        $form_state->setError($element[$value], t('A value must be selected for %part.', ['%part' => $value]));
+      }
+    }
+    else {
       $value = (string) $input['object']->format('Gi');
       // Set value for usage in OfficeHoursBaseSlot::validateOfficeHoursSlot().
       $element['#value'] = $value;
+      $form_state->setValueForElement($element, $value);
     }
-    $form_state->setValueForElement($element, $value);
   }
 
 }

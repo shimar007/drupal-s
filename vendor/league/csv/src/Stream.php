@@ -13,10 +13,13 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use RuntimeException;
 use SeekableIterator;
 use SplFileObject;
 use Stringable;
 use TypeError;
+use ValueError;
+
 use function array_keys;
 use function array_walk_recursive;
 use function fclose;
@@ -40,6 +43,7 @@ use function stream_filter_append;
 use function stream_filter_remove;
 use function stream_get_meta_data;
 use function strlen;
+
 use const SEEK_SET;
 
 /**
@@ -54,9 +58,9 @@ final class Stream implements SeekableIterator
     private bool $is_seekable;
     private bool $should_close_stream = false;
     /** @var mixed can be a null, false or a scalar type value. Current iterator value. */
-    private mixed $value;
+    private mixed $value = null;
     /** Current iterator key. */
-    private int $offset;
+    private int $offset = -1;
     /** Flags for the Document. */
     private int $flags = 0;
     private string $delimiter = ',';
@@ -64,6 +68,7 @@ final class Stream implements SeekableIterator
     private string $escape = '\\';
     /** @var array<string, array<resource>> Attached filters. */
     private array $filters = [];
+    private int $maxLength = 0;
 
     /**
      * @param resource $stream stream type resource
@@ -78,8 +83,10 @@ final class Stream implements SeekableIterator
     {
         array_walk_recursive($this->filters, fn ($filter): bool => @stream_filter_remove($filter));
 
-        if ($this->should_close_stream && is_resource($this->stream)) {
+        if ($this->should_close_stream) {
+            set_error_handler(fn (int $errno, string $errstr, string $errfile, int $errline) => true);
             fclose($this->stream);
+            restore_error_handler();
         }
 
         unset($this->stream);
@@ -98,6 +105,11 @@ final class Stream implements SeekableIterator
             'escape' => $this->escape,
             'stream_filters' => array_keys($this->filters),
         ];
+    }
+
+    public function ftell(): int|false
+    {
+        return ftell($this->stream);
     }
 
     /**
@@ -146,16 +158,11 @@ final class Stream implements SeekableIterator
 
     public static function createFromResource(mixed $stream): self
     {
-        if (!is_resource($stream)) {
-            throw new TypeError('Argument passed must be a stream resource, '.gettype($stream).' given.');
-        }
-
-        $type = get_resource_type($stream);
-        if ('stream' !== $type) {
-            throw new TypeError('Argument passed must be a stream resource, '.$type.' resource given');
-        }
-
-        return new self($stream);
+        return match (true) {
+            !is_resource($stream) => throw new TypeError('Argument passed must be a stream resource, '.gettype($stream).' given.'),
+            'stream' !== ($type = get_resource_type($stream)) => throw new TypeError('Argument passed must be a stream resource, '.$type.' resource given'),
+            default => new self($stream),
+        };
     }
 
     /**
@@ -175,7 +182,7 @@ final class Stream implements SeekableIterator
      *
      * @throws InvalidArgument if the filter can not be appended
      */
-    public function appendFilter(string $filtername, int $read_write, array $params = null): void
+    public function appendFilter(string $filtername, int $read_write, ?array $params = null): void
     {
         set_error_handler(fn (int $errno, string $errstr, string $errfile, int $errline) => true);
         $res = stream_filter_append($this->stream, $filtername, $read_write, $params ?? []);
@@ -281,6 +288,7 @@ final class Stream implements SeekableIterator
      * @see https://www.php.net/manual/en/splfileobject.rewind.php
      *
      * @throws Exception if the stream resource is not seekable
+     * @throws RuntimeException if rewinding the stream fails.
      */
     public function rewind(): void
     {
@@ -288,10 +296,13 @@ final class Stream implements SeekableIterator
             throw UnavailableFeature::dueToMissingStreamSeekability();
         }
 
-        rewind($this->stream);
+        if (false === rewind($this->stream)) {
+            throw new RuntimeException('Unable to rewind the document.');
+        }
+
         $this->offset = 0;
         $this->value = false;
-        if (0 !== ($this->flags & SplFileObject::READ_AHEAD)) {
+        if (SplFileObject::READ_AHEAD === ($this->flags & SplFileObject::READ_AHEAD)) {
             $this->current();
         }
     }
@@ -303,11 +314,10 @@ final class Stream implements SeekableIterator
      */
     public function valid(): bool
     {
-        if (0 !== ($this->flags & SplFileObject::READ_AHEAD)) {
-            return $this->current() !== false;
-        }
-
-        return !feof($this->stream);
+        return match (true) {
+            SplFileObject::READ_AHEAD === ($this->flags & SplFileObject::READ_AHEAD) => false !== $this->current(),
+            default => !feof($this->stream),
+        };
     }
 
     /**
@@ -321,9 +331,55 @@ final class Stream implements SeekableIterator
             return $this->value;
         }
 
-        $this->value = $this->getCurrentRecord();
+        $this->value = match (true) {
+            SplFileObject::READ_CSV === ($this->flags & SplFileObject::READ_CSV) => $this->getCurrentRecord(),
+            default => $this->getCurrentLine(),
+        };
 
         return $this->value;
+    }
+
+    public function fgets(): string|false
+    {
+        $arg = [$this->stream];
+        if (0 < $this->maxLength) {
+            $arg[] = $this->maxLength;
+        }
+        return fgets(...$arg);
+    }
+
+    /**
+     * Sets the maximum length of a line to be read.
+     *
+     * @see https://www.php.net/manual/en/splfileobject.setmaxlinelen.php
+     */
+    public function setMaxLineLen(int $maxLength): void
+    {
+        if (0 > $maxLength) {
+            throw new ValueError(' Argument #1 ($maxLength) must be greater than or equal to 0');
+        }
+
+        $this->maxLength = $maxLength;
+    }
+
+    /**
+     * Gets the maximum line length as set by setMaxLineLen.
+     *
+     * @see https://www.php.net/manual/en/splfileobject.getmaxlinelen.php
+     */
+    public function getMaxLineLen(): int
+    {
+        return $this->maxLength;
+    }
+
+    /**
+     * Tells whether the end of file has been reached.
+     *
+     * @see https://www.php.net/manual/en/splfileobject.eof.php
+     */
+    public function eof(): bool
+    {
+        return feof($this->stream);
     }
 
     /**
@@ -331,12 +387,37 @@ final class Stream implements SeekableIterator
      */
     private function getCurrentRecord(): array|false
     {
-        $flag = 0 !== ($this->flags & SplFileObject::SKIP_EMPTY);
+        $isEmptyLine = SplFileObject::SKIP_EMPTY === ($this->flags & SplFileObject::SKIP_EMPTY);
         do {
             $ret = fgetcsv($this->stream, 0, $this->delimiter, $this->enclosure, $this->escape);
-        } while ($flag && is_array($ret) && null === $ret[0]);
+        } while ($isEmptyLine && is_array($ret) && null === $ret[0]);
 
         return $ret;
+    }
+
+    /**
+     * Retrieves the current line.
+     */
+    private function getCurrentLine(): string|false
+    {
+        $isEmptyLine = SplFileObject::SKIP_EMPTY === ($this->flags & SplFileObject::SKIP_EMPTY);
+        $dropNewLine = SplFileObject::DROP_NEW_LINE === ($this->flags & SplFileObject::DROP_NEW_LINE);
+        $shouldBeIgnored = fn (string|false $line): bool => ($isEmptyLine || $dropNewLine)
+            && (false !== $line && '' === rtrim($line, "\r\n"));
+        $arguments = [$this->stream];
+        if (0 < $this->maxLength) {
+            $arguments[] = $this->maxLength;
+        }
+
+        do {
+            $line = fgets(...$arguments);
+        } while ($shouldBeIgnored($line));
+
+        if ($dropNewLine && false !== $line) {
+            return rtrim($line, "\r\n");
+        }
+
+        return $line;
     }
 
     /**
@@ -396,11 +477,25 @@ final class Stream implements SeekableIterator
      */
     public function fseek(int $offset, int $whence = SEEK_SET): int
     {
-        if (!$this->is_seekable) {
-            throw UnavailableFeature::dueToMissingStreamSeekability();
+        return match (true) {
+            !$this->is_seekable => throw UnavailableFeature::dueToMissingStreamSeekability(),
+            default => fseek($this->stream, $offset, $whence),
+        };
+    }
+
+    /**
+     * Write to stream.
+     *
+     * @see http://php.net/manual/en/SplFileObject.fwrite.php
+     */
+    public function fwrite(string $str, ?int $length = null): int|false
+    {
+        $args = [$this->stream, $str];
+        if (null !== $length) {
+            $args[] = $length;
         }
 
-        return fseek($this->stream, $offset, $whence);
+        return fwrite(...$args);
     }
 
     /**

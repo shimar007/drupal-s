@@ -139,18 +139,33 @@ class CoreCspSubscriberTest extends UnitTestCase {
       );
     }
 
-    $this->assertEquals(
-      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      $alterEvent->getPolicy()->getDirective('style-src')
-    );
-    $this->assertEquals(
-      [Csp::POLICY_SELF],
-      $alterEvent->getPolicy()->getDirective('style-src-attr')
-    );
-    $this->assertEquals(
-      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      array_unique($alterEvent->getPolicy()->getDirective('style-src-elem'))
-    );
+    if (version_compare(\Drupal::VERSION, '10.1', '>=')) {
+      $this->assertEquals(
+        [Csp::POLICY_SELF],
+        $alterEvent->getPolicy()->getDirective('style-src')
+      );
+      $this->assertFalse(
+        $alterEvent->getPolicy()->hasDirective('style-src-attr')
+      );
+      $this->assertFalse(
+        $alterEvent->getPolicy()->hasDirective('style-src-elem')
+      );
+    }
+    else {
+      // Drupal <=10.0 requires style-src-elem 'unsafe-inline'.
+      $this->assertEquals(
+        [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
+        $alterEvent->getPolicy()->getDirective('style-src')
+      );
+      $this->assertEquals(
+        [Csp::POLICY_SELF],
+        $alterEvent->getPolicy()->getDirective('style-src-attr')
+      );
+      $this->assertEquals(
+        [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
+        array_unique($alterEvent->getPolicy()->getDirective('style-src-elem'))
+      );
+    }
 
   }
 

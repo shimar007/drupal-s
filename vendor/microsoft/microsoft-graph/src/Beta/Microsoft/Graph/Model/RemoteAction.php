@@ -60,4 +60,8 @@ class RemoteAction extends Enum
     const INITIATE_MOBILE_DEVICE_MANAGEMENT_KEY_RECOVERY = "initiateMobileDeviceManagementKeyRecovery";
     const INITIATE_ON_DEMAND_PROACTIVE_REMEDIATION = "initiateOnDemandProactiveRemediation";
     const ROTATE_LOCAL_ADMIN_PASSWORD = "rotateLocalAdminPassword";
+    const UNKNOWN_FUTURE_VALUE = "unknownFutureValue";
+    const LAUNCH_REMOTE_HELP = "launchRemoteHelp";
+    const REVOKE_APPLE_VPP_LICENSES = "revokeAppleVppLicenses";
+    const REMOVE_DEVICE_FIRMWARE_CONFIGURATION_INTERFACE_MANAGEMENT = "removeDeviceFirmwareConfigurationInterfaceManagement";
 }

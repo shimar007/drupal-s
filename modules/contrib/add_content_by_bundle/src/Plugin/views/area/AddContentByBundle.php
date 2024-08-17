@@ -90,7 +90,7 @@ class AddContentByBundle extends AreaPluginBase {
       $bundlesList[$id] = $label;
     }
     // New content bundle type.
-    // TODO: preselect if a single bundle specified for the view?
+    // @todo preselect if a single bundle specified for the view?
     $form['bundle'] = [
       '#title' => $this->t('Add content bundle (Content) type'),
       '#description' => $this->t('The bundle (content) type of content to add.'),
@@ -153,7 +153,7 @@ class AddContentByBundle extends AreaPluginBase {
     ];
     $form['params'] = [
       '#title' => $this->t('Additional Parameters'),
-      '#description' => $this->t('List any additional paramters, separating the key and value with a pipe (|). The use of tokens for the view\'s arguments is supported. An example is {{ arguments.user_id }}.'),
+      '#description' => $this->t("List any additional paramters, separating the key and value with a pipe (|). The use of tokens for the view\'s arguments is supported. An example is {{ arguments.user_id }}."),
       '#type' => 'textarea',
       '#default_value' => $this->options['params'],
     ];
@@ -225,7 +225,7 @@ class AddContentByBundle extends AreaPluginBase {
       }
       if (empty($path)) {
         // An entity we don't know how to process, so exit.
-        // TODO: throw a warning?
+        // @todo throw a warning?
         return;
       }
       // Prepend the path to make a valid internal URI.

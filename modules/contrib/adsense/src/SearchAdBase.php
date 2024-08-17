@@ -3,7 +3,7 @@
 namespace Drupal\adsense;
 
 /**
- * Class SearchAdBase.
+ * Base class for search AdsenseAd plugins.
  */
 abstract class SearchAdBase extends AdsenseAdBase {
 

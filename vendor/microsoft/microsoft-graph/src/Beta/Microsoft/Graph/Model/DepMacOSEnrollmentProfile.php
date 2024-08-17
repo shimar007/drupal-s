@@ -141,6 +141,35 @@ class DepMacOSEnrollmentProfile extends DepEnrollmentBaseProfile
     }
 
     /**
+    * Gets the autoAdvanceSetupEnabled
+    * Indicates if Setup Assistant will automatically advance through its screen
+    *
+    * @return bool|null The autoAdvanceSetupEnabled
+    */
+    public function getAutoAdvanceSetupEnabled()
+    {
+        if (array_key_exists("autoAdvanceSetupEnabled", $this->_propDict)) {
+            return $this->_propDict["autoAdvanceSetupEnabled"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the autoAdvanceSetupEnabled
+    * Indicates if Setup Assistant will automatically advance through its screen
+    *
+    * @param bool $val The autoAdvanceSetupEnabled
+    *
+    * @return DepMacOSEnrollmentProfile
+    */
+    public function setAutoAdvanceSetupEnabled($val)
+    {
+        $this->_propDict["autoAdvanceSetupEnabled"] = boolval($val);
+        return $this;
+    }
+
+    /**
     * Gets the autoUnlockWithWatchDisabled
     * Indicates if UnlockWithWatch screen is disabled
     *
@@ -485,6 +514,35 @@ class DepMacOSEnrollmentProfile extends DepEnrollmentBaseProfile
     public function setRegistrationDisabled($val)
     {
         $this->_propDict["registrationDisabled"] = boolval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the requestRequiresNetworkTether
+    * Indicates if the device is network-tethered to run the command
+    *
+    * @return bool|null The requestRequiresNetworkTether
+    */
+    public function getRequestRequiresNetworkTether()
+    {
+        if (array_key_exists("requestRequiresNetworkTether", $this->_propDict)) {
+            return $this->_propDict["requestRequiresNetworkTether"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the requestRequiresNetworkTether
+    * Indicates if the device is network-tethered to run the command
+    *
+    * @param bool $val The requestRequiresNetworkTether
+    *
+    * @return DepMacOSEnrollmentProfile
+    */
+    public function setRequestRequiresNetworkTether($val)
+    {
+        $this->_propDict["requestRequiresNetworkTether"] = boolval($val);
         return $this;
     }
 

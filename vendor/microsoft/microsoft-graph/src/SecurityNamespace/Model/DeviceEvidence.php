@@ -25,7 +25,7 @@ class DeviceEvidence extends AlertEvidence
 {
     /**
     * Gets the azureAdDeviceId
-    * A unique identifier assigned to a device by Azure Active Directory (Azure AD) when device is Azure AD-joined.
+    * A unique identifier assigned to a device by Microsoft Entra ID when device is Microsoft Entra joined.
     *
     * @return string|null The azureAdDeviceId
     */
@@ -40,7 +40,7 @@ class DeviceEvidence extends AlertEvidence
 
     /**
     * Sets the azureAdDeviceId
-    * A unique identifier assigned to a device by Azure Active Directory (Azure AD) when device is Azure AD-joined.
+    * A unique identifier assigned to a device by Microsoft Entra ID when device is Microsoft Entra joined.
     *
     * @param string $val The value of the azureAdDeviceId
     *
@@ -148,7 +148,7 @@ class DeviceEvidence extends AlertEvidence
 
     /**
     * Gets the healthStatus
-    * The health state of the device.The possible values are: active, inactive, impairedCommunication, noSensorData, noSensorDataImpairedCommunication, unknown, unknownFutureValue.
+    * The health state of the device. The possible values are: active, inactive, impairedCommunication, noSensorData, noSensorDataImpairedCommunication, unknown, unknownFutureValue.
     *
     * @return DeviceHealthStatus|null The healthStatus
     */
@@ -167,7 +167,7 @@ class DeviceEvidence extends AlertEvidence
 
     /**
     * Sets the healthStatus
-    * The health state of the device.The possible values are: active, inactive, impairedCommunication, noSensorData, noSensorDataImpairedCommunication, unknown, unknownFutureValue.
+    * The health state of the device. The possible values are: active, inactive, impairedCommunication, noSensorData, noSensorDataImpairedCommunication, unknown, unknownFutureValue.
     *
     * @param DeviceHealthStatus $val The value to assign to the healthStatus
     *
@@ -177,6 +177,34 @@ class DeviceEvidence extends AlertEvidence
     {
         $this->_propDict["healthStatus"] = $val;
          return $this;
+    }
+    /**
+    * Gets the ipInterfaces
+    * Ip interfaces of the device during the time of the alert.
+    *
+    * @return string|null The ipInterfaces
+    */
+    public function getIpInterfaces()
+    {
+        if (array_key_exists("ipInterfaces", $this->_propDict)) {
+            return $this->_propDict["ipInterfaces"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the ipInterfaces
+    * Ip interfaces of the device during the time of the alert.
+    *
+    * @param string $val The value of the ipInterfaces
+    *
+    * @return DeviceEvidence
+    */
+    public function setIpInterfaces($val)
+    {
+        $this->_propDict["ipInterfaces"] = $val;
+        return $this;
     }
 
     /**
@@ -242,7 +270,7 @@ class DeviceEvidence extends AlertEvidence
 
     /**
     * Gets the onboardingStatus
-    * The status of the machine onboarding to Microsoft Defender for Endpoint.The possible values are: insufficientInfo, onboarded, canBeOnboarded, unsupported, unknownFutureValue.
+    * The status of the machine onboarding to Microsoft Defender for Endpoint. The possible values are: insufficientInfo, onboarded, canBeOnboarded, unsupported, unknownFutureValue.
     *
     * @return OnboardingStatus|null The onboardingStatus
     */
@@ -261,7 +289,7 @@ class DeviceEvidence extends AlertEvidence
 
     /**
     * Sets the onboardingStatus
-    * The status of the machine onboarding to Microsoft Defender for Endpoint.The possible values are: insufficientInfo, onboarded, canBeOnboarded, unsupported, unknownFutureValue.
+    * The status of the machine onboarding to Microsoft Defender for Endpoint. The possible values are: insufficientInfo, onboarded, canBeOnboarded, unsupported, unknownFutureValue.
     *
     * @param OnboardingStatus $val The value to assign to the onboardingStatus
     *

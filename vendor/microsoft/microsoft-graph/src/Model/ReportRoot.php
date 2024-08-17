@@ -55,9 +55,43 @@ class ReportRoot implements \JsonSerializable
         return $this->_propDict;
     }
 
+    /**
+    * Gets the authenticationMethods
+    * Container for navigation properties for Microsoft Entra authentication methods resources.
+    *
+    * @return AuthenticationMethodsRoot|null The authenticationMethods
+    */
+    public function getAuthenticationMethods()
+    {
+        if (array_key_exists("authenticationMethods", $this->_propDict)) {
+            if (is_a($this->_propDict["authenticationMethods"], "\Microsoft\Graph\Model\AuthenticationMethodsRoot") || is_null($this->_propDict["authenticationMethods"])) {
+                return $this->_propDict["authenticationMethods"];
+            } else {
+                $this->_propDict["authenticationMethods"] = new AuthenticationMethodsRoot($this->_propDict["authenticationMethods"]);
+                return $this->_propDict["authenticationMethods"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the authenticationMethods
+    * Container for navigation properties for Microsoft Entra authentication methods resources.
+    *
+    * @param AuthenticationMethodsRoot $val The authenticationMethods
+    *
+    * @return ReportRoot
+    */
+    public function setAuthenticationMethods($val)
+    {
+        $this->_propDict["authenticationMethods"] = $val;
+        return $this;
+    }
+
 
      /**
      * Gets the dailyPrintUsageByPrinter
+    * Retrieve a list of daily print usage summaries, grouped by printer.
      *
      * @return array|null The dailyPrintUsageByPrinter
      */
@@ -72,6 +106,7 @@ class ReportRoot implements \JsonSerializable
 
     /**
     * Sets the dailyPrintUsageByPrinter
+    * Retrieve a list of daily print usage summaries, grouped by printer.
     *
     * @param PrintUsageByPrinter[] $val The dailyPrintUsageByPrinter
     *
@@ -86,6 +121,7 @@ class ReportRoot implements \JsonSerializable
 
      /**
      * Gets the dailyPrintUsageByUser
+    * Retrieve a list of daily print usage summaries, grouped by user.
      *
      * @return array|null The dailyPrintUsageByUser
      */
@@ -100,6 +136,7 @@ class ReportRoot implements \JsonSerializable
 
     /**
     * Sets the dailyPrintUsageByUser
+    * Retrieve a list of daily print usage summaries, grouped by user.
     *
     * @param PrintUsageByUser[] $val The dailyPrintUsageByUser
     *
@@ -114,6 +151,7 @@ class ReportRoot implements \JsonSerializable
 
      /**
      * Gets the monthlyPrintUsageByPrinter
+    * Retrieve a list of monthly print usage summaries, grouped by printer.
      *
      * @return array|null The monthlyPrintUsageByPrinter
      */
@@ -128,6 +166,7 @@ class ReportRoot implements \JsonSerializable
 
     /**
     * Sets the monthlyPrintUsageByPrinter
+    * Retrieve a list of monthly print usage summaries, grouped by printer.
     *
     * @param PrintUsageByPrinter[] $val The monthlyPrintUsageByPrinter
     *
@@ -142,6 +181,7 @@ class ReportRoot implements \JsonSerializable
 
      /**
      * Gets the monthlyPrintUsageByUser
+    * Retrieve a list of monthly print usage summaries, grouped by user.
      *
      * @return array|null The monthlyPrintUsageByUser
      */
@@ -156,6 +196,7 @@ class ReportRoot implements \JsonSerializable
 
     /**
     * Sets the monthlyPrintUsageByUser
+    * Retrieve a list of monthly print usage summaries, grouped by user.
     *
     * @param PrintUsageByUser[] $val The monthlyPrintUsageByUser
     *
@@ -169,6 +210,7 @@ class ReportRoot implements \JsonSerializable
 
     /**
     * Gets the security
+    * Represents an abstract type that contains resources for attack simulation and training reports.
     *
     * @return SecurityReportsRoot|null The security
     */
@@ -187,6 +229,7 @@ class ReportRoot implements \JsonSerializable
 
     /**
     * Sets the security
+    * Represents an abstract type that contains resources for attack simulation and training reports.
     *
     * @param SecurityReportsRoot $val The security
     *

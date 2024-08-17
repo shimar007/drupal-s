@@ -24,6 +24,34 @@ namespace Microsoft\Graph\Model;
 */
 class Security extends Entity
 {
+
+     /**
+     * Gets the subjectRightsRequests
+     *
+     * @return array|null The subjectRightsRequests
+     */
+    public function getSubjectRightsRequests()
+    {
+        if (array_key_exists("subjectRightsRequests", $this->_propDict)) {
+           return $this->_propDict["subjectRightsRequests"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the subjectRightsRequests
+    *
+    * @param SubjectRightsRequest[] $val The subjectRightsRequests
+    *
+    * @return Security
+    */
+    public function setSubjectRightsRequests($val)
+    {
+        $this->_propDict["subjectRightsRequests"] = $val;
+        return $this;
+    }
+
     /**
     * Gets the cases
     *
@@ -289,6 +317,37 @@ class Security extends Entity
     public function setSecureScores($val)
     {
         $this->_propDict["secureScores"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the threatIntelligence
+    *
+    * @return \Microsoft\Graph\SecurityNamespace\Model\ThreatIntelligence|null The threatIntelligence
+    */
+    public function getThreatIntelligence()
+    {
+        if (array_key_exists("threatIntelligence", $this->_propDict)) {
+            if (is_a($this->_propDict["threatIntelligence"], "\Microsoft\Graph\SecurityNamespace\Model\ThreatIntelligence") || is_null($this->_propDict["threatIntelligence"])) {
+                return $this->_propDict["threatIntelligence"];
+            } else {
+                $this->_propDict["threatIntelligence"] = new \Microsoft\Graph\SecurityNamespace\Model\ThreatIntelligence($this->_propDict["threatIntelligence"]);
+                return $this->_propDict["threatIntelligence"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the threatIntelligence
+    *
+    * @param \Microsoft\Graph\SecurityNamespace\Model\ThreatIntelligence $val The threatIntelligence
+    *
+    * @return Security
+    */
+    public function setThreatIntelligence($val)
+    {
+        $this->_propDict["threatIntelligence"] = $val;
         return $this;
     }
 

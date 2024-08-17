@@ -84,6 +84,36 @@ class Directory extends Entity
 
 
      /**
+     * Gets the deviceLocalCredentials
+    * The credentials of the device's local administrator account backed up to Microsoft Entra ID.
+     *
+     * @return array|null The deviceLocalCredentials
+     */
+    public function getDeviceLocalCredentials()
+    {
+        if (array_key_exists("deviceLocalCredentials", $this->_propDict)) {
+           return $this->_propDict["deviceLocalCredentials"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the deviceLocalCredentials
+    * The credentials of the device's local administrator account backed up to Microsoft Entra ID.
+    *
+    * @param DeviceLocalCredentialInfo[] $val The deviceLocalCredentials
+    *
+    * @return Directory
+    */
+    public function setDeviceLocalCredentials($val)
+    {
+        $this->_propDict["deviceLocalCredentials"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the administrativeUnits
     * Conceptual container for user and group directory objects.
      *
@@ -139,6 +169,37 @@ class Directory extends Entity
     public function setAttributeSets($val)
     {
         $this->_propDict["attributeSets"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the certificateAuthorities
+    *
+    * @return CertificateAuthorityPath|null The certificateAuthorities
+    */
+    public function getCertificateAuthorities()
+    {
+        if (array_key_exists("certificateAuthorities", $this->_propDict)) {
+            if (is_a($this->_propDict["certificateAuthorities"], "\Beta\Microsoft\Graph\Model\CertificateAuthorityPath") || is_null($this->_propDict["certificateAuthorities"])) {
+                return $this->_propDict["certificateAuthorities"];
+            } else {
+                $this->_propDict["certificateAuthorities"] = new CertificateAuthorityPath($this->_propDict["certificateAuthorities"]);
+                return $this->_propDict["certificateAuthorities"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the certificateAuthorities
+    *
+    * @param CertificateAuthorityPath $val The certificateAuthorities
+    *
+    * @return Directory
+    */
+    public function setCertificateAuthorities($val)
+    {
+        $this->_propDict["certificateAuthorities"] = $val;
         return $this;
     }
 
@@ -343,6 +404,36 @@ class Directory extends Entity
     public function setSharedEmailDomains($val)
     {
         $this->_propDict["sharedEmailDomains"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the subscriptions
+    * List of commercial subscriptions that an organization has acquired.
+     *
+     * @return array|null The subscriptions
+     */
+    public function getSubscriptions()
+    {
+        if (array_key_exists("subscriptions", $this->_propDict)) {
+           return $this->_propDict["subscriptions"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the subscriptions
+    * List of commercial subscriptions that an organization has acquired.
+    *
+    * @param CompanySubscription[] $val The subscriptions
+    *
+    * @return Directory
+    */
+    public function setSubscriptions($val)
+    {
+        $this->_propDict["subscriptions"] = $val;
         return $this;
     }
 

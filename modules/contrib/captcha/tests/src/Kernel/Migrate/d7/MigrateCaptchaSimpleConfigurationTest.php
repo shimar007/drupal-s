@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\captcha\Kernel\Migrate\d7;
 
+use Drupal\captcha\Constants\CaptchaConstants;
 use Drupal\Tests\migrate_drupal\Kernel\d7\MigrateDrupal7TestBase;
 
 /**
@@ -23,12 +24,12 @@ class MigrateCaptchaSimpleConfigurationTest extends MigrateDrupal7TestBase {
    */
   protected $expectedConfig = [
     'captcha.settings' => [
-      'enabled_default' => 1,
-      'default_challenge' => 'captcha/Math',
+      'enable_globally' => 1,
+      'enable_globally_on_admin_routes' => FALSE,
+      'default_challenge' => CaptchaConstants::CAPTCHA_MATH_CAPTCHA_TYPE,
       'description' => 'This question is for testing whether or not you are a human visitor and to prevent automated spam submissions.',
       'administration_mode' => TRUE,
-      'allow_on_admin_pages' => FALSE,
-      'add_captcha_description' => TRUE,
+      'administration_mode_on_admin_routes' => FALSE,
       'default_validation' => 1,
       'persistence' => 1,
       'enable_stats' => TRUE,
@@ -60,6 +61,7 @@ class MigrateCaptchaSimpleConfigurationTest extends MigrateDrupal7TestBase {
    */
   public function testConfigurationMigration() {
     // Test Config.
+    $this->expectedConfig['captcha.settings'] = version_compare(\Drupal::VERSION, '10.3.0', '>=') ? ['langcode' => 'en'] + $this->expectedConfig['captcha.settings'] : $this->expectedConfig['captcha.settings'];
     foreach ($this->expectedConfig as $config_id => $values) {
       $actual = \Drupal::config($config_id)->get();
       $this->assertSame($values, $actual);

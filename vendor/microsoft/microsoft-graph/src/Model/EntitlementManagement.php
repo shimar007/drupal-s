@@ -234,9 +234,127 @@ class EntitlementManagement extends Entity
         return $this;
     }
 
+
+     /**
+     * Gets the resourceEnvironments
+    * A reference to the geolocation environments in which a resource is located.
+     *
+     * @return array|null The resourceEnvironments
+     */
+    public function getResourceEnvironments()
+    {
+        if (array_key_exists("resourceEnvironments", $this->_propDict)) {
+           return $this->_propDict["resourceEnvironments"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the resourceEnvironments
+    * A reference to the geolocation environments in which a resource is located.
+    *
+    * @param AccessPackageResourceEnvironment[] $val The resourceEnvironments
+    *
+    * @return EntitlementManagement
+    */
+    public function setResourceEnvironments($val)
+    {
+        $this->_propDict["resourceEnvironments"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the resourceRequests
+    * Represents a request to add or remove a resource to or from a catalog respectively.
+     *
+     * @return array|null The resourceRequests
+     */
+    public function getResourceRequests()
+    {
+        if (array_key_exists("resourceRequests", $this->_propDict)) {
+           return $this->_propDict["resourceRequests"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the resourceRequests
+    * Represents a request to add or remove a resource to or from a catalog respectively.
+    *
+    * @param AccessPackageResourceRequest[] $val The resourceRequests
+    *
+    * @return EntitlementManagement
+    */
+    public function setResourceRequests($val)
+    {
+        $this->_propDict["resourceRequests"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the resourceRoleScopes
+     *
+     * @return array|null The resourceRoleScopes
+     */
+    public function getResourceRoleScopes()
+    {
+        if (array_key_exists("resourceRoleScopes", $this->_propDict)) {
+           return $this->_propDict["resourceRoleScopes"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the resourceRoleScopes
+    *
+    * @param AccessPackageResourceRoleScope[] $val The resourceRoleScopes
+    *
+    * @return EntitlementManagement
+    */
+    public function setResourceRoleScopes($val)
+    {
+        $this->_propDict["resourceRoleScopes"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the resources
+    * The resources associated with the catalogs.
+     *
+     * @return array|null The resources
+     */
+    public function getResources()
+    {
+        if (array_key_exists("resources", $this->_propDict)) {
+           return $this->_propDict["resources"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the resources
+    * The resources associated with the catalogs.
+    *
+    * @param AccessPackageResource[] $val The resources
+    *
+    * @return EntitlementManagement
+    */
+    public function setResources($val)
+    {
+        $this->_propDict["resources"] = $val;
+        return $this;
+    }
+
     /**
     * Gets the settings
-    * The settings that control the behavior of Azure AD entitlement management.
+    * The settings that control the behavior of Microsoft Entra entitlement management.
     *
     * @return EntitlementManagementSettings|null The settings
     */
@@ -255,7 +373,7 @@ class EntitlementManagement extends Entity
 
     /**
     * Sets the settings
-    * The settings that control the behavior of Azure AD entitlement management.
+    * The settings that control the behavior of Microsoft Entra entitlement management.
     *
     * @param EntitlementManagementSettings $val The settings
     *

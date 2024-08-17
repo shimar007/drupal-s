@@ -3,7 +3,7 @@
 namespace Drupal\adsense;
 
 /**
- * Interface AdBlockInterface.
+ * Interface for adsense ad blocks.
  */
 interface AdBlockInterface {
 

@@ -23,6 +23,8 @@ use Drupal\user\Entity\User;
  */
 class OpenIDConnectAuthmapTest extends UnitTestCase {
 
+  use OpenIDConnectTestHelperTrait;
+
   /**
    * The user_id to test.
    */
@@ -59,7 +61,7 @@ class OpenIDConnectAuthmapTest extends UnitTestCase {
   /**
    * {@inheritDoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->account = $this
@@ -93,14 +95,12 @@ class OpenIDConnectAuthmapTest extends UnitTestCase {
       ->with('a', ['client_name', 'sub'])
       ->willReturnSelf();
 
-    $selectInterface->expects($this->at(1))
+    $selectInterface->expects($this->exactly(2))
       ->method('condition')
-      ->with('uid', self::USER_ID)
-      ->willReturnSelf();
-
-    $selectInterface->expects($this->at(2))
-      ->method('condition')
-      ->with('client_name', $client_name)
+      ->with(
+        self::callback(self::consecutive(['uid', 'client_name'])),
+        self::callback(self::consecutive([self::USER_ID, $client_name]))
+      )
       ->willReturnSelf();
 
     $selectInterface->expects($this->once())
@@ -156,9 +156,10 @@ class OpenIDConnectAuthmapTest extends UnitTestCase {
     if (!empty($client)) {
       $deleteQuery->expects($this->exactly(2))
         ->method('condition')
-        ->withConsecutive(
-          ['uid', self::USER_ID, '='],
-          ['client_name', $client, '=']
+        ->with(
+          self::callback(self::consecutive(['uid', 'client_name'])),
+          self::callback(self::consecutive([self::USER_ID, $client])),
+          self::callback(self::consecutive(['=', '='])),
         )
         ->willReturnSelf();
     }
@@ -232,9 +233,10 @@ class OpenIDConnectAuthmapTest extends UnitTestCase {
 
     $selectMock->expects($this->exactly(2))
       ->method('condition')
-      ->withConsecutive(
-        ['client_name', $client, '='],
-        ['sub', $sub, '=']
+      ->with(
+        self::callback(self::consecutive(['client_name', 'sub'])),
+        self::callback(self::consecutive([$client, $sub])),
+        self::callback(self::consecutive(['=', '='])),
       )
       ->willReturnSelf();
 
@@ -338,7 +340,7 @@ class OpenIDConnectAuthmapTest extends UnitTestCase {
         $record->client_name => $record->sub,
       ];
 
-      $this->assertArrayEquals($expected, $actualResult);
+      $this->assertEqualsCanonicalizing($expected, $actualResult);
     }
     else {
       $this->assertEmpty($actualResult);

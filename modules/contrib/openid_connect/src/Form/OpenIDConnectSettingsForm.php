@@ -98,9 +98,16 @@ class OpenIDConnectSettingsForm extends ConfigFormBase implements ContainerInjec
 
   /**
    * {@inheritdoc}
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   protected function getEditableConfigNames() {
-    return ['openid_connect.settings'];
+    $names = ['openid_connect.settings'];
+
+    foreach ($this->getClients() as $client) {
+      $names[] = 'openid_connect.settings.' . $client->getPluginId();
+    }
+
+    return $names;
   }
 
   /**

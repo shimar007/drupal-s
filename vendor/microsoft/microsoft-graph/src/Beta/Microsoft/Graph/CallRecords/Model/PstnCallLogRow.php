@@ -202,6 +202,118 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
          return $this;
     }
     /**
+    * Gets the clientLocalIpV4Address
+    * Local IPv4 of the client that is retrieved from the operating system of the client.
+    *
+    * @return string|null The clientLocalIpV4Address
+    */
+    public function getClientLocalIpV4Address()
+    {
+        if (array_key_exists("clientLocalIpV4Address", $this->_propDict)) {
+            return $this->_propDict["clientLocalIpV4Address"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the clientLocalIpV4Address
+    * Local IPv4 of the client that is retrieved from the operating system of the client.
+    *
+    * @param string $val The value of the clientLocalIpV4Address
+    *
+    * @return PstnCallLogRow
+    */
+    public function setClientLocalIpV4Address($val)
+    {
+        $this->_propDict["clientLocalIpV4Address"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the clientLocalIpV6Address
+    * Local IPv6 of the client that is retrieved from the operating system of the client.
+    *
+    * @return string|null The clientLocalIpV6Address
+    */
+    public function getClientLocalIpV6Address()
+    {
+        if (array_key_exists("clientLocalIpV6Address", $this->_propDict)) {
+            return $this->_propDict["clientLocalIpV6Address"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the clientLocalIpV6Address
+    * Local IPv6 of the client that is retrieved from the operating system of the client.
+    *
+    * @param string $val The value of the clientLocalIpV6Address
+    *
+    * @return PstnCallLogRow
+    */
+    public function setClientLocalIpV6Address($val)
+    {
+        $this->_propDict["clientLocalIpV6Address"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the clientPublicIpV4Address
+    * Public IPv4 of the client that can be used to determine the location of the client.
+    *
+    * @return string|null The clientPublicIpV4Address
+    */
+    public function getClientPublicIpV4Address()
+    {
+        if (array_key_exists("clientPublicIpV4Address", $this->_propDict)) {
+            return $this->_propDict["clientPublicIpV4Address"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the clientPublicIpV4Address
+    * Public IPv4 of the client that can be used to determine the location of the client.
+    *
+    * @param string $val The value of the clientPublicIpV4Address
+    *
+    * @return PstnCallLogRow
+    */
+    public function setClientPublicIpV4Address($val)
+    {
+        $this->_propDict["clientPublicIpV4Address"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the clientPublicIpV6Address
+    * Public IPv6 of the client that can be used to determine the location of the client.
+    *
+    * @return string|null The clientPublicIpV6Address
+    */
+    public function getClientPublicIpV6Address()
+    {
+        if (array_key_exists("clientPublicIpV6Address", $this->_propDict)) {
+            return $this->_propDict["clientPublicIpV6Address"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the clientPublicIpV6Address
+    * Public IPv6 of the client that can be used to determine the location of the client.
+    *
+    * @param string $val The value of the clientPublicIpV6Address
+    *
+    * @return PstnCallLogRow
+    */
+    public function setClientPublicIpV6Address($val)
+    {
+        $this->_propDict["clientPublicIpV6Address"] = $val;
+        return $this;
+    }
+    /**
     * Gets the conferenceId
     * ID of the audio conference.
     *
@@ -493,7 +605,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     }
     /**
     * Gets the operator
-    * The telecommunications operator which provided PSTN services for this call. This may be Microsoft, or it may be a third-party operator via the Operator Connect Program.
+    * The telecommunications operator that provided PSTN services for this call. This may be Microsoft, or it may be a third-party operator via the Operator Connect Program.
     *
     * @return string|null The operator
     */
@@ -508,7 +620,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Sets the operator
-    * The telecommunications operator which provided PSTN services for this call. This may be Microsoft, or it may be a third-party operator via the Operator Connect Program.
+    * The telecommunications operator that provided PSTN services for this call. This may be Microsoft, or it may be a third-party operator via the Operator Connect Program.
     *
     * @param string $val The value of the operator
     *
@@ -521,7 +633,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     }
     /**
     * Gets the otherPartyCountryCode
-    * Country code of the caller in case of an incoming call, or callee in case of an outgoing call. For details, see ISO 3166-1 alpha-2.
+    * Country code of the caller for an incoming call, or callee for an outgoing call. For details, see ISO 3166-1 alpha-2.
     *
     * @return string|null The otherPartyCountryCode
     */
@@ -536,7 +648,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Sets the otherPartyCountryCode
-    * Country code of the caller in case of an incoming call, or callee in case of an outgoing call. For details, see ISO 3166-1 alpha-2.
+    * Country code of the caller for an incoming call, or callee for an outgoing call. For details, see ISO 3166-1 alpha-2.
     *
     * @param string $val The value of the otherPartyCountryCode
     *
@@ -666,7 +778,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     }
     /**
     * Gets the userId
-    * The unique identifier (GUID) of the user in Azure Active Directory. This and other user info will be null/empty for bot call types (ucap_in, ucap_out).
+    * The unique identifier (GUID) of the user in Microsoft Entra ID. This and other user info will be null/empty for bot call types (ucapin, ucapout).
     *
     * @return string|null The userId
     */
@@ -681,7 +793,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Sets the userId
-    * The unique identifier (GUID) of the user in Azure Active Directory. This and other user info will be null/empty for bot call types (ucap_in, ucap_out).
+    * The unique identifier (GUID) of the user in Microsoft Entra ID. This and other user info will be null/empty for bot call types (ucapin, ucapout).
     *
     * @param string $val The value of the userId
     *
@@ -694,7 +806,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
     }
     /**
     * Gets the userPrincipalName
-    * The user principal name (sign-in name) in Azure Active Directory. This is usually the same as the user's SIP address, and can be same as the user's e-mail address.
+    * The user principal name (sign-in name) in Microsoft Entra ID. This is usually the same as the user's SIP address, and can be same as the user's e-mail address.
     *
     * @return string|null The userPrincipalName
     */
@@ -709,7 +821,7 @@ class PstnCallLogRow extends \Beta\Microsoft\Graph\Model\Entity
 
     /**
     * Sets the userPrincipalName
-    * The user principal name (sign-in name) in Azure Active Directory. This is usually the same as the user's SIP address, and can be same as the user's e-mail address.
+    * The user principal name (sign-in name) in Microsoft Entra ID. This is usually the same as the user's SIP address, and can be same as the user's e-mail address.
     *
     * @param string $val The value of the userPrincipalName
     *

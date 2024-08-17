@@ -2,8 +2,8 @@
 
 namespace Drupal\adsense_oldcode\Plugin\AdsenseAd;
 
-use Drupal\adsense\SearchAdBase;
 use Drupal\adsense\PublisherId;
+use Drupal\adsense\SearchAdBase;
 
 /**
  * Provides an AdSense old search engine form.
@@ -63,7 +63,7 @@ class OldSearchAd extends SearchAdBase {
     $domain   = $domain_1 ? "$domain_0;$domain_1" : $domain_0;
     $domain   = $domain_2 ? "$domain;$domain_2" : $domain;
 
-    // @TODO this is necessary for unclean URLs.
+    // @todo this is necessary for unclean URLs.
     /* global $base_url;
     $results_path = $base_url;*/
 

@@ -2,16 +2,15 @@
 
 namespace Drupal\adsense\Form;
 
+use Drupal\adsense\AdsenseAdBase;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 
-use Drupal\adsense\AdsenseAdBase;
-
 /**
- * Class AdsenseMainSettings.
+ * Form for the adsense module general settings.
  */
 class AdsenseMainSettings extends ConfigFormBase {
 
@@ -33,8 +32,8 @@ class AdsenseMainSettings extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    module_load_include('inc', 'adsense', 'help/adsense.help');
-    module_load_include('inc', 'adsense', 'includes/adsense.search_options');
+    \Drupal::moduleHandler()->loadInclude('adsense', 'inc', 'help/adsense.help');
+    \Drupal::moduleHandler()->loadInclude('adsense', 'inc', 'includes/adsense.search_options');
 
     $config = $this->config('adsense.settings');
 
@@ -158,7 +157,7 @@ class AdsenseMainSettings extends ConfigFormBase {
    *   array of selectable Publisher ID functions
    */
   private function adsenseIdSettingsClientIdMods() {
-    // TODO ModuleHandler::getImplementations.
+    // @todo ModuleHandler::getImplementations.
     $ret['adsense_basic'] = 'Always use the site Publisher ID.';
 
     $funcs = get_defined_functions();

@@ -19,7 +19,8 @@ ul[data-sa-theme="minimal"] {
 
 ul[data-sa-theme="minimal"] > div.ui-autocomplete-field-group,
 ul[data-sa-theme="minimal"] .ui-autocomplete-fields > *,
-ul[data-sa-theme="minimal"] a.ui-menu-item-wrapper,
-ul[data-sa-theme="minimal"] a.ui-menu-item-wrapper.ui-state-active {
+ul[data-sa-theme="minimal"] .ui-state-active,
+ul[data-sa-theme="minimal"] .ui-menu-item-wrapper,
+ul[data-sa-theme="minimal"] .ui-menu-item-wrapper.ui-state-active {
   display: block;
 }

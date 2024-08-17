@@ -7,6 +7,7 @@ use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\DataDefinition;
+use Drupal\Core\Url;
 use Drupal\office_hours\OfficeHoursDateHelper;
 
 /**
@@ -54,21 +55,21 @@ class OfficeHoursItemBase extends FieldItemBase {
     $properties['day'] = DataDefinition::create('integer')
       ->setLabel($labels['day']['data'])
       // ->setRequired(TRUE) // @todo Set required.
-      ->setDescription("Stores the day of the week's numeric representation (0=Sun, 6=Sat)");
+      ->setDescription("Stores the day of the week's numeric representation (0=Sun, 6=Sat).");
     $properties['all_day'] = DataDefinition::create('boolean')
       ->setLabel($labels['all_day']['data'])
       // ->setComputed(TRUE) // Setting this generates an error in formatter.
       ->setDescription("Indicator that display whether the entity is open 24 hours on this day.");
     $properties['starthours'] = DataDefinition::create('integer')
       ->setLabel($labels['from']['data'])
-      ->setDescription("Stores the start hours value");
+      ->setDescription("Stores the start hours value.");
     $properties['endhours'] = DataDefinition::create('integer')
       ->setLabel($labels['to']['data'])
-      ->setDescription("Stores the end hours value");
+      ->setDescription("Stores the end hours value.");
     $properties['comment'] = DataDefinition::create('string')
       ->setLabel($labels['comment']['data'])
       ->addConstraint('Length', ['max' => 255])
-      ->setDescription("Stores the comment");
+      ->setDescription("Stores the comment.");
 
     return $properties;
   }
@@ -96,21 +97,33 @@ class OfficeHoursItemBase extends FieldItemBase {
      *   except when 'all_day' is set to 'computed'.
      */
 
+    // "In order to get proper UX, check User interface translation page
+    // "for the strings From and To in Context 'A point in time'.
+    // for locale module, path: '/admin/config/regional/translate'
+    if (\Drupal::currentUser()->hasPermission('translate interface')) {
+      // OfficeHoursItem::addMessage();
+    }
+
     // Added for propertyDefinition.
-    $properties['day'][$parent] = t('Day');
+    if ($field_settings['season'] ?? FALSE) {
+      $properties['season'][$parent] = t('Season name');
+    }
+    $properties['day'][$parent] = t('Weekday');
     $properties['all_day'][$parent] = t('All day');
     if (!($field_settings['all_day'] ?? TRUE)) {
       $properties['all_day']['class'] = 'hidden';
     }
-    $properties['from'][$parent]
-      = t('From', [], ['context' => 'A point in time']);
-    $properties['to'][$parent]
-      = t('To', [], ['context' => 'A point in time']);
+
+    // Special translation with fallback.
+    $from = t('From', [], ['context' => 'A point in time']);
+    $to = t('To', [], ['context' => 'A point in time']);
+    $properties['from'][$parent] = ($from == 'From') ? t('From') : $from;
+    $properties['to'][$parent] = ($to == 'To') ? t('To') : $to;
+
     $properties['comment'][$parent] = t('Comment');
     if (!($field_settings['comment'] ?? TRUE)) {
       $properties['comment']['class'] = 'hidden';
     }
-
     // Added for Widget.
     $properties['operations'][$parent] = t('Operations');
 
@@ -149,13 +162,30 @@ class OfficeHoursItemBase extends FieldItemBase {
    * {@inheritdoc}
    */
   public function storageSettingsForm(array &$form, FormStateInterface $form_state, $has_data) {
-
+    // admin/structure/types/manage/ctoh2/fields/TYPE/storage
     $settings = $this->getFieldDefinition()
       ->getFieldStorageDefinition()
       ->getSettings();
 
     return parent::storageSettingsForm($form, $form_state, $has_data)
     + $this->getStorageSettingsElement($settings);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function storageSettingsFormAlter(array &$form, FormStateInterface $form_state, $has_data) {
+    // admin/structure/types/manage/ctoh2/fields/TYPE/storage
+    $field_type = $form_state->getFormObject()->getEntity()->getType();
+    if ($field_type == 'office_hours') {
+      $form['cardinality_container']['cardinality'] = [
+        '#options' => [FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED => t('Unlimited')],
+        '#default_value' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED,
+        '#description' => '<p>' . t("This is unlimited by this field's nature.
+        See 'Number of slots' for limiting the number of slots per day."),
+      ]
+      + $form['cardinality_container']['cardinality'];
+    }
   }
 
   /**
@@ -171,6 +201,10 @@ class OfficeHoursItemBase extends FieldItemBase {
    *   The form definition for the field settings.
    */
   public static function getStorageSettingsElement(array $settings) {
+
+    // "In order to get proper UX, check User interface translation page
+    // "for the strings From and To in Context 'A point in time'.
+    OfficeHoursItem::addMessage();
 
     // Get a formatted list of valid hours values.
     $hours = OfficeHoursDateHelper::hours('H', FALSE);
@@ -216,7 +250,7 @@ class OfficeHoursItemBase extends FieldItemBase {
       '#options' => [
         'G' => t('24 hour time @example', ['@example' => '(9:00)']),
         'H' => t('24 hour time @example', ['@example' => '(09:00)']),
-        'g' => t('12 hour time @example', ['@example' => '9:00 am)']),
+        'g' => t('12 hour time @example', ['@example' => '(9:00 am)']),
         'h' => t('12 hour time @example', ['@example' => '(09:00 am)']),
       ],
       '#default_value' => $settings['time_format'],
@@ -318,6 +352,26 @@ class OfficeHoursItemBase extends FieldItemBase {
   }
 
   /**
+   * Adds a message to the user, to hint to proper translation.
+   */
+  public static function addMessage() {
+    if (\Drupal::moduleHandler()->moduleExists('locale')) {
+      \Drupal::messenger()->addMessage(t(
+        "In order to get a proper user experience in the Office Hours widget,
+        please check <a href=':translate'>User interface translation</a> page
+        for the strings %from and %to in Context 'A point in time'
+        to get proper translations for each of the installed languages
+        for content editors.",
+        [
+          ':translate' => Url::fromRoute('locale.translate_page')->toString(),
+          '%from' => 'From',
+          '%to' => 'To',
+        ]
+      ));
+    }
+  }
+
+  /**
    * {@inheritdoc}
    */
   public static function generateSampleValue(FieldDefinitionInterface $field_definition) {
@@ -333,18 +387,6 @@ class OfficeHoursItemBase extends FieldItemBase {
   /**
    * {@inheritdoc}
    */
-  public function getValue() {
-    $value = parent::getValue();
-
-    if (!$value) {
-      $this->applyDefaultValue();
-    }
-    return $value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function applyDefaultValue($notify = TRUE) {
     // Apply the default value of all properties.
     // parent::applyDefaultValue($notify);.
@@ -353,10 +395,16 @@ class OfficeHoursItemBase extends FieldItemBase {
   }
 
   /**
+   * Sorts the items on date, but leaves hours unsorted, as maintained by user.
+   *
    * {@inheritdoc}
    */
   public static function sort(OfficeHoursItem $a, OfficeHoursItem $b) {
-    // Sort the entities using the entity class's sort() method.
+    // Sort the item on date (but leave hours untouched).
+    // @see https://www.php.net/manual/en/array.sorting.php
+    // "If any of these sort functions evaluates two members as equal
+    // then they retain their original order. Prior to PHP 8.0.0,
+    // their order were undefined (the sorting was not stable)."
     $a_day = $a->day;
     $b_day = $b->day;
     if ($a_day < $b_day) {
@@ -365,6 +413,8 @@ class OfficeHoursItemBase extends FieldItemBase {
     if ($a_day > $b_day) {
       return +1;
     }
+
+    // Leave same day time slots in the same order, as maintained by user.
     return 0;
   }
 

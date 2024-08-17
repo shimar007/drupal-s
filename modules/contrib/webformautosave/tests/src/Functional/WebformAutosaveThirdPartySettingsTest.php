@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\webformautosave\Functional;
 
 use Drupal\Tests\webform\Functional\WebformBrowserTestBase;
@@ -7,7 +9,6 @@ use Drupal\Tests\webform\Functional\WebformBrowserTestBase;
 /**
  * Tests for webformautosave third party settings.
  *
- * @property \Drupal\user\Entity\User|false $adminUser
  * @group webformautosave
  */
 class WebformAutosaveThirdPartySettingsTest extends WebformBrowserTestBase {
@@ -15,25 +16,16 @@ class WebformAutosaveThirdPartySettingsTest extends WebformBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'claro';
 
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
-    'node',
+  protected static $modules = [
     'webform',
     'webform_submission_log',
     'webformautosave',
   ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-    $this->adminUser = $this->drupalCreateUser(['access administration pages']);
-  }
 
   /**
    * Tests webform third party settings.

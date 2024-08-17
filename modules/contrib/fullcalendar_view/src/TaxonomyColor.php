@@ -71,7 +71,7 @@ class TaxonomyColor {
   /**
    * Get all terms of a vocabulary.
    */
-  private function getTermIds($vid) {
+  public function getTermIds($vid) {
     if (empty($vid)) {
       return [];
     }

@@ -59,7 +59,7 @@ class OldCodeAd extends ContentAdBase {
     if (!empty($this->format)) {
       $client = PublisherId::get();
       // Get width and height from the format.
-      list($width, $height) = $this->dimensions($this->format);
+      [$width, $height] = $this->dimensions($this->format);
 
       $content = $this->configFactory->get('adsense.settings')->get('adsense_placeholder_text');
       $content .= "\nclient = $client\nformat = {$this->format}\nwidth = $width\nheight = $height\nstyle = {$this->style}\nchannel = {$this->channel}";
@@ -88,7 +88,7 @@ class OldCodeAd extends ContentAdBase {
         $this->moduleHandler->alter('adsense', $client);
 
         // Get width and height from the format.
-        list($width, $height) = $this->dimensions($this->format);
+        [$width, $height] = $this->dimensions($this->format);
 
         switch ($oldcode_config->get('adsense_ad_type_' . $this->style)) {
           case 0:
@@ -196,68 +196,6 @@ class OldCodeAd extends ContentAdBase {
         'type' => ADSENSE_OLDCODE_TYPE_AD,
         'desc' => t('Button'),
         'code' => '125x125_as',
-      ],
-      // 4-links.
-      '120x90' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('4-links Vertical Small'),
-        'code' => '120x90_0ads_al',
-      ],
-      '160x90' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('4-links Vertical Medium'),
-        'code' => '160x90_0ads_al',
-      ],
-      '180x90' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('4-links Vertical Large'),
-        'code' => '180x90_0ads_al',
-      ],
-      '200x90' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('4-links Vertical X-Large'),
-        'code' => '200x90_0ads_al',
-      ],
-      '468x15' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('4-links Horizontal Medium'),
-        'code' => '468x15_0ads_al',
-      ],
-      '728x15' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('4-links Horizontal Large'),
-        'code' => '728x15_0ads_al',
-      ],
-      // 5-links.
-      '120x90_5' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('5-links Vertical Small'),
-        'code' => '120x90_0ads_al_s',
-      ],
-      '160x90_5' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('5-links Vertical Medium'),
-        'code' => '160x90_0ads_al_s',
-      ],
-      '180x90_5' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('5-links Vertical Large'),
-        'code' => '180x90_0ads_al_s',
-      ],
-      '200x90_5' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('5-links Vertical X-Large'),
-        'code' => '200x90_0ads_al_s',
-      ],
-      '468x15_5' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('5-links Horizontal Medium'),
-        'code' => '468x15_0ads_al_s',
-      ],
-      '728x15_5' => [
-        'type' => ADSENSE_OLDCODE_TYPE_LINK,
-        'desc' => t('5-links Horizontal Large'),
-        'code' => '728x15_0ads_al_s',
       ],
     ];
 

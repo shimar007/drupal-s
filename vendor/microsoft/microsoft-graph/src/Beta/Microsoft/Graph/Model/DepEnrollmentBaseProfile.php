@@ -228,6 +228,35 @@ class DepEnrollmentBaseProfile extends EnrollmentProfile
     }
 
     /**
+    * Gets the enrollmentTimeAzureAdGroupIds
+    * EnrollmentTimeAzureAdGroupIds contains list of enrollment time Azure Group Ids to be associated with profile
+    *
+    * @return array|null The enrollmentTimeAzureAdGroupIds
+    */
+    public function getEnrollmentTimeAzureAdGroupIds()
+    {
+        if (array_key_exists("enrollmentTimeAzureAdGroupIds", $this->_propDict)) {
+            return $this->_propDict["enrollmentTimeAzureAdGroupIds"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the enrollmentTimeAzureAdGroupIds
+    * EnrollmentTimeAzureAdGroupIds contains list of enrollment time Azure Group Ids to be associated with profile
+    *
+    * @param string[] $val The enrollmentTimeAzureAdGroupIds
+    *
+    * @return DepEnrollmentBaseProfile
+    */
+    public function setEnrollmentTimeAzureAdGroupIds($val)
+    {
+        $this->_propDict["enrollmentTimeAzureAdGroupIds"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the isDefault
     * Indicates if this is the default profile
     *
@@ -601,6 +630,35 @@ class DepEnrollmentBaseProfile extends EnrollmentProfile
     public function setTouchIdDisabled($val)
     {
         $this->_propDict["touchIdDisabled"] = boolval($val);
+        return $this;
+    }
+
+    /**
+    * Gets the waitForDeviceConfiguredConfirmation
+    * Indicates if the device will need to wait for configured confirmation
+    *
+    * @return bool|null The waitForDeviceConfiguredConfirmation
+    */
+    public function getWaitForDeviceConfiguredConfirmation()
+    {
+        if (array_key_exists("waitForDeviceConfiguredConfirmation", $this->_propDict)) {
+            return $this->_propDict["waitForDeviceConfiguredConfirmation"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the waitForDeviceConfiguredConfirmation
+    * Indicates if the device will need to wait for configured confirmation
+    *
+    * @param bool $val The waitForDeviceConfiguredConfirmation
+    *
+    * @return DepEnrollmentBaseProfile
+    */
+    public function setWaitForDeviceConfiguredConfirmation($val)
+    {
+        $this->_propDict["waitForDeviceConfiguredConfirmation"] = boolval($val);
         return $this;
     }
 

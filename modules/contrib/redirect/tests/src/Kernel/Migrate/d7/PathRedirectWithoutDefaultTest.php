@@ -1,9 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\redirect\Kernel\Migrate\d7\PathRedirectWithoutDefaultTest.
- */
+declare(strict_types=1);
 
 namespace Drupal\Tests\redirect\Kernel\Migrate\d7;
 
@@ -17,7 +14,7 @@ class PathRedirectWithoutDefaultTest extends PathRedirectTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->installEntitySchema('redirect');
     $this->loadFixture(__DIR__ . '/../../../../fixtures/drupal7-no-default.php');

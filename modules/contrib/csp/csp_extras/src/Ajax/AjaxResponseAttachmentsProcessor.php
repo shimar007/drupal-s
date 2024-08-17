@@ -68,6 +68,13 @@ class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorIn
   protected $requestStack;
 
   /**
+   * The Renderer service.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected RendererInterface $renderer;
+
+  /**
    * The module handler.
    *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface

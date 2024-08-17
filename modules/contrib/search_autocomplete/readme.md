@@ -19,8 +19,71 @@ For a full description visit project page: https://www.drupal.org/project/search
 
 Install as usual. We advice using composer for this:
 `composer require drupal/search_autocomplete`
+**_Cleaning the cache after installation may be required._**
 
-Cleaning the cache after installation may be required.
+## Dependencies
+
+- [DOMPurify](https://github.com/cure53/DOMPurify)
+
+The [Libraries API](http://drupal.org/project/libraries) module is no longer required if you are using Drupal 8.9+,
+OR you have put the DOMPurify library in the standard location. i.e. '[DRUPAL ROOT]/libraries')
+
+### Tasks
+
+1. Download the DOMPurify library from
+   https://github.com/cure53/DOMPurify
+   (To use Composer instead, see instructions in the Composer section below)
+2. Unzip the file and rename the folder to "dompurify" (pay attention to the
+   case of the letters)
+3. Put the folder in one of the following places relative to drupal root.
+- libraries (this is the standard location)
+- profiles/PROFILE-NAME/libraries
+- sites/all/libraries (ONLY if Libraries API is installed)
+- sites/default/libraries
+- sites/SITE-NAME/libraries
+4. The following file is required:
+- dist/purify.min.js
+5. Ensure you have a valid path similar to this one for all files
+- Ex: libraries/dompurify/dist/purify.min.js
+
+That's it!
+
+### Composer
+
+Composer may be used to download the library as follows...
+
+1. Add the following to composer.json _installer-paths_ section
+   (if not already added)
+   `
+   "libraries/{$name}": ["type:drupal-library"]
+   `
+
+2. Add the DOMPurify package to your composer file. Use _ONE_ of the
+   following methods.
+* Use https://github.com/balbuf/drupal-libraries-installer
+  OR
+* Add the following to composer.json _repositories_ section
+  (your version may differ)
+
+      {
+          "type": "package",
+          "package": {
+              "name": "cure53/dompurify",
+              "version": "3.0.3",
+              "type": "drupal-library",
+              "source": {
+                  "url": "https://github.com/cure53/DOMPurify.git",
+                  "type": "git",
+                  "reference": "3.0.3"
+              }
+          }
+      }
+
+3. Open a command line terminal and navigate to the same directory as your
+   composer.json file and run
+   `
+   composer require cure53/dompurify
+   `
 
 #  CONFIGURATION
 

@@ -48,7 +48,7 @@ class OpenIdConnectSessionTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Mock the currentPath service.
@@ -89,7 +89,7 @@ class OpenIdConnectSessionTest extends UnitTestCase {
     $session->saveDestination();
 
     // Assert the $_SESSOIN global matches our expectation.
-    $this->assertArrayEquals($expectedSession, $_SESSION);
+    $this->assertEqualsCanonicalizing($expectedSession, $_SESSION);
   }
 
   /**
@@ -114,7 +114,7 @@ class OpenIdConnectSessionTest extends UnitTestCase {
     $session->saveDestination();
 
     // Assert the $_SESSION matches our expectations.
-    $this->assertArrayEquals($expectedSession, $_SESSION);
+    $this->assertEqualsCanonicalizing($expectedSession, $_SESSION);
   }
 
   /**

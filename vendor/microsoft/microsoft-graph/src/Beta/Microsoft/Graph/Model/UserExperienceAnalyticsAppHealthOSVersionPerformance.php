@@ -26,7 +26,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 {
     /**
     * Gets the activeDeviceCount
-    * The number of active devices for the OS version. Valid values -2147483648 to 2147483647
+    * The number of active devices for the OS version. Valid values 0 to 2147483647. Supports: $filter, $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @return int|null The activeDeviceCount
     */
@@ -41,7 +41,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Sets the activeDeviceCount
-    * The number of active devices for the OS version. Valid values -2147483648 to 2147483647
+    * The number of active devices for the OS version. Valid values 0 to 2147483647. Supports: $filter, $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @param int $val The activeDeviceCount
     *
@@ -55,7 +55,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Gets the meanTimeToFailureInMinutes
-    * The mean time to failure for the OS version in minutes. Valid values -2147483648 to 2147483647
+    * The mean time to failure for the application in minutes. Valid values 0 to 2147483647. Supports: $filter, $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @return int|null The meanTimeToFailureInMinutes
     */
@@ -70,7 +70,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Sets the meanTimeToFailureInMinutes
-    * The mean time to failure for the OS version in minutes. Valid values -2147483648 to 2147483647
+    * The mean time to failure for the application in minutes. Valid values 0 to 2147483647. Supports: $filter, $select, $OrderBy. Read-only. Valid values -2147483648 to 2147483647
     *
     * @param int $val The meanTimeToFailureInMinutes
     *
@@ -84,7 +84,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Gets the osBuildNumber
-    * The OS build number installed on the device.
+    * The OS build number installed on the device. Supports: $select, $OrderBy. Read-only.
     *
     * @return string|null The osBuildNumber
     */
@@ -99,7 +99,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Sets the osBuildNumber
-    * The OS build number installed on the device.
+    * The OS build number installed on the device. Supports: $select, $OrderBy. Read-only.
     *
     * @param string $val The osBuildNumber
     *
@@ -113,7 +113,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Gets the osVersion
-    * The OS version installed on the device.
+    * The OS version installed on the device. Supports: $select, $OrderBy. Read-only.
     *
     * @return string|null The osVersion
     */
@@ -128,7 +128,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Sets the osVersion
-    * The OS version installed on the device.
+    * The OS version installed on the device. Supports: $select, $OrderBy. Read-only.
     *
     * @param string $val The osVersion
     *
@@ -142,7 +142,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Gets the osVersionAppHealthScore
-    * The app health score of the OS version. Valid values -1.79769313486232E+308 to 1.79769313486232E+308
+    * The application health score of the OS version. Valid values 0 to 100. Supports: $filter, $select, $OrderBy. Read-only. Valid values -1.79769313486232E+308 to 1.79769313486232E+308
     *
     * @return float|null The osVersionAppHealthScore
     */
@@ -157,7 +157,7 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
 
     /**
     * Sets the osVersionAppHealthScore
-    * The app health score of the OS version. Valid values -1.79769313486232E+308 to 1.79769313486232E+308
+    * The application health score of the OS version. Valid values 0 to 100. Supports: $filter, $select, $OrderBy. Read-only. Valid values -1.79769313486232E+308 to 1.79769313486232E+308
     *
     * @param float $val The osVersionAppHealthScore
     *
@@ -166,35 +166,6 @@ class UserExperienceAnalyticsAppHealthOSVersionPerformance extends Entity
     public function setOsVersionAppHealthScore($val)
     {
         $this->_propDict["osVersionAppHealthScore"] = floatval($val);
-        return $this;
-    }
-
-    /**
-    * Gets the osVersionAppHealthStatus
-    * The overall app health status of the OS version.
-    *
-    * @return string|null The osVersionAppHealthStatus
-    */
-    public function getOsVersionAppHealthStatus()
-    {
-        if (array_key_exists("osVersionAppHealthStatus", $this->_propDict)) {
-            return $this->_propDict["osVersionAppHealthStatus"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the osVersionAppHealthStatus
-    * The overall app health status of the OS version.
-    *
-    * @param string $val The osVersionAppHealthStatus
-    *
-    * @return UserExperienceAnalyticsAppHealthOSVersionPerformance
-    */
-    public function setOsVersionAppHealthStatus($val)
-    {
-        $this->_propDict["osVersionAppHealthStatus"] = $val;
         return $this;
     }
 

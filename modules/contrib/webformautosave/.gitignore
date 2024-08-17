@@ -19,6 +19,7 @@ nbproject
 .svn
 .CVS
 .idea
+.ddev
 
 # Numerous always-ignore extensions #
 #####################################
@@ -51,3 +52,17 @@ nbproject
 *.log
 *.sql
 *.mysql
+
+# Gitlab CI Files #
+###################
+.editorconfig
+.gitattributes
+.gitlab-ci-local
+composer.lock
+expand_composer_json.php
+junit.xml
+symlink_project.php
+vendor
+web
+.prettierignore
+.prettierrc.json

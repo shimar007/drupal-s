@@ -3,7 +3,7 @@
 namespace Drupal\adsense;
 
 /**
- * Class ContentAdBase.
+ * Base class for content AdsenseAd plugins.
  */
 abstract class ContentAdBase extends AdsenseAdBase {
   /**

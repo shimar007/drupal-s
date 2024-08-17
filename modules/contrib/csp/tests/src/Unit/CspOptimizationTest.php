@@ -474,6 +474,7 @@ class CspOptimizationTest extends UnitTestCase {
 
     $policy->setDirective('script-src-attr', [
       Csp::POLICY_SELF,
+      // cspell:disable-next-line
       "'nonce-qskCbxYHEcwf3tBVzkngCA'",
     ]);
 

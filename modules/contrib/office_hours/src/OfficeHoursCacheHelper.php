@@ -51,26 +51,18 @@ class OfficeHoursCacheHelper implements CacheableDependencyInterface {
   protected $formatterSettings = [];
 
   /**
-   * An Office Hours ItemList.
+   * An OfficeHoursItemList.
    *
    * @var \Drupal\office_hours\Plugin\Field\FieldType\OfficeHoursItemListInterface
    */
   protected $items = NULL;
 
   /**
-   * An array of fromatted office_hours, according to formatter.
-   *
-   * @var array
-   */
-  protected $officeHours = [];
-
-  /**
    * Constructs a CacheHelper object.
    */
-  public function __construct(array $formatter_settings, OfficeHoursItemListInterface $items, array $office_hours) {
+  public function __construct(array $formatter_settings, OfficeHoursItemListInterface $items) {
     $this->formatterSettings = $formatter_settings;
     $this->items = $items;
-    $this->officeHours = $office_hours;
   }
 
   /**
@@ -79,7 +71,7 @@ class OfficeHoursCacheHelper implements CacheableDependencyInterface {
   public function getCacheContexts() {
     // Do not set caching for anonymous users.
     if (\Drupal::currentUser()->isAnonymous()) {
-      // return ['session';
+      // return ['session'];
     }
     return [];
   }
@@ -124,10 +116,6 @@ class OfficeHoursCacheHelper implements CacheableDependencyInterface {
    * @see https://www.drupal.org/docs/drupal-apis/cache-api/cache-max-age
    */
   public function getCacheMaxAge() {
-    // Do not set caching for anonymous users.
-    if (\Drupal::currentUser()->isAnonymous()) {
-      return 0;
-    }
 
     // @todo Add CacheMaxAge when entity has Exception days in/out of horizon.
     // If there are no open days, cache forever.
@@ -135,15 +123,25 @@ class OfficeHoursCacheHelper implements CacheableDependencyInterface {
       return Cache::PERMANENT;
     }
 
-    $date = new DrupalDateTime('now');
-    $today = $date->format('w');
-    $now = $date->format('Hi');
+    // Get the current time. May be adapted for User Timezone.
+    $time = $this->items->getRequestTime();
+    // @todo Use OfficeDateHelper::today()?
+    $date = DrupalDateTime::createFromTimestamp($time);
+
+    // Get today's weekday.
+    $today_weekday = OfficeHoursDateHelper::getWeekday($time);
+
+    $now = (int) $date->format('Hi');
     $seconds = $date->format('s');
     $next_time = '0000';
     $add_days = 0;
 
     $formatter_settings = $this->formatterSettings;
     $cache_setting = $formatter_settings['show_closed'];
+    if (!empty($formatter_settings['current_status']['position'])) {
+      $cache_setting = 'current';
+    }
+
     switch ($cache_setting) {
       case 'all':
       case 'open':
@@ -153,34 +151,43 @@ class OfficeHoursCacheHelper implements CacheableDependencyInterface {
 
       case 'current':
         // Cache expires at midnight. (Is this timezone proof?)
-        /*
         $next_time = '0000';
         $add_days = 1;
         break;
-         */
-        return strtotime('tomorrow midnight') - strtotime('now');
 
       case 'next':
-        // Get the first (and only) day of the list.
-        // Make sure we only receive 1 day, only to calculate the cache.
-        $office_hours = $this->officeHours;
-        $next_day = array_shift($office_hours);
-        if (!$next_day) {
+        $office_hours = NULL;
+        $currentSlot = $this->items->getCurrentSlot($time);
+        if ($currentSlot) {
+          $office_hours[] = $currentSlot->getValue();
+        }
+        else {
+          // Get next slot.
+          $next_day = $this->items->getNextDay($time);
+          foreach ($this->items->getValue() as $item) {
+            if ($item['day'] == $next_day) {
+              $office_hours[] = $item;
+              // Do no break here. It could be a closed slot from earlier today.
+            }
+          }
+        }
+        if (!$office_hours) {
           return Cache::PERMANENT;
         }
 
         // Get the difference in hours/minutes
         // between 'now' and next open/closing time.
         $first_time_slot_found = FALSE;
-        foreach ($next_day['slots'] as $slot) {
-          $start = $slot['start'];
-          $end = $slot['end'];
+        foreach ($office_hours as $slot) {
+          $day = $slot['day'];
+          $start = $slot['starthours'];
+          $end = $slot['endhours'];
 
-          if ($next_day['day'] != $today) {
+          if ($day != $today_weekday) {
             // We will open tomorrow or later.
             $next_time = $start;
             $seven = OfficeHoursDateHelper::DAYS_PER_WEEK;
-            $add_days = ($next_day['day'] - $today + $seven) % $seven;
+            $add_days = ($day - $today_weekday + $seven) % $seven;
             break;
           }
           elseif ($start > $now) {
@@ -223,12 +230,52 @@ class OfficeHoursCacheHelper implements CacheableDependencyInterface {
     $next_time = is_numeric($next_time) ? $next_time : '0000';
     // Calculate the remaining cache time.
     $time_left = $add_days * 24 * 3600;
+    $next_time = OfficeHoursDateHelper::format($next_time, 'Hi');
+    $now = OfficeHoursDateHelper::format($now, 'Hi');
+
     $time_left += ((int) substr($next_time, 0, 2) - (int) substr($now, 0, 2)) * 3600;
     $time_left += ((int) substr($next_time, 2, 2) - (int) substr($now, 2, 2)) * 60;
     // Correct for the current minute.
     $time_left -= $seconds;
 
     return $time_left;
+  }
+
+  /**
+   * Defines if a '#cache' instruction is needed.
+   *
+   * @return bool
+   *   TRUE if '#cache' is needed, else FALSE.
+   */
+  public function isCacheNeeded() {
+    // Determine if this entity display must be formatted.
+    // Return TRUE if render caching must be active.
+    // This is the case when:
+    // - a Status formatter (open/closed) is used.
+    // - only the currently open day is displayed.
+    // Note: Also, on the entity itself, it must be checked whether
+    // Exception days are used. If so, then caching is also needed.
+    if (!empty($this->formatterSettings['current_status']['position'])) {
+      return TRUE;
+    }
+
+    // Always add caching when exceptions are in place.
+    if ($this->items->hasExceptionDays()) {
+      return TRUE;
+    }
+
+    switch ($this->formatterSettings['show_closed']) {
+      case 'all':
+      case 'open':
+      case 'none':
+        // These caches never expire, since they are always correct.
+        return FALSE;
+
+      case 'current':
+      case 'next':
+      default:
+        return TRUE;
+    }
   }
 
 }

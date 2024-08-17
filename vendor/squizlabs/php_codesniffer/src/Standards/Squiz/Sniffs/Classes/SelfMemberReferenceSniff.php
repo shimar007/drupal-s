@@ -9,7 +9,7 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes;
@@ -182,7 +182,7 @@ class SelfMemberReferenceSniff extends AbstractScopeSniff
     /**
      * Returns the declaration names for classes/interfaces/functions with a namespace.
      *
-     * @param array $tokens   Token stack for this file
+     * @param array $tokens   Token stack for this file.
      * @param int   $stackPtr The position where the namespace building will start.
      *
      * @return string
@@ -225,7 +225,7 @@ class SelfMemberReferenceSniff extends AbstractScopeSniff
         $namespaceDeclaration = $phpcsFile->findPrevious(T_NAMESPACE, $stackPtr);
 
         if ($namespaceDeclaration !== false) {
-            $endOfNamespaceDeclaration = $phpcsFile->findNext([T_SEMICOLON, T_OPEN_CURLY_BRACKET], $namespaceDeclaration);
+            $endOfNamespaceDeclaration = $phpcsFile->findNext([T_SEMICOLON, T_OPEN_CURLY_BRACKET, T_CLOSE_TAG], $namespaceDeclaration);
             $namespace = $this->getDeclarationNameWithNamespace(
                 $phpcsFile->getTokens(),
                 ($endOfNamespaceDeclaration - 1)

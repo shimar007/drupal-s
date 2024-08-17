@@ -56,6 +56,37 @@ class IdentityGovernance implements \JsonSerializable
     }
 
     /**
+    * Gets the lifecycleWorkflows
+    *
+    * @return \Microsoft\Graph\IdentityGovernanceNamespace\Model\LifecycleWorkflowsContainer|null The lifecycleWorkflows
+    */
+    public function getLifecycleWorkflows()
+    {
+        if (array_key_exists("lifecycleWorkflows", $this->_propDict)) {
+            if (is_a($this->_propDict["lifecycleWorkflows"], "\Microsoft\Graph\IdentityGovernanceNamespace\Model\LifecycleWorkflowsContainer") || is_null($this->_propDict["lifecycleWorkflows"])) {
+                return $this->_propDict["lifecycleWorkflows"];
+            } else {
+                $this->_propDict["lifecycleWorkflows"] = new \Microsoft\Graph\IdentityGovernanceNamespace\Model\LifecycleWorkflowsContainer($this->_propDict["lifecycleWorkflows"]);
+                return $this->_propDict["lifecycleWorkflows"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the lifecycleWorkflows
+    *
+    * @param \Microsoft\Graph\IdentityGovernanceNamespace\Model\LifecycleWorkflowsContainer $val The lifecycleWorkflows
+    *
+    * @return IdentityGovernance
+    */
+    public function setLifecycleWorkflows($val)
+    {
+        $this->_propDict["lifecycleWorkflows"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the accessReviews
     *
     * @return AccessReviewSet|null The accessReviews
@@ -176,6 +207,37 @@ class IdentityGovernance implements \JsonSerializable
     public function setEntitlementManagement($val)
     {
         $this->_propDict["entitlementManagement"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the privilegedAccess
+    *
+    * @return PrivilegedAccessRoot|null The privilegedAccess
+    */
+    public function getPrivilegedAccess()
+    {
+        if (array_key_exists("privilegedAccess", $this->_propDict)) {
+            if (is_a($this->_propDict["privilegedAccess"], "\Microsoft\Graph\Model\PrivilegedAccessRoot") || is_null($this->_propDict["privilegedAccess"])) {
+                return $this->_propDict["privilegedAccess"];
+            } else {
+                $this->_propDict["privilegedAccess"] = new PrivilegedAccessRoot($this->_propDict["privilegedAccess"]);
+                return $this->_propDict["privilegedAccess"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the privilegedAccess
+    *
+    * @param PrivilegedAccessRoot $val The privilegedAccess
+    *
+    * @return IdentityGovernance
+    */
+    public function setPrivilegedAccess($val)
+    {
+        $this->_propDict["privilegedAccess"] = $val;
         return $this;
     }
 

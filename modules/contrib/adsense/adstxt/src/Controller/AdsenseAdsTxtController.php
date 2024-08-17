@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class AdsenseAdsTxtController.
+ * Controller for the ads.txt file.
  */
 class AdsenseAdsTxtController extends ControllerBase {
 

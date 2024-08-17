@@ -1,3 +1,9 @@
+nonce:
+  dependencies:
+    - core/drupalSettings
+  drupalSettings:
+    csp: {}
+
 admin:
   css:
     theme:

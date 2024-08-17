@@ -22,74 +22,8 @@ namespace Beta\Microsoft\Graph\Model;
 * @license   https://opensource.org/licenses/MIT MIT License
 * @link      https://graph.microsoft.com
 */
-class SitePage extends BaseItem
+class SitePage extends BaseSitePage
 {
-    /**
-    * Gets the contentType
-    * Inherited from baseItem.
-    *
-    * @return ContentTypeInfo|null The contentType
-    */
-    public function getContentType()
-    {
-        if (array_key_exists("contentType", $this->_propDict)) {
-            if (is_a($this->_propDict["contentType"], "\Beta\Microsoft\Graph\Model\ContentTypeInfo") || is_null($this->_propDict["contentType"])) {
-                return $this->_propDict["contentType"];
-            } else {
-                $this->_propDict["contentType"] = new ContentTypeInfo($this->_propDict["contentType"]);
-                return $this->_propDict["contentType"];
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Sets the contentType
-    * Inherited from baseItem.
-    *
-    * @param ContentTypeInfo $val The contentType
-    *
-    * @return SitePage
-    */
-    public function setContentType($val)
-    {
-        $this->_propDict["contentType"] = $val;
-        return $this;
-    }
-
-    /**
-    * Gets the pageLayout
-    * The name of the page layout of the page. The possible values are: microsoftReserved, article, home, unknownFutureValue.
-    *
-    * @return PageLayoutType|null The pageLayout
-    */
-    public function getPageLayout()
-    {
-        if (array_key_exists("pageLayout", $this->_propDict)) {
-            if (is_a($this->_propDict["pageLayout"], "\Beta\Microsoft\Graph\Model\PageLayoutType") || is_null($this->_propDict["pageLayout"])) {
-                return $this->_propDict["pageLayout"];
-            } else {
-                $this->_propDict["pageLayout"] = new PageLayoutType($this->_propDict["pageLayout"]);
-                return $this->_propDict["pageLayout"];
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Sets the pageLayout
-    * The name of the page layout of the page. The possible values are: microsoftReserved, article, home, unknownFutureValue.
-    *
-    * @param PageLayoutType $val The pageLayout
-    *
-    * @return SitePage
-    */
-    public function setPageLayout($val)
-    {
-        $this->_propDict["pageLayout"] = $val;
-        return $this;
-    }
-
     /**
     * Gets the promotionKind
     * Indicates the promotion kind of the sitePage. The possible values are: microsoftReserved, page, newsPost, unknownFutureValue.
@@ -120,39 +54,6 @@ class SitePage extends BaseItem
     public function setPromotionKind($val)
     {
         $this->_propDict["promotionKind"] = $val;
-        return $this;
-    }
-
-    /**
-    * Gets the publishingState
-    * The publishing status and the MM.mm version of the page.
-    *
-    * @return PublicationFacet|null The publishingState
-    */
-    public function getPublishingState()
-    {
-        if (array_key_exists("publishingState", $this->_propDict)) {
-            if (is_a($this->_propDict["publishingState"], "\Beta\Microsoft\Graph\Model\PublicationFacet") || is_null($this->_propDict["publishingState"])) {
-                return $this->_propDict["publishingState"];
-            } else {
-                $this->_propDict["publishingState"] = new PublicationFacet($this->_propDict["publishingState"]);
-                return $this->_propDict["publishingState"];
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Sets the publishingState
-    * The publishing status and the MM.mm version of the page.
-    *
-    * @param PublicationFacet $val The publishingState
-    *
-    * @return SitePage
-    */
-    public function setPublishingState($val)
-    {
-        $this->_propDict["publishingState"] = $val;
         return $this;
     }
 
@@ -277,35 +178,6 @@ class SitePage extends BaseItem
     }
 
     /**
-    * Gets the title
-    * Title of the sitePage.
-    *
-    * @return string|null The title
-    */
-    public function getTitle()
-    {
-        if (array_key_exists("title", $this->_propDict)) {
-            return $this->_propDict["title"];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * Sets the title
-    * Title of the sitePage.
-    *
-    * @param string $val The title
-    *
-    * @return SitePage
-    */
-    public function setTitle($val)
-    {
-        $this->_propDict["title"] = $val;
-        return $this;
-    }
-
-    /**
     * Gets the titleArea
     * Title area on the SharePoint page.
     *
@@ -340,7 +212,7 @@ class SitePage extends BaseItem
 
     /**
     * Gets the canvasLayout
-    * Indicates the layout of the content in a given SharePoint page, including horizontal sections and vertical section
+    * Indicates the layout of the content in a given SharePoint page, including horizontal sections and vertical sections.
     *
     * @return CanvasLayout|null The canvasLayout
     */
@@ -359,7 +231,7 @@ class SitePage extends BaseItem
 
     /**
     * Sets the canvasLayout
-    * Indicates the layout of the content in a given SharePoint page, including horizontal sections and vertical section
+    * Indicates the layout of the content in a given SharePoint page, including horizontal sections and vertical sections.
     *
     * @param CanvasLayout $val The canvasLayout
     *
@@ -374,7 +246,7 @@ class SitePage extends BaseItem
 
      /**
      * Gets the webParts
-    * Collection of webparts on the SharePoint page
+    * Collection of webparts on the SharePoint page.
      *
      * @return array|null The webParts
      */
@@ -389,7 +261,7 @@ class SitePage extends BaseItem
 
     /**
     * Sets the webParts
-    * Collection of webparts on the SharePoint page
+    * Collection of webparts on the SharePoint page.
     *
     * @param WebPart[] $val The webParts
     *

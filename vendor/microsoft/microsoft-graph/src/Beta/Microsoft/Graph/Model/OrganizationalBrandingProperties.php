@@ -207,6 +207,39 @@ class OrganizationalBrandingProperties extends Entity
     }
 
     /**
+    * Gets the contentCustomization
+    * Represents the various content options to be customized throughout the authentication flow for a tenant. NOTE: Supported by Microsoft Entra ID for customers tenants only.
+    *
+    * @return ContentCustomization|null The contentCustomization
+    */
+    public function getContentCustomization()
+    {
+        if (array_key_exists("contentCustomization", $this->_propDict)) {
+            if (is_a($this->_propDict["contentCustomization"], "\Beta\Microsoft\Graph\Model\ContentCustomization") || is_null($this->_propDict["contentCustomization"])) {
+                return $this->_propDict["contentCustomization"];
+            } else {
+                $this->_propDict["contentCustomization"] = new ContentCustomization($this->_propDict["contentCustomization"]);
+                return $this->_propDict["contentCustomization"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the contentCustomization
+    * Represents the various content options to be customized throughout the authentication flow for a tenant. NOTE: Supported by Microsoft Entra ID for customers tenants only.
+    *
+    * @param ContentCustomization $val The contentCustomization
+    *
+    * @return OrganizationalBrandingProperties
+    */
+    public function setContentCustomization($val)
+    {
+        $this->_propDict["contentCustomization"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the customAccountResetCredentialsUrl
     * A custom URL for resetting account credentials. This URL must be in ASCII format or non-ASCII characters must be URL encoded, and not exceed 128 characters.
     *
@@ -531,7 +564,7 @@ class OrganizationalBrandingProperties extends Entity
 
     /**
     * Gets the favicon
-    * A custom icon (favicon) to replace a default Microsoft product favicon on an Azure AD tenant.
+    * A custom icon (favicon) to replace a default Microsoft product favicon on a Microsoft Entra tenant.
     *
     * @return \GuzzleHttp\Psr7\Stream|null The favicon
     */
@@ -550,7 +583,7 @@ class OrganizationalBrandingProperties extends Entity
 
     /**
     * Sets the favicon
-    * A custom icon (favicon) to replace a default Microsoft product favicon on an Azure AD tenant.
+    * A custom icon (favicon) to replace a default Microsoft product favicon on a Microsoft Entra tenant.
     *
     * @param \GuzzleHttp\Psr7\Stream $val The favicon
     *

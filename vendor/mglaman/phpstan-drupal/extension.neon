@@ -17,6 +17,15 @@ parameters:
 		- stubs/Twig/functions.stub
 	drupal:
 		drupal_root: '%currentWorkingDirectory%'
+		bleedingEdge:
+			checkDeprecatedHooksInApiFiles: false
+			checkCoreDeprecatedHooksInApiFiles: false
+			checkContribDeprecatedHooksInApiFiles: false
+		rules:
+			testClassSuffixNameRule: false
+			dependencySerializationTraitPropertyRule: false
+			accessResultConditionRule: false
+			classExtendsInternalClassRule: true
 		entityMapping:
 			aggregator_feed:
 				class: Drupal\aggregator\Entity\Feed
@@ -233,6 +242,17 @@ parameters:
 parametersSchema:
 	drupal: structure([
 		drupal_root: string()
+		bleedingEdge: structure([
+			checkDeprecatedHooksInApiFiles: boolean()
+			checkCoreDeprecatedHooksInApiFiles: boolean()
+			checkContribDeprecatedHooksInApiFiles: boolean()
+		])
+		rules: structure([
+			testClassSuffixNameRule: boolean()
+			dependencySerializationTraitPropertyRule: boolean()
+			accessResultConditionRule: boolean()
+			classExtendsInternalClassRule: boolean()
+		])
 		entityMapping: arrayOf(anyOf(
 			structure([
 				class: string()
@@ -259,6 +279,9 @@ services:
 		class: mglaman\PHPStanDrupal\Type\EntityStorage\EntityStorageDynamicReturnTypeExtension
 		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
 	-
+		class: mglaman\PHPStanDrupal\Type\EntityRepositoryReturnTypeExtension
+		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
+	-
 		class: mglaman\PHPStanDrupal\Type\EntityStorage\GetQueryReturnTypeExtension
 		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
 	-
@@ -272,9 +295,6 @@ services:
 		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
 	-
 		class: mglaman\PHPStanDrupal\Type\EntityQuery\EntityQueryAccessCheckDynamicReturnTypeExtension
-		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
-	-
-		class: mglaman\PHPStanDrupal\Type\UrlToStringDynamicReturnTypeExtension
 		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
 	-
 		class: mglaman\PHPStanDrupal\Type\EntityAccessControlHandlerReturnTypeExtension
@@ -301,3 +321,15 @@ services:
 		class: mglaman\PHPStanDrupal\Type\EntityQuery\AccessCheckTypeSpecifyingExtension
 		tags:
 			- phpstan.typeSpecifier.methodTypeSpecifyingExtension
+	-
+		class: mglaman\PHPStanDrupal\DeprecatedScope\GroupLegacyScope
+		tags:
+			- phpstan.deprecations.deprecatedScopeResolver
+	-
+		class: mglaman\PHPStanDrupal\DeprecatedScope\IgnoreDeprecationsScope
+		tags:
+			- phpstan.deprecations.deprecatedScopeResolver
+	-
+		class: mglaman\PHPStanDrupal\DeprecatedScope\DeprecationHelperScope
+		tags:
+			- phpstan.deprecations.deprecatedScopeResolver

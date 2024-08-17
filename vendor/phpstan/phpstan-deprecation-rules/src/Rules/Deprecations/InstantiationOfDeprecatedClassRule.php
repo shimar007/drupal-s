@@ -10,6 +10,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Rules\RuleLevelHelper;
 use PHPStan\Type\ErrorType;
 use function sprintf;
@@ -26,10 +27,14 @@ class InstantiationOfDeprecatedClassRule implements Rule
 	/** @var RuleLevelHelper */
 	private $ruleLevelHelper;
 
-	public function __construct(ReflectionProvider $reflectionProvider, RuleLevelHelper $ruleLevelHelper)
+	/** @var DeprecatedScopeHelper */
+	private $deprecatedScopeHelper;
+
+	public function __construct(ReflectionProvider $reflectionProvider, RuleLevelHelper $ruleLevelHelper, DeprecatedScopeHelper $deprecatedScopeHelper)
 	{
 		$this->reflectionProvider = $reflectionProvider;
 		$this->ruleLevelHelper = $ruleLevelHelper;
+		$this->deprecatedScopeHelper = $deprecatedScopeHelper;
 	}
 
 	public function getNodeType(): string
@@ -39,7 +44,7 @@ class InstantiationOfDeprecatedClassRule implements Rule
 
 	public function processNode(Node $node, Scope $scope): array
 	{
-		if (DeprecatedScopeHelper::isScopeDeprecated($scope)) {
+		if ($this->deprecatedScopeHelper->isScopeDeprecated($scope)) {
 			return [];
 		}
 
@@ -85,16 +90,16 @@ class InstantiationOfDeprecatedClassRule implements Rule
 
 			$description = $class->getDeprecatedDescription();
 			if ($description === null) {
-				$errors[] = sprintf(
+				$errors[] = RuleErrorBuilder::message(sprintf(
 					'Instantiation of deprecated class %s.',
 					$referencedClass
-				);
+				))->identifier('new.deprecated')->build();
 			} else {
-				$errors[] = sprintf(
+				$errors[] = RuleErrorBuilder::message(sprintf(
 					"Instantiation of deprecated class %s:\n%s",
 					$referencedClass,
 					$description
-				);
+				))->identifier('new.deprecated')->build();
 			}
 		}
 

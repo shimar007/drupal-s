@@ -57,7 +57,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Gets the authenticationMethodsPolicy
-    * The authentication methods and the users that are allowed to use them to sign in and perform multi-factor authentication (MFA) in Azure Active Directory (Azure AD).
+    * The authentication methods and the users that are allowed to use them to sign in and perform multifactor authentication (MFA) in Microsoft Entra ID.
     *
     * @return AuthenticationMethodsPolicy|null The authenticationMethodsPolicy
     */
@@ -76,7 +76,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the authenticationMethodsPolicy
-    * The authentication methods and the users that are allowed to use them to sign in and perform multi-factor authentication (MFA) in Azure Active Directory (Azure AD).
+    * The authentication methods and the users that are allowed to use them to sign in and perform multifactor authentication (MFA) in Microsoft Entra ID.
     *
     * @param AuthenticationMethodsPolicy $val The authenticationMethodsPolicy
     *
@@ -91,7 +91,7 @@ class PolicyRoot implements \JsonSerializable
 
      /**
      * Gets the authenticationStrengthPolicies
-    * The authentication method combinations that are to be used in scenarios defined by Azure AD Conditional Access.
+    * The authentication method combinations that are to be used in scenarios defined by Microsoft Entra Conditional Access.
      *
      * @return array|null The authenticationStrengthPolicies
      */
@@ -106,7 +106,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the authenticationStrengthPolicies
-    * The authentication method combinations that are to be used in scenarios defined by Azure AD Conditional Access.
+    * The authentication method combinations that are to be used in scenarios defined by Microsoft Entra Conditional Access.
     *
     * @param AuthenticationStrengthPolicy[] $val The authenticationStrengthPolicies
     *
@@ -120,7 +120,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Gets the authenticationFlowsPolicy
-    * The policy configuration of the self-service sign-up experience of external users.
+    * The policy configuration of the self-service sign-up experience of guests.
     *
     * @return AuthenticationFlowsPolicy|null The authenticationFlowsPolicy
     */
@@ -139,7 +139,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the authenticationFlowsPolicy
-    * The policy configuration of the self-service sign-up experience of external users.
+    * The policy configuration of the self-service sign-up experience of guests.
     *
     * @param AuthenticationFlowsPolicy $val The authenticationFlowsPolicy
     *
@@ -218,7 +218,7 @@ class PolicyRoot implements \JsonSerializable
 
      /**
      * Gets the activityBasedTimeoutPolicies
-    * The policy that controls the idle time out for web sessions for applications.
+    * The policy that controls the idle time-out for web sessions for applications.
      *
      * @return array|null The activityBasedTimeoutPolicies
      */
@@ -233,7 +233,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the activityBasedTimeoutPolicies
-    * The policy that controls the idle time out for web sessions for applications.
+    * The policy that controls the idle time-out for web sessions for applications.
     *
     * @param ActivityBasedTimeoutPolicy[] $val The activityBasedTimeoutPolicies
     *
@@ -278,7 +278,7 @@ class PolicyRoot implements \JsonSerializable
 
      /**
      * Gets the authorizationPolicy
-    * The policy that controls Azure AD authorization settings.
+    * The policy that controls Microsoft Entra authorization settings.
      *
      * @return array|null The authorizationPolicy
      */
@@ -293,7 +293,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the authorizationPolicy
-    * The policy that controls Azure AD authorization settings.
+    * The policy that controls Microsoft Entra authorization settings.
     *
     * @param AuthorizationPolicy[] $val The authorizationPolicy
     *
@@ -337,7 +337,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Gets the crossTenantAccessPolicy
-    * The custom rules that define an access scenario when interacting with external Azure AD tenants.
+    * The custom rules that define an access scenario when interacting with external Microsoft Entra tenants.
     *
     * @return CrossTenantAccessPolicy|null The crossTenantAccessPolicy
     */
@@ -356,7 +356,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the crossTenantAccessPolicy
-    * The custom rules that define an access scenario when interacting with external Azure AD tenants.
+    * The custom rules that define an access scenario when interacting with external Microsoft Entra tenants.
     *
     * @param CrossTenantAccessPolicy $val The crossTenantAccessPolicy
     *
@@ -403,7 +403,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Gets the externalIdentitiesPolicy
-    * Represents the tenant-wide policy that controls whether external users can leave an Azure AD tenant via self-service controls.
+    * Represents the tenant-wide policy that controls whether guests can leave a Microsoft Entra tenant via self-service controls.
     *
     * @return ExternalIdentitiesPolicy|null The externalIdentitiesPolicy
     */
@@ -422,7 +422,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the externalIdentitiesPolicy
-    * Represents the tenant-wide policy that controls whether external users can leave an Azure AD tenant via self-service controls.
+    * Represents the tenant-wide policy that controls whether guests can leave a Microsoft Entra tenant via self-service controls.
     *
     * @param ExternalIdentitiesPolicy $val The externalIdentitiesPolicy
     *
@@ -434,10 +434,41 @@ class PolicyRoot implements \JsonSerializable
         return $this;
     }
 
+    /**
+    * Gets the federatedTokenValidationPolicy
+    *
+    * @return FederatedTokenValidationPolicy|null The federatedTokenValidationPolicy
+    */
+    public function getFederatedTokenValidationPolicy()
+    {
+        if (array_key_exists("federatedTokenValidationPolicy", $this->_propDict)) {
+            if (is_a($this->_propDict["federatedTokenValidationPolicy"], "\Beta\Microsoft\Graph\Model\FederatedTokenValidationPolicy") || is_null($this->_propDict["federatedTokenValidationPolicy"])) {
+                return $this->_propDict["federatedTokenValidationPolicy"];
+            } else {
+                $this->_propDict["federatedTokenValidationPolicy"] = new FederatedTokenValidationPolicy($this->_propDict["federatedTokenValidationPolicy"]);
+                return $this->_propDict["federatedTokenValidationPolicy"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the federatedTokenValidationPolicy
+    *
+    * @param FederatedTokenValidationPolicy $val The federatedTokenValidationPolicy
+    *
+    * @return PolicyRoot
+    */
+    public function setFederatedTokenValidationPolicy($val)
+    {
+        $this->_propDict["federatedTokenValidationPolicy"] = $val;
+        return $this;
+    }
+
 
      /**
      * Gets the homeRealmDiscoveryPolicies
-    * The policy to control Azure AD authentication behavior for federated users.
+    * The policy to control Microsoft Entra authentication behavior for federated users.
      *
      * @return array|null The homeRealmDiscoveryPolicies
      */
@@ -452,7 +483,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the homeRealmDiscoveryPolicies
-    * The policy to control Azure AD authentication behavior for federated users.
+    * The policy to control Microsoft Entra authentication behavior for federated users.
     *
     * @param HomeRealmDiscoveryPolicy[] $val The homeRealmDiscoveryPolicies
     *
@@ -525,7 +556,7 @@ class PolicyRoot implements \JsonSerializable
 
      /**
      * Gets the tokenIssuancePolicies
-    * The policy that specifies the characteristics of SAML tokens issued by Azure AD.
+    * The policy that specifies the characteristics of SAML tokens issued by Microsoft Entra ID.
      *
      * @return array|null The tokenIssuancePolicies
      */
@@ -540,7 +571,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the tokenIssuancePolicies
-    * The policy that specifies the characteristics of SAML tokens issued by Azure AD.
+    * The policy that specifies the characteristics of SAML tokens issued by Microsoft Entra ID.
     *
     * @param TokenIssuancePolicy[] $val The tokenIssuancePolicies
     *
@@ -555,7 +586,7 @@ class PolicyRoot implements \JsonSerializable
 
      /**
      * Gets the tokenLifetimePolicies
-    * The policy that controls the lifetime of a JWT access token, an ID token, or a SAML 1.1/2.0 token issued by Azure AD.
+    * The policy that controls the lifetime of a JWT access token, an ID token, or a SAML 1.1/2.0 token issued by Microsoft Entra ID.
      *
      * @return array|null The tokenLifetimePolicies
      */
@@ -570,7 +601,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the tokenLifetimePolicies
-    * The policy that controls the lifetime of a JWT access token, an ID token, or a SAML 1.1/2.0 token issued by Azure AD.
+    * The policy that controls the lifetime of a JWT access token, an ID token, or a SAML 1.1/2.0 token issued by Microsoft Entra ID.
     *
     * @param TokenLifetimePolicy[] $val The tokenLifetimePolicies
     *
@@ -775,7 +806,7 @@ class PolicyRoot implements \JsonSerializable
 
      /**
      * Gets the mobileAppManagementPolicies
-    * The policy that defines auto-enrollment configuration for a mobility management (MDM or MAM) application.
+    * The policy that defines autoenrollment configuration for a mobility management (MDM or MAM) application.
      *
      * @return array|null The mobileAppManagementPolicies
      */
@@ -790,7 +821,7 @@ class PolicyRoot implements \JsonSerializable
 
     /**
     * Sets the mobileAppManagementPolicies
-    * The policy that defines auto-enrollment configuration for a mobility management (MDM or MAM) application.
+    * The policy that defines autoenrollment configuration for a mobility management (MDM or MAM) application.
     *
     * @param MobilityManagementPolicy[] $val The mobileAppManagementPolicies
     *

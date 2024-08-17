@@ -56,6 +56,36 @@ class Teamwork extends Entity
 
 
      /**
+     * Gets the deletedChats
+    * A collection of deleted chats.
+     *
+     * @return array|null The deletedChats
+     */
+    public function getDeletedChats()
+    {
+        if (array_key_exists("deletedChats", $this->_propDict)) {
+           return $this->_propDict["deletedChats"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the deletedChats
+    * A collection of deleted chats.
+    *
+    * @param DeletedChat[] $val The deletedChats
+    *
+    * @return Teamwork
+    */
+    public function setDeletedChats($val)
+    {
+        $this->_propDict["deletedChats"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the deletedTeams
     * A collection of deleted teams.
      *

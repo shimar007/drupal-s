@@ -8,17 +8,17 @@
 /**
  * Issue #3282363: Wrong field encoding type in vwebform_submission_log.
  */
-// function webform_submission_log_update_8001() {
-//   \Drupal::database()
-//     ->schema()
-//     ->changeField('webform_submission_log', 'operation', 'operation', [
-//       'type' => 'varchar',
-//       'length' => 64,
-//       'not null' => TRUE,
-//       'default' => '',
-//       'description' => 'Type of operation, for example "save", "sent", or "update."',
-//     ]);
-// }
+function webform_submission_log_update_8001() {
+  \Drupal::database()
+    ->schema()
+    ->changeField('webform_submission_log', 'operation', 'operation', [
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => TRUE,
+      'default' => '',
+      'description' => 'Type of operation, for example "save", "sent", or "update."',
+    ]);
+}
 
 /**
  * Implements hook_schema().

@@ -101,11 +101,20 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     $role->save();
 
     // Set field_images from demo to private file storage.
-    $edit = array(
-      'settings[uri_scheme]' => 'private',
-    );
-    $this->drupalGet('admin/structure/paragraphs_type/images/fields/paragraph.images.field_images_demo/storage');
-    $this->submitForm($edit, 'Save field settings');
+    if ($this->coreVersion('10.2')) {
+      $edit = array(
+        'field_storage[subform][settings][uri_scheme]' => 'private',
+      );
+      $this->drupalGet('admin/structure/paragraphs_type/images/fields/paragraph.images.field_images_demo');
+      $this->submitForm($edit, 'Save settings');
+    }
+    else {
+      $edit = array(
+        'settings[uri_scheme]' => 'private',
+      );
+      $this->drupalGet('admin/structure/paragraphs_type/images/fields/paragraph.images.field_images_demo/storage');
+      $this->submitForm($edit, 'Save field settings');
+    }
 
     // Set the form display to legacy.
     $form_display = EntityFormDisplay::load('node.paragraphed_content_demo.default')
@@ -145,7 +154,7 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     $this->submitForm($edit, 'Preview');
     $image_style = ImageStyle::load('medium');
     $img1_url = $image_style->buildUrl('private://' . date('Y-m') . '/privateImage.jpg');
-    $image_url = file_url_transform_relative($img1_url);
+    $image_url = \Drupal::service('file_url_generator')->transformRelative($img1_url);
     $this->assertSession()->responseContains($image_url);
     $this->clickLink('Back to content editing');
     $this->submitForm([], 'Save');
@@ -166,7 +175,7 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     // @todo Requesting the same $img_url again triggers a caching problem on
     // drupal.org test bot, thus we request a different file here.
     $img_url = $image_style->buildUrl('private://' . date('Y-m') . '/privateImage2.jpg');
-    $image_url = file_url_transform_relative($img_url);
+    $image_url = \Drupal::service('file_url_generator')->transformRelative($img_url);
     // Check the text and image after publish. Anonymous should not see content.
     $this->assertSession()->responseNotContains($image_url);
 

@@ -17,14 +17,14 @@
   "license": "GPL-2.0-or-later",
   "minimum-stability": "dev",
   "require": {
-    "drupal/core": "^9.4 || ^10",
+    "drupal/core": "^9.4 || ^10 || ^11",
     "php": ">=7.4.0"
   },
   "require-dev": {
-    "drush/drush": "^11"
+    "drush/drush": "^12"
   },
   "suggest": {
-    "drush/drush": "^10 || ^11"
+    "drush/drush": "^11 || ^12"
   },
   "extra": {
     "drush": {

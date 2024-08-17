@@ -207,6 +207,25 @@ class CspTest extends UnitTestCase {
   }
 
   /**
+   * A string of multiple values with extra whitespace.
+   *
+   * @covers ::appendDirective
+   * @covers ::isValidDirectiveName
+   * @covers ::getHeaderValue
+   */
+  public function testAppendStringWithExtraWhitespace() {
+    $policy = new Csp();
+
+    $policy->appendDirective('script-src', ' one.example.com  two.example.com ');
+    $policy->appendDirective('script-src-attr', " 'unsafe-inline'  one.example.com  two.example.com ");
+
+    $this->assertEquals(
+      "script-src one.example.com two.example.com; script-src-attr 'unsafe-inline'",
+      $policy->getHeaderValue()
+    );
+  }
+
+  /**
    * Test that setting an empty value removes a directive.
    *
    * @covers ::setDirective

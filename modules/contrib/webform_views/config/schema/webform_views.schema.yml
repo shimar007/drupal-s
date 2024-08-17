@@ -12,6 +12,13 @@ views.field.webform_submission_field:
     webform_multiple_delta:
       type: integer
       label: 'Delta to use'
+    webform_check_access:
+      type: integer
+      label: 'Check access'
+
+# Schema definition for field filter.
+views.filter.webform_submission_field_filter:
+  type: views.filter.string
 
 # Schema definition for select filter.
 views.filter.webform_submission_select_filter:
@@ -26,6 +33,13 @@ views.filter.webform_submission_date_filter:
   type: views.filter.date
 
 views.filter_value.webform_submission_date_filter:
+  type: views.filter_value.date
+
+# Schema definition for date filter.
+views.filter.webform_submission_datetime_filter:
+  type: views.filter.date
+
+views.filter_value.webform_submission_datetime_filter:
   type: views.filter_value.date
 
 # Schema definition for numeric filter.

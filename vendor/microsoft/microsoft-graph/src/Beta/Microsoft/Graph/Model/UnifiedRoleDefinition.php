@@ -26,6 +26,7 @@ class UnifiedRoleDefinition extends Entity
 {
     /**
     * Gets the allowedPrincipalTypes
+    * Types of principals that can be assigned the role. Read-only. The possible values are: user, servicePrincipal, group, unknownFutureValue. This is a multi-valued enumeration that can contain up to three values as a comma-separated string. For example, user, group. Supports $filter (eq).
     *
     * @return AllowedRolePrincipalTypes|null The allowedPrincipalTypes
     */
@@ -44,6 +45,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Sets the allowedPrincipalTypes
+    * Types of principals that can be assigned the role. Read-only. The possible values are: user, servicePrincipal, group, unknownFutureValue. This is a multi-valued enumeration that can contain up to three values as a comma-separated string. For example, user, group. Supports $filter (eq).
     *
     * @param AllowedRolePrincipalTypes $val The allowedPrincipalTypes
     *
@@ -86,7 +88,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Gets the displayName
-    * The display name for the unifiedRoleDefinition. Read-only when isBuiltIn is true. Required.  Supports $filter (eq and startsWith operators only).
+    * The display name for the unifiedRoleDefinition. Read-only when isBuiltIn is true. Required.  Supports $filter (eq and startsWith).
     *
     * @return string|null The displayName
     */
@@ -101,7 +103,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Sets the displayName
-    * The display name for the unifiedRoleDefinition. Read-only when isBuiltIn is true. Required.  Supports $filter (eq and startsWith operators only).
+    * The display name for the unifiedRoleDefinition. Read-only when isBuiltIn is true. Required.  Supports $filter (eq and startsWith).
     *
     * @param string $val The displayName
     *
@@ -115,7 +117,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Gets the isBuiltIn
-    * Flag indicating if the unifiedRoleDefinition is part of the default set included with the product or custom. Read-only.  Supports $filter (eq operator only).
+    * Flag indicating if the unifiedRoleDefinition is part of the default set included with the product or custom. Read-only.  Supports $filter (eq).
     *
     * @return bool|null The isBuiltIn
     */
@@ -130,7 +132,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Sets the isBuiltIn
-    * Flag indicating if the unifiedRoleDefinition is part of the default set included with the product or custom. Read-only.  Supports $filter (eq operator only).
+    * Flag indicating if the unifiedRoleDefinition is part of the default set included with the product or custom. Read-only.  Supports $filter (eq).
     *
     * @param bool $val The isBuiltIn
     *
@@ -172,8 +174,37 @@ class UnifiedRoleDefinition extends Entity
     }
 
     /**
+    * Gets the isPrivileged
+    * Flag indicating if the role is privileged. Microsoft Entra ID defines a role as privileged if it contains at least one sensitive resource action in the rolePermissions and allowedResourceActions objects. Applies only for actions in the microsoft.directory resource namespace. Read-only. Supports $filter (eq).
+    *
+    * @return bool|null The isPrivileged
+    */
+    public function getIsPrivileged()
+    {
+        if (array_key_exists("isPrivileged", $this->_propDict)) {
+            return $this->_propDict["isPrivileged"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isPrivileged
+    * Flag indicating if the role is privileged. Microsoft Entra ID defines a role as privileged if it contains at least one sensitive resource action in the rolePermissions and allowedResourceActions objects. Applies only for actions in the microsoft.directory resource namespace. Read-only. Supports $filter (eq).
+    *
+    * @param bool $val The isPrivileged
+    *
+    * @return UnifiedRoleDefinition
+    */
+    public function setIsPrivileged($val)
+    {
+        $this->_propDict["isPrivileged"] = boolval($val);
+        return $this;
+    }
+
+    /**
     * Gets the resourceScopes
-    * List of scopes permissions granted by the role definition apply to. Currently only / is supported. Read-only when isBuiltIn is true. DO NOT USE. This will be deprecated soon. Attach scope to role assignment
+    * List of scopes permissions granted by the role definition apply to. Currently only / is supported. Read-only when isBuiltIn is true. DO NOT USE. This will be deprecated soon. Attach scope to role assignment.
     *
     * @return array|null The resourceScopes
     */
@@ -188,7 +219,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Sets the resourceScopes
-    * List of scopes permissions granted by the role definition apply to. Currently only / is supported. Read-only when isBuiltIn is true. DO NOT USE. This will be deprecated soon. Attach scope to role assignment
+    * List of scopes permissions granted by the role definition apply to. Currently only / is supported. Read-only when isBuiltIn is true. DO NOT USE. This will be deprecated soon. Attach scope to role assignment.
     *
     * @param string[] $val The resourceScopes
     *
@@ -261,7 +292,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Gets the version
-    * Indicates version of the unifiedRoleDefinition. Read-only when isBuiltIn is true.
+    * Indicates the version of the unifiedRoleDefinition object. Read-only when isBuiltIn is true.
     *
     * @return string|null The version
     */
@@ -276,7 +307,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Sets the version
-    * Indicates version of the unifiedRoleDefinition. Read-only when isBuiltIn is true.
+    * Indicates the version of the unifiedRoleDefinition object. Read-only when isBuiltIn is true.
     *
     * @param string $val The version
     *
@@ -291,7 +322,7 @@ class UnifiedRoleDefinition extends Entity
 
      /**
      * Gets the inheritsPermissionsFrom
-    * Read-only collection of role definitions that the given role definition inherits from. Only Azure AD built-in roles support this attribute.
+    * Read-only collection of role definitions that the given role definition inherits from. Only Microsoft Entra built-in roles support this attribute.
      *
      * @return array|null The inheritsPermissionsFrom
      */
@@ -306,7 +337,7 @@ class UnifiedRoleDefinition extends Entity
 
     /**
     * Sets the inheritsPermissionsFrom
-    * Read-only collection of role definitions that the given role definition inherits from. Only Azure AD built-in roles support this attribute.
+    * Read-only collection of role definitions that the given role definition inherits from. Only Microsoft Entra built-in roles support this attribute.
     *
     * @param UnifiedRoleDefinition[] $val The inheritsPermissionsFrom
     *

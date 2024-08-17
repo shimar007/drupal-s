@@ -241,6 +241,7 @@ class Channel extends Entity
 
     /**
     * Gets the summary
+    * Contains summary information about the channel, including number of guests, members, owners, and an indicator for members from other tenants. The summary property will only be returned if it is specified in the $select clause of the Get channel method.
     *
     * @return ChannelSummary|null The summary
     */
@@ -259,6 +260,7 @@ class Channel extends Entity
 
     /**
     * Sets the summary
+    * Contains summary information about the channel, including number of guests, members, owners, and an indicator for members from other tenants. The summary property will only be returned if it is specified in the $select clause of the Get channel method.
     *
     * @param ChannelSummary $val The summary
     *
@@ -272,7 +274,7 @@ class Channel extends Entity
 
     /**
     * Gets the tenantId
-    * The ID of the Azure Active Directory tenant.
+    * The ID of the Microsoft Entra tenant.
     *
     * @return string|null The tenantId
     */
@@ -287,7 +289,7 @@ class Channel extends Entity
 
     /**
     * Sets the tenantId
-    * The ID of the Azure Active Directory tenant.
+    * The ID of the Microsoft Entra tenant.
     *
     * @param string $val The tenantId
     *

@@ -126,7 +126,7 @@ class Csp {
   /**
    * The policy directives.
    *
-   * @var string[]|bool|string
+   * @var array<string, string[]|string|bool>
    */
   protected $directives = [];
 
@@ -260,13 +260,17 @@ class Csp {
    * @param string $name
    *   The directive name.
    *
-   * @return array
+   * @return string[]|string|bool
    *   The directive's values.
    */
   public function getDirective($name) {
     self::validateDirectiveName($name);
 
-    return $this->directives[$name];
+    $value = $this->directives[$name];
+
+    return is_array($value) ?
+      array_unique($value) :
+      $value;
   }
 
   /**
@@ -308,7 +312,7 @@ class Csp {
     }
 
     if (gettype($value) === 'string') {
-      $value = explode(' ', $value);
+      $value = preg_split('/\s+/', trim($value));
     }
     elseif (gettype($value) !== 'array') {
       throw new \InvalidArgumentException("Invalid directive value provided");

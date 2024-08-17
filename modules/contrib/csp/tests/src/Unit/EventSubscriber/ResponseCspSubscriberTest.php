@@ -9,6 +9,7 @@ use Drupal\csp\CspEvents;
 use Drupal\csp\Event\PolicyAlterEvent;
 use Drupal\csp\EventSubscriber\ResponseCspSubscriber;
 use Drupal\csp\LibraryPolicyBuilder;
+use Drupal\csp\Nonce;
 use Drupal\csp\ReportingHandlerPluginManager;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -60,6 +61,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
   private $eventDispatcher;
 
   /**
+   * The Nonce service.
+   *
+   * @var \PHPUnit\Framework\MockObject\MockObject|\Drupal\csp\Nonce
+   */
+  private $nonce;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp(): void {
@@ -83,6 +91,8 @@ class ResponseCspSubscriberTest extends UnitTestCase {
     $this->reportingHandlerPluginManager = $this->createMock(ReportingHandlerPluginManager::class);
 
     $this->eventDispatcher = $this->createMock(EventDispatcher::class);
+
+    $this->nonce = $this->createMock(Nonce::class);
   }
 
   /**
@@ -151,7 +161,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
         ]
       );
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+      $this->nonce
+    );
 
     $subscriber->onKernelResponse($this->event);
   }
@@ -175,10 +191,79 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ],
     ]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+      $this->nonce
+    );
 
     $this->response->headers->expects($this->never())
       ->method('set');
+    $this->response->getCacheableMetadata()
+      ->expects($this->once())
+      ->method('addCacheTags')
+      ->with(['config:csp.settings']);
+
+    $subscriber->onKernelResponse($this->event);
+  }
+
+  /**
+   * Data provider for boolean directive config test.
+   */
+  public function booleanDataProvider() {
+    return [
+      'TRUE' => [TRUE, TRUE],
+      'FALSE' => [FALSE, FALSE],
+      'NULL' => [NULL, FALSE],
+      'Empty string' => ['', FALSE],
+      'Zero' => [0, FALSE],
+      'Number' => [1, TRUE],
+      'Empty array' => [[], FALSE],
+      'Array' => [['foo'], TRUE],
+    ];
+  }
+
+  /**
+   * Only a boolean directive with a true value should appear in the header.
+   *
+   * @dataProvider booleanDataProvider
+   * @covers ::onKernelResponse
+   */
+  public function testBooleanDirective($value, bool $expected) {
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $configFactory */
+    $configFactory = $this->getConfigFactoryStub([
+      'csp.settings' => [
+        'report-only' => [
+          'enable' => FALSE,
+          'directives' => [],
+        ],
+        'enforce' => [
+          'enable' => TRUE,
+          'directives' => [
+            'upgrade-insecure-requests' => $value,
+          ],
+        ],
+      ],
+    ]);
+
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+      $this->nonce
+    );
+
+    $this->response->headers
+      ->expects($expected ? $this->once() : $this->never())
+      ->method('set')
+      ->with(
+        $this->equalTo('Content-Security-Policy'),
+        $this->equalTo("upgrade-insecure-requests")
+      );
+
     $this->response->getCacheableMetadata()
       ->expects($this->once())
       ->method('addCacheTags')
@@ -221,7 +306,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->method('getSources')
       ->willReturn([]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+      $this->nonce
+    );
 
     $this->response->headers->expects($this->once())
       ->method('set')
@@ -278,7 +369,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       ->method('getSources')
       ->willReturn([]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+      $this->nonce
+    );
 
     $this->response->headers->expects($this->exactly(2))
       ->method('set')
@@ -336,7 +433,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
         'style-src-elem' => ['example.com'],
       ]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+      $this->nonce
+    );
 
     $this->response->headers->expects($this->once())
       ->method('set')
@@ -386,7 +489,13 @@ class ResponseCspSubscriberTest extends UnitTestCase {
         'style-src-elem' => ['example.com'],
       ]);
 
-    $subscriber = new ResponseCspSubscriber($configFactory, $this->libraryPolicy, $this->reportingHandlerPluginManager, $this->eventDispatcher);
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+      $this->nonce
+    );
 
     $this->response->headers->expects($this->once())
       ->method('set')

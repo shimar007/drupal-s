@@ -26,7 +26,7 @@ class PlannerPlan extends PlannerDelta
 {
     /**
     * Gets the container
-    * Identifies the container of the plan. Specify only the url, the containerId and type, or all properties. After it is set, this property can’t be updated. Required.
+    * Identifies the container of the plan. Specify only the url, the containerId and type, or all properties. After it's set, this property can’t be updated. Required.
     *
     * @return PlannerPlanContainer|null The container
     */
@@ -45,7 +45,7 @@ class PlannerPlan extends PlannerDelta
 
     /**
     * Sets the container
-    * Identifies the container of the plan. Specify only the url, the containerId and type, or all properties. After it is set, this property can’t be updated. Required.
+    * Identifies the container of the plan. Specify only the url, the containerId and type, or all properties. After it's set, this property can’t be updated. Required.
     *
     * @param PlannerPlanContainer $val The container
     *
@@ -219,6 +219,7 @@ class PlannerPlan extends PlannerDelta
 
      /**
      * Gets the sharedWithContainers
+    * List of containers the plan is shared with.
      *
      * @return array|null The sharedWithContainers
      */
@@ -233,6 +234,7 @@ class PlannerPlan extends PlannerDelta
 
     /**
     * Sets the sharedWithContainers
+    * List of containers the plan is shared with.
     *
     * @param PlannerSharedWithContainer[] $val The sharedWithContainers
     *

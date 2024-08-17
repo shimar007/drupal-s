@@ -599,6 +599,35 @@ class EducationAssignment extends Entity
     }
 
     /**
+    * Gets the moduleUrl
+    * The URL of the module from which to access the assignment.
+    *
+    * @return string|null The moduleUrl
+    */
+    public function getModuleUrl()
+    {
+        if (array_key_exists("moduleUrl", $this->_propDict)) {
+            return $this->_propDict["moduleUrl"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the moduleUrl
+    * The URL of the module from which to access the assignment.
+    *
+    * @param string $val The moduleUrl
+    *
+    * @return EducationAssignment
+    */
+    public function setModuleUrl($val)
+    {
+        $this->_propDict["moduleUrl"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the notificationChannelUrl
     * Optional field to specify the URL of the channel to post the assignment publish notification. If not specified or null, defaults to the General channel. This field only applies to assignments where the assignTo value is educationAssignmentClassRecipient. Updating the notificationChannelUrl is not allowed after the assignment has been published.
     *

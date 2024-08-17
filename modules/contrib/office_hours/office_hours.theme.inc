@@ -22,6 +22,8 @@ function office_hours_theme() {
       'closed_text' => NULL,
       'item_separator' => '<br />',
       'slot_separator' => ', ',
+      // Enable dynamic field update in office_hours_status_update.js.
+      'attributes' => NULL,
     ],
     'file' => 'office_hours.theme.inc',
   ];
@@ -34,6 +36,8 @@ function office_hours_theme() {
       // Pass (unfiltered) office_hours items to twig theming.
       'office_hours_field' => [],
       'table' => [],
+      // Enable dynamic field update in office_hours_status_update.js.
+      'attributes' => NULL,
     ],
     'file' => 'office_hours.theme.inc',
   ];
@@ -48,6 +52,8 @@ function office_hours_theme() {
       'is_open' => FALSE,
       'open_text' => NULL,
       'closed_text' => NULL,
+      // Enable dynamic field update in office_hours_status_update.js.
+      'attributes' => NULL,
     ],
     'file' => 'office_hours.theme.inc',
   ];
@@ -70,16 +76,23 @@ function office_hours_theme() {
  * Implements hook_preprocess_field().
  */
 function office_hours_preprocess_field(&$variables, $hook) {
-  $element = $variables['element'];
-  if ($element['#field_type'] == 'office_hours') {
-    $delta = 0;
-    while (!empty($element[$delta])) {
-      $variables['items'][$delta]['content']['#view_mode'] = $element['#view_mode'];
-      $delta++;
-    }
+  if ($variables['element']['#field_type'] !== 'office_hours') {
+    return;
   }
-  // Add exception hours.
+
+  // Update variables for exception hours.
   office_hours_exceptions_preprocess_field($variables, $hook);
+
+  $element = $variables['element'];
+  // Add view_mode, taking into account some ThirdPartySettings.
+  $view_mode = $element['#view_mode'];
+  $view_mode = $element['#third_party_settings']['layout_builder']['view_mode'] ?? $view_mode;
+  // Note: This could be set in formatter.php with $this->viewMode.
+  $delta = 0;
+  while (!empty($element[$delta])) {
+    $variables['items'][$delta]['content']['#view_mode'] = $view_mode;
+    $delta++;
+  }
 }
 
 /**

@@ -2,10 +2,9 @@
 
 namespace Drupal\adsense\Plugin\AdsenseAd;
 
-use Drupal\Core\Url;
-
-use Drupal\adsense\SearchAdBase;
 use Drupal\adsense\PublisherId;
+use Drupal\adsense\SearchAdBase;
+use Drupal\Core\Url;
 
 /**
  * Provides an AdSense custom search engine form.
@@ -64,7 +63,7 @@ class CustomSearchAd extends SearchAdBase {
       $branding = $cse_config->get('adsense_cse_logo');
       $results_path = Url::fromRoute('adsense_cse.results')->toString();
 
-      // @TODO this is necessary for unclean URLs.
+      // @todo this is necessary for unclean URLs.
       /*  $results_path = $base_url;
       $hidden_q_field = '<input type="hidden" name="q" value="." />';*/
 

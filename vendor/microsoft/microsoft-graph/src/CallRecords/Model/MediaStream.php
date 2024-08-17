@@ -26,7 +26,7 @@ class MediaStream extends \Microsoft\Graph\Model\Entity
 
     /**
     * Gets the audioCodec
-    * Codec name used to encode audio for transmission on the network. Possible values are: unknown, invalid, cn, pcma, pcmu, amrWide, g722, g7221, g7221c, g729, multiChannelAudio, muchv2, opus, satin, satinFullband, rtAudio8, rtAudio16, silk, silkNarrow, silkWide, siren, xmsRTA, unknownFutureValue.
+    * Codec name used to encode audio for transmission on the network. Possible values are: unknown, invalid, cn, pcma, pcmu, amrWide, g722, g7221, g7221c, g729, multiChannelAudio, muchv2, opus, satin, satinFullband, rtAudio8, rtAudio16, silk, silkNarrow, silkWide, siren, xmsRta, unknownFutureValue.
     *
     * @return AudioCodec|null The audioCodec
     */
@@ -45,7 +45,7 @@ class MediaStream extends \Microsoft\Graph\Model\Entity
 
     /**
     * Sets the audioCodec
-    * Codec name used to encode audio for transmission on the network. Possible values are: unknown, invalid, cn, pcma, pcmu, amrWide, g722, g7221, g7221c, g729, multiChannelAudio, muchv2, opus, satin, satinFullband, rtAudio8, rtAudio16, silk, silkNarrow, silkWide, siren, xmsRTA, unknownFutureValue.
+    * Codec name used to encode audio for transmission on the network. Possible values are: unknown, invalid, cn, pcma, pcmu, amrWide, g722, g7221, g7221c, g729, multiChannelAudio, muchv2, opus, satin, satinFullband, rtAudio8, rtAudio16, silk, silkNarrow, silkWide, siren, xmsRta, unknownFutureValue.
     *
     * @param AudioCodec $val The value to assign to the audioCodec
     *
@@ -144,6 +144,39 @@ class MediaStream extends \Microsoft\Graph\Model\Entity
     {
         $this->_propDict["averageBandwidthEstimate"] = $val;
         return $this;
+    }
+
+    /**
+    * Gets the averageFreezeDuration
+    * Average duration of the received freezing time in the video stream.
+    *
+    * @return \DateInterval|null The averageFreezeDuration
+    */
+    public function getAverageFreezeDuration()
+    {
+        if (array_key_exists("averageFreezeDuration", $this->_propDict)) {
+            if (is_a($this->_propDict["averageFreezeDuration"], "\DateInterval") || is_null($this->_propDict["averageFreezeDuration"])) {
+                return $this->_propDict["averageFreezeDuration"];
+            } else {
+                $this->_propDict["averageFreezeDuration"] = new \DateInterval($this->_propDict["averageFreezeDuration"]);
+                return $this->_propDict["averageFreezeDuration"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the averageFreezeDuration
+    * Average duration of the received freezing time in the video stream.
+    *
+    * @param \DateInterval $val The value to assign to the averageFreezeDuration
+    *
+    * @return MediaStream The MediaStream
+    */
+    public function setAverageFreezeDuration($val)
+    {
+        $this->_propDict["averageFreezeDuration"] = $val;
+         return $this;
     }
 
     /**
@@ -382,7 +415,7 @@ class MediaStream extends \Microsoft\Graph\Model\Entity
 
     /**
     * Gets the endDateTime
-    * UTC time when the stream ended. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z
+    * UTC time when the stream ended. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. This field is only available for streams that use the SIP protocol.
     *
     * @return \DateTime|null The endDateTime
     */
@@ -401,7 +434,7 @@ class MediaStream extends \Microsoft\Graph\Model\Entity
 
     /**
     * Sets the endDateTime
-    * UTC time when the stream ended. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z
+    * UTC time when the stream ended. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. This field is only available for streams that use the SIP protocol.
     *
     * @param \DateTime $val The value to assign to the endDateTime
     *
@@ -411,6 +444,34 @@ class MediaStream extends \Microsoft\Graph\Model\Entity
     {
         $this->_propDict["endDateTime"] = $val;
          return $this;
+    }
+    /**
+    * Gets the isAudioForwardErrorCorrectionUsed
+    * Indicates whether the forward error correction (FEC) was used at some point during the session. The default value is null.
+    *
+    * @return bool|null The isAudioForwardErrorCorrectionUsed
+    */
+    public function getIsAudioForwardErrorCorrectionUsed()
+    {
+        if (array_key_exists("isAudioForwardErrorCorrectionUsed", $this->_propDict)) {
+            return $this->_propDict["isAudioForwardErrorCorrectionUsed"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isAudioForwardErrorCorrectionUsed
+    * Indicates whether the forward error correction (FEC) was used at some point during the session. The default value is null.
+    *
+    * @param bool $val The value of the isAudioForwardErrorCorrectionUsed
+    *
+    * @return MediaStream
+    */
+    public function setIsAudioForwardErrorCorrectionUsed($val)
+    {
+        $this->_propDict["isAudioForwardErrorCorrectionUsed"] = $val;
+        return $this;
     }
     /**
     * Gets the lowFrameRateRatio
@@ -681,8 +742,41 @@ class MediaStream extends \Microsoft\Graph\Model\Entity
     }
 
     /**
+    * Gets the rmsFreezeDuration
+    * Average duration of the received freezing time in the video stream represented in root mean square.
+    *
+    * @return \DateInterval|null The rmsFreezeDuration
+    */
+    public function getRmsFreezeDuration()
+    {
+        if (array_key_exists("rmsFreezeDuration", $this->_propDict)) {
+            if (is_a($this->_propDict["rmsFreezeDuration"], "\DateInterval") || is_null($this->_propDict["rmsFreezeDuration"])) {
+                return $this->_propDict["rmsFreezeDuration"];
+            } else {
+                $this->_propDict["rmsFreezeDuration"] = new \DateInterval($this->_propDict["rmsFreezeDuration"]);
+                return $this->_propDict["rmsFreezeDuration"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the rmsFreezeDuration
+    * Average duration of the received freezing time in the video stream represented in root mean square.
+    *
+    * @param \DateInterval $val The value to assign to the rmsFreezeDuration
+    *
+    * @return MediaStream The MediaStream
+    */
+    public function setRmsFreezeDuration($val)
+    {
+        $this->_propDict["rmsFreezeDuration"] = $val;
+         return $this;
+    }
+
+    /**
     * Gets the startDateTime
-    * UTC time when the stream started. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z
+    * UTC time when the stream started. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. This field is only available for streams that use the SIP protocol.
     *
     * @return \DateTime|null The startDateTime
     */
@@ -701,7 +795,7 @@ class MediaStream extends \Microsoft\Graph\Model\Entity
 
     /**
     * Sets the startDateTime
-    * UTC time when the stream started. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z
+    * UTC time when the stream started. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. This field is only available for streams that use the SIP protocol.
     *
     * @param \DateTime $val The value to assign to the startDateTime
     *

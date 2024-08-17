@@ -7,7 +7,7 @@ namespace Drupal\Tests\openid_connect\Unit;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\Core\Extension\ModuleHandler;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\openid_connect\OpenIDConnectClaims;
 use Drupal\Tests\UnitTestCase;
 
@@ -67,7 +67,7 @@ class OpenIdConnectClaimsTest extends UnitTestCase {
     parent::setUp();
 
     $this->configFactory = $this->createMock(ConfigFactory::class);
-    $this->moduleHandler = $this->createMock(ModuleHandler::class);
+    $this->moduleHandler = $this->createMock(ModuleHandlerInterface::class);
 
     $this->container = new ContainerBuilder();
 

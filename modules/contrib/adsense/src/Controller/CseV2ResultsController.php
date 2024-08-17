@@ -4,29 +4,29 @@ namespace Drupal\adsense\Controller;
 
 use Drupal\adsense\PublisherId;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Class CseResultsController.
+ * Controller for the Custom Search Engine v2 results page.
  */
 class CseV2ResultsController extends ControllerBase {
 
   /**
-   * Module handler.
+   * The request stack used to access request globals.
    *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
-  protected $moduleHandler;
+  protected $requestStack;
 
   /**
    * Constructs a new CseV2ResultsController controller.
    *
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface|null $module_handler
-   *   The module handler.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack.
    */
-  public function __construct(ModuleHandlerInterface $module_handler) {
-    $this->moduleHandler = $module_handler;
+  public function __construct(RequestStack $request_stack) {
+    $this->requestStack = $request_stack;
   }
 
   /**
@@ -34,7 +34,7 @@ class CseV2ResultsController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('module_handler')
+      $container->get('request_stack')
     );
   }
 
@@ -50,7 +50,7 @@ class CseV2ResultsController extends ControllerBase {
   public function display($slot) {
     $config = $this->config('adsense.settings');
     $client = PublisherId::get();
-    $this->moduleHandler->alter('adsense', $client);
+    $this->moduleHandler()->alter('adsense', $client);
 
     if ($config->get('adsense_test_mode')) {
       $content = [
@@ -63,7 +63,7 @@ class CseV2ResultsController extends ControllerBase {
     else {
       // Log the search keys.
       $this->getLogger('AdSense CSE v2')->notice('Search keywords: %keyword', [
-        '%keyword' => urldecode($_GET['q']),
+        '%keyword' => urldecode($this->requestStack->getCurrentRequest()->query->get('q')),
       ]);
 
       $content = [

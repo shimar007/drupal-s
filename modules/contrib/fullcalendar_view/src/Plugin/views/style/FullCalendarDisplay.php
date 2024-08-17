@@ -143,6 +143,8 @@ class FullCalendarDisplay extends StylePluginBase {
       'default' => 'prev,next today',
     ];
     $options['default_view'] = ['default' => 'dayGridMonth'];
+    $options['default_mobile_view'] = ['default' => 'listYear'];
+    $options['mobile_width'] = ['default' => 768];
     $options['nav_links'] = ['default' => 1];
     $options['timeFormat'] = ['default' => 'hh:mm a'];
     $options['defaultLanguage'] = ['default' => 'en'];
@@ -153,7 +155,8 @@ class FullCalendarDisplay extends StylePluginBase {
     $options['dialogWindow'] = ['default' => 0];
     $options['createEventLink'] = ['default' => 0];
     $options['openEntityInNewTab'] = ['default' => 1];
-    $options['dialogModal'] = ['default' => 0];
+    $options['dialogModal'] = ['default' => FALSE];
+    $options['dialogCanvas'] = ['default' => FALSE];
     $options['eventLimit'] = ['default' => 2];
     $options['slotDuration'] = ['default' => '00:30:00'];
     $options['minTime'] = ['default' => '00:00:00'];
@@ -270,6 +273,22 @@ class FullCalendarDisplay extends StylePluginBase {
       '#options' => $fullcalendar_displays,
       '#default_value' => (empty($this->options['default_view'])) ? 'month' : $this->options['default_view'],
       '#title' => $this->t('Default view'),
+    ];
+    // Default mobile view.
+    $form['default_mobile_view'] = [
+      '#type' => 'radios',
+      '#fieldset' => 'display',
+      '#options' => $fullcalendar_displays,
+      '#default_value' => (empty($this->options['default_mobile_view'])) ? 'month' : $this->options['default_mobile_view'],
+      '#title' => $this->t('Default mobile view'),
+    ];
+    // Mobile width.
+    $form['mobile_width'] = [
+      '#fieldset' => 'display',
+      '#type' => 'textfield',
+      '#title' => $this->t('Mobile maximum width'),
+      '#default_value' => (isset($this->options['mobile_width'])) ? $this->options['mobile_width'] : 768,
+      '#size' => 4,
     ];
     // First day.
     $form['firstDay'] = [
@@ -453,12 +472,25 @@ class FullCalendarDisplay extends StylePluginBase {
       '#default_value' => !isset($this->options['openEntityInNewTab']) ? 1 : $this->options['openEntityInNewTab'],
       '#title' => $this->t('Open entities (calendar items) into new tabs'),
     ];
+    $this->buildOptionsFormGoogleCalendar($form, $form_state);
     // Open event link target in modal popup.
     $form['dialogModal'] = [
       '#type' => 'checkbox',
       '#fieldset' => 'display',
-      '#default_value' => !isset($this->options['dialogModal']) ? 1 : $this->options['dialogModal'],
+      '#default_value' => !isset($this->options['dialogModal']) ? FALSE : $this->options['dialogModal'],
       '#title' => $this->t('Open event title link target in a modal popup'),
+    ];
+    // Open event link target in sidebar canvas.
+    $form['dialogCanvas'] = [
+      '#type' => 'checkbox',
+      '#fieldset' => 'display',
+      '#default_value' => !isset($this->options['dialogCanvas']) ? FALSE : $this->options['dialogCanvas'],
+      '#title' => $this->t('Open event title link target in a Sidebar Canvas'),
+      '#states' => [
+        'visible' => [
+          ':input[name="style_options[dialogModal]"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
     // Create new event link.
     $form['createEventLink'] = [
@@ -636,11 +668,50 @@ class FullCalendarDisplay extends StylePluginBase {
     $style_options = &$form_state->getValue('style_options');
     $selected_displays = $style_options['right_buttons'];
     $default_display = $style_options['default_view'];
+    $default_mobile_display = $style_options['default_mobile_view'];
+    $mobile_width = $style_options['mobile_width'];
 
     if (!in_array($default_display, array_filter(array_values($selected_displays)))) {
       $form_state->setErrorByName('style_options][default_view', $this->t('The default view must be one of the selected display toggles.'));
     }
+
+    $this->validateOptionsFormGoogleCalendar($form, $form_state);
+
+    if (!in_array($default_mobile_display, array_filter(array_values($selected_displays)))) {
+      $form_state->setErrorByName('style_options][default_mobile_view', $this->t('The default mobile view must be one of the selected display toggles.'));
+    }
+    if (!preg_match('#^\d+$#', $mobile_width)) {
+      $form_state->setErrorByName('style_options][mobile_width', $this->t('Mobile width must be an integer.'));
+    }
+
   }
+
+  /**
+   * @return $this
+   */
+  protected function validateOptionsFormGoogleCalendar(array &$form, FormStateInterface $form_state) {
+    if (empty($form_state->getValue(['style_options', 'fetchGoogleHolidays']))) {
+      return $this;
+    }
+
+    $values = $form_state->getValue(['style_options', 'googleHolidaysSettings']);
+    if ($values['googleCalendarAPIKey'] === '') {
+      $form_state->setError(
+        $form['style_options']['googleHolidaysSettings']['googleCalendarAPIKey'],
+        $this->t('This field is required if "Fetch and display holidays from Google Calendar" is checked.')
+      );
+    }
+
+    if ($values['googleCalendarGroup'] === '') {
+      $form_state->setError(
+        $form['style_options']['googleHolidaysSettings']['googleCalendarGroup'],
+        $this->t('This field is required if "Fetch and display holidays from Google Calendar" is checked.')
+      );
+    }
+
+    return $this;
+  }
+
 
   /**
    * Options form submit handle function.
@@ -698,4 +769,264 @@ class FullCalendarDisplay extends StylePluginBase {
     return TRUE;
   }
 
+protected function buildOptionsFormGoogleCalendar(array &$form, FormStateInterface $form_state) {
+    $form['fetchGoogleHolidays'] = [
+      '#type' => 'checkbox',
+      '#fieldset' => 'display',
+      '#default_value' => !empty($this->options['fetchGoogleHolidays']),
+      '#title' => $this->t('Fetch and display public holidays from Google Calendar'),
+    ];
+
+    $form['googleHolidaysSettings'] = [
+      '#type' => 'details',
+      '#fieldset' => 'display',
+      '#title' => $this->t('Google Calendar Holidays Settings,'),
+      '#description' => $this->t('Settings for fetching holidays from Google Calendar.'),
+      '#states' => [
+        'open' => [
+          [
+            ':input[name="style_options[fetchGoogleHolidays]"]' => [
+              'checked' => TRUE,
+            ],
+          ],
+        ],
+      ],
+
+      'googleCalendarAPIKey' => [
+        '#type' => 'textfield',
+        '#fieldset' => 'display',
+        '#default_value' => $this->options['googleHolidaysSettings']['googleCalendarAPIKey'] ?? '',
+        '#title' => $this->t('Google Calendar API Key'),
+        '#description' => $this->t(
+          'You can get an API Key following the procedure outlined <a href=":url" target="_blank">here</a>.',
+          [
+            ':url' => 'https://fullcalendar.io/docs/google-calendar'
+          ],
+        ),
+        '#states' => [
+          'required' => [
+            ':input[name="style_options[fetchGoogleHolidays]"]' => [
+              'checked' => TRUE,
+            ],
+          ],
+        ],
+      ],
+      'googleCalendarGroup' => [
+        '#type' => 'select',
+        '#options' => $this->getGoogleCalendarHolidayGroupsOptions(),
+        '#empty_value' => '',
+        '#fieldset' => 'display',
+        '#default_value' => $this->options['googleHolidaysSettings']['googleCalendarGroup'] ?? '',
+        '#title' => $this->t('Select holidays to display'),
+        '#states' => [
+          'required' => [
+            ':input[name="style_options[fetchGoogleHolidays]"]' => [
+              'checked' => TRUE,
+            ],
+          ],
+        ],
+      ],
+      'renderGoogleHolidaysAsBackground' => [
+        '#type' => 'checkbox',
+        '#fieldset' => 'display',
+        '#default_value' => !empty($this->options['googleHolidaysSettings']['renderGoogleHolidaysAsBackground']),
+        '#title' => $this->t('Render the holidays as background'),
+        '#description' => t('Check to render the holidays as a background color only, not showing them as events.'),
+      ],
+    ];
+
+    return $this;
+  }
+
+  /**
+   * List of holiday groups.
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup[]
+   *   List of holiday groups.
+   */
+  protected function getGoogleCalendarHolidayGroupsOptions(): array {
+    return [
+      'en.christian#holiday@group.v.calendar.google.com' => $this->t('Christian Holidays'),
+      'en.judaism#holiday@group.v.calendar.google.com' => $this->t('Jewish Holidays'),
+      'en.islamic#holiday@group.v.calendar.google.com' => $this->t('Muslim Holidays'),
+      'en.orthodox_christianity#holiday@group.v.calendar.google.com' => $this->t('Orthodox Holidays'),
+      'en.af#holiday@group.v.calendar.google.com' => $this->t('Holidays in Afghanistan'),
+      'en.al#holiday@group.v.calendar.google.com' => $this->t('Holidays in Albania'),
+      'en.dz#holiday@group.v.calendar.google.com' => $this->t('Holidays in Algeria'),
+      'en.ad#holiday@group.v.calendar.google.com' => $this->t('Holidays in Andorra'),
+      'en.ao#holiday@group.v.calendar.google.com' => $this->t('Holidays in Angola'),
+      'en.ar#holiday@group.v.calendar.google.com' => $this->t('Holidays in Argentina'),
+      'en.am#holiday@group.v.calendar.google.com' => $this->t('Holidays in Armenia'),
+      'en.aw#holiday@group.v.calendar.google.com' => $this->t('Holidays in Aruba'),
+      'en.australian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Australia'),
+      'en.austrian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Austria'),
+      'en.az#holiday@group.v.calendar.google.com' => $this->t('Holidays in Azerbaijan'),
+      'en.bs#holiday@group.v.calendar.google.com' => $this->t('Holidays in Bahamas'),
+      'en.bh#holiday@group.v.calendar.google.com' => $this->t('Holidays in Bahrain'),
+      'en.bd#holiday@group.v.calendar.google.com' => $this->t('Holidays in Bangladesh'),
+      'en.bb#holiday@group.v.calendar.google.com' => $this->t('Holidays in Barbados'),
+      'en.by#holiday@group.v.calendar.google.com' => $this->t('Holidays in Belarus'),
+      'en.be#holiday@group.v.calendar.google.com' => $this->t('Holidays in Belgium'),
+      'en.bj#holiday@group.v.calendar.google.com' => $this->t('Holidays in Benin'),
+      'en.bm#holiday@group.v.calendar.google.com' => $this->t('Holidays in Bermuda'),
+      'en.bo#holiday@group.v.calendar.google.com' => $this->t('Holidays in Bolivia'),
+      'en.ba#holiday@group.v.calendar.google.com' => $this->t('Holidays in Bosnia and Herzegovina'),
+      'en.bw#holiday@group.v.calendar.google.com' => $this->t('Holidays in Botswana'),
+      'en.brazilian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Brazil'),
+      'en.bulgarian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Bulgaria'),
+      'en.bf#holiday@group.v.calendar.google.com' => $this->t('Holidays in Burkina Faso'),
+      'en.bi#holiday@group.v.calendar.google.com' => $this->t('Holidays in Burundi'),
+      'en.kh#holiday@group.v.calendar.google.com' => $this->t('Holidays in Cambodia'),
+      'en.cm#holiday@group.v.calendar.google.com' => $this->t('Holidays in Cameroon'),
+      'en.canadian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Canada'),
+      'en.cv#holiday@group.v.calendar.google.com' => $this->t('Holidays in Cape Verde'),
+      'en.ky#holiday@group.v.calendar.google.com' => $this->t('Holidays in Cayman Islands'),
+      'en.cf#holiday@group.v.calendar.google.com' => $this->t('Holidays in Central African Republic'),
+      'en.td#holiday@group.v.calendar.google.com' => $this->t('Holidays in Chad'),
+      'en.cl#holiday@group.v.calendar.google.com' => $this->t('Holidays in Chile'),
+      'en.china#holiday@group.v.calendar.google.com' => $this->t('Holidays in China'),
+      'en.co#holiday@group.v.calendar.google.com' => $this->t('Holidays in Colombia'),
+      'en.km#holiday@group.v.calendar.google.com' => $this->t('Holidays in Comoros'),
+      'en.cg#holiday@group.v.calendar.google.com' => $this->t('Holidays in Congo'),
+      'en.cr#holiday@group.v.calendar.google.com' => $this->t('Holidays in Costa Rica'),
+      'en.croatian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Croatia'),
+      'en.cu#holiday@group.v.calendar.google.com' => $this->t('Holidays in Cuba'),
+      'en.cy#holiday@group.v.calendar.google.com' => $this->t('Holidays in Cyprus'),
+      'en.czech#holiday@group.v.calendar.google.com' => $this->t('Holidays in Czech Republic'),
+      'en.ci#holiday@group.v.calendar.google.com' => $this->t('Holidays in C\u00f4te d\'Ivoire'),
+      'en.kp#holiday@group.v.calendar.google.com' => $this->t('Holidays in Democratic People\'s Republic of Korea'),
+      'en.danish#holiday@group.v.calendar.google.com' => $this->t('Holidays in Denmark'),
+      'en.do#holiday@group.v.calendar.google.com' => $this->t('Holidays in Dominican Republic'),
+      'en.ec#holiday@group.v.calendar.google.com' => $this->t('Holidays in Ecuador'),
+      'en.eg#holiday@group.v.calendar.google.com' => $this->t('Holidays in Egypt'),
+      'en.sv#holiday@group.v.calendar.google.com' => $this->t('Holidays in El Salvador'),
+      'en.gq#holiday@group.v.calendar.google.com' => $this->t('Holidays in Equatorial Guinea'),
+      'en.er#holiday@group.v.calendar.google.com' => $this->t('Holidays in Eritrea'),
+      'en.ee#holiday@group.v.calendar.google.com' => $this->t('Holidays in Estonia'),
+      'en.et#holiday@group.v.calendar.google.com' => $this->t('Holidays in Ethiopia'),
+      'en.fo#holiday@group.v.calendar.google.com' => $this->t('Holidays in Faroe Islands'),
+      'en.fj#holiday@group.v.calendar.google.com' => $this->t('Holidays in Fiji'),
+      'en.finnish#holiday@group.v.calendar.google.com' => $this->t('Holidays in Finland'),
+      'en.french#holiday@group.v.calendar.google.com' => $this->t('Holidays in France'),
+      'en.ga#holiday@group.v.calendar.google.com' => $this->t('Holidays in Gabon'),
+      'en.gm#holiday@group.v.calendar.google.com' => $this->t('Holidays in Gambia'),
+      'en.ge#holiday@group.v.calendar.google.com' => $this->t('Holidays in Georgia'),
+      'en.german#holiday@group.v.calendar.google.com' => $this->t('Holidays in Germany'),
+      'en.gh#holiday@group.v.calendar.google.com' => $this->t('Holidays in Ghana'),
+      'en.gi#holiday@group.v.calendar.google.com' => $this->t('Holidays in Gibraltar'),
+      'en.greek#holiday@group.v.calendar.google.com' => $this->t('Holidays in Greece'),
+      'en.gl#holiday@group.v.calendar.google.com' => $this->t('Holidays in Greenland'),
+      'en.gd#holiday@group.v.calendar.google.com' => $this->t('Holidays in Grenada'),
+      'en.gt#holiday@group.v.calendar.google.com' => $this->t('Holidays in Guatemala'),
+      'en.gn#holiday@group.v.calendar.google.com' => $this->t('Holidays in Guinea'),
+      'en.gw#holiday@group.v.calendar.google.com' => $this->t('Holidays in Guinea-Bissau'),
+      'en.ht#holiday@group.v.calendar.google.com' => $this->t('Holidays in Haiti'),
+      'en.va#holiday@group.v.calendar.google.com' => $this->t('Holidays in Holy See (Vatican City State)'),
+      'en.hn#holiday@group.v.calendar.google.com' => $this->t('Holidays in Honduras'),
+      'en.hong_kong#holiday@group.v.calendar.google.com' => $this->t('Holidays in Hong Kong'),
+      'en.hungarian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Hungary'),
+      'en.is#holiday@group.v.calendar.google.com' => $this->t('Holidays in Iceland'),
+      'en.indian#holiday@group.v.calendar.google.com' => $this->t('Holidays in India'),
+      'en.indonesian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Indonesia'),
+      'en.iq#holiday@group.v.calendar.google.com' => $this->t('Holidays in Iraq'),
+      'en.irish#holiday@group.v.calendar.google.com' => $this->t('Holidays in Ireland'),
+      'en.ir#holiday@group.v.calendar.google.com' => $this->t('Holidays in Islamic Republic of Iran'),
+      'en.jewish#holiday@group.v.calendar.google.com' => $this->t('Holidays in Israel'),
+      'en.italian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Italy'),
+      'en.jm#holiday@group.v.calendar.google.com' => $this->t('Holidays in Jamaica'),
+      'en.japanese#holiday@group.v.calendar.google.com' => $this->t('Holidays in Japan'),
+      'en.jo#holiday@group.v.calendar.google.com' => $this->t('Holidays in Jordan'),
+      'en.kz#holiday@group.v.calendar.google.com' => $this->t('Holidays in Kazakhstan'),
+      'en.ke#holiday@group.v.calendar.google.com' => $this->t('Holidays in Kenya'),
+      'en.kw#holiday@group.v.calendar.google.com' => $this->t('Holidays in Kuwait'),
+      'en.kg#holiday@group.v.calendar.google.com' => $this->t('Holidays in Kyrgyzstan'),
+      'en.latvian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Latvia'),
+      'en.lb#holiday@group.v.calendar.google.com' => $this->t('Holidays in Lebanon'),
+      'en.ls#holiday@group.v.calendar.google.com' => $this->t('Holidays in Lesotho'),
+      'en.lr#holiday@group.v.calendar.google.com' => $this->t('Holidays in Liberia'),
+      'en.ly#holiday@group.v.calendar.google.com' => $this->t('Holidays in Libya'),
+      'en.li#holiday@group.v.calendar.google.com' => $this->t('Holidays in Liechtenstein'),
+      'en.lithuanian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Lithuania'),
+      'en.lu#holiday@group.v.calendar.google.com' => $this->t('Holidays in Luxembourg'),
+      'en.mg#holiday@group.v.calendar.google.com' => $this->t('Holidays in Madagascar'),
+      'en.mw#holiday@group.v.calendar.google.com' => $this->t('Holidays in Malawi'),
+      'en.malaysia#holiday@group.v.calendar.google.com' => $this->t('Holidays in Malaysia'),
+      'en.ml#holiday@group.v.calendar.google.com' => $this->t('Holidays in Mali'),
+      'en.mt#holiday@group.v.calendar.google.com' => $this->t('Holidays in Malta'),
+      'en.mq#holiday@group.v.calendar.google.com' => $this->t('Holidays in Martinique'),
+      'en.mu#holiday@group.v.calendar.google.com' => $this->t('Holidays in Mauritius'),
+      'en.yt#holiday@group.v.calendar.google.com' => $this->t('Holidays in Mayotte'),
+      'en.mexican#holiday@group.v.calendar.google.com' => $this->t('Holidays in Mexico'),
+      'en.md#holiday@group.v.calendar.google.com' => $this->t('Holidays in Moldova'),
+      'en.mc#holiday@group.v.calendar.google.com' => $this->t('Holidays in Monaco'),
+      'en.me#holiday@group.v.calendar.google.com' => $this->t('Holidays in Montenegro'),
+      'en.ma#holiday@group.v.calendar.google.com' => $this->t('Holidays in Morocco'),
+      'en.mz#holiday@group.v.calendar.google.com' => $this->t('Holidays in Mozambique'),
+      'en.na#holiday@group.v.calendar.google.com' => $this->t('Holidays in Namibia'),
+      'en.dutch#holiday@group.v.calendar.google.com' => $this->t('Holidays in Netherlands'),
+      'en.new_zealand#holiday@group.v.calendar.google.com' => $this->t('Holidays in New Zealand'),
+      'en.ni#holiday@group.v.calendar.google.com' => $this->t('Holidays in Nicaragua'),
+      'en.ne#holiday@group.v.calendar.google.com' => $this->t('Holidays in Niger'),
+      'en.ng#holiday@group.v.calendar.google.com' => $this->t('Holidays in Nigeria'),
+      'en.norwegian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Norway'),
+      'en.om#holiday@group.v.calendar.google.com' => $this->t('Holidays in Oman'),
+      'en.pk#holiday@group.v.calendar.google.com' => $this->t('Holidays in Pakistan'),
+      'en.pa#holiday@group.v.calendar.google.com' => $this->t('Holidays in Panama'),
+      'en.py#holiday@group.v.calendar.google.com' => $this->t('Holidays in Paraguay'),
+      'en.pe#holiday@group.v.calendar.google.com' => $this->t('Holidays in Peru'),
+      'en.philippines#holiday@group.v.calendar.google.com' => $this->t('Holidays in Philippines'),
+      'en.polish#holiday@group.v.calendar.google.com' => $this->t('Holidays in Poland'),
+      'en.portuguese#holiday@group.v.calendar.google.com' => $this->t('Holidays in Portugal'),
+      'en.pr#holiday@group.v.calendar.google.com' => $this->t('Holidays in Puerto Rico'),
+      'en.qa#holiday@group.v.calendar.google.com' => $this->t('Holidays in Qatar'),
+      'en.south_korea#holiday@group.v.calendar.google.com' => $this->t('Holidays in Republic of Korea'),
+      'en.romanian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Romania'),
+      'en.russian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Russian Federation'),
+      'en.rw#holiday@group.v.calendar.google.com' => $this->t('Holidays in Rwanda'),
+      'en.re#holiday@group.v.calendar.google.com' => $this->t('Holidays in R\u00e9union'),
+      'en.sh#holiday@group.v.calendar.google.com' => $this->t('Holidays in Saint Helena, Ascension and Tristan da Cunha'),
+      'en.sm#holiday@group.v.calendar.google.com' => $this->t('Holidays in San Marino'),
+      'en.st#holiday@group.v.calendar.google.com' => $this->t('Holidays in Sao Tome and Principe'),
+      'en.saudiarabian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Saudi Arabia'),
+      'en.sn#holiday@group.v.calendar.google.com' => $this->t('Holidays in Senegal'),
+      'en.rs#holiday@group.v.calendar.google.com' => $this->t('Holidays in Serbia'),
+      'en.sc#holiday@group.v.calendar.google.com' => $this->t('Holidays in Seychelles'),
+      'en.sl#holiday@group.v.calendar.google.com' => $this->t('Holidays in Sierra Leone'),
+      'en.singapore#holiday@group.v.calendar.google.com' => $this->t('Holidays in Singapore'),
+      'en.slovak#holiday@group.v.calendar.google.com' => $this->t('Holidays in Slovakia'),
+      'en.slovenian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Slovenia'),
+      'en.so#holiday@group.v.calendar.google.com' => $this->t('Holidays in Somalia'),
+      'en.sa#holiday@group.v.calendar.google.com' => $this->t('Holidays in South Africa'),
+      'en.ss#holiday@group.v.calendar.google.com' => $this->t('Holidays in South Sudan'),
+      'en.spain#holiday@group.v.calendar.google.com' => $this->t('Holidays in Spain'),
+      'en.lk#holiday@group.v.calendar.google.com' => $this->t('Holidays in Sri Lanka'),
+      'en.sd#holiday@group.v.calendar.google.com' => $this->t('Holidays in Sudan'),
+      'en.sr#holiday@group.v.calendar.google.com' => $this->t('Holidays in Suriname'),
+      'en.sz#holiday@group.v.calendar.google.com' => $this->t('Holidays in Swaziland'),
+      'en.swedish#holiday@group.v.calendar.google.com' => $this->t('Holidays in Sweden'),
+      'en.ch#holiday@group.v.calendar.google.com' => $this->t('Holidays in Switzerland'),
+      'en.sy#holiday@group.v.calendar.google.com' => $this->t('Holidays in Syrian Arab Republic'),
+      'en.taiwan#holiday@group.v.calendar.google.com' => $this->t('Holidays in Taiwan'),
+      'en.th#holiday@group.v.calendar.google.com' => $this->t('Holidays in Thailand'),
+      'en.cd#holiday@group.v.calendar.google.com' => $this->t('Holidays in The Democratic Republic of the Congo'),
+      'en.mk#holiday@group.v.calendar.google.com' => $this->t('Holidays in The Former Yugoslav Republic of Macedonia'),
+      'en.tg#holiday@group.v.calendar.google.com' => $this->t('Holidays in Togo'),
+      'en.tt#holiday@group.v.calendar.google.com' => $this->t('Holidays in Trinidad and Tobago'),
+      'en.tn#holiday@group.v.calendar.google.com' => $this->t('Holidays in Tunisia'),
+      'en.turkish#holiday@group.v.calendar.google.com' => $this->t('Holidays in Turkey'),
+      'en.vi#holiday@group.v.calendar.google.com' => $this->t('Holidays in U.S. Virgin Islands'),
+      'en.ug#holiday@group.v.calendar.google.com' => $this->t('Holidays in Uganda'),
+      'en.ukrainian#holiday@group.v.calendar.google.com' => $this->t('Holidays in Ukraine'),
+      'en.ae#holiday@group.v.calendar.google.com' => $this->t('Holidays in United Arab Emirates'),
+      'en.uk#holiday@group.v.calendar.google.com' => $this->t('Holidays in United Kingdom'),
+      'en.tz#holiday@group.v.calendar.google.com' => $this->t('Holidays in United Republic of Tanzania'),
+      'en.usa#holiday@group.v.calendar.google.com' => $this->t('Holidays in United States'),
+      'en.uy#holiday@group.v.calendar.google.com' => $this->t('Holidays in Uruguay'),
+      'en.ve#holiday@group.v.calendar.google.com' => $this->t('Holidays in Venezuela'),
+      'en.vietnamese#holiday@group.v.calendar.google.com' => $this->t('Holidays in Vietnam'),
+      'en.ye#holiday@group.v.calendar.google.com' => $this->t('Holidays in Yemen'),
+      'en.zm#holiday@group.v.calendar.google.com' => $this->t('Holidays in Zambia'),
+      'en.zw#holiday@group.v.calendar.google.com' => $this->t('Holidays in Zimbabwe'),
+    ];
+  }
 }

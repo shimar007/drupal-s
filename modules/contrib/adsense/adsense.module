@@ -19,7 +19,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 function adsense_page_attachments(array &$attachments) {
   $config = \Drupal::config('adsense.settings');
   if ($config->get('adsense_managed_page_level_ads_enabled')) {
-    /* @var \Drupal\system\Plugin\Condition\RequestPath $condition */
+    /** @var \Drupal\system\Plugin\Condition\RequestPath $condition */
     $condition = \Drupal::getContainer()->get('plugin.manager.condition')->createInstance('request_path');
     $visibility = $config->get('adsense_access_pages');
     if ($visibility) {
@@ -133,11 +133,13 @@ function adsense_theme() {
         'height' => '',
         'client' => '',
         'slot' => '',
+        'defer' => FALSE,
       ],
     ],
     'adsense_managed_page_level' => [
       'variables' => [
         'client' => '',
+        'defer' => FALSE,
       ],
     ],
     'adsense_managed_responsive' => [
@@ -146,6 +148,7 @@ function adsense_theme() {
         'client' => '',
         'slot' => '',
         'shape' => '',
+        'defer' => FALSE,
       ],
     ],
     'adsense_managed_fluid' => [
@@ -155,6 +158,7 @@ function adsense_theme() {
         'slot' => '',
         'layout_key' => '',
         'style' => '',
+        'defer' => FALSE,
       ],
     ],
     'adsense_managed_sync' => [
@@ -165,6 +169,7 @@ function adsense_theme() {
         'client' => '',
         'slot' => '',
         'secret' => '',
+        'defer' => FALSE,
       ],
     ],
   ];
@@ -176,7 +181,7 @@ function adsense_theme() {
 function template_preprocess_adsense_ad(&$variables) {
   $variables['adclasses'][] = 'adsense';
   if ((!empty($variables['format'])) && ((empty($variables['width'])) || (empty($variables['height'])))) {
-    list($variables['width'], $variables['height']) = ContentAdBase::dimensions($variables['format']);
+    [$variables['width'], $variables['height']] = ContentAdBase::dimensions($variables['format']);
   }
 
   if (empty($variables['content'])) {
@@ -184,7 +189,7 @@ function template_preprocess_adsense_ad(&$variables) {
   }
 
   if ((!empty($variables['width'])) && (!empty($variables['height']))) {
-    $variables['style'] = "width:${variables['width']}px;height:${variables['height']}px;";
+    $variables['style'] = "width:{$variables['width']}px;height:{$variables['height']}px;";
   }
   else {
     $variables['adclasses'][] = 'responsive';
@@ -200,7 +205,7 @@ function template_preprocess_adsense_ad(&$variables) {
 function adsense_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     case 'help.page.adsense':
-      module_load_include('inc', 'adsense', 'help/adsense.help');
+      \Drupal::moduleHandler()->loadInclude('adsense', 'inc', 'help/adsense.help');
       return adsense_help_text();
   }
   return '';

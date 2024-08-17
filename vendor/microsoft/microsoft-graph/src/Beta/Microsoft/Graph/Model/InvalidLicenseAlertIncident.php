@@ -26,6 +26,7 @@ class InvalidLicenseAlertIncident extends UnifiedRoleManagementAlertIncident
 {
     /**
     * Gets the tenantLicenseStatus
+    * Status of the tenant's Microsoft Entra ID P2 license.
     *
     * @return string|null The tenantLicenseStatus
     */
@@ -40,6 +41,7 @@ class InvalidLicenseAlertIncident extends UnifiedRoleManagementAlertIncident
 
     /**
     * Sets the tenantLicenseStatus
+    * Status of the tenant's Microsoft Entra ID P2 license.
     *
     * @param string $val The tenantLicenseStatus
     *

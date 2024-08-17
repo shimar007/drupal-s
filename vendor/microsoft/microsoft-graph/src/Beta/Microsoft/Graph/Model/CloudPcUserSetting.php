@@ -149,6 +149,35 @@ class CloudPcUserSetting extends Entity
     }
 
     /**
+    * Gets the resetEnabled
+    * Indicates whether an end user is allowed to reset their Cloud PC. When true, the user is allowed to reset their Cloud PC. When false, end-user initiated reset is not allowed. The default value is false.
+    *
+    * @return bool|null The resetEnabled
+    */
+    public function getResetEnabled()
+    {
+        if (array_key_exists("resetEnabled", $this->_propDict)) {
+            return $this->_propDict["resetEnabled"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the resetEnabled
+    * Indicates whether an end user is allowed to reset their Cloud PC. When true, the user is allowed to reset their Cloud PC. When false, end-user initiated reset is not allowed. The default value is false.
+    *
+    * @param bool $val The resetEnabled
+    *
+    * @return CloudPcUserSetting
+    */
+    public function setResetEnabled($val)
+    {
+        $this->_propDict["resetEnabled"] = boolval($val);
+        return $this;
+    }
+
+    /**
     * Gets the restorePointSetting
     * Defines how frequently a restore point is created that is, a snapshot is taken) for users' provisioned Cloud PCs (default is 12 hours), and whether the user is allowed to restore their own Cloud PCs to a backup made at a specific point in time.
     *
@@ -213,7 +242,7 @@ class CloudPcUserSetting extends Entity
 
      /**
      * Gets the assignments
-    * Represents the set of Microsoft 365 groups and security groups in Azure Active Directory that have cloudPCUserSetting assigned. Returned only on $expand. For an example, see Get cloudPcUserSettingample.
+    * Represents the set of Microsoft 365 groups and security groups in Microsoft Entra ID that have cloudPCUserSetting assigned. Returned only on $expand. For an example, see Get cloudPcUserSettingample.
      *
      * @return array|null The assignments
      */
@@ -228,7 +257,7 @@ class CloudPcUserSetting extends Entity
 
     /**
     * Sets the assignments
-    * Represents the set of Microsoft 365 groups and security groups in Azure Active Directory that have cloudPCUserSetting assigned. Returned only on $expand. For an example, see Get cloudPcUserSettingample.
+    * Represents the set of Microsoft 365 groups and security groups in Microsoft Entra ID that have cloudPCUserSetting assigned. Returned only on $expand. For an example, see Get cloudPcUserSettingample.
     *
     * @param CloudPcUserSettingAssignment[] $val The assignments
     *

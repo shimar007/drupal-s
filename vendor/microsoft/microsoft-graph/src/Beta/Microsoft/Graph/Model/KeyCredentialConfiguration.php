@@ -23,6 +23,34 @@ namespace Beta\Microsoft\Graph\Model;
 */
 class KeyCredentialConfiguration extends Entity
 {
+    /**
+    * Gets the certificateBasedApplicationConfigurationIds
+    * Collection of GUIDs that point to the certificateBasedApplicationConfiguration that contains the collection of allowed root and intermediate certificate authorities.
+    *
+    * @return string|null The certificateBasedApplicationConfigurationIds
+    */
+    public function getCertificateBasedApplicationConfigurationIds()
+    {
+        if (array_key_exists("certificateBasedApplicationConfigurationIds", $this->_propDict)) {
+            return $this->_propDict["certificateBasedApplicationConfigurationIds"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the certificateBasedApplicationConfigurationIds
+    * Collection of GUIDs that point to the certificateBasedApplicationConfiguration that contains the collection of allowed root and intermediate certificate authorities.
+    *
+    * @param string $val The value of the certificateBasedApplicationConfigurationIds
+    *
+    * @return KeyCredentialConfiguration
+    */
+    public function setCertificateBasedApplicationConfigurationIds($val)
+    {
+        $this->_propDict["certificateBasedApplicationConfigurationIds"] = $val;
+        return $this;
+    }
 
     /**
     * Gets the maxLifetime

@@ -3,7 +3,7 @@
 namespace Drupal\adsense;
 
 /**
- * Class PublisherId.
+ * Handler for the AdSense publisher ID.
  */
 class PublisherId {
 

@@ -85,6 +85,33 @@ class Site extends BaseItem
     }
 
     /**
+    * Gets the isPersonalSite
+    *
+    * @return bool|null The isPersonalSite
+    */
+    public function getIsPersonalSite()
+    {
+        if (array_key_exists("isPersonalSite", $this->_propDict)) {
+            return $this->_propDict["isPersonalSite"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the isPersonalSite
+    *
+    * @param bool $val The isPersonalSite
+    *
+    * @return Site
+    */
+    public function setIsPersonalSite($val)
+    {
+        $this->_propDict["isPersonalSite"] = boolval($val);
+        return $this;
+    }
+
+    /**
     * Gets the root
     * If present, indicates that this is the root site in the site collection. Read-only.
     *
@@ -526,7 +553,7 @@ class Site extends BaseItem
 
      /**
      * Gets the pages
-    * The collection of pages in the SitePages list in this site.
+    * The collection of pages in the baseSitePages list in this site.
      *
      * @return array|null The pages
      */
@@ -541,9 +568,9 @@ class Site extends BaseItem
 
     /**
     * Sets the pages
-    * The collection of pages in the SitePages list in this site.
+    * The collection of pages in the baseSitePages list in this site.
     *
-    * @param SitePage[] $val The pages
+    * @param BaseSitePage[] $val The pages
     *
     * @return Site
     */
@@ -580,6 +607,39 @@ class Site extends BaseItem
     public function setPermissions($val)
     {
         $this->_propDict["permissions"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the recycleBin
+    * A container for a collection of recycleBinItem resources in this site.
+    *
+    * @return RecycleBin|null The recycleBin
+    */
+    public function getRecycleBin()
+    {
+        if (array_key_exists("recycleBin", $this->_propDict)) {
+            if (is_a($this->_propDict["recycleBin"], "\Beta\Microsoft\Graph\Model\RecycleBin") || is_null($this->_propDict["recycleBin"])) {
+                return $this->_propDict["recycleBin"];
+            } else {
+                $this->_propDict["recycleBin"] = new RecycleBin($this->_propDict["recycleBin"]);
+                return $this->_propDict["recycleBin"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the recycleBin
+    * A container for a collection of recycleBinItem resources in this site.
+    *
+    * @param RecycleBin $val The recycleBin
+    *
+    * @return Site
+    */
+    public function setRecycleBin($val)
+    {
+        $this->_propDict["recycleBin"] = $val;
         return $this;
     }
 

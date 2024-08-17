@@ -3,9 +3,10 @@
 namespace Drupal\shield\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\key\Plugin\KeyPluginManager;
 use Drupal\shield\ShieldMiddleware;
@@ -35,13 +36,15 @@ class ShieldSettingsForm extends ConfigFormBase {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
+   * @param \Drupal\Core\Config\TypedConfigManagerInterface|null $typedConfigManager
+   *   The typed config manager.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
    *   The module handler.
    * @param \Drupal\key\Plugin\KeyPluginManager|null $keyTypeManager
    *   The key plugin manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ModuleHandlerInterface $moduleHandler, KeyPluginManager $keyTypeManager = NULL) {
-    parent::__construct($config_factory);
+  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typedConfigManager, ModuleHandlerInterface $moduleHandler, KeyPluginManager $keyTypeManager = NULL) {
+    parent::__construct($config_factory, $typedConfigManager);
     $this->moduleHandler = $moduleHandler;
     $this->keyTypeManager = $keyTypeManager;
   }
@@ -52,6 +55,7 @@ class ShieldSettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
+      $container->get('config.typed'),
       $container->get('module_handler'),
       $container->get('plugin.manager.key.key_type', ContainerInterface::NULL_ON_INVALID_REFERENCE)
     );
@@ -103,7 +107,7 @@ class ShieldSettingsForm extends ConfigFormBase {
     $form['general']['shield_print'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Authentication message'),
-      '#description' => $this->t("The message to print in the authentication request popup. You can use [user] and [pass] to print the user and the password respectively. You can leave it empty, if you don't want to print out any special message to the users."),
+      '#description' => $this->t("<strong>Warning:</strong> Due to security issues, most modern browsers will not print this message anymore. <br /> The message to print in the authentication request popup. You can use [user] and [pass] to print the user and the password respectively. You can leave it empty, if you don't want to print out any special message to the users."),
       '#default_value' => $shield_config->get('print'),
     ];
 
@@ -139,7 +143,7 @@ class ShieldSettingsForm extends ConfigFormBase {
       '#ajax' => [
         'callback' => [$this, 'ajaxCallback'],
         'wrapper' => 'credentials_configuration',
-        'method' => 'replace',
+        'method' => 'replaceWith',
         'effect' => 'fade',
       ],
     ];

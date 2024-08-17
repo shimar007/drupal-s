@@ -85,7 +85,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the approximateLastSignInDateTime
-    * The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Supports $filter (eq, ne, not, ge, le, and eq on null values) and $orderBy.
+    * The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Supports $filter (eq, ne, not, ge, le, and eq on null values) and $orderby.
     *
     * @return \DateTime|null The approximateLastSignInDateTime
     */
@@ -104,7 +104,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the approximateLastSignInDateTime
-    * The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Supports $filter (eq, ne, not, ge, le, and eq on null values) and $orderBy.
+    * The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Supports $filter (eq, ne, not, ge, le, and eq on null values) and $orderby.
     *
     * @param \DateTime $val The approximateLastSignInDateTime
     *
@@ -296,7 +296,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the displayName
-    * The display name for the device. Required. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderBy.
+    * The display name for the device. Required. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.
     *
     * @return string|null The displayName
     */
@@ -311,7 +311,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the displayName
-    * The display name for the device. Required. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderBy.
+    * The display name for the device. Required. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.
     *
     * @param string $val The displayName
     *
@@ -325,7 +325,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the domainName
-    * The on-premises domain name of Hybrid Azure AD joined devices. This property is set by Intune.
+    * The on-premises domain name of Microsoft Entra hybrid joined devices. This property is set by Intune.
     *
     * @return string|null The domainName
     */
@@ -340,7 +340,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the domainName
-    * The on-premises domain name of Hybrid Azure AD joined devices. This property is set by Intune.
+    * The on-premises domain name of Microsoft Entra hybrid joined devices. This property is set by Intune.
     *
     * @param string $val The domainName
     *
@@ -412,7 +412,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the extensionAttributes
-    * Contains extension attributes 1-15 for the device. The individual extension attributes are not selectable. These properties are mastered in cloud and can be set during creation or update of a device object in Azure AD. Supports $filter (eq, not, startsWith, and eq on null values).
+    * Contains extension attributes 1-15 for the device. The individual extension attributes are not selectable. These properties are mastered in cloud and can be set during creation or update of a device object in Microsoft Entra ID. Supports $filter (eq, not, startsWith, and eq on null values).
     *
     * @return OnPremisesExtensionAttributes|null The extensionAttributes
     */
@@ -431,7 +431,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the extensionAttributes
-    * Contains extension attributes 1-15 for the device. The individual extension attributes are not selectable. These properties are mastered in cloud and can be set during creation or update of a device object in Azure AD. Supports $filter (eq, not, startsWith, and eq on null values).
+    * Contains extension attributes 1-15 for the device. The individual extension attributes are not selectable. These properties are mastered in cloud and can be set during creation or update of a device object in Microsoft Entra ID. Supports $filter (eq, not, startsWith, and eq on null values).
     *
     * @param OnPremisesExtensionAttributes $val The extensionAttributes
     *
@@ -445,7 +445,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the hostnames
-    * List of hostNames for the device.
+    * List of host names for the device.
     *
     * @return array|null The hostnames
     */
@@ -460,7 +460,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the hostnames
-    * List of hostNames for the device.
+    * List of host names for the device.
     *
     * @param string[] $val The hostnames
     *
@@ -532,6 +532,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the isManagementRestricted
+    * Indicates whether the device is a member of a restricted management administrative unit, in which case it requires a role scoped to the restricted administrative unit to manage. The default value is false. Read-only.  To manage a device that's a member of a restricted administrative unit, the calling app must be assigned the Directory.Write.Restricted permission. For delegated scenarios, the administrators must also be explicitly assigned supported roles at the restricted administrative unit scope.
     *
     * @return bool|null The isManagementRestricted
     */
@@ -546,6 +547,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the isManagementRestricted
+    * Indicates whether the device is a member of a restricted management administrative unit, in which case it requires a role scoped to the restricted administrative unit to manage. The default value is false. Read-only.  To manage a device that's a member of a restricted administrative unit, the calling app must be assigned the Directory.Write.Restricted permission. For delegated scenarios, the administrators must also be explicitly assigned supported roles at the restricted administrative unit scope.
     *
     * @param bool $val The isManagementRestricted
     *
@@ -674,6 +676,35 @@ class Device extends DirectoryObject
     public function setOnPremisesLastSyncDateTime($val)
     {
         $this->_propDict["onPremisesLastSyncDateTime"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the onPremisesSecurityIdentifier
+    * The on-premises security identifier (SID) for the user who was synchronized from on-premises to the cloud. Read-only. Returned only on $select. Supports $filter (eq).
+    *
+    * @return string|null The onPremisesSecurityIdentifier
+    */
+    public function getOnPremisesSecurityIdentifier()
+    {
+        if (array_key_exists("onPremisesSecurityIdentifier", $this->_propDict)) {
+            return $this->_propDict["onPremisesSecurityIdentifier"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the onPremisesSecurityIdentifier
+    * The on-premises security identifier (SID) for the user who was synchronized from on-premises to the cloud. Read-only. Returned only on $select. Supports $filter (eq).
+    *
+    * @param string $val The onPremisesSecurityIdentifier
+    *
+    * @return Device
+    */
+    public function setOnPremisesSecurityIdentifier($val)
+    {
+        $this->_propDict["onPremisesSecurityIdentifier"] = $val;
         return $this;
     }
 
@@ -886,7 +917,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the trustType
-    * Type of trust for the joined device. Read-only. Possible values: Workplace (indicates bring your own personal devices), AzureAd (Cloud only joined devices), ServerAd (on-premises domain joined devices joined to Azure AD). For more details, see Introduction to device management in Azure Active Directory
+    * Type of trust for the joined device. Read-only. Possible values: Workplace (indicates bring your own personal devices), AzureAd (Cloud only joined devices), ServerAd (on-premises domain joined devices joined to Microsoft Entra ID). For more details, see Introduction to device management in Microsoft Entra ID.
     *
     * @return string|null The trustType
     */
@@ -901,7 +932,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the trustType
-    * Type of trust for the joined device. Read-only. Possible values: Workplace (indicates bring your own personal devices), AzureAd (Cloud only joined devices), ServerAd (on-premises domain joined devices joined to Azure AD). For more details, see Introduction to device management in Azure Active Directory
+    * Type of trust for the joined device. Read-only. Possible values: Workplace (indicates bring your own personal devices), AzureAd (Cloud only joined devices), ServerAd (on-premises domain joined devices joined to Microsoft Entra ID). For more details, see Introduction to device management in Microsoft Entra ID.
     *
     * @param string $val The trustType
     *
@@ -915,7 +946,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the kind
-    * Form factor of device. Only returned if user signs in with a Microsoft account as part of Project Rome.
+    * Form factor of the device. Only returned if the user signs in with a Microsoft account as part of Project Rome.
     *
     * @return string|null The kind
     */
@@ -930,7 +961,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the kind
-    * Form factor of device. Only returned if user signs in with a Microsoft account as part of Project Rome.
+    * Form factor of the device. Only returned if the user signs in with a Microsoft account as part of Project Rome.
     *
     * @param string $val The kind
     *
@@ -944,7 +975,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the manufacturer
-    * Manufacturer of the device. Read-only.
+    * Manufacturer of the device. Only returned if the user signs in with a Microsoft account as part of Project Rome.
     *
     * @return string|null The manufacturer
     */
@@ -959,7 +990,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the manufacturer
-    * Manufacturer of the device. Read-only.
+    * Manufacturer of the device. Only returned if the user signs in with a Microsoft account as part of Project Rome.
     *
     * @param string $val The manufacturer
     *
@@ -973,7 +1004,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the model
-    * Model of the device. Read-only.
+    * Model of the device. Only returned if the user signs in with a Microsoft account as part of Project Rome.
     *
     * @return string|null The model
     */
@@ -988,7 +1019,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the model
-    * Model of the device. Read-only.
+    * Model of the device. Only returned if the user signs in with a Microsoft account as part of Project Rome.
     *
     * @param string $val The model
     *
@@ -1002,7 +1033,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the name
-    * Friendly name of a device. Only returned if user signs in with a Microsoft account as part of Project Rome.
+    * Friendly name of the device. Only returned if user signs in with a Microsoft account as part of Project Rome.
     *
     * @return string|null The name
     */
@@ -1017,7 +1048,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the name
-    * Friendly name of a device. Only returned if user signs in with a Microsoft account as part of Project Rome.
+    * Friendly name of the device. Only returned if user signs in with a Microsoft account as part of Project Rome.
     *
     * @param string $val The name
     *
@@ -1031,7 +1062,7 @@ class Device extends DirectoryObject
 
     /**
     * Gets the platform
-    * Platform of device. Only returned if user signs in with a Microsoft account as part of Project Rome. Only returned if user signs in with a Microsoft account as part of Project Rome.
+    * Platform of device. Only returned if the user signs in with a Microsoft account as part of Project Rome.
     *
     * @return string|null The platform
     */
@@ -1046,7 +1077,7 @@ class Device extends DirectoryObject
 
     /**
     * Sets the platform
-    * Platform of device. Only returned if user signs in with a Microsoft account as part of Project Rome. Only returned if user signs in with a Microsoft account as part of Project Rome.
+    * Platform of device. Only returned if the user signs in with a Microsoft account as part of Project Rome.
     *
     * @param string $val The platform
     *

@@ -84,7 +84,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Gets the clientApplicationsFromVerifiedPublisherOnly
-    * Set to true to only match on client applications with a verified publisher. Set to false to match on any client app, even if it does not have a verified publisher. Default is false.
+    * Set to true to only match on client applications with a verified publisher. Set to false to match on any client app, even if it doesn't have a verified publisher. Default is false.
     *
     * @return bool|null The clientApplicationsFromVerifiedPublisherOnly
     */
@@ -99,7 +99,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Sets the clientApplicationsFromVerifiedPublisherOnly
-    * Set to true to only match on client applications with a verified publisher. Set to false to match on any client app, even if it does not have a verified publisher. Default is false.
+    * Set to true to only match on client applications with a verified publisher. Set to false to match on any client app, even if it doesn't have a verified publisher. Default is false.
     *
     * @param bool $val The clientApplicationsFromVerifiedPublisherOnly
     *
@@ -113,7 +113,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Gets the clientApplicationTenantIds
-    * A list of Azure Active Directory tenant IDs in which the client application is registered, or a list with the single value all to match with client apps registered in any tenant. Default is the single value all.
+    * A list of Microsoft Entra tenant IDs in which the client application is registered, or a list with the single value all to match with client apps registered in any tenant. Default is the single value all.
     *
     * @return array|null The clientApplicationTenantIds
     */
@@ -128,7 +128,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Sets the clientApplicationTenantIds
-    * A list of Azure Active Directory tenant IDs in which the client application is registered, or a list with the single value all to match with client apps registered in any tenant. Default is the single value all.
+    * A list of Microsoft Entra tenant IDs in which the client application is registered, or a list with the single value all to match with client apps registered in any tenant. Default is the single value all.
     *
     * @param string[] $val The clientApplicationTenantIds
     *
@@ -142,7 +142,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Gets the permissionClassification
-    * The permission classification for the permission being granted, or all to match with any permission classification (including permissions which are not classified). Default is all.
+    * The permission classification for the permission being granted, or all to match with any permission classification (including permissions that aren't classified). Default is all.
     *
     * @return string|null The permissionClassification
     */
@@ -157,7 +157,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Sets the permissionClassification
-    * The permission classification for the permission being granted, or all to match with any permission classification (including permissions which are not classified). Default is all.
+    * The permission classification for the permission being granted, or all to match with any permission classification (including permissions that aren't classified). Default is all.
     *
     * @param string $val The permissionClassification
     *
@@ -171,7 +171,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Gets the permissions
-    * The list of id values for the specific permissions to match with, or a list with the single value all to match with any permission. The id of delegated permissions can be found in the oauth2PermissionScopes property of the API's **servicePrincipal** object. The id of application permissions can be found in the appRoles property of the API's **servicePrincipal** object. The id of resource-specific application permissions can be found in the resourceSpecificApplicationPermissions property of the API's **servicePrincipal** object. Default is the single value all.
+    * The list of id values for the specific permissions to match with, or a list with the single value all to match with any permission. The id of delegated permissions can be found in the oauth2PermissionScopes property of the API's servicePrincipal object. The id of application permissions can be found in the appRoles property of the API's servicePrincipal object. The id of resource-specific application permissions can be found in the resourceSpecificApplicationPermissions property of the API's servicePrincipal object. Default is the single value all.
     *
     * @return array|null The permissions
     */
@@ -186,7 +186,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Sets the permissions
-    * The list of id values for the specific permissions to match with, or a list with the single value all to match with any permission. The id of delegated permissions can be found in the oauth2PermissionScopes property of the API's **servicePrincipal** object. The id of application permissions can be found in the appRoles property of the API's **servicePrincipal** object. The id of resource-specific application permissions can be found in the resourceSpecificApplicationPermissions property of the API's **servicePrincipal** object. Default is the single value all.
+    * The list of id values for the specific permissions to match with, or a list with the single value all to match with any permission. The id of delegated permissions can be found in the oauth2PermissionScopes property of the API's servicePrincipal object. The id of application permissions can be found in the appRoles property of the API's servicePrincipal object. The id of resource-specific application permissions can be found in the resourceSpecificApplicationPermissions property of the API's servicePrincipal object. Default is the single value all.
     *
     * @param string[] $val The permissions
     *
@@ -200,7 +200,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Gets the permissionType
-    * The permission type of the permission being granted. Possible values: application for application permissions (e.g. app roles), or delegated for delegated permissions. The value delegatedUserConsentable indicates delegated permissions which have not been configured by the API publisher to require admin consent—this value may be used in built-in permission grant policies, but cannot be used in custom permission grant policies. Required.
+    * The permission type of the permission being granted. Possible values: application for application permissions (for example app roles), or delegated for delegated permissions. The value delegatedUserConsentable indicates delegated permissions that haven't been configured by the API publisher to require admin consent—this value may be used in built-in permission grant policies, but can't be used in custom permission grant policies. Required.
     *
     * @return PermissionType|null The permissionType
     */
@@ -219,7 +219,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Sets the permissionType
-    * The permission type of the permission being granted. Possible values: application for application permissions (e.g. app roles), or delegated for delegated permissions. The value delegatedUserConsentable indicates delegated permissions which have not been configured by the API publisher to require admin consent—this value may be used in built-in permission grant policies, but cannot be used in custom permission grant policies. Required.
+    * The permission type of the permission being granted. Possible values: application for application permissions (for example app roles), or delegated for delegated permissions. The value delegatedUserConsentable indicates delegated permissions that haven't been configured by the API publisher to require admin consent—this value may be used in built-in permission grant policies, but can't be used in custom permission grant policies. Required.
     *
     * @param PermissionType $val The permissionType
     *
@@ -233,7 +233,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Gets the resourceApplication
-    * The appId of the resource application (e.g. the API) for which a permission is being granted, or any to match with any resource application or API. Default is any.
+    * The appId of the resource application (for example the API) for which a permission is being granted, or any to match with any resource application or API. Default is any.
     *
     * @return string|null The resourceApplication
     */
@@ -248,7 +248,7 @@ class PermissionGrantConditionSet extends Entity
 
     /**
     * Sets the resourceApplication
-    * The appId of the resource application (e.g. the API) for which a permission is being granted, or any to match with any resource application or API. Default is any.
+    * The appId of the resource application (for example the API) for which a permission is being granted, or any to match with any resource application or API. Default is any.
     *
     * @param string $val The resourceApplication
     *

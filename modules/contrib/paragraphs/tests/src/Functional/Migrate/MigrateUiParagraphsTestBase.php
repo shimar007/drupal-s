@@ -4,6 +4,7 @@ namespace Drupal\Tests\paragraphs\Functional\Migrate;
 
 use Behat\Mink\Exception\ExpectationException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Site\Settings;
@@ -32,14 +33,14 @@ abstract class MigrateUiParagraphsTestBase extends MigrateUpgradeTestBase {
    * {@inheritdoc}
    */
   protected function getSourceBasePath() {
-    return drupal_get_path('module', 'paragraphs') . '/tests/fixtures';
+    return \Drupal::service('extension.list.module')->getPath('paragraphs') . '/tests/fixtures';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getSourcePrivateFilesPath() {
-    return drupal_get_path('module', 'paragraphs') . '/tests/fixtures';
+    return \Drupal::service('extension.list.module')->getPath('paragraphs') . '/tests/fixtures';
   }
 
   /**
@@ -392,7 +393,7 @@ abstract class MigrateUiParagraphsTestBase extends MigrateUpgradeTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->loadFixture(drupal_get_path('module', 'paragraphs') . '/tests/fixtures/drupal7.php');
+    $this->loadFixture(\Drupal::service('extension.list.module')->getPath('paragraphs') . '/tests/fixtures/drupal7.php');
   }
 
   /**
@@ -414,8 +415,14 @@ abstract class MigrateUiParagraphsTestBase extends MigrateUpgradeTestBase {
 
     // Use the driver connection form to get the correct options out of the
     // database settings. This supports all of the databases we test against.
-    $drivers = drupal_get_database_types();
-    $form = $drivers[$driver]->getFormOptions($connection_options);
+    if (method_exists(Database::class, 'getDriverList')) {
+      $drivers = Database::getDriverList()->getInstallableList();
+      $form = $drivers[$driver]->getInstallTasks()->getFormOptions($connection_options);
+    }
+    else {
+      $drivers = drupal_get_database_types();
+      $form = $drivers[$driver]->getFormOptions($connection_options);
+    }
     $connection_options = array_intersect_key($connection_options, $form + $form['advanced_options']);
     $version = $this->getLegacyDrupalVersion($this->sourceDatabase);
     $edit = [

@@ -123,7 +123,7 @@ class UnitIndex extends ServiceDefinitionBase implements ContainerFactoryPluginI
       $types = [];
 
       foreach (bat_unit_get_types() as $type) {
-        $type_bundle = bat_type_bundle_load($type->bundle());
+        $type_bundle = bat_unit_type_bundle_load($type->bundle());
 
         if (isset($type_bundle->default_event_value_field_ids[$event_type]) &&
             !empty($type_bundle->default_event_value_field_ids[$event_type])) {
@@ -155,7 +155,7 @@ class UnitIndex extends ServiceDefinitionBase implements ContainerFactoryPluginI
       }
 
       foreach ($childrens as $type_id => $children) {
-        $unit_type = bat_type_load($type_id);
+        $unit_type = bat_unit_type_load($type_id);
 
         $units[] = [
           'id' => $unit_type->id(),

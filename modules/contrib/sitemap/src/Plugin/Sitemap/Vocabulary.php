@@ -2,10 +2,15 @@
 
 namespace Drupal\sitemap\Plugin\Sitemap;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
 use Drupal\sitemap\SitemapBase;
 use Drupal\taxonomy\VocabularyInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a sitemap for an taxonomy vocabulary.
@@ -70,7 +75,45 @@ class Vocabulary extends SitemapBase {
    */
   const DEFAULT_TERM_RSS_LINK = 'view.taxonomy_term.feed_1|arg_0';
 
-  /* @todo Possible to set settings as class properties? */
+  /**
+   * A configuration factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected ConfigFactoryInterface $configFactory;
+
+  /**
+   * An entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * A module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected ModuleHandlerInterface $moduleHandler;
+
+  /**
+   * A route provider.
+   *
+   * @var \Drupal\Core\Routing\RouteProviderInterface
+   */
+  protected RouteProviderInterface $routeProvider;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    $instance->configFactory = $container->get('config.factory');
+    $instance->entityTypeManager = $container->get('entity_type.manager');
+    $instance->moduleHandler = $container->get('module_handler');
+    $instance->routeProvider = $container->get('router.route_provider');
+    return $instance;
+  }
 
   /**
    * {@inheritdoc}
@@ -80,7 +123,7 @@ class Vocabulary extends SitemapBase {
 
     // Provide the menu name as the default title.
     $vid = $this->getPluginDefinition()['vocabulary'];
-    $vocab = \Drupal::entityTypeManager()->getStorage('taxonomy_vocabulary')->load($vid);
+    $vocab = $this->entityTypeManager->getStorage('taxonomy_vocabulary')->load($vid);
     $form['title']['#default_value'] = $this->settings['title'] ?? $vocab->label();
 
     $form['show_description'] = [
@@ -101,7 +144,10 @@ class Vocabulary extends SitemapBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Display unpublished taxonomy terms'),
       '#default_value' => $this->settings['display_unpublished'] ?? FALSE,
-      '#description' => $this->t('When enabled, this option will include unpublished taxonomy terms.'),
+      '#description' => $this->t('When enabled, this option will include unpublished taxonomy terms.<br><strong>Warning</strong>: displaying unpublished taxonomy terms will reveal information that would normally require the sitemap viewer to have the %permission permission!', [
+        '%permission' => $this->t('Administer vocabularies and terms'),
+      ]),
+      '#access' => $this->currentUser->hasPermission('show unpublished taxonomy terms on sitemap'),
     ];
 
     $form['term_depth'] = [
@@ -206,7 +252,7 @@ class Vocabulary extends SitemapBase {
   public function view() {
     $vid = $this->pluginDefinition['vocabulary'];
     /** @var \Drupal\taxonomy\Entity\Vocabulary $vocabulary */
-    $vocabulary = \Drupal::entityTypeManager()->getStorage('taxonomy_vocabulary')->load($vid);
+    $vocabulary = $this->entityTypeManager->getStorage('taxonomy_vocabulary')->load($vid);
     $content = [];
 
     if (isset($this->settings['show_description']) && $this->settings['show_description']) {
@@ -218,7 +264,7 @@ class Vocabulary extends SitemapBase {
     $list = [];
     if ($maxDepth = $this->settings['term_depth']) {
       /** @var \Drupal\taxonomy\TermStorageInterface $termStorage */
-      $termStorage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+      $termStorage = $this->entityTypeManager->getStorage('taxonomy_term');
 
       $hierarchyType = $termStorage->getVocabularyHierarchyType($vid);
       // Fetch the top-level terms.
@@ -242,7 +288,7 @@ class Vocabulary extends SitemapBase {
             continue;
           }
           $currentDepth = 1;
-          $this->buildList($list, $obj, $vid, $currentDepth, $maxDepth);
+          $this->buildList($list, $obj, $vid, $currentDepth, $maxDepth, $display_unpublished);
           // @todo Remove parents where all child terms are not displayed.
         }
       }
@@ -253,7 +299,7 @@ class Vocabulary extends SitemapBase {
 
     // @todo Test & Document
     // Add an alter hook for modules to manipulate the taxonomy term output.
-    \Drupal::moduleHandler()->alter([
+    $this->moduleHandler->alter([
       'sitemap_vocabulary', 'sitemap_vocabulary_' . $vid,
     ], $list, $vid);
 
@@ -337,7 +383,7 @@ class Vocabulary extends SitemapBase {
   protected function buildTermLink($term) {
     $vid = $this->pluginDefinition['vocabulary'];
     // @todo Add and test handling for Forum vs Vocab routes
-    if (\Drupal::service('module_handler')->moduleExists('forum') && $vid == \Drupal::config('forum.settings')->get('vocabulary')) {
+    if ($this->moduleHandler->moduleExists('forum') && $vid == $this->configFactory->get('forum.settings')->get('vocabulary')) {
       return Url::fromRoute('forum.index')->toString();
     }
 
@@ -381,10 +427,12 @@ class Vocabulary extends SitemapBase {
    *   The current depth.
    * @param int $maxDepth
    *   The max depth.
+   * @param bool $display_unpublished
+   *   Check publish/unpublish from configuration.
    *
    * @see https://www.webomelette.com/loading-taxonomy-terms-tree-drupal-8
    */
-  protected function buildList(array &$list, $object, $vid, &$currentDepth, $maxDepth) {
+  protected function buildList(array &$list, $object, $vid, &$currentDepth, $maxDepth, $display_unpublished = FALSE) {
     // Check that we are only working with the parent-most term.
     if ($object->depth != 0) {
       return;
@@ -395,8 +443,8 @@ class Vocabulary extends SitemapBase {
 
     // Check for children on the term.
     // @todo Implement $termStorage at the class level.
-    $termStorage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-    $children = $termStorage->loadChildren($object->tid);
+    $termStorage = $this->entityTypeManager->getStorage('taxonomy_term');
+    $children = $termStorage->loadTree($vid, $object->tid, 1);
     if (!$children) {
       $object->hasChildren = FALSE;
       if ($element = $this->buildSitemapTerm($object)) {
@@ -416,15 +464,12 @@ class Vocabulary extends SitemapBase {
     $currentDepth++;
 
     if ($maxDepth >= $currentDepth) {
-      $child_objects = $termStorage->loadTree($vid, $object->tid, 1);
-
-      /** @var \Drupal\taxonomy\TermInterface[] $children */
+      /** @var \Drupal\taxonomy\TermInterface $child */
       foreach ($children as $child) {
-        foreach ($child_objects as $child_object) {
-          if ($child_object->tid == $child->id()) {
-            $this->buildlist($object_children, $child_object, $vid, $currentDepth, $maxDepth);
-          }
+        if (!$display_unpublished && empty($child->status)) {
+          continue;
         }
+        $this->buildList($object_children, $child, $vid, $currentDepth, $maxDepth, $display_unpublished);
       }
     }
   }
@@ -494,7 +539,7 @@ class Vocabulary extends SitemapBase {
    * Helper function to split the route|arg pattern.
    *
    * @param string $string
-   *   The string that will be splited.
+   *   The string that will be split.
    *
    * @return array
    *   Returns the route|arg pattern.
@@ -524,11 +569,8 @@ class Vocabulary extends SitemapBase {
   protected function validateCustomRoute($string) {
     $parts = $this->splitRouteArg($string);
 
-    /** @var \Drupal\Core\Routing\RouteProviderInterface $route_provider */
-    $route_provider = \Drupal::service('router.route_provider');
-
     try {
-      $route = $route_provider->getRouteByName($parts['route']);
+      $this->routeProvider->getRouteByName($parts['route']);
       // @todo Determine if $route has the provided $parts['arg'] parameter.
     }
     catch (\Exception $e) {

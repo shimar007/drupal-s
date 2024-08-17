@@ -4,7 +4,7 @@ namespace Drupal\openid_connect;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Extension\ModuleHandler;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\openid_connect\Plugin\OpenIDConnectClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -50,12 +50,12 @@ class OpenIDConnectClaims implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Config\ConfigFactory $config_factory
    *   The configuration factory.
-   * @param \Drupal\Core\Extension\ModuleHandler $module_handler
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
    */
   public function __construct(
     ConfigFactory $config_factory,
-    ModuleHandler $module_handler
+    ModuleHandlerInterface $module_handler
   ) {
 
     $this->configFactory = $config_factory;
@@ -119,7 +119,7 @@ class OpenIDConnectClaims implements ContainerInjectionInterface {
    */
   public function getScopes(OpenIDConnectClientInterface $client = NULL) {
     $claims = $this->configFactory
-      ->getEditable('openid_connect.settings')
+      ->get('openid_connect.settings')
       ->get('userinfo_mappings');
 
     // If a client was provided, get the scopes from it.

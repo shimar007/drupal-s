@@ -25,6 +25,39 @@ namespace Microsoft\Graph\Model;
 class TeamsAppDefinition extends Entity
 {
     /**
+    * Gets the authorization
+    * Authorization requirements specified in the Teams app manifest.
+    *
+    * @return TeamsAppAuthorization|null The authorization
+    */
+    public function getAuthorization()
+    {
+        if (array_key_exists("authorization", $this->_propDict)) {
+            if (is_a($this->_propDict["authorization"], "\Microsoft\Graph\Model\TeamsAppAuthorization") || is_null($this->_propDict["authorization"])) {
+                return $this->_propDict["authorization"];
+            } else {
+                $this->_propDict["authorization"] = new TeamsAppAuthorization($this->_propDict["authorization"]);
+                return $this->_propDict["authorization"];
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Sets the authorization
+    * Authorization requirements specified in the Teams app manifest.
+    *
+    * @param TeamsAppAuthorization $val The authorization
+    *
+    * @return TeamsAppDefinition
+    */
+    public function setAuthorization($val)
+    {
+        $this->_propDict["authorization"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the createdBy
     *
     * @return IdentitySet|null The createdBy
@@ -146,7 +179,7 @@ class TeamsAppDefinition extends Entity
 
     /**
     * Gets the publishingState
-    * The published status of a specific version of a Teams app. Possible values are:submitted — The specific version of the Teams app has been submitted and is under review. published  — The request to publish the specific version of the Teams app has been approved by the admin and the app is published.  rejected — The request to publish the specific version of the Teams app was rejected by the admin.
+    * The published status of a specific version of a Teams app. Possible values are:submitted—The specific version of the Teams app has been submitted and is under review. published—The request to publish the specific version of the Teams app has been approved by the admin and the app is published.  rejected—The admin rejected the request to publish the specific version of the Teams app.
     *
     * @return TeamsAppPublishingState|null The publishingState
     */
@@ -165,7 +198,7 @@ class TeamsAppDefinition extends Entity
 
     /**
     * Sets the publishingState
-    * The published status of a specific version of a Teams app. Possible values are:submitted — The specific version of the Teams app has been submitted and is under review. published  — The request to publish the specific version of the Teams app has been approved by the admin and the app is published.  rejected — The request to publish the specific version of the Teams app was rejected by the admin.
+    * The published status of a specific version of a Teams app. Possible values are:submitted—The specific version of the Teams app has been submitted and is under review. published—The request to publish the specific version of the Teams app has been approved by the admin and the app is published.  rejected—The admin rejected the request to publish the specific version of the Teams app.
     *
     * @param TeamsAppPublishingState $val The publishingState
     *

@@ -56,7 +56,7 @@ class RecommendationBase extends Entity
 
     /**
     * Gets the benefits
-    * An explanation of why completing the recommendation will benefit you. Corresponds to the Value section of a recommendation shown in the Azure AD portal.
+    * An explanation of why completing the recommendation will benefit you. Corresponds to the Value section of a recommendation shown in the Microsoft Entra admin center.
     *
     * @return string|null The benefits
     */
@@ -71,7 +71,7 @@ class RecommendationBase extends Entity
 
     /**
     * Sets the benefits
-    * An explanation of why completing the recommendation will benefit you. Corresponds to the Value section of a recommendation shown in the Azure AD portal.
+    * An explanation of why completing the recommendation will benefit you. Corresponds to the Value section of a recommendation shown in the Microsoft Entra admin center.
     *
     * @param string $val The benefits
     *
@@ -301,7 +301,7 @@ class RecommendationBase extends Entity
 
     /**
     * Gets the insights
-    * Describes why a recommendation uniquely applies to your directory. Corresponds to the Description section of a recommendation shown in the Azure AD portal.
+    * Describes why a recommendation uniquely applies to your directory. Corresponds to the Description section of a recommendation shown in the Microsoft Entra admin center.
     *
     * @return string|null The insights
     */
@@ -316,7 +316,7 @@ class RecommendationBase extends Entity
 
     /**
     * Sets the insights
-    * Describes why a recommendation uniquely applies to your directory. Corresponds to the Description section of a recommendation shown in the Azure AD portal.
+    * Describes why a recommendation uniquely applies to your directory. Corresponds to the Description section of a recommendation shown in the Microsoft Entra admin center.
     *
     * @param string $val The insights
     *
@@ -548,6 +548,35 @@ class RecommendationBase extends Entity
     public function setRecommendationType($val)
     {
         $this->_propDict["recommendationType"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the releaseType
+    * The current release type of the recommendation. The possible values are: preview, generallyAvailable, unknownFutureValue.
+    *
+    * @return string|null The releaseType
+    */
+    public function getReleaseType()
+    {
+        if (array_key_exists("releaseType", $this->_propDict)) {
+            return $this->_propDict["releaseType"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the releaseType
+    * The current release type of the recommendation. The possible values are: preview, generallyAvailable, unknownFutureValue.
+    *
+    * @param string $val The releaseType
+    *
+    * @return RecommendationBase
+    */
+    public function setReleaseType($val)
+    {
+        $this->_propDict["releaseType"] = $val;
         return $this;
     }
 

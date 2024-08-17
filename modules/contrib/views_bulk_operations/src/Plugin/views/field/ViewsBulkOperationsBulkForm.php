@@ -2,6 +2,7 @@
 
 namespace Drupal\views_bulk_operations\Plugin\views\field;
 
+use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -191,10 +192,10 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
    * query has been built. Also, no point doing this on the view
    * admin page.
    *
-   * @param array $bulk_form_keys
-   *   The calculated bulk form keys.
+   * @param array $view_entity_data
+   *   See ViewsBulkOperationsViewDataInterface::getViewEntityData().
    */
-  protected function updateTempstoreData(array $bulk_form_keys = NULL): void {
+  protected function updateTempstoreData(array $view_entity_data = NULL): void {
     // Initialize tempstore object and get data if available.
     $this->tempStoreData = $this->getTempstoreData($this->view->id(), $this->view->current_display);
 
@@ -209,8 +210,11 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     ];
 
     // Add bulk form keys when the form is displayed.
-    if (isset($bulk_form_keys)) {
-      $variable['bulk_form_keys'] = $bulk_form_keys;
+    if ($view_entity_data !== NULL) {
+      $variable['bulk_form_keys'] = [];
+      foreach ($view_entity_data as $row_index => $item) {
+        $variable['bulk_form_keys'][$row_index] = $item[0];
+      }
     }
 
     // Set redirect URL taking destination into account.
@@ -381,6 +385,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     $options['batch'] = ['default' => TRUE];
     $options['batch_size'] = ['default' => 10];
     $options['form_step'] = ['default' => TRUE];
+    $options['ajax_loader'] = ['default' => FALSE];
     $options['buttons'] = ['default' => FALSE];
     $options['clear_on_exposed'] = ['default' => TRUE];
     $options['action_title'] = ['default' => $this->t('Action')];
@@ -403,6 +408,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
         '#prefix' => '<div class="scroll">',
         '#suffix' => '</div>',
       ];
+      parent::buildOptionsForm($form, $form_state);
       return;
     }
 
@@ -430,6 +436,13 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
       '#default_value' => $this->options['form_step'],
       // Due to #2879310 this setting must always be at TRUE.
       '#access' => FALSE,
+    ];
+
+    $form['ajax_loader'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show ajax throbber.'),
+      '#description' => $this->t('With this enabled, a throbber will be shown when an ajax petition from VBO is triggered.'),
+      '#default_value' => $this->options['ajax_loader'],
     ];
 
     $form['buttons'] = [
@@ -480,36 +493,82 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
       $selected_actions_data = $form_values;
     }
 
+    $table = [
+      '#type' => 'table',
+      '#header' => [
+        '',
+        $this->t('Weight'),
+        $this->t('Title'),
+      ],
+      '#attributes' => [
+        'id' => 'my-module-table',
+      ],
+      '#tabledrag' => [
+        [
+          'action' => 'order',
+          'relationship' => 'sibling',
+          'group' => 'draggable-weight',
+        ],
+      ],
+    ];
+
+    // Set weights on actions - selected ones will always be first.
+    $weight = -1000;
+    foreach ($selected_actions_data as $id => $item) {
+      if (!array_key_exists($id, $this->actions)) {
+        continue;
+      }
+      $this->actions[$id]['weight'] = $weight++;
+    }
+    uasort($this->actions, [SortArray::class, 'sortByWeightElement']);
+
     $delta = 0;
     foreach ($this->actions as $id => $action) {
-      $form['selected_actions'][$delta]['action_id'] = [
+      $table[$delta] = [
+        'data' => [],
+      ];
+      $table[$delta]['#attributes']['class'] = ['draggable'];
+      $table[$delta]['weight'] = [
+        '#type' => 'weight',
+        '#title' => $this->t('Weight'),
+        '#title_display' => 'invisible',
+        '#default_value' => $action['weight'] ?? 0,
+        '#attributes' => [
+          'class' => [
+            'draggable-weight',
+          ],
+        ],
+      ];
+
+      $table[$delta]['container'] = [
+        '#type' => 'container',
+      ];
+
+      $table[$delta]['container']['action_id'] = [
         '#type' => 'value',
         '#value' => $id,
       ];
-      $form['selected_actions'][$delta]['state'] = [
+      $table[$delta]['container']['state'] = [
         '#type' => 'checkbox',
         '#title' => $action['label'],
         '#default_value' => empty($selected_actions_data[$id]) ? 0 : 1,
         '#attributes' => ['class' => ['vbo-action-state']],
       ];
 
-      // There are problems with AJAX on this form when adding
-      // new elements (Views issue), a workaround is to render
-      // all elements and show/hide them when needed.
-      $form['selected_actions'][$delta]['preconfiguration'] = [
-        '#type' => 'fieldset',
+      $table[$delta]['container']['preconfiguration'] = [
+        '#type' => 'details',
         '#title' => $this->t('Preconfiguration for "@action"', [
           '@action' => $action['label'],
         ]),
         '#states' => [
           'visible' => [
-            \sprintf('[name="options[selected_actions][%d][state]"]', $delta) => ['checked' => TRUE],
+            \sprintf('[name="options[selected_actions][table][%d][container][state]"]', $delta) => ['checked' => TRUE],
           ],
         ],
       ];
 
       // Default label_override element.
-      $form['selected_actions'][$delta]['preconfiguration']['label_override'] = [
+      $table[$delta]['container']['preconfiguration']['label_override'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Override label'),
         '#description' => $this->t('Leave empty for the default label.'),
@@ -519,7 +578,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
       // Also allow to force a default confirmation step for actoins that don't
       // have it implemented.
       if (empty($action['confirm_form_route_name'])) {
-        $form['selected_actions'][$delta]['preconfiguration']['add_confirmation'] = [
+        $table[$delta]['container']['preconfiguration']['add_confirmation'] = [
           '#type' => 'checkbox',
           '#title' => $this->t('Add confirmation step'),
           '#default_value' => $selected_actions_data[$id]['preconfiguration']['add_confirmation'] ?? FALSE,
@@ -540,11 +599,12 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
           }
           $actionObject->setView($this->view);
         }
-        $form['selected_actions'][$delta]['preconfiguration'] = $actionObject->buildPreConfigurationForm($form['selected_actions'][$delta]['preconfiguration'], $selected_actions_data[$id]['preconfiguration'], $form_state);
+        $table[$delta]['container']['preconfiguration'] = $actionObject->buildPreConfigurationForm($table[$delta]['container']['preconfiguration'], $selected_actions_data[$id]['preconfiguration'], $form_state);
       }
 
       $delta++;
     }
+    $form['selected_actions']['table'] = $table;
 
     parent::buildOptionsForm($form, $form_state);
   }
@@ -554,9 +614,17 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
    */
   public function submitOptionsForm(&$form, FormStateInterface $form_state) {
     $selected_actions = &$form_state->getValue(['options', 'selected_actions']);
-    $selected_actions = \array_filter($selected_actions, static fn ($action_data) => !empty($action_data['state']));
+    if ($selected_actions === NULL) {
+      return;
+    }
+    $selected_actions = $selected_actions['table'];
+    $selected_actions = \array_filter($selected_actions, static fn ($action_data) => !empty($action_data['container']['state']));
+
     foreach ($selected_actions as &$item) {
+      unset($item['weight']);
+      $item = array_merge($item, $item['container']);
       unset($item['state']);
+      unset($item['container']);
       if (empty($item['preconfiguration']['label_override'])) {
         unset($item['preconfiguration']['label_override']);
       }
@@ -564,6 +632,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
         unset($item['preconfiguration']);
       }
     }
+    $selected_actions = array_values($selected_actions);
     parent::submitOptionsForm($form, $form_state);
   }
 
@@ -620,25 +689,17 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
       $this->view->style_plugin->options['views_bulk_operations_enabled'] = TRUE;
     }
     $form['#attached']['library'][] = 'views_bulk_operations/frontUi';
+    if ($this->options['ajax_loader']) {
+      $form['#attached']['drupalSettings']['vbo']['ajax_loader'] = TRUE;
+    }
+
     // Only add the bulk form options and buttons if
     // there are results and any actions are available.
     $action_options = $this->getBulkOptions();
     if (!empty($this->view->result) && !empty($action_options)) {
 
-      // Calculate bulk form keys and get labels for all rows.
-      $bulk_form_keys = [];
-      $entity_labels = [];
-      $base_field = $this->view->storage->get('base_field');
-      foreach ($this->view->result as $row_index => $row) {
-        if ($entity = $this->getEntity($row)) {
-          $bulk_form_keys[$row_index] = self::calculateEntityBulkFormKey(
-            $entity,
-            $row->{$base_field},
-            $row_index
-          );
-          $entity_labels[$row_index] = $entity->label();
-        }
-      }
+      // Get bulk form keys and entity labels for all rows.
+      $entity_data = $this->viewData->getViewEntityData();
 
       // Update and fetch tempstore data to be available from this point
       // as it's needed for proper functioning of further logic.
@@ -647,7 +708,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
       // (data is subject to change - new entities added or deleted after
       // the form display). TODO: consider using $form_state->set() instead.
       if (empty($form_state->getUserInput()['op'])) {
-        $this->updateTempstoreData($bulk_form_keys);
+        $this->updateTempstoreData($entity_data);
       }
       else {
         $this->updateTempstoreData();
@@ -665,7 +726,8 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
 
       // Render checkboxes for all rows.
       $page_selected = [];
-      foreach ($bulk_form_keys as $row_index => $bulk_form_key) {
+      foreach ($entity_data as $row_index => $entity_data_item) {
+        [$bulk_form_key, $entity_label] = $entity_data_item;
         $checked = isset($this->tempStoreData['list'][$bulk_form_key]);
         if (!empty($this->tempStoreData['exclude_mode'])) {
           $checked = !$checked;
@@ -676,10 +738,11 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
         }
         $form[$this->options['id']][$row_index] = [
           '#type' => 'checkbox',
-          '#title' => $entity_labels[$row_index],
+          '#title' => $entity_label,
           '#title_display' => 'invisible',
           '#default_value' => $checked,
           '#return_value' => $bulk_form_key,
+          '#attributes' => ['class' => ['js-vbo-checkbox']],
         ];
 
         // We should use #value instead of #default_value to always apply
@@ -715,12 +778,16 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
           $form['actions'][$id] = [
             '#type' => 'submit',
             '#value' => $label,
+            '#attributes' => [
+              'data-vbo' => 'vbo-action',
+            ],
           ];
         }
       }
       else {
         // Replace the form submit button label.
         $form['actions']['submit']['#value'] = $this->t('Apply to selected items');
+        $form['actions']['submit']['#attributes']['data-vbo'] = 'vbo-action';
 
         $form['header'][$this->options['id']]['action'] = [
           '#type' => 'select',
@@ -789,6 +856,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
             'class' => ['vbo-multipage-selector'],
           ],
         ];
+        $form['#attached']['drupalSettings']['vbo_selected_count'][$this->tempStoreData['view_id']][$this->tempStoreData['display_id']] = $count;
 
         // Get selection info elements.
         $form['header'][$this->options['id']]['multipage']['list'] = $this->getMultipageList($this->tempStoreData);

@@ -8,6 +8,8 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Core\Utility\Error;
 use GuzzleHttp\Psr7\Uri;
 
 /**
@@ -55,6 +57,13 @@ class LibraryPolicyBuilder {
   protected $librarySourcesCache;
 
   /**
+   * The logger channel.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  protected LoggerChannelInterface $logger;
+
+  /**
    * Constructs a new Library Parser.
    *
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
@@ -65,17 +74,25 @@ class LibraryPolicyBuilder {
    *   The Theme Handler service.
    * @param \Drupal\Core\Asset\LibraryDiscoveryInterface $libraryDiscovery
    *   The Library Discovery Collector service.
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
+   *   The logger channel.
    */
   public function __construct(
     CacheBackendInterface $cache,
     ModuleHandlerInterface $moduleHandler,
     ThemeHandlerInterface $themeHandler,
-    LibraryDiscoveryInterface $libraryDiscovery
+    LibraryDiscoveryInterface $libraryDiscovery,
+    ?LoggerChannelInterface $logger = NULL
   ) {
     $this->cache = $cache;
     $this->moduleHandler = $moduleHandler;
     $this->themeHandler = $themeHandler;
     $this->libraryDiscovery = $libraryDiscovery;
+    if (empty($logger)) {
+      @trigger_error("Omitting the LoggerChannel service is deprecated in csp:8.x-1.23 and will be required in csp:2.0.0. See https://www.drupal.org/project/csp/issues/3406513", E_USER_DEPRECATED);
+      $logger = \Drupal::logger('csp');
+    }
+    $this->logger = $logger;
   }
 
   /**
@@ -139,7 +156,15 @@ class LibraryPolicyBuilder {
 
     $sources = [];
 
-    $moduleLibraries = $this->libraryDiscovery->getLibrariesByExtension($extension);
+    try {
+      $moduleLibraries = $this->libraryDiscovery->getLibrariesByExtension($extension);
+    }
+    catch (\Exception $e) {
+      // Ignore invalid library definitions.
+      // @see \Drupal\Core\Asset\LibraryDiscoveryParser::buildByExtension()
+      $this->logger->warning(Error::DEFAULT_ERROR_MESSAGE, Error::decodeException($e));
+      $moduleLibraries = [];
+    }
 
     foreach ($moduleLibraries as $libraryName => $libraryInfo) {
       $librarySources = $this->getLibrarySources($extension, $libraryName);
@@ -182,15 +207,25 @@ class LibraryPolicyBuilder {
     $sources = [];
 
     foreach ($libraryInfo['js'] as $jsInfo) {
-      if ($jsInfo['type'] == 'external' && !empty($jsInfo['data'])) {
-        $host = self::getHostFromUri($jsInfo['data']);
+      if (
+        $jsInfo['type'] == 'external'
+        &&
+        !empty($jsInfo['data'])
+        &&
+        ($host = self::getHostFromUri($jsInfo['data']))
+      ) {
         $sources['script-src'][] = $host;
         $sources['script-src-elem'][] = $host;
       }
     }
     foreach ($libraryInfo['css'] as $cssInfo) {
-      if ($cssInfo['type'] == 'external' && !empty($cssInfo['data'])) {
-        $host = self::getHostFromUri($cssInfo['data']);
+      if (
+        $cssInfo['type'] == 'external'
+        &&
+        !empty($cssInfo['data'])
+        &&
+        ($host = self::getHostFromUri($cssInfo['data']))
+      ) {
         $sources['style-src'][] = $host;
         $sources['style-src-elem'][] = $host;
       }

@@ -6,8 +6,8 @@ use Drupal\Core\Access\AccessManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\State\StateInterface;
-use Symfony\Cmf\Component\Routing\RouteObjectInterface;
-use Symfony\Cmf\Component\Routing\RouteProviderInterface;
+use Drupal\Core\Routing\RouteObjectInterface;
+use Drupal\Core\Routing\RouteProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -51,7 +51,7 @@ class RedirectChecker {
   /**
    * Determines if redirect may be performed.
    *
-   * @param Request $request
+   * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request object.
    * @param string $route_name
    *   The current route name.

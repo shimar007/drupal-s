@@ -25,7 +25,7 @@ class DefaultUserRolePermissions extends Entity
 {
     /**
     * Gets the allowedToCreateApps
-    * Indicates whether the default user role can create applications.
+    * Indicates whether the default user role can create applications. This setting corresponds to the Users can register applications setting in the User settings menu in the Microsoft Entra admin center.
     *
     * @return bool|null The allowedToCreateApps
     */
@@ -40,7 +40,7 @@ class DefaultUserRolePermissions extends Entity
 
     /**
     * Sets the allowedToCreateApps
-    * Indicates whether the default user role can create applications.
+    * Indicates whether the default user role can create applications. This setting corresponds to the Users can register applications setting in the User settings menu in the Microsoft Entra admin center.
     *
     * @param bool $val The value of the allowedToCreateApps
     *
@@ -53,7 +53,7 @@ class DefaultUserRolePermissions extends Entity
     }
     /**
     * Gets the allowedToCreateSecurityGroups
-    * Indicates whether the default user role can create security groups. This setting corresponds to the The Users can create security groups in Azure portals, API or PowerShell setting in the group settings menu in the Azure portal.
+    * Indicates whether the default user role can create security groups. This setting corresponds to the following menus in the Microsoft Entra admin center:  The Users can create security groups in Microsoft Entra admin centers, API or PowerShell setting in the Group settings menu.  Users can create security groups setting in the User settings menu.
     *
     * @return bool|null The allowedToCreateSecurityGroups
     */
@@ -68,7 +68,7 @@ class DefaultUserRolePermissions extends Entity
 
     /**
     * Sets the allowedToCreateSecurityGroups
-    * Indicates whether the default user role can create security groups. This setting corresponds to the The Users can create security groups in Azure portals, API or PowerShell setting in the group settings menu in the Azure portal.
+    * Indicates whether the default user role can create security groups. This setting corresponds to the following menus in the Microsoft Entra admin center:  The Users can create security groups in Microsoft Entra admin centers, API or PowerShell setting in the Group settings menu.  Users can create security groups setting in the User settings menu.
     *
     * @param bool $val The value of the allowedToCreateSecurityGroups
     *
@@ -77,6 +77,34 @@ class DefaultUserRolePermissions extends Entity
     public function setAllowedToCreateSecurityGroups($val)
     {
         $this->_propDict["allowedToCreateSecurityGroups"] = $val;
+        return $this;
+    }
+    /**
+    * Gets the allowedToCreateTenants
+    * Indicates whether the default user role can create tenants. This setting corresponds to the Restrict non-admin users from creating tenants setting in the User settings menu in the Microsoft Entra admin center.  When this setting is false, users assigned the Tenant Creator role can still create tenants.
+    *
+    * @return bool|null The allowedToCreateTenants
+    */
+    public function getAllowedToCreateTenants()
+    {
+        if (array_key_exists("allowedToCreateTenants", $this->_propDict)) {
+            return $this->_propDict["allowedToCreateTenants"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the allowedToCreateTenants
+    * Indicates whether the default user role can create tenants. This setting corresponds to the Restrict non-admin users from creating tenants setting in the User settings menu in the Microsoft Entra admin center.  When this setting is false, users assigned the Tenant Creator role can still create tenants.
+    *
+    * @param bool $val The value of the allowedToCreateTenants
+    *
+    * @return DefaultUserRolePermissions
+    */
+    public function setAllowedToCreateTenants($val)
+    {
+        $this->_propDict["allowedToCreateTenants"] = $val;
         return $this;
     }
     /**
@@ -109,7 +137,7 @@ class DefaultUserRolePermissions extends Entity
     }
     /**
     * Gets the allowedToReadOtherUsers
-    * Indicates whether the default user role can read other users.
+    * Indicates whether the default user role can read other users. DO NOT SET THIS VALUE TO false.
     *
     * @return bool|null The allowedToReadOtherUsers
     */
@@ -124,7 +152,7 @@ class DefaultUserRolePermissions extends Entity
 
     /**
     * Sets the allowedToReadOtherUsers
-    * Indicates whether the default user role can read other users.
+    * Indicates whether the default user role can read other users. DO NOT SET THIS VALUE TO false.
     *
     * @param bool $val The value of the allowedToReadOtherUsers
     *

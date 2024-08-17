@@ -25,8 +25,66 @@ namespace Beta\Microsoft\Graph\Model;
 class SubscribedSku extends Entity
 {
     /**
+    * Gets the accountId
+    * The unique ID of the account this SKU belongs to.
+    *
+    * @return string|null The accountId
+    */
+    public function getAccountId()
+    {
+        if (array_key_exists("accountId", $this->_propDict)) {
+            return $this->_propDict["accountId"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the accountId
+    * The unique ID of the account this SKU belongs to.
+    *
+    * @param string $val The accountId
+    *
+    * @return SubscribedSku
+    */
+    public function setAccountId($val)
+    {
+        $this->_propDict["accountId"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the accountName
+    * The name of the account this SKU belongs to.
+    *
+    * @return string|null The accountName
+    */
+    public function getAccountName()
+    {
+        if (array_key_exists("accountName", $this->_propDict)) {
+            return $this->_propDict["accountName"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the accountName
+    * The name of the account this SKU belongs to.
+    *
+    * @param string $val The accountName
+    *
+    * @return SubscribedSku
+    */
+    public function setAccountName($val)
+    {
+        $this->_propDict["accountName"] = $val;
+        return $this;
+    }
+
+    /**
     * Gets the appliesTo
-    * For example, 'User' or 'Company'.
+    * The target class for this SKU. Only SKUs with target class User are assignable. Possible values are: User, Company.
     *
     * @return string|null The appliesTo
     */
@@ -41,7 +99,7 @@ class SubscribedSku extends Entity
 
     /**
     * Sets the appliesTo
-    * For example, 'User' or 'Company'.
+    * The target class for this SKU. Only SKUs with target class User are assignable. Possible values are: User, Company.
     *
     * @param string $val The appliesTo
     *
@@ -55,7 +113,7 @@ class SubscribedSku extends Entity
 
     /**
     * Gets the capabilityStatus
-    * Possible values are: Enabled, Warning, Suspended, Deleted, LockedOut. The capabilityStatus is Enabled if the prepaidUnits property has at least 1 unit that is enabled, and LockedOut if the customer cancelled their subscription.
+    * Enabled indicates that the prepaidUnits property has at least one unit that is enabled. LockedOut indicates that the customer cancelled their subscription. Possible values are: Enabled, Warning, Suspended, Deleted, LockedOut.
     *
     * @return string|null The capabilityStatus
     */
@@ -70,7 +128,7 @@ class SubscribedSku extends Entity
 
     /**
     * Sets the capabilityStatus
-    * Possible values are: Enabled, Warning, Suspended, Deleted, LockedOut. The capabilityStatus is Enabled if the prepaidUnits property has at least 1 unit that is enabled, and LockedOut if the customer cancelled their subscription.
+    * Enabled indicates that the prepaidUnits property has at least one unit that is enabled. LockedOut indicates that the customer cancelled their subscription. Possible values are: Enabled, Warning, Suspended, Deleted, LockedOut.
     *
     * @param string $val The capabilityStatus
     *
@@ -205,7 +263,7 @@ class SubscribedSku extends Entity
 
     /**
     * Gets the skuPartNumber
-    * The SKU part number; for example: 'AAD_PREMIUM' or 'RMSBASIC'. To get a list of commercial subscriptions that an organization has acquired, see List subscribedSkus.
+    * The SKU part number; for example, AAD_PREMIUM or RMSBASIC. To get a list of commercial subscriptions that an organization has acquired, see List subscribedSkus.
     *
     * @return string|null The skuPartNumber
     */
@@ -220,7 +278,7 @@ class SubscribedSku extends Entity
 
     /**
     * Sets the skuPartNumber
-    * The SKU part number; for example: 'AAD_PREMIUM' or 'RMSBASIC'. To get a list of commercial subscriptions that an organization has acquired, see List subscribedSkus.
+    * The SKU part number; for example, AAD_PREMIUM or RMSBASIC. To get a list of commercial subscriptions that an organization has acquired, see List subscribedSkus.
     *
     * @param string $val The skuPartNumber
     *
@@ -229,6 +287,33 @@ class SubscribedSku extends Entity
     public function setSkuPartNumber($val)
     {
         $this->_propDict["skuPartNumber"] = $val;
+        return $this;
+    }
+
+    /**
+    * Gets the subscriptionIds
+    *
+    * @return array|null The subscriptionIds
+    */
+    public function getSubscriptionIds()
+    {
+        if (array_key_exists("subscriptionIds", $this->_propDict)) {
+            return $this->_propDict["subscriptionIds"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the subscriptionIds
+    *
+    * @param string[] $val The subscriptionIds
+    *
+    * @return SubscribedSku
+    */
+    public function setSubscriptionIds($val)
+    {
+        $this->_propDict["subscriptionIds"] = $val;
         return $this;
     }
 

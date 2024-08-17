@@ -1,11 +1,10 @@
 name: Menu Reference Render
-core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8 || ^9 || ^10
 type: module
 description: 'Implements a field formatter to render a reference menu.'
 package: Field formatters
 
-# Information added by Drupal.org packaging script on 2020-06-01
-version: '8.x-2.0-alpha2'
+# Information added by Drupal.org packaging script on 2023-11-06
+version: '8.x-2.0'
 project: 'menu_reference_render'
-datestamp: 1590999327
+datestamp: 1699306876

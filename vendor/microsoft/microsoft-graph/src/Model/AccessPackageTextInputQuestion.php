@@ -26,7 +26,7 @@ class AccessPackageTextInputQuestion extends AccessPackageQuestion
 {
     /**
     * Gets the isSingleLineQuestion
-    * Indicates whether the answer will be in single or multiple line format.
+    * Indicates whether the answer is in single or multiple line format.
     *
     * @return bool|null The isSingleLineQuestion
     */
@@ -41,7 +41,7 @@ class AccessPackageTextInputQuestion extends AccessPackageQuestion
 
     /**
     * Sets the isSingleLineQuestion
-    * Indicates whether the answer will be in single or multiple line format.
+    * Indicates whether the answer is in single or multiple line format.
     *
     * @param bool $val The isSingleLineQuestion
     *
@@ -55,7 +55,7 @@ class AccessPackageTextInputQuestion extends AccessPackageQuestion
 
     /**
     * Gets the regexPattern
-    * The regular expression pattern which any answer to this question must match.
+    * The regular expression pattern that any answer to this question must match.
     *
     * @return string|null The regexPattern
     */
@@ -70,7 +70,7 @@ class AccessPackageTextInputQuestion extends AccessPackageQuestion
 
     /**
     * Sets the regexPattern
-    * The regular expression pattern which any answer to this question must match.
+    * The regular expression pattern that any answer to this question must match.
     *
     * @param string $val The regexPattern
     *

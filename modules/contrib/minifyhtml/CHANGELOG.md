@@ -1,6 +1,36 @@
 # Changelog
 
-## Minifyhtml 8.x-1.9, XXXX-XX-XX
+## Minifyhtml 8.x-1.13, 2023-07-25
+
+Changes since 8.x-1.12:
+
+- Swap md5 for random_int when generating placeholder token.
+
+## Minifyhtml 8.x-1.12, 2022-06-16
+
+Changes since 8.x-1.11:
+
+- Issue #3230610 - Minify Settings Ignore Admin Pages
+
+## Minifyhtml 8.x-1.11, 2022-01-10
+
+Changes since 8.x-1.10:
+
+- Issue #3188015 - README file mode is 755, should be 644
+- Issue #3188014 - Set strip comments a dependent option
+- Issue #3202188 - Change order Callback for replace placeholders in placeholders
+- Issue #3207580 - JSON-LD not getting minified
+- Issue #3135600 - core key no longer required in info file
+- Issue #3188013 - Move module settings to the main performance options page
+
+## Minifyhtml 8.x-1.10, 2020-05-14
+
+Changes since 8.x-1.9:
+
+- Issue #3038554 - Create tests
+- Issue #3133705 - minifyhtml - drush commands don't exist and/or don't work (still)
+
+## Minifyhtml 8.x-1.9, 2019-12-11
 
 Changes since 8.x-1.8:
 

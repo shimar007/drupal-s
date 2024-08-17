@@ -439,7 +439,7 @@ class DeviceManagement extends Entity
 
     /**
     * Gets the subscriptions
-    * Tenant's Subscription. Possible values are: none, intune, office365, intunePremium, intune_EDU, intune_SMB.
+    * Tenant's Subscription. Possible values are: none, intune, office365, intunePremium, intuneEDU, intuneSMB.
     *
     * @return DeviceManagementSubscriptions|null The subscriptions
     */
@@ -458,7 +458,7 @@ class DeviceManagement extends Entity
 
     /**
     * Sets the subscriptions
-    * Tenant's Subscription. Possible values are: none, intune, office365, intunePremium, intune_EDU, intune_SMB.
+    * Tenant's Subscription. Possible values are: none, intune, office365, intunePremium, intuneEDU, intuneSMB.
     *
     * @param DeviceManagementSubscriptions $val The subscriptions
     *
@@ -2679,6 +2679,36 @@ class DeviceManagement extends Entity
 
 
      /**
+     * Gets the privilegeManagementElevations
+    * The endpoint privilege management elevation event entity contains elevation details.
+     *
+     * @return array|null The privilegeManagementElevations
+     */
+    public function getPrivilegeManagementElevations()
+    {
+        if (array_key_exists("privilegeManagementElevations", $this->_propDict)) {
+           return $this->_propDict["privilegeManagementElevations"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the privilegeManagementElevations
+    * The endpoint privilege management elevation event entity contains elevation details.
+    *
+    * @param PrivilegeManagementElevation[] $val The privilegeManagementElevations
+    *
+    * @return DeviceManagement
+    */
+    public function setPrivilegeManagementElevations($val)
+    {
+        $this->_propDict["privilegeManagementElevations"] = $val;
+        return $this;
+    }
+
+
+     /**
      * Gets the remoteActionAudits
     * The list of device remote action audits with the tenant.
      *
@@ -2767,6 +2797,36 @@ class DeviceManagement extends Entity
     public function setUserExperienceAnalyticsAnomaly($val)
     {
         $this->_propDict["userExperienceAnalyticsAnomaly"] = $val;
+        return $this;
+    }
+
+
+     /**
+     * Gets the userExperienceAnalyticsAnomalyCorrelationGroupOverview
+    * The user experience analytics anomaly correlation group overview entity contains the information for each correlation group of an anomaly.
+     *
+     * @return array|null The userExperienceAnalyticsAnomalyCorrelationGroupOverview
+     */
+    public function getUserExperienceAnalyticsAnomalyCorrelationGroupOverview()
+    {
+        if (array_key_exists("userExperienceAnalyticsAnomalyCorrelationGroupOverview", $this->_propDict)) {
+           return $this->_propDict["userExperienceAnalyticsAnomalyCorrelationGroupOverview"];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the userExperienceAnalyticsAnomalyCorrelationGroupOverview
+    * The user experience analytics anomaly correlation group overview entity contains the information for each correlation group of an anomaly.
+    *
+    * @param UserExperienceAnalyticsAnomalyCorrelationGroupOverview[] $val The userExperienceAnalyticsAnomalyCorrelationGroupOverview
+    *
+    * @return DeviceManagement
+    */
+    public function setUserExperienceAnalyticsAnomalyCorrelationGroupOverview($val)
+    {
+        $this->_propDict["userExperienceAnalyticsAnomalyCorrelationGroupOverview"] = $val;
         return $this;
     }
 
