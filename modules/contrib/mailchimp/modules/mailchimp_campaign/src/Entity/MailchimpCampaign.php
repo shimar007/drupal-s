@@ -22,6 +22,7 @@ use Drupal\mailchimp_campaign\MailchimpCampaignInterface;
  *     "view_builder" = "Drupal\mailchimp_campaign\Entity\MailchimpCampaignViewBuilder",
  *     "form" = {
  *       "send" = "Drupal\mailchimp_campaign\Form\MailchimpCampaignSendForm",
+ *       "sendtestmail" = "Drupal\mailchimp_campaign\Form\MailchimpCampaignSendTestMailForm",
  *       "add" = "Drupal\mailchimp_campaign\Form\MailchimpCampaignForm",
  *       "edit" = "Drupal\mailchimp_campaign\Form\MailchimpCampaignForm",
  *       "delete" = "Drupal\mailchimp_campaign\Form\MailchimpCampaignDeleteForm"
@@ -54,7 +55,7 @@ class MailchimpCampaign extends ContentEntityBase implements MailchimpCampaignIn
    * {@inheritdoc}
    */
   public function getTemplate() {
-    return unserialize($this->get('template')->value);
+    return unserialize((string) $this->get('template')->value);
   }
 
   /**

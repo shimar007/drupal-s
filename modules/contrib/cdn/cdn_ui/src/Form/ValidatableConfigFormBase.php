@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 // @codingStandardsIgnoreFile
 
@@ -29,6 +29,7 @@ abstract class ValidatableConfigFormBase extends ConfigFormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
+    // @phpstan-ignore-next-line
     return new static(
       $container->get('config.factory'),
       $container->get('config.typed')
@@ -36,8 +37,8 @@ abstract class ValidatableConfigFormBase extends ConfigFormBase {
   }
 
   public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typed_config_manager) {
-    $this->typedConfigManager = $typed_config_manager;
     parent::__construct($config_factory);
+    $this->typedConfigManager = $typed_config_manager;
   }
 
   abstract protected static function getMainConfigName() : string;

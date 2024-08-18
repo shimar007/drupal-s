@@ -48,3 +48,14 @@ function mailchimp_signup_load_multiple(array $signup_ids = [], $reset = FALSE) 
 
   return $controller->loadMultiple($signup_ids);
 }
+
+/**
+ * Invalidates Mailchimp related cache, useful when altering a signup form.
+ */
+function mailchimp_signup_invalidate_cache() {
+  \Drupal::cache('mailchimp')->invalidateAll();
+
+  if (\Drupal::moduleHandler()->moduleExists('block')) {
+    \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
+  }
+}

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\cdn\StackMiddleware;
 
@@ -9,6 +9,7 @@ use Drupal\Core\Url;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -58,27 +59,13 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class DuplicateContentPreventionMiddleware implements HttpKernelInterface {
 
   /**
-   * The decorated kernel.
-   *
-   * @var \Symfony\Component\HttpKernel\HttpKernelInterface
-   */
-  protected $httpKernel;
-
-  /**
-   * The request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  protected $requestStack;
-
-  /**
    * The file extensions for which this middleware will act.
    *
    * Hardcoded to avoid costly I/O.
    *
    * @var string[]
    */
-  protected $forbiddenExtensions = ['', 'html', 'htm', 'php'];
+  protected array $forbiddenExtensions = ['', 'html', 'htm', 'php'];
 
   /**
    * The CDN user agents.
@@ -88,7 +75,7 @@ class DuplicateContentPreventionMiddleware implements HttpKernelInterface {
    * @var string[]
    * @note To add more CDN user agents, file a feature request at https://www.drupal.org/node/add/project-issue/cdn
    */
-  protected $cdnUserAgents = ['amazon cloudfront', 'akamai'];
+  protected array $cdnUserAgents = ['amazon cloudfront', 'akamai'];
 
   /**
    * The request headers only set by CDN user agents.
@@ -98,25 +85,28 @@ class DuplicateContentPreventionMiddleware implements HttpKernelInterface {
    * @var string[]
    * @note To add more CDN-only request headers, file a feature request at https://www.drupal.org/node/add/project-issue/cdn
    */
-  protected $cdnOnlyRequestHeaders = ['CF-RAY'];
+  protected array $cdnOnlyRequestHeaders = ['CF-RAY'];
 
   /**
    * Constructs a DuplicateContentPreventionMiddleware object.
    *
-   * @param \Symfony\Component\HttpKernel\HttpKernelInterface $http_kernel
+   * @param \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel
    *   The decorated kernel.
-   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   The request stack.
    */
-  public function __construct(HttpKernelInterface $http_kernel, RequestStack $request_stack) {
-    $this->httpKernel = $http_kernel;
-    $this->requestStack = $request_stack;
-  }
+  public function __construct(
+    protected HttpKernelInterface $httpKernel,
+    protected RequestStack $requestStack,
+  ) {}
 
   /**
    * {@inheritdoc}
    */
-  public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = TRUE) {
+  // phpcs:disable
+  // @phpstan-ignore-next-line
+  public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = TRUE): Response {
+  // phpcs:enable
     $redirect_url = $this->getRedirectUrl($request);
     if ($redirect_url) {
       return new RedirectResponse($redirect_url, 301, [

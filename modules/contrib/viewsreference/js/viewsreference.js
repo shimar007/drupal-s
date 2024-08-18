@@ -2,12 +2,9 @@
  * @file
  */
 
-(function ($) {
-
-  'use strict';
-
+(($, Drupal) => {
   /**
-   * Handles an autocompleteselect event.
+   * Handles an autocomplete select event.
    *
    * Override the autocomplete method to add a custom event.
    *
@@ -20,14 +17,13 @@
    *   Returns false to indicate the event status.
    */
   Drupal.autocomplete.options.select = function selectHandler(event, ui) {
-    var terms = Drupal.autocomplete.splitValues(event.target.value);
+    const terms = Drupal.autocomplete.splitValues(event.target.value);
     // Remove the current input.
     terms.pop();
     // Add the selected item.
     if (ui.item.value.search(',') > 0) {
-      terms.push('"' + ui.item.value + '"');
-    }
-    else {
+      terms.push(`"${ui.item.value}"`);
+    } else {
       terms.push(ui.item.value);
     }
     event.target.value = terms.join(', ');
@@ -38,18 +34,24 @@
   };
 
   Drupal.behaviors.displayMessage = {
-    attach: function (context, settings) {
-      $(document).ajaxComplete(function (event, request, settings) {
-        $('.field--type-viewsreference .viewsreference-display-id').each(function () {
-          if (!$(this).find('option').length) {
-            var html = '<p class="viewsreference-display-error form-notice color-warning">' + Drupal.t('There is no Display available.  Please select another view or change the field settings.') + '</p>';
-            $(this).parent().remove('.viewsreference-display-error');
-            $('.viewsreference-display-error').remove();
-            $(this).parent().append(html);
+    attach(context) {
+      $(document).ajaxComplete(() => {
+        $(
+          '.field--type-viewsreference select.viewsreference-display-id',
+          context,
+        ).each(() => {
+          $('.viewsreference-display-error', context).remove();
+          const $parent = $(this).parent().hide();
+          if ($(this).find('option').length <= 1) {
+            const $error = $(
+              '<p class="viewsreference-display-error form-notice color-warning">There is no display available. Please select another view or change the field settings.</p>',
+            );
+            $parent.after($error);
+          } else {
+            $parent.show();
           }
         });
       });
-    }
+    },
   };
-
-})(jQuery, drupalSettings);
+})(jQuery, Drupal);

@@ -85,7 +85,7 @@ class ResponseCspSubscriberNonceTest extends UnitTestCase {
     $this->event = new ResponseEvent(
       $this->createMock(HttpKernelInterface::class),
       $this->createMock(Request::class),
-      HttpKernelInterface::MASTER_REQUEST,
+      HttpKernelInterface::MAIN_REQUEST,
       $this->response
     );
 
@@ -130,10 +130,10 @@ class ResponseCspSubscriberNonceTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
+      $this->eventDispatcher,
+      $this->nonce,
       $this->libraryPolicy,
       $this->reportingHandlerPluginManager,
-      $this->eventDispatcher,
-      $this->nonce
     );
 
     $this->response->expects($this->once())

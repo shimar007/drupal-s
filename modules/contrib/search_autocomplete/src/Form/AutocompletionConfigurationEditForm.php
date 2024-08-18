@@ -199,7 +199,7 @@ class AutocompletionConfigurationEditForm extends AutocompletionConfigurationFor
 
     // Template to use.
     $themes = [];
-    $files = \Drupal::service('file_system')->scanDirectory(drupal_get_path('module', 'search_autocomplete') . '/css/themes', '/.*\.css\z/', ['recurse' => FALSE]);
+    $files = \Drupal::service('file_system')->scanDirectory(\Drupal::service('extension.list.module')->getPath('search_autocomplete') . '/css/themes', '/.*\.css\z/', ['recurse' => FALSE]);
     foreach ($files as $file) {
       $themes[$file->filename] = $file->name;
     }

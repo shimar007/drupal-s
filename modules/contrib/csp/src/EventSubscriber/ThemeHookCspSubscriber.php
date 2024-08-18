@@ -22,7 +22,7 @@ class ThemeHookCspSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events[CspEvents::POLICY_ALTER] = ['onCspPolicyAlter', -10];
     return $events;
   }

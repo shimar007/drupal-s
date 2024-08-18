@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\cdn\Unit\Plugin\Validation\Constraint;
 
 use Drupal\cdn\Plugin\Validation\Constraint\CdnDomainConstraint;

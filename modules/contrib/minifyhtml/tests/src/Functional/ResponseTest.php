@@ -6,7 +6,7 @@ use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * Class ResponseTest.
+ * Tests the response to ensure HTML is minified.
  *
  * @package Drupal\Tests\minifyhtml\Kernel
  *

@@ -2,12 +2,12 @@
 
 namespace Drupal\mailchimp_signup\Plugin\Block;
 
-use Drupal\mailchimp_signup\Form\MailchimpSignupPageForm;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\mailchimp_signup\Entity\MailchimpSignup;
+use Drupal\mailchimp_signup\Form\MailchimpSignupPageForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -83,7 +83,7 @@ class MailchimpSignupSubscribeBlock extends BlockBase implements ContainerFactor
   public function build() {
     $signup_id = $this->getDerivativeId();
 
-    /* @var $signup \Drupal\mailchimp_signup\Entity\MailchimpSignup */
+    /** @var \Drupal\mailchimp_signup\Entity\MailchimpSignup $signup */
     $signup = mailchimp_signup_load($signup_id);
 
     $form = new MailchimpSignupPageForm($this->messenger);

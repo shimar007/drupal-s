@@ -9,8 +9,8 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Url;
 use Drupal\mailchimp_signup\Entity\MailchimpSignup;
 
 /**
@@ -69,10 +69,20 @@ class MailchimpSignupPageForm extends FormBase {
   }
 
   /**
+   * Gets the signup service.
+   *
+   * @return \Drupal\mailchimp_signup\Entity\MailchimpSignup|null
+   *   The signup service.
+   */
+  public function getSignup() {
+    return $this->signup;
+  }
+
+  /**
    * Sets the signup service.
    *
    * @param \Drupal\mailchimp_signup\Entity\MailchimpSignup $signup
-   *   THe signup service.
+   *   The signup service.
    */
   public function setSignup(MailchimpSignup $signup) {
     $this->signup = $signup;
@@ -83,6 +93,16 @@ class MailchimpSignupPageForm extends FormBase {
    */
   protected function getEditableConfigNames() {
     return ['mailchimp_signup.page_form'];
+  }
+
+  /**
+   * Return an ID for the form wrapper.
+   *
+   * @return string
+   *   A string baaed on the form ID.
+   */
+  protected function getFormWrapperId() {
+    return Html::getId("{$this->formId}-wrapper");
   }
 
   /**
@@ -177,7 +197,7 @@ class MailchimpSignupPageForm extends FormBase {
           // Create the form elements for all interest groups
           // and select the ones needed.
           $defaults = [];
-          $groups_items = isset($this->signup->settings['group_items']) ? $this->signup->settings['group_items'] : [];
+          $groups_items = $this->signup->settings['group_items'] ?? [];
 
           if (isset($groups_items[$list->id])) {
             $defaults = $groups_items[$list->id];
@@ -205,20 +225,20 @@ class MailchimpSignupPageForm extends FormBase {
       // Create the form elements for all interest groups
       // and select the ones needed.
       $defaults = [];
-      $groups_items = isset($this->signup->settings['group_items']) ? $this->signup->settings['group_items'] : [];
+      $groups_items = $this->signup->settings['group_items'] ?? [];
 
       if (isset($groups_items[$list->id])) {
         $defaults = $groups_items[$list->id];
       }
 
-      if ($this->signup->settings['include_interest_groups'] && isset($list->intgroups)) {
+      if (!empty($this->signup->settings['include_interest_groups']) && isset($list->intgroups)) {
         $form['mailchimp_lists']['#weight'] = 9;
         $form['mailchimp_lists']['interest_groups'] = mailchimp_interest_groups_form_elements($list, $defaults);
         $form['mailchimp_lists']['#access'] = $show_lists_and_groups;
       }
     }
 
-    $mergevars_wrapper_id = isset($list->id) ? $list->id : '';
+    $mergevars_wrapper_id = $list->id ?? '';
     $form['mergevars'] = [
       '#prefix' => '<div id="mailchimp-newsletter-' . $mergevars_wrapper_id . '-mergefields" class="mailchimp-newsletter-mergefields">',
       '#suffix' => '</div>',
@@ -234,26 +254,26 @@ class MailchimpSignupPageForm extends FormBase {
         }
       }
     }
-    // Include the GDPR consent checkbox if necessary
-    if ($this->signup->settings['gdpr_consent']) {
+    // Include the GDPR consent checkbox if necessary.
+    if (!empty($this->signup->settings['gdpr_consent'])) {
       $form['gdpr_consent'] = [
         '#type' => 'checkbox',
         '#default_value' => FALSE,
         '#title' => $this->signup->settings['gdpr_checkbox_label'],
-        '#required' => isset($this->signup->settings['gdpr_consent_required']) ? $this->signup->settings['gdpr_consent_required'] : FALSE,
+        '#required' => $this->signup->settings['gdpr_consent_required'] ?? FALSE,
       ];
     }
 
     $form['actions'] = ['#type' => 'actions'];
     $form['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t($this->signup->settings['submit_button']),
+      '#value' => $this->signup->settings['submit_button'],
       '#disabled' => (empty($lists)),
     ];
 
     // Add a wrapper element to the form if it is configured for AJAX submits.
     if (isset($this->signup->settings['ajax_submit']) && $this->signup->settings['ajax_submit']) {
-      $form_wrapper = Html::getId($this->formId);
+      $form_wrapper = $this->getFormWrapperId();
       $response_wrapper = "mailchimp-response-{$this->formId}-wrapper";
       $form['actions']['submit']['#id'] = $form_wrapper . '-edit-submit';
       $form['#prefix'] = '<div id="' . $form_wrapper . '">';
@@ -300,26 +320,22 @@ class MailchimpSignupPageForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    global $base_url;
-
     $list_details = mailchimp_get_lists($this->signup->mc_lists);
 
     $subscribe_lists = [];
 
     // Filter out blank fields so we don't erase values on the Mailchimp side.
     $mergevars = array_filter($form_state->getValue('mergevars'));
-
     $email = $mergevars['EMAIL'];
-
     $gdpr_consent = $form_state->getValue('gdpr_consent');
-
     $mailchimp_lists = $form_state->getValue('mailchimp_lists');
+    $tags = $this->signup->settings['tags'] ?? NULL;
 
     // If we only have one list we won't have checkbox values to investigate.
     if (count(array_filter($this->signup->mc_lists)) == 1) {
       $subscribe_lists[0] = [
         'subscribe' => reset($this->signup->mc_lists),
-        'interest_groups' => isset($mailchimp_lists['interest_groups']) ? $mailchimp_lists['interest_groups'] : NULL,
+        'interest_groups' => $mailchimp_lists['interest_groups'] ?? NULL,
       ];
     }
     else {
@@ -337,7 +353,7 @@ class MailchimpSignupPageForm extends FormBase {
     foreach ($subscribe_lists as $list_choices) {
       $list_id = $list_choices['subscribe'];
 
-      $interests = isset($list_choices['interest_groups']) ? $list_choices['interest_groups'] : [];
+      $interests = $list_choices['interest_groups'] ?? [];
       if (isset($this->signup->settings['safe_interest_groups']) && $this->signup->settings['safe_interest_groups']) {
         $current_status = mailchimp_get_memberinfo($list_id, $email);
         if (isset($current_status->interests)) {
@@ -350,7 +366,7 @@ class MailchimpSignupPageForm extends FormBase {
           $interests[] = $current_interests;
         }
       }
-      $result = mailchimp_subscribe($list_id, $email, $mergevars, $interests, $this->signup->settings['doublein'], 'html', NULL, $gdpr_consent);
+      $result = mailchimp_subscribe($list_id, $email, $mergevars, $interests, $this->signup->settings['doublein'] ?? FALSE, 'html', NULL, $gdpr_consent, $tags);
 
       if (empty($result)) {
         $this->messenger->addWarning($this->t('There was a problem with your newsletter signup to %list.', [
@@ -362,17 +378,16 @@ class MailchimpSignupPageForm extends FormBase {
       }
     }
 
-    if (count($successes) && strlen($this->signup->settings['confirmation_message'])) {
-      $this->messenger->addStatus($this->t($this->signup->settings['confirmation_message']));
+    if (count($successes) && isset($this->signup->settings['confirmation_message']) && strlen($this->signup->settings['confirmation_message'])) {
+      $this->messenger->addStatus($this->signup->settings['confirmation_message']);
       $form_state->set('mailchimp_success', TRUE);
     }
 
-    $destination = $this->signup->settings['destination'];
-    if (empty($destination)) {
+    if (empty($this->signup->settings['destination'])) {
       $destination_url = Url::fromRoute('<current>');
     }
     else {
-      $destination_url = Url::fromUri($base_url . '/' . $this->signup->settings['destination']);
+      $destination_url = Url::fromUserInput($this->signup->settings['destination']);
     }
 
     $form_state->setRedirectUrl($destination_url);
@@ -399,7 +414,7 @@ class MailchimpSignupPageForm extends FormBase {
     $response->addCommand(new HtmlCommand($response_wrapper_id, $content));
 
     // Also add an extra class to the form itself to signify the form changed.
-    $form_wrapper_id = '#' . Html::getId($this->formId);
+    $form_wrapper_id = '#' . $this->getFormWrapperId();
     $response->addCommand(new ChangedCommand($form_wrapper_id));
 
     // Reset form values if submission was successful.

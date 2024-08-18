@@ -1,16 +1,19 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\cdn\File;
 
 use Drupal\cdn\CdnSettings;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\PrivateKey;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
+use Drupal\Core\Url;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -18,65 +21,65 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @see https://www.drupal.org/node/2669074
  */
-class FileUrlGenerator {
+class FileUrlGenerator implements FileUrlGeneratorInterface {
 
-  const RELATIVE = ':relative:';
-
-  /**
-   * The app root.
-   *
-   * @var string
-   */
-  protected $root;
-
-  /**
-   * The stream wrapper manager.
-   *
-   * @var \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface
-   */
-  protected $streamWrapperManager;
-
-  /**
-   * The request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  protected $requestStack;
-
-  /**
-   * The private key service.
-   *
-   * @var \Drupal\Core\PrivateKey
-   */
-  protected $privateKey;
-
-  /**
-   * The CDN settings service.
-   *
-   * @var \Drupal\cdn\CdnSettings
-   */
-  protected $settings;
+  final public const RELATIVE = ':relative:';
 
   /**
    * Constructs a new CDN file URL generator object.
    *
+   * @param \Drupal\Core\File\FileUrlGeneratorInterface $decorated
+   *   The decorated file URL generator.
    * @param string $root
    *   The app root.
-   * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
+   * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $streamWrapperManager
    *   The stream wrapper manager.
-   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+   *   The module handler.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   The request stack.
-   * @param \Drupal\Core\PrivateKey $private_key
+   * @param \Drupal\Core\PrivateKey $privateKey
    *   The private key service.
-   * @param \Drupal\cdn\CdnSettings $cdn_settings
+   * @param \Drupal\cdn\CdnSettings $settings
    *   The CDN settings service.
    */
-  public function __construct($root, StreamWrapperManagerInterface $stream_wrapper_manager, RequestStack $request_stack, PrivateKey $private_key, CdnSettings $cdn_settings) {
-    $this->root = $root;
-    $this->streamWrapperManager = $stream_wrapper_manager;
-    $this->requestStack = $request_stack;
-    $this->privateKey = $private_key;
-    $this->settings = $cdn_settings;
+  public function __construct(
+    protected FileUrlGeneratorInterface $decorated,
+    protected readonly string $root,
+    protected StreamWrapperManagerInterface $streamWrapperManager,
+    protected readonly ModuleHandlerInterface $moduleHandler,
+    protected RequestStack $requestStack,
+    protected PrivateKey $privateKey,
+    protected CdnSettings $settings,
+  ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function generateString(string $uri): string {
+    return $this->doGenerate($uri) ?? $this->decorated->generateString($uri);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function generateAbsoluteString(string $uri): string {
+    return $this->doGenerate($uri) ?? $this->decorated->generateAbsoluteString($uri);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function generate(string $uri): Url {
+    $result = $this->doGenerate($uri);
+    return $result ? Url::fromUri($result) : $this->decorated->generate($uri);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function transformRelative(string $file_url, bool $root_relative = TRUE): string {
+    return $this->decorated->transformRelative($file_url, $root_relative);
   }
 
   /**
@@ -95,29 +98,67 @@ class FileUrlGenerator {
    *   The URI to a file for which we need a CDN URL, or the path to a shipped
    *   file.
    *
-   * @return string|false
-   *   A string containing the scheme-relative CDN file URI, or FALSE if this
+   * @return string|null
+   *   A string containing the scheme-relative CDN file URI, or NULL if this
    *   file URI should not be served from a CDN.
    */
-  public function generate(string $uri) {
-    if (!$this->settings->isEnabled()) {
-      return FALSE;
+  public function doGenerate(string $uri): ?string {
+    // Don't alter file URLs when running update.php.
+    // @todo Remove the second condition after the CDN module requires the Drupal core minor that ships with https://www.drupal.org/project/drupal/issues/2969056
+    if (defined('MAINTENANCE_MODE') || stripos($_SERVER['PHP_SELF'], 'update.php') !== FALSE) {
+      return NULL;
     }
 
+    // Don't alter CSS file URLs while settings.php is disabling CSS
+    // aggregation.
+    if (substr($uri, -4) === '.css' && isset($GLOBALS['config']['system.performance']['css']['preprocess']) && $GLOBALS['config']['system.performance']['css']['preprocess'] === FALSE) {
+      return NULL;
+    }
+
+    // Don't alter file URLs while processing a CSS file.
+    // @see \Drupal\cdn\Asset\CssOptimizer
+    global $_cdn_in_css_file;
+    if ($_cdn_in_css_file) {
+      return NULL;
+    }
+
+    if (!$this->settings->isEnabled()) {
+      return NULL;
+    }
+
+    // Allow the URI to be altered.
+    // TRICKY: if this method returns NULL, the decorated service is called
+    // instead and hook_file_url_alter() is then invoked *there*. Therefore the
+    // invocation of this hook must be strategic:
+    // - after any global context or setting has decided to return early
+    // - before any decision is made based on the file URI itself.
+    // @see https://git.drupalcode.org/project/crop/-/blob/8.x-2.3/crop.module?ref_type=tags#L161-L206
+    $this->moduleHandler->alter('file_url', $uri);
+
     if (!$this->canServe($uri)) {
-      return FALSE;
+      return NULL;
+    }
+
+    // Don't serve CKEditor from a CDN when far future future is enabled
+    // (CKEditor insists on computing other assets to load based on this URL).
+    if ($uri === 'core/assets/vendor/ckeditor/ckeditor.js' && $this->settings->farfutureIsEnabled()) {
+      return NULL;
     }
 
     $cdn_domain = $this->getCdnDomain($uri);
     if ($cdn_domain === FALSE) {
-      return FALSE;
+      return NULL;
     }
 
     if (!$scheme = StreamWrapperManager::getScheme($uri)) {
       $scheme = self::RELATIVE;
-      $relative_url = '/' . $uri;
-      $relative_file_path = $relative_url;
-      $absolute_file_path = $this->root . $relative_url;
+      $relative_url = !str_starts_with($uri, $this->getBasePath() . '/')
+        // Convert Drupal root-relative file URI to Drupal-root relative URL.
+        ? '/' . $uri
+        // Convert HTTP root-relative file URL to a Drupal root-relative URL.
+        : str_replace($this->getBasePath(), '', $uri);
+      $relative_file_path = parse_url($relative_url)['path'];
+      $absolute_file_path = $this->root . $relative_file_path;
     }
     else {
       $relative_url = str_replace($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost() . $this->getBasePath(), '', $this->streamWrapperManager->getViaUri($uri)->getExternalUrl());

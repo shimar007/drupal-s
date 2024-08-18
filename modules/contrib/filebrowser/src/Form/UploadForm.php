@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Form;
 
+use Drupal;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Cache\Cache;
@@ -45,7 +46,7 @@ class UploadForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $nid= null, $query_fid = null, $fids = null, $ajax = null) {
-    $this->common = \Drupal::service('filebrowser.common');
+    $this->common = Drupal::service('filebrowser.common');
     $this->relativeRoot = $this->common->relativePath($query_fid);
     $this->node = Node::load($nid);
     $this->queryFid = $query_fid;
@@ -105,12 +106,12 @@ class UploadForm extends FormBase {
 
     $file_ids = $form_state->getValue('u_file');
     if (count($file_ids)) {
-      $success = \Drupal::service('filebrowser.storage')->genericDeleteMultiple('file_managed', 'fid', join(',', $file_ids));
+      $success = Drupal::service('filebrowser.storage')->genericDeleteMultiple('file_managed', 'fid', join(',', $file_ids));
       if ($success) {
-        \Drupal::messenger()->addMessage($this->t("Your filebrowser upload is completed successfully!"));
+        Drupal::messenger()->addMessage($this->t("Your filebrowser upload is completed successfully!"));
       }
       else {
-        \Drupal::messenger()->addError($this->t('Your upload completed successfully, but file_managed clean-up failed'));
+        Drupal::messenger()->addError($this->t('Your upload completed successfully, but file_managed clean-up failed'));
       }
     }
     // invalidate the cache for this node

@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser;
 
+use Drupal;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Utility\TableSort;
 use Drupal\filebrowser\Entity\FilebrowserMetadataEntity;
@@ -55,7 +56,7 @@ class Presentation extends ControllerBase{
    */
   public function __construct(NodeInterface $node, array $list) {
     /** @var \Drupal\filebrowser\Filebrowser $filebrowser */
-    $this->common = \Drupal::service('filebrowser.common');
+    $this->common = Drupal::service('filebrowser.common');
     $this->node = $node;
     $this->filebrowser = $node->filebrowser;
     $this->dbFileList = $list;
@@ -92,12 +93,12 @@ class Presentation extends ControllerBase{
     $directory_empty = true;
     $column_names = [];
 
-    $dispatcher = \Drupal::service('event_dispatcher');
+    $dispatcher = Drupal::service('event_dispatcher');
 
     // Visible columns
     $visible_columns = [];
     $e = new MetadataInfo($column_names);
-    $event = $dispatcher->dispatch('filebrowser.metadata_info', $e);
+    $event = $dispatcher->dispatch($e, 'filebrowser.metadata_info');
     $column_names = $event->getMetaDataInfo();
 
     // columns provided by Filebrowser:
@@ -113,8 +114,8 @@ class Presentation extends ControllerBase{
     // Split files in two heaps to preserve folders and files
     $request = Request::createFromGlobals();
     $result =  $this->splitFiles($this->dbFileList['files']);
-    $just_files = isset($result['files']) ? $result['files'] : null;
-    $just_folders = isset($result['folders']) ? $result['folders'] : null;
+    $just_files = $result['files'] ?? NULL;
+    $just_folders = $result['folders'] ?? NULL;
     $table_sort = TableSort::getContextFromRequest($header, $request);
     // Sort files according to correct column.
     if (isset($table_sort['sql'])) {
@@ -176,7 +177,7 @@ class Presentation extends ControllerBase{
         'node' => $this->node,
         'dbFileList' => $this->dbFileList,
         ];
-      return  \Drupal::formBuilder()->getForm('Drupal\filebrowser\Form\ActionForm', $params);
+      return  Drupal::formBuilder()->getForm('Drupal\filebrowser\Form\ActionForm', $params);
     }
 
     // align the rows to the proper column in the header
@@ -185,7 +186,7 @@ class Presentation extends ControllerBase{
       $rows_aligned[] = array_replace(array_flip(array_keys($header)), $row);
     }
 
-    \Drupal::service('page_cache_kill_switch')->trigger();
+    Drupal::service('page_cache_kill_switch')->trigger();
 
     return [
       '#theme' => 'table',
@@ -220,7 +221,7 @@ class Presentation extends ControllerBase{
         $data->name = substr($data->displayName, 0, $pos);
       }
       // Check if we can create an image
-      if (empty($data->fileData->uri) || (!\Drupal::service('image.factory')->get($data->fileData->uri)->isValid())) {
+      if (empty($data->fileData->uri) || (!Drupal::service('image.factory')->get($data->fileData->uri)->isValid())) {
         // create thumbnail from icon file
         $thumbnail = $this->common->iconGenerate($data->fileData->type, $data->fileData->mimetype, $height, $width);
       }
@@ -274,7 +275,7 @@ class Presentation extends ControllerBase{
       'node' => $this->node,
       'data' => $list_data,
     ];
-    return \Drupal::formBuilder()->getForm('\Drupal\filebrowser\Form\GridActionForm', $items, $params);
+    return Drupal::formBuilder()->getForm('\Drupal\filebrowser\Form\GridActionForm', $items, $params);
   }
 
   function theme_dir_listing_statistics($statistics) {
@@ -332,12 +333,12 @@ class Presentation extends ControllerBase{
         // ##### ICON COLUMN #####
         $visible_columns[Common::ICON] = true;
         $icon = $this->common->iconGenerate($file->fileData->type, $file->fileData->mimetype, 24, 24);
-        $unsorted_rows[$file_name][Common::ICON] = render($icon);
+        $unsorted_rows[$file_name][Common::ICON] = Drupal::service('renderer')->render($icon);
       }
 
       // ##### NAME COLUMN - we will always set the name column
       // fixme: delete not needed
-      $unsorted_rows[$file_name][Common::NAME] = render($file->link);
+      $unsorted_rows[$file_name][Common::NAME] = Drupal::service('renderer')->render($file->link);
       $visible_columns[Common::NAME] = true;
 
       // ##### SET OTHER METADATA
@@ -345,10 +346,11 @@ class Presentation extends ControllerBase{
       // if it is selected ($selected_columns) and contains data we will
       // add them to the visible array in $unsorted_rows
 
-      $query = \Drupal::entityQuery('filebrowser_metadata_entity')
+      $query = Drupal::entityQuery('filebrowser_metadata_entity')
+        ->accessCheck(FALSE)
         ->condition('fid', $file->fid);
       $ids = $query->execute();
-      $metadata_all = \Drupal::entityTypeManager()->getStorage('filebrowser_metadata_entity')->loadMultiple($ids);
+      $metadata_all = Drupal::entityTypeManager()->getStorage('filebrowser_metadata_entity')->loadMultiple($ids);
       /** @var FilebrowserMetadataEntity $metadata */
 
       foreach ($metadata_all as $metadata) {
@@ -364,7 +366,7 @@ class Presentation extends ControllerBase{
             $render = [];
             $render['#theme'] = $theme;
             $render['#data'] = $content;
-            $unsorted_rows[$file_name][$name] = render($render);
+            $unsorted_rows[$file_name][$name] = Drupal::service('renderer')->render($render);
           }
         }
       }
@@ -466,12 +468,14 @@ class Presentation extends ControllerBase{
 //  }
 
   protected function retrieveMetadata($fid) {
-    $storage = \Drupal::entityTypeManager()
+    $storage = Drupal::entityTypeManager()
       ->getStorage('filebrowser_metadata_entity');
-    $query = \Drupal::entityQuery('filebrowser_metadata_entity');
-    $e_ids = $query->condition('fid', $fid, '=')->execute();
-    $entities = $storage->loadMultiple($e_ids);
-    return $entities;
+    $query = Drupal::entityQuery('filebrowser_metadata_entity');
+    $e_ids = $query
+      ->accessCheck(FALSE)
+      ->condition('fid', $fid, '=')
+      ->execute();
+    return $storage->loadMultiple($e_ids);
   }
 
 }

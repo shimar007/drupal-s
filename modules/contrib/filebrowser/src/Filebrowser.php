@@ -2,6 +2,8 @@
 
 namespace Drupal\filebrowser;
 
+use Drupal;
+
 class Filebrowser {
 
   public $nid;
@@ -39,6 +41,7 @@ class Filebrowser {
   public $gridHeight;
   public $gridWidth;
   public $gridHideTitle;
+  public $externalHost;
 
   /**
    * Filebrowser constructor.
@@ -48,14 +51,14 @@ class Filebrowser {
   public function __construct($settings) {
     if (is_numeric($settings)) {
       // $settings is a nid and we will create a new Filebrowser object
-      $node_settings = \Drupal::service('filebrowser.storage')->loadNodeRecord($settings);
+      $node_settings = Drupal::service('filebrowser.storage')->loadNodeRecord($settings);
       $this->nid = $node_settings['nid'];
       $this->folderPath = $node_settings['folder_path'];
      // $this->folderPathEncoded = $node_settings['folder_path_encoded'];
       $properties = unserialize($node_settings['properties']);
       foreach ($properties as $property => $value) {
         $this->$property = $value;
-      };
+      }
     }
     else {
       if (isset($settings['nid'])) {
@@ -86,7 +89,7 @@ class Filebrowser {
       $this->gridHeight = $settings['presentation']['grid_settings']['grid_height'];
       $this->gridWidth = $settings['presentation']['grid_settings']['grid_width'];
       $this->gridHideTitle = $settings['presentation']['grid_settings']['grid_hide_title'];
-
+      $this->externalHost = $settings['adhocsetting']['external_host'];
       if (isset($settings['handlers'])) {
         $this->handlers = $settings['handlers'];
       }

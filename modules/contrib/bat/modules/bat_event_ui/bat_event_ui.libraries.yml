@@ -1,5 +1,0 @@
-bat_event_ui:
-  version: 1.x
-  css:
-    theme:
-      css/bat_event_ui.css: {}

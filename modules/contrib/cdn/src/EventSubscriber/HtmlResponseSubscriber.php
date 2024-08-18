@@ -1,35 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\cdn\EventSubscriber;
 
 use Drupal\cdn\CdnSettings;
 use Drupal\Core\Render\HtmlResponse;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class HtmlResponseSubscriber implements EventSubscriberInterface {
 
   /**
-   * The CDN settings service.
-   *
-   * @var \Drupal\cdn\CdnSettings
-   */
-  protected $settings;
-
-  /**
-   * @param \Drupal\cdn\CdnSettings $cdn_settings
+   * @param \Drupal\cdn\CdnSettings $settings
    *   The CDN settings service.
    */
-  public function __construct(CdnSettings $cdn_settings) {
-    $this->settings = $cdn_settings;
-  }
+  public function __construct(protected readonly CdnSettings $settings) {}
 
   /**
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The event to process.
    */
-  public function onRespond(FilterResponseEvent $event) {
+  public function onRespond(ResponseEvent $event): void {
     $response = $event->getResponse();
     if (!$response instanceof HtmlResponse) {
       return;
@@ -39,29 +32,7 @@ class HtmlResponseSubscriber implements EventSubscriberInterface {
       return;
     }
 
-    // Optimal, so first.
     $this->addPreConnectLinkHeaders($response);
-    // Fallback, so second.
-    $this->addDnsPrefetchLinkHeaders($response);
-  }
-
-  /**
-   * Adds DNS prefetch link headers to the HTML response.
-   *
-   * @param \Drupal\Core\Render\HtmlResponse $response
-   *   The HTML response to update.
-   *
-   * @see https://www.w3.org/TR/resource-hints/#dns-prefetch
-   * @todo Remove when http://caniuse.com/link-rel-preconnect has support in all browsers or is equivalent with http://caniuse.com/#feat=link-rel-dns-prefetch
-   */
-  protected function addDnsPrefetchLinkHeaders(HtmlResponse $response) {
-    $domains = $this->settings->getDomains();
-    if (count($domains)) {
-      $response->headers->set('x-dns-prefetch-control', 'on');
-      foreach ($domains as $domain) {
-        $response->headers->set('Link', '<//' . $domain . '>; rel=dns-prefetch', FALSE);
-      }
-    }
   }
 
   /**
@@ -72,7 +43,7 @@ class HtmlResponseSubscriber implements EventSubscriberInterface {
    *
    * @see https://www.w3.org/TR/resource-hints/#preconnect
    */
-  protected function addPreconnectLinkHeaders(HtmlResponse $response) {
+  protected function addPreconnectLinkHeaders(HtmlResponse $response): void {
     foreach ($this->settings->getDomains() as $domain) {
       $response->headers->set('Link', '<//' . $domain . '>; rel=preconnect; crossorigin', FALSE);
     }

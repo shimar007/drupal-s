@@ -10,7 +10,7 @@ _core:
 name: 'Directory listing'
 type: dir_listing
 description: '<em>Directory listings</em> node type is needed and created by Filebrowser module.'
-help: ''
+help: null
 new_revision: false
 preview_mode: 1
 display_submitted: false

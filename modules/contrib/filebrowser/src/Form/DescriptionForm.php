@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Form;
 
+use Drupal;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\filebrowser\Entity\FilebrowserMetadataEntity;
@@ -52,18 +53,19 @@ class DescriptionForm extends FormBase {
     $fid_array = explode(',', $fids);
     $this->nid = $nid;
     $this->queryFid = $query_fid;
-    $this->common = \Drupal::service('filebrowser.common');
+    $this->common = Drupal::service('filebrowser.common');
 
     // we need to load the fileData to retrieve the filename
-    $this->storage = \Drupal::service('filebrowser.storage');
+    $this->storage = Drupal::service('filebrowser.storage');
     $file_data = $this->storage->nodeContentLoadMultiple($fid_array);
 
     // Load the description-metadata
-    $ids = \Drupal::entityQuery('filebrowser_metadata_entity')
+    $ids = Drupal::entityQuery('filebrowser_metadata_entity')
+      ->accessCheck(FALSE)
       ->condition('fid', $fid_array, "IN")
       ->condition('name', 'description')
       ->execute();
-    $this->entities = \Drupal::entityTypeManager()->getStorage('filebrowser_metadata_entity')->loadMultiple($ids);
+    $this->entities = Drupal::entityTypeManager()->getStorage('filebrowser_metadata_entity')->loadMultiple($ids);
     $descriptions = [];
     foreach ($this->entities as $entity) {
       $descriptions[$entity->fid->value] = unserialize($entity->content->value)['title'];

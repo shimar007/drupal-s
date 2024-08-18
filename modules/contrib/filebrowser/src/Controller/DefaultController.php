@@ -2,11 +2,14 @@
 
 namespace Drupal\filebrowser\Controller;
 
+use Drupal;
 use Drupal\Core\Ajax\AfterCommand;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\AlertCommand;
 use Drupal\Core\Ajax\RemoveCommand;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\File\FileUrlGeneratorInterface;
+use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\filebrowser\Filebrowser;
 use Drupal\filebrowser\FilebrowserManager;
@@ -14,6 +17,8 @@ use Drupal\filebrowser\Services\FilebrowserValidator;
 use Drupal\filebrowser\Services\Common;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -22,6 +27,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use ZipArchive;
 
 /**
  * Default controller for the filebrowser module.
@@ -43,16 +49,23 @@ class DefaultController extends ControllerBase {
   protected $common;
 
   /**
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface
+   */
+  protected $fileUrlGenerator;
+
+  /**
    * DefaultController constructor.
+   *
    * @param FilebrowserManager $filebrowserManager
    * @param FilebrowserValidator $validator
    * @param Common $common
    *
    */
-  public function __construct(FilebrowserManager $filebrowserManager, FilebrowserValidator $validator, Common $common) {
+  public function __construct(FilebrowserManager $filebrowserManager, FilebrowserValidator $validator, Common $common, FileUrlGeneratorInterface $fileUrlGenerator) {
     $this->filebrowserManager = $filebrowserManager;
     $this->validator = $validator;
     $this->common = $common;
+    $this->fileUrlGenerator = $fileUrlGenerator;
   }
 
   /**
@@ -62,7 +75,8 @@ class DefaultController extends ControllerBase {
     return new static(
       $container->get('filebrowser.manager'),
       $container->get('filebrowser.validator'),
-      $container->get('filebrowser.common')
+      $container->get('filebrowser.common'),
+      $container->get('file_url_generator')
     );
   }
 
@@ -71,7 +85,7 @@ class DefaultController extends ControllerBase {
    * route: filebrowser.page_download
    * path: filebrowser/download/{fid}
    * @param int $fid Id of the file selected in the download link
-   * @return \Symfony\Component\HttpFoundation\RedirectResponse
+   * @return RedirectResponse | StreamedResponse
    */
   public function pageDownload($fid) {
     /* @var NodeInterface $node **/
@@ -88,10 +102,9 @@ class DefaultController extends ControllerBase {
     // todo:
     // RedirectResponse needs a relative path so we will convert the full url into a relative path
     // This is done here, but should be moved to a better place in Common
-    $file_path = file_url_transform_relative($file_data->url);
+    $file_path = $this->fileUrlGenerator->transformRelative($file_data->url);
     if ($filebrowser->downloadManager == 'public' && StreamWrapperManager::getScheme($file_data->uri) == 'public') {
-      $response = new RedirectResponse($file_path);
-      return $response;
+      return new RedirectResponse($file_path);
     }
     // we will stream the file
     else {
@@ -136,7 +149,7 @@ class DefaultController extends ControllerBase {
    * @param string|null $fids A string containing the field id's of the files
    * to be processed.
    *
-   * @return \Drupal\Core\Ajax\AjaxResponse|\Drupal\Core\Render\HtmlResponse
+   * @return array | AjaxResponse
    */
   public function actionFormSubmitAction($nid, $query_fid, $op, $method, $fids = NULL) {
     // $op == archive does not use a form
@@ -149,7 +162,7 @@ class DefaultController extends ControllerBase {
     $op = ucfirst($op);
     $form_name = 'Drupal\filebrowser\Form\\' . $op . 'Form';
     //debug($form_name);
-    $form = \Drupal::formBuilder()->getForm($form_name, $nid, $query_fid, $fids, $method == 'ajax');
+    $form = Drupal::formBuilder()->getForm($form_name, $nid, $query_fid, $fids, $method == 'ajax');
 
     // If JS enabled
     if ($method == 'ajax' && $op <> 'Archive') {
@@ -170,7 +183,7 @@ class DefaultController extends ControllerBase {
   }
 
   public function inlineDescriptionForm($nid, $query_fid, $fids) {
-    return \Drupal::formBuilder()->getForm('Drupal\filebrowser\Form\InlineDescriptionForm', $nid, $query_fid, $fids);
+    return Drupal::formBuilder()->getForm('Drupal\filebrowser\Form\InlineDescriptionForm', $nid, $query_fid, $fids);
   }
 
   /**
@@ -183,23 +196,23 @@ class DefaultController extends ControllerBase {
     $fid_array = explode(',', $fids);
     $itemsToArchive = null;
     $itemsToArchive = $this->common->nodeContentLoadMultiple($fid_array);
-    $file_name = \Drupal::service('file_system')->realPath('public://' . uniqid('archive') . '.zip');
-    $archive = new \ZipArchive();
-    $created = $archive->open($file_name, \ZipArchive::CREATE);
+    $file_name = Drupal::service('file_system')->realPath('public://' . uniqid('archive') . '.zip');
+    $archive = new ZipArchive();
+    $created = $archive->open($file_name, ZipArchive::CREATE);
 
     if ($created === TRUE) {
       foreach ($itemsToArchive as $item) {
         $file_data = unserialize($item['file_data']);
         if ($file_data->type == 'file') {
-          $archive->addFile(\Drupal::service('file_system')->realpath($file_data->uri), $file_data->filename);
+          $archive->addFile(Drupal::service('file_system')->realpath($file_data->uri), $file_data->filename);
         }
         if ($file_data->type == 'dir') {
-          $dirPath = \Drupal::service('file_system')->realpath($file_data->uri);
+          $dirPath = Drupal::service('file_system')->realpath($file_data->uri);
           // Iterate through the directory, adding each file within
-          $iterator = new \RecursiveDirectoryIterator($dirPath);
+          $iterator = new RecursiveDirectoryIterator($dirPath);
           // Skip files that begin with a dot
-          $iterator->setFlags(\RecursiveDirectoryIterator::SKIP_DOTS);
-          $dirFiles = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::SELF_FIRST);
+          $iterator->setFlags(RecursiveDirectoryIterator::SKIP_DOTS);
+          $dirFiles = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
 
           foreach ($dirFiles as $dirFile) {
             if (is_dir($dirFile)) {
@@ -221,8 +234,8 @@ class DefaultController extends ControllerBase {
       return $response;
     }
     else {
-      \Drupal::logger('filebrowser')->error($this->t('Can not create archive: @error', ['@error' => $created]));
-      \Drupal::messenger()->addError($this->t('Can not create archive'));
+      Drupal::logger('filebrowser')->error($this->t('Can not create archive: @error', ['@error' => $created]));
+      Drupal::messenger()->addError($this->t('Can not create archive'));
       return false;
     }
   }

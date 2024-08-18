@@ -27,10 +27,10 @@ class CspFirefoxBugTest extends UnitTestCase {
       'script-src',
       [Csp::POLICY_STRICT_DYNAMIC, "'nonce-abc'"]
     );
-    $policy->setDirective('style-src', [Csp::POLICY_SELF, "'hash-abc'"]);
+    $policy->setDirective('style-src', [Csp::POLICY_SELF, "'sha256-abcde'"]);
 
     $this->assertEquals(
-      "script-src 'strict-dynamic' 'nonce-abc'; style-src 'self' 'hash-abc'",
+      "script-src 'strict-dynamic' 'nonce-abc'; style-src 'self' 'sha256-abcde'",
       $policy->getHeaderValue()
     );
   }
@@ -78,10 +78,10 @@ class CspFirefoxBugTest extends UnitTestCase {
   public function testHash() {
     $policy = new Csp();
 
-    $policy->setDirective('default-src', [Csp::POLICY_SELF, "'hash-abc'"]);
+    $policy->setDirective('default-src', [Csp::POLICY_SELF, "'sha256-abcde'"]);
 
     $this->assertEquals(
-      "default-src 'self' 'hash-abc'; script-src 'self' 'hash-abc'; style-src 'self' 'hash-abc'",
+      "default-src 'self' 'sha256-abcde'; script-src 'self' 'sha256-abcde'; style-src 'self' 'sha256-abcde'",
       $policy->getHeaderValue()
     );
   }
@@ -94,14 +94,14 @@ class CspFirefoxBugTest extends UnitTestCase {
   public function testSetScriptSrc() {
     $policy = new Csp();
 
-    $policy->setDirective('default-src', [Csp::POLICY_SELF, "'hash-abc'"]);
+    $policy->setDirective('default-src', [Csp::POLICY_SELF, "'sha256-abcde'"]);
     $policy->setDirective(
       'script-src',
       [Csp::POLICY_STRICT_DYNAMIC, "'nonce-abc'"]
     );
 
     $this->assertEquals(
-      "default-src 'self' 'hash-abc'; script-src 'strict-dynamic' 'nonce-abc'; style-src 'self' 'hash-abc'",
+      "default-src 'self' 'sha256-abcde'; script-src 'strict-dynamic' 'nonce-abc'; style-src 'self' 'sha256-abcde'",
       $policy->getHeaderValue()
     );
   }
@@ -116,12 +116,12 @@ class CspFirefoxBugTest extends UnitTestCase {
 
     $policy->setDirective(
       'default-src',
-      [Csp::POLICY_SELF, Csp::POLICY_STRICT_DYNAMIC, "'hash-abc'"]
+      [Csp::POLICY_SELF, Csp::POLICY_STRICT_DYNAMIC, "'sha256-abcde'"]
     );
     $policy->setDirective('style-src', [Csp::POLICY_SELF]);
 
     $this->assertEquals(
-      "default-src 'self' 'strict-dynamic' 'hash-abc'; script-src 'self' 'strict-dynamic' 'hash-abc'; style-src 'self'",
+      "default-src 'self' 'strict-dynamic' 'sha256-abcde'; script-src 'self' 'strict-dynamic' 'sha256-abcde'; style-src 'self'",
       $policy->getHeaderValue()
     );
   }

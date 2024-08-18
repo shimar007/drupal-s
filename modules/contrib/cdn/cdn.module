@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\cdn\CdnSettings;
 use Drupal\editor\Entity\Editor;
 
 /**
@@ -31,47 +32,6 @@ function cdn_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_file_url_alter().
- */
-function cdn_file_url_alter(&$uri) {
-  // Gracefully handle invalid invocations of file_create_url().
-  // @todo Remove when requiring Drupal 9.3.
-  // @see https://www.drupal.org/project/drupal/issues/2669074
-  if (empty($uri) || !is_string($uri)) {
-    \Drupal::logger('php')->warning('A caller of file_create_url() did not pass a file URI.');
-    return;
-  }
-  // Don't alter file URLs when running update.php.
-  // @todo Remove the second condition after the CDN module requires the Drupal core minor that ships with https://www.drupal.org/project/drupal/issues/2969056
-  if (defined('MAINTENANCE_MODE') || stripos($_SERVER['PHP_SELF'], 'update.php') !== FALSE) {
-    return;
-  }
-
-  // Don't alter CSS file URLs while settings.php is disabling CSS aggregation.
-  if (substr($uri, -4) === '.css' && isset($GLOBALS['config']['system.performance']['css']['preprocess']) && $GLOBALS['config']['system.performance']['css']['preprocess'] === FALSE) {
-    return;
-  }
-
-  // Don't serve CKEditor from a CDN when far future future is enabled (CKEditor
-  // insists on computing other assets to load based on this URL).
-  if ($uri === 'core/assets/vendor/ckeditor/ckeditor.js' && \Drupal::service('cdn.settings')->farfutureIsEnabled()) {
-    return;
-  }
-
-  // Don't alter file URLs while processing a CSS file.
-  // @see \Drupal\cdn\Asset\CssOptimizer
-  global $_cdn_in_css_file;
-  if ($_cdn_in_css_file) {
-    return;
-  }
-
-  $result = \Drupal::service('cdn.file_url_generator')->generate($uri);
-  if ($result) {
-    $uri = $result;
-  }
-}
-
-/**
  * Implements hook_editor_js_settings_alter().
  */
 function cdn_editor_js_settings_alter(array &$settings) {
@@ -81,7 +41,7 @@ function cdn_editor_js_settings_alter(array &$settings) {
 
   // Don't serve CKEditor plugins from a CDN when far future future is enabled
   // (CKEditor insists on computing other assets to load based on these URLs).
-  if (!\Drupal::service('cdn.settings')->farfutureIsEnabled()) {
+  if (!\Drupal::service(CdnSettings::class)->farfutureIsEnabled()) {
     return;
   }
 
@@ -90,7 +50,7 @@ function cdn_editor_js_settings_alter(array &$settings) {
 
   $ckeditor_plugin_manager = \Drupal::service('plugin.manager.ckeditor.plugin');
   $root_relative_file_url = function ($uri) {
-    return file_url_transform_relative(file_create_url($uri));
+    return \Drupal::service('file_url_generator')->generateString($uri);
   };
   foreach ($settings['editor']['formats'] as $format => &$format_settings) {
     if ($format_settings['editor'] === 'ckeditor') {

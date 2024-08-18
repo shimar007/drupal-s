@@ -7,5 +7,8 @@
     "support": {
         "issues": "https://www.drupal.org/project/issues/module_filter",
         "source": "https://git.drupalcode.org/project/module_filter"
+    },
+    "require": {
+        "drupal/jquery_ui_autocomplete": "^2.1"
     }
 }

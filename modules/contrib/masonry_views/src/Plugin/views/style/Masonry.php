@@ -1,12 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\masonry_views\Plugin\views\style\Masonry.
- *
- * Sponsored by: www.freelance-drupal.com
- */
-
 namespace Drupal\masonry_views\Plugin\views\style;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -89,7 +82,7 @@ class Masonry extends StylePluginBase {
 
       // Display each option within the Masonry fieldset.
       foreach (\Drupal::service('masonry.service')
-                 ->getMasonryDefaultOptions() as $option => $default_value) {
+        ->getMasonryDefaultOptions() as $option => $default_value) {
         $form[$option]['#fieldset'] = 'masonry';
       }
 
@@ -109,4 +102,13 @@ class Masonry extends StylePluginBase {
       ];
     }
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateOptionsForm(&$form, FormStateInterface $form_state) {
+    parent::validateOptionsForm($form, $form_state);
+    \Drupal::service('masonry.service')->validateSettingsForm($form, $form_state);
+  }
+
 }

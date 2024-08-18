@@ -16,6 +16,10 @@ class Csp {
   const POLICY_UNSAFE_EVAL = "'unsafe-eval'";
   const POLICY_UNSAFE_INLINE = "'unsafe-inline'";
   const POLICY_UNSAFE_HASHES = "'unsafe-hashes'";
+  const POLICY_UNSAFE_ALLOW_REDIRECTS = "'unsafe-allow-redirects'";
+  const POLICY_WASM_UNSAFE_EVAL = "'wasm-unsafe-eval'";
+  const POLICY_REPORT_SAMPLE = "'report-sample'";
+  const POLICY_INLINE_SPECULATION_RULES = "'inline-speculation-rules'";
 
   // https://www.w3.org/TR/CSP/#grammardef-serialized-source-list
   const DIRECTIVE_SCHEMA_SOURCE_LIST = 'serialized-source-list';
@@ -126,7 +130,7 @@ class Csp {
   /**
    * The policy directives.
    *
-   * @var array<string, string[]|string|bool>
+   * @var string[]|bool|string
    */
   protected $directives = [];
 
@@ -260,17 +264,13 @@ class Csp {
    * @param string $name
    *   The directive name.
    *
-   * @return string[]|string|bool
+   * @return array
    *   The directive's values.
    */
   public function getDirective($name) {
     self::validateDirectiveName($name);
 
-    $value = $this->directives[$name];
-
-    return is_array($value) ?
-      array_unique($value) :
-      $value;
+    return array_unique($this->directives[$name]);
   }
 
   /**
@@ -433,7 +433,7 @@ class Csp {
       }
 
       // Optimize attribute directives if they don't match a fallback.
-      if (strstr($name, '-attr')) {
+      if (str_ends_with($name, '-attr')) {
         $processedDirectives[$name] = self::reduceAttrSourceList($value);
       }
     }
@@ -469,9 +469,20 @@ class Csp {
   private static function reduceSourceList(array $sources) {
     $sources = array_unique($sources);
 
-    // 'none' overrides any other sources.
+    // 'none' overrides any other sources in CSP 8.x-1.x.
     if (in_array(Csp::POLICY_NONE, $sources)) {
-      return [Csp::POLICY_NONE];
+      // Warn if policy will be affected by change to remove 'none' if other
+      // sources are present in 2.x.
+      if (!empty(array_diff($sources, [Csp::POLICY_NONE, Csp::POLICY_REPORT_SAMPLE]))) {
+        // phpcs:ignore Drupal.Semantics.UnsilencedDeprecation.UnsilencedDeprecation
+        trigger_error("'none' overriding other sources is deprecated in csp:8.x-1.30 and behavior will change in csp:2.0.0. See https://www.drupal.org/node/3411477", E_USER_DEPRECATED);
+      }
+
+      $noneValue = [Csp::POLICY_NONE];
+      if (in_array(Csp::POLICY_REPORT_SAMPLE, $sources)) {
+        $noneValue[] = Csp::POLICY_REPORT_SAMPLE;
+      }
+      return $noneValue;
     }
 
     // Global wildcard covers all network scheme sources.
@@ -480,14 +491,18 @@ class Csp {
         // Keep any values that are a quoted string, or non-network scheme.
         // e.g. '* https: data: example.com' -> '* data:'
         // https://www.w3.org/TR/CSP/#match-url-to-source-expression
-        return strpos($source, "'") === 0 || preg_match('<^(?!(?:https?|wss?|ftp):)([a-z]+:)>', $source);
+        return str_starts_with($source, "'") || preg_match('<^(?!(?:https?|wss?|ftp):)([a-z]+:)>', $source);
       });
 
       array_unshift($sources, Csp::POLICY_ANY);
     }
 
     // Remove protocol-prefixed hosts if protocol is allowed.
-    // e.g. 'http: data: example.com https://example.com' -> 'http: data: example.com'
+    // e.g.
+    // @code
+    //   'http: data: example.com https://example.com'
+    //     -> 'http: data: example.com'
+    // @endcode
     $protocols = array_filter($sources, function ($source) {
       return preg_match('<^(https?|wss?|ftp):$>', $source);
     });
@@ -525,18 +540,18 @@ class Csp {
 
     $sources = array_filter($sources, function ($source) {
       return (
-        // Network sources are meaningless.
+        // Network sources don't affect attributes.
         $source[0] === "'" && $source !== "*"
         &&
-        // Nonces cannot be applied.
-        strpos($source, "'nonce-") !== 0
+        // Nonces cannot be applied to attributes.
+        !str_starts_with($source, "'nonce-")
       );
     });
 
     // Hashes only work in CSP Level 3 with 'unsafe-hashes'.
     if (!in_array(self::POLICY_UNSAFE_HASHES, $sources)) {
       $sources = array_filter($sources, function ($source) {
-        return !preg_match("<'(" . implode('|', self::HASH_ALGORITHMS) . ")-[a-z0-9+/=]+=*'>i", $source);
+        return !preg_match("<'(" . implode('|', self::HASH_ALGORITHMS) . ")-[-a-z0-9+/_]+=*'>i", $source);
       });
     }
 
@@ -572,13 +587,14 @@ class Csp {
    *
    * If script-src or style-src are not set and fall back to default-src,
    * Firefox doesn't apply 'strict-dynamic', nonces, or hashes if they are set.
-   *
    * https://bugzilla.mozilla.org/show_bug.cgi?id=1313937
    *
-   * @param array $directives
+   * @todo Remove after Oct 2024 when Firefox ESR 115 is no longer supported https://www.drupal.org/project/csp/issues/3411278
+   *
+   * @param array<string, string[]> $directives
    *   An array of directives.
    *
-   * @return array
+   * @return array<string, string[]>
    *   The modified array of directives.
    */
   private static function ff1313937(array $directives) {
@@ -592,7 +608,7 @@ class Csp {
         return $return || (
           $value == Csp::POLICY_STRICT_DYNAMIC
           ||
-          preg_match("<^'(hash|nonce)->", $value)
+          preg_match("<^'(nonce|" . implode('|', Csp::HASH_ALGORITHMS) . ")->", $value)
         );
       },
       FALSE

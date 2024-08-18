@@ -5,15 +5,16 @@ namespace Mailchimp;
 use Mailchimp\http\MailchimpCurlHttpClient;
 use Mailchimp\http\MailchimpGuzzleHttpClient;
 use Mailchimp\http\MailchimpHttpClientInterface;
+use Mailchimp\MailchimpApiInterface;
 
 /**
  * Mailchimp library.
  *
  * @package Mailchimp
  */
-class Mailchimp {
+class Mailchimp implements MailchimpApiInterface {
 
-  const VERSION = '2.0.0';
+  const VERSION = '3.0.0';
   const DEFAULT_DATA_CENTER = 'us1';
 
   const ERROR_CODE_BAD_REQUEST = 'BadRequest';
@@ -46,7 +47,7 @@ class Mailchimp {
    *
    * @var MailchimpHttpClientInterface $client
    */
-  protected $client;
+  public $client;
 
   /**
    * The REST API endpoint.
@@ -56,21 +57,21 @@ class Mailchimp {
   protected $endpoint = 'https://us1.api.mailchimp.com/3.0';
 
   /**
-   * The MailChimp API key to authenticate with.
+   * The Mailchimp API key to authenticate with.
    *
    * @var string $api_key
    */
-  private $api_key;
+  public $api_key;
 
   /**
-   * The MailChimp API username to authenticate with.
+   * The Mailchimp API username to authenticate with.
    *
    * @var string $api_user
    */
   private $api_user;
 
   /**
-   * A MailChimp API error code to return with every API response.
+   * A Mailchimp API error code to return with every API response.
    *
    * Used for testing / debugging error handling.
    * See ERROR_CODE_* constants.
@@ -80,33 +81,38 @@ class Mailchimp {
   private $debug_error_code;
 
   /**
+   * Authentication settings.
+   *
+   * @var array $authentication_settings
+   */
+  protected $authentication_settings;
+
+  /**
    * Array of pending batch operations.
    *
    * @var array $batch_operations
    *
    * @see http://developer.mailchimp.com/documentation/mailchimp/reference/batches/#create-post_batches
    */
-  private $batch_operations;
+  public $batch_operations;
 
   /**
    * Mailchimp constructor.
    *
-   * @param string $api_key
-   *   The MailChimp API key.
-   * @param string $api_user
-   *   The MailChimp API username.
+   * @param array $authentication_settings
+   *   Authentication settings.
    * @param array $http_options
    *   HTTP client options.
    * @param MailchimpHttpClientInterface $client
    *   Optional custom HTTP client. $http_options are ignored if this is set.
    */
-  public function __construct($api_key, $api_user = 'apikey', $http_options = [], MailchimpHttpClientInterface $client = NULL) {
-    $this->api_key = $api_key;
-    $this->api_user = $api_user;
+  public function __construct($authentication_settings, $http_options = [], MailchimpHttpClientInterface $client = NULL) {
+    $this->api_key = $authentication_settings['api_key'];
+    $this->api_user = $authentication_settings['api_user'];
 
     $dc = $this->getDataCenter($this->api_key);
 
-    $this->endpoint = str_replace(Mailchimp::DEFAULT_DATA_CENTER, $dc, $this->endpoint);
+    $this->endpoint = str_replace(Mailchimp::DEFAULT_DATA_CENTER, (string) $dc, $this->endpoint);
 
     if (!empty($client)) {
       $this->client = $client;
@@ -114,87 +120,6 @@ class Mailchimp {
     else {
       $this->client = $this->getDefaultHttpClient($http_options);
     }
-  }
-
-  /**
-   * Sets a custom HTTP client to be used for all API requests.
-   *
-   * @param \Mailchimp\http\MailchimpHttpClientInterface $client
-   *   The HTTP client.
-   */
-  public function setClient(MailchimpHttpClientInterface $client) {
-    $this->client = $client;
-  }
-
-  /**
-   * Sets a MailChimp error code to be returned by all requests.
-   *
-   * Used to test and debug error handling.
-   *
-   * @param string $error_code
-   *   The MailChimp error code.
-   */
-  public function setDebugErrorCode($error_code) {
-    $this->debug_error_code = $error_code;
-  }
-
-  /**
-   * Gets MailChimp account information for the authenticated account.
-   *
-   * @param array $parameters
-   *   Associative array of optional request parameters.
-   *
-   * @return object
-   *
-   * @see http://developer.mailchimp.com/documentation/mailchimp/reference/root/#read-get_root
-   */
-  public function getAccount($parameters = []) {
-    return $this->request('GET', '/', NULL, $parameters);
-  }
-
-  /**
-   * Processes all pending batch operations.
-   *
-   * @throws MailchimpAPIException
-   *
-   * @see http://developer.mailchimp.com/documentation/mailchimp/reference/batches/#create-post_batches
-   */
-  public function processBatchOperations() {
-    $parameters = [
-      'operations' => $this->batch_operations,
-    ];
-
-    try {
-      $response = $this->request('POST', '/batches', NULL, $parameters);
-
-      // Reset batch operations.
-      $this->batch_operations = [];
-
-      return $response;
-
-    }
-    catch (MailchimpAPIException $e) {
-      $message = 'Failed to process batch operations: ' . $e->getMessage();
-      throw new MailchimpAPIException($message, $e->getCode(), $e);
-    }
-  }
-
-  /**
-   * Gets the status of a batch request.
-   *
-   * @param string $batch_id
-   *   The ID of the batch operation.
-   *
-   * @return object
-   *
-   * @see http://developer.mailchimp.com/documentation/mailchimp/reference/batches/#read-get_batches_batch_id
-   */
-  public function getBatchOperation($batch_id) {
-    $tokens = [
-      'batch_id' => $batch_id,
-    ];
-
-    return $this->request('GET', '/batches/{batch_id}', $tokens);
   }
 
   /**
@@ -243,7 +168,7 @@ class Mailchimp {
   }
 
   /**
-   * Makes a request to the MailChimp API.
+   * Makes a request to the Mailchimp API.
    *
    * @param string $method
    *   The REST method to use when making the request.
@@ -256,14 +181,14 @@ class Mailchimp {
    * @param bool $batch
    *   TRUE if this request should be added to pending batch operations.
    * @param bool $returnAssoc
-   *   TRUE to return MailChimp API response as an associative array.
+   *   TRUE to return Mailchimp API response as an associative array.
    *
    * @return mixed
    *   Object or Array if $returnAssoc is TRUE.
    *
    * @throws MailchimpAPIException
    */
-  public function request($method, $path, $tokens = NULL, $parameters = NULL, $batch = FALSE, $returnAssoc = FALSE) {
+  public function request($method, $path, $tokens = NULL, $parameters = [], $batch = FALSE, $returnAssoc = FALSE) {
     if (!empty($tokens)) {
       foreach ($tokens as $key => $value) {
         $path = str_replace('{' . $key . '}', $value, $path);
@@ -290,16 +215,23 @@ class Mailchimp {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function hasApiAccess() {
+    return isset($this->api_key);
+  }
+
+  /**
    * Gets the ID of the data center associated with an API key.
    *
    * @param string $api_key
-   *   The MailChimp API key.
+   *   The Mailchimp API key.
    *
    * @return string
    *   The data center ID.
    */
   private function getDataCenter($api_key) {
-    $api_key_parts = explode('-', $api_key);
+    $api_key_parts = explode('-', (string) $api_key);
 
     return (isset($api_key_parts[1])) ? $api_key_parts[1] : Mailchimp::DEFAULT_DATA_CENTER;
   }

@@ -2,14 +2,17 @@
 
 namespace Drupal\filebrowser\File;
 
+use Drupal;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\filebrowser\Events\MetadataEvent;
 use Drupal\filebrowser\ServerFileList;
 use Drupal\node\NodeInterface;
 
 /**
- * Class FileDisplayList
+ * Class FileDisplayList.
+ *
  * @package Drupal\filebrowser
  * This class holds the list of files to be displayed on the filebrowser node.
  * These files are retrieved from the filesystem and filtered for user and node access.
@@ -27,7 +30,8 @@ class DisplayFileList extends ControllerBase {
   /**
    * List of the files ready to be passes to presentation
    * This list will appear on the node view
-   * @var array $displayFiles
+   *
+   * @var array
    */
   protected $files;
   /**
@@ -44,7 +48,8 @@ class DisplayFileList extends ControllerBase {
   /**
    * List of files as retrieved from the server source and
    * already filters as per node and per user permissions
-   * @var array $serverFileList
+   *
+   * @var array
    */
   protected $serverFileList;
 
@@ -65,7 +70,7 @@ class DisplayFileList extends ControllerBase {
   protected $storage;
 
   /**
-   * @var \Drupal\Core\Session\AccountInterface $user
+   * @var \Drupal\Core\Session\AccountInterface
    */
   protected $user;
 
@@ -75,35 +80,38 @@ class DisplayFileList extends ControllerBase {
   protected $filebrowser;
 
   /**
-   * @var int $fid
+   * @var int
    */
   protected $fid;
 
   /**
-   * @var string $relativePath
+   * @var string
    */
   protected $relativePath;
 
   /**
-   * @var boolean
+   * @var bool
    */
   protected $isSubDir;
 
   /**
-   * @var string fsRoot The root directory of this filebrowser
+   * @var string
    */
   protected $fsRoot;
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct(NodeInterface $node, $fid) {
-    $this->data = null;
+    $this->data = NULL;
 
     $this->files = [];
     $this->node = $node;
     $this->filebrowser = $node->filebrowser;
-    $this->common = \Drupal::service('filebrowser.common');
-    $this->storage = \Drupal::service('filebrowser.storage');
-    $this->validator = \Drupal::service('filebrowser.validator');
-    $this->user = \Drupal::currentUser();
+    $this->common = Drupal::service('filebrowser.common');
+    $this->storage = Drupal::service('filebrowser.storage');
+    $this->validator = Drupal::service('filebrowser.validator');
+    $this->user = Drupal::currentUser();
     $this->fid = $fid;
     $this->createFileDisplayList();
   }
@@ -115,11 +123,11 @@ class DisplayFileList extends ControllerBase {
     return [
       'data' => $this->data,
       'files' => $this->files,
-      ];
+    ];
   }
 
   /**
-   *  Creates the data required to build the Filebrowser listing in following steps
+   * Creates the data required to build the Filebrowser listing in following steps
    *    - look at the request object and decide what files are requested
    *    - Retrieves the DB records for this Filebrowser
    *    - Get all the files from the server and filter them for *per-node* settings
@@ -134,22 +142,21 @@ class DisplayFileList extends ControllerBase {
    * @return mixed
    */
   protected function createFileDisplayList() {
-    // file list
+    // File list
     $cid = 'filebrowser/' . $this->node->id() . '/' . $this->fid;
 
-    //you are requesting a subdir: node/23?fid=nn
+    // you are requesting a subdir: node/23?fid=nn
     if ($this->fid) {
       $content = $this->storage->nodeContentLoadMultiple([$this->fid]);
-      //debug($content[$this->fid]);
       if (empty($content[$this->fid])) {
-        // There is no DB data for this fid
+        // There is no DB data for this fid.
         return false;
       }
-      // When accessing a subdir relativePath will be /subdir[/other sub dir]
+      // When accessing a subdir relativePath will be /subdir[/other sub dir].
       $this->relativePath = $content[$this->fid]['path'];
       $this->fsRoot = $this->relativePath;
     }
-    // you are requesting the basic node like: /node/23
+    // you are requesting the basic node like: /node/23.
     else {
       $this->relativePath = '/';
     }
@@ -157,60 +164,63 @@ class DisplayFileList extends ControllerBase {
     $this->isSubDir = $this->relativePath != '/';
     // If this is a sub dir, check if we may access it, else redirect to root_dir.
     if ($this->isSubDir && !$this->common->canExploreSubFolders($this->node)) {
-      \Drupal::messenger()->addError($this->t('You\'re not allowed to browse sub folders.'));
-      return false;
+      Drupal::messenger()
+        ->addError($this->t('You\'re not allowed to browse sub folders.'));
+      return FALSE;
     }
 
-    // full path valid?
-    if ($this->fsRoot === false) {
-      \Drupal::messenger()->addError($this->t('Configured folder is not readable or is not a directory.'));
-      return false;
+    // Full path valid?
+    if ($this->fsRoot === FALSE) {
+      Drupal::messenger()
+        ->addError($this->t('Configured folder is not readable or is not a directory.'));
+      return FALSE;
     }
 
-    // retrieve files from the system - returned list is filtered *per-node* settings
+    // Retrieve files from the system - returned list is filtered *per-node* settings.
     $list = new ServerFileList($this->node, $this->relativePath);
     $this->serverFileList = $list->getList();
-    //debug($this->serverFileList);
-
-    // create DB contents and return the files for display ($result)
+    // debug($this->serverFileList);
+    // Create DB contents and return the files for display ($result)
     $result = $this->processServerFileList();
     $this->files = $result;
     $this->data['fid'] = $this->fid;
 
-    // cache the results
+    // Cache the results.
     $cache = [
       'files' => $this->files,
       'data' => $this->data,
     ];
-    \Drupal::cache()->set($cid, $cache, -1,['filebrowser:node:' . $this->node->id()]);
+    Drupal::cache()
+      ->set($cid, $cache, -1,['filebrowser:node:' . $this->node->id()]);
     return $this;
   }
 
-
+  /**
+   * @return mixed
+   */
   protected function processServerFileList() {
     /** @var /Drupal/filebrowser/File/DisplayFile $result_file */
 
-    $stats = ['folders_count' => 0, 'files_count' => 0, 'total_size' => 0 ];
-    $encoding = $this->node->filebrowser->encoding;
+    $stats = ['folders_count' => 0, 'files_count' => 0, 'total_size' => 0];
+    $encoding = $this->filebrowser->encoding;
 
-    // get the DB_contents for this nid
+    // Get the DB_contents for this nid
     // first time after node creation $db_content = NULL; there is nothing in the DB
     // If there is content it will return a filename as key, with next indexes:
     // array ('nid' => '1', 'fid' => '3', 'root' => '/', 'path' => '/',)
-
     $db_content = $this->storage->loadRecordsFromRoot($this->node->id(), $this->relativePath);
     // debug($db_content, 'DB CONTENT');
-    // Iterate over file list from the server
+    // Iterate over file list from the server.
     if (!is_null($this->serverFileList)) {
       foreach ($this->serverFileList as $key => $fs_file) {
 
-        // Build file relative path
+        // Build file relative path.
         $file_relative_path = $this->buildFileRelativePath($fs_file->filename, $encoding);
 
-        // Build database file record if it doesn't exists
+        // Build database file record if it doesn't exist.
         if (!isset($db_content[$file_relative_path])) {
           $db_content[$file_relative_path] = [
-            'exists' => true,
+            'exists' => TRUE,
             'nid' => $this->node->id(),
             'root' => $this->relativePath,
             'path' => $file_relative_path,
@@ -218,7 +228,7 @@ class DisplayFileList extends ControllerBase {
             'file_data' => $fs_file,
           ];
         }
-        $db_content[$file_relative_path]['exists'] = true;
+        $db_content[$file_relative_path]['exists'] = TRUE;
         $db_content[$file_relative_path]['display_name'] = $fs_file->filename;
         $result_file = new DisplayFile($this->node->id());
         $result_file->fileSetData($file_relative_path, $fs_file, $stats, $db_content[$file_relative_path], $this->fsRoot);
@@ -227,21 +237,21 @@ class DisplayFileList extends ControllerBase {
     }
 
     // The abstracted filesystem does not provide . and .. files. Therefore
-    // we will create them manually
+    // we will create them manually.
     if ($this->isSubDir) {
       $subDir = new DisplayFile($this->node->id());
-      // Create the .. file data
+      // Create the .. file data.
       $result_list['..'] = $subDir->createSubdir($this->relativePath);
 
-      // Create the . file data
+      // Create the . file data.
       $file = new DisplayFile($this->node->id());
       $result_list['.'] = $file->createUpDir($this->relativePath);
 
-      // Set DB content for Up-directory. In this case the '/' folder
+      // Set DB content for Up-directory. In this case the '/' folder.
       $this->createUpDirContent($db_content['/']);
 
-      //set DB record for current directory (. file)
-      if (!isset($db_content[$this->relativePath] )) {
+      // Set DB record for current directory (. file)
+      if (!isset($db_content[$this->relativePath])) {
         $db_content[$this->relativePath] = [
           'exists' => TRUE,
           'nid' => $this->node->id(),
@@ -249,12 +259,12 @@ class DisplayFileList extends ControllerBase {
           'path' => $this->relativePath,
         ];
       }
-      $db_content[$this->relativePath]['exists'] = true;
+      $db_content[$this->relativePath]['exists'] = TRUE;
       $db_content[$this->relativePath]['display_name'] = '.';
 
     }
     else {
-      // not a sub dir so we only set the . file and / DB data
+      // not a sub dir so we only set the . file and / DB data.
       if (!isset($db_content['/'])) {
         $db_content['/'] = [
           'nid' => $this->node->id(),
@@ -262,15 +272,15 @@ class DisplayFileList extends ControllerBase {
           'path' => '/',
         ];
       }
-      $db_content['/']['exists'] = true;
+      $db_content['/']['exists'] = TRUE;
       $db_content['/']['display_name'] = '.';
 
-      // changes to the File System Array
+      // changes to the File System Array.
       $result_file = new DisplayFile($this->node->id());
       $result_list['.'] = $result_file->createUpDir($this->relativePath);
     }
-    //debug($db_content, 'END DB CONTENT');
-    // Set global folder properties
+    // debug($db_content, 'END DB CONTENT');
+    // Set global folder properties.
     $this->data['stats'] = $this->buildStatistics($result_list);
     $this->data['relative_path'] = $this->relativePath;
     $this->dbSync($db_content, $result_list, $this->data);
@@ -286,15 +296,15 @@ class DisplayFileList extends ControllerBase {
    *
    * @param array $db_content
    * @param array $files
-   * List of DisplayFiles objects
+   *   List of DisplayFiles objects
    * @param integer $subdir_fid
    */
 
-  protected function dbSync(&$db_content, &$files, $subdir_fid = null) {
-    /** @var DisplayFile $files[$key]  */
+  protected function dbSync(&$db_content, &$files, $subdir_fid = NULL) {
+    /** @var DisplayFile $files [$key]  */
     $to_delete = [];
     // Build the fragment to be used with folders.
-    $theme = \Drupal::theme()->getActiveTheme()->getName();
+    $theme = Drupal::theme()->getActiveTheme()->getName();
     $fragment = 'block-' . str_replace('_', '-', $theme) . '-page-title';
 
     foreach ($db_content as $path => &$record) {
@@ -313,45 +323,72 @@ class DisplayFileList extends ControllerBase {
         $files[$key]->link = $link->toRenderable();
         $files[$key]->href = $link->getUrl();
 
-        // fire an event so modules can create metadata for this file.
+        // Fire an event so modules can create metadata for this file.
         /** @var MetadataEvent $event */
-        $dispatcher = \Drupal::service('event_dispatcher');
+        $dispatcher = Drupal::service('event_dispatcher');
         $e = new MetadataEvent($this->node->id(), $record['fid'], $files[$key], $subdir_fid, $this->filebrowser->visibleColumns);
-        $dispatcher->dispatch('filebrowser.metadata_event', $e);
+        $dispatcher->dispatch($e, 'filebrowser.metadata_event');
       }
     }
 
-    // A quick way to drip obsolete records
+    // A quick way to drip obsolete records.
     if (count($to_delete)) {
       $this->storage->deleteFileRecords($to_delete);
     }
   }
 
-  /** Creates links for the file list
+  /**
+   * Creates links for the file list.
    * @param DisplayFile $file
    * @param int $fid
    * @param string $fragment
    *
-   * for file: 'http://drupal.dev/filebrowser/download/4'
-   * for folder: 'http://drupal.dev/node/1?fid=23#fragment
-   * @return Link
+   *   for file: 'http://drupal.dev/filebrowser/download/4'
+   *   for folder: 'http://drupal.dev/node/1?fid=23#fragment
+   * @return \Drupal\Core\Link
    */
-  protected function makeLink(DisplayFile $file, $fid = null, $fragment = null) {
-    $options = ['query' => ['fid' => $fid]];
-      if (isset($fragment)) {
-        $options['fragment'] = $fragment;
-      }
+  protected function makeLink(DisplayFile $file, $fid = NULL, $fragment = NULL) {
+    $options = [
+      'query' => [
+        'fid' => $fid,
+      ],
+    ];
+    if (isset($fragment)) {
+      $options['fragment'] = $fragment;
+    }
     if ($file->displayName == '..') {
       $display_name = $this->t('Go up');
       return Link::createFromRoute($display_name, 'entity.node.canonical', ['node' => $this->node->id()], $options);
     }
     $name = $this->filebrowser->hideExtension ? pathinfo($file->displayName, PATHINFO_FILENAME) : $file->displayName;
     if ($file->fileData->type != 'file') {
-      return Link::createFromRoute($name, 'entity.node.canonical', ['node' => $this->node->id()], $options);
+      return Link::createFromRoute(
+        $name, 'entity.node.canonical',
+        ['node' => $this->node->id()], $options);
     }
     else {
-      return Link::createFromRoute($name, 'filebrowser.page_download',['fid' => $fid]);
+      $settings = $this->filebrowser;
+      if ($settings->downloadManager == 'public') {
+        $file_uri = $this->filebrowser->folderPath . $file->relativePath;
+        $stream_wrapper = \Drupal::service('stream_wrapper_manager')
+          ->getViaUri($file_uri);
+        $f_external_url = $stream_wrapper->getExternalUrl();
+        $external_host = $settings->externalHost;
+        if (!empty($external_host)) {
+          $host = \Drupal::request()->getSchemeAndHttpHost();
+          $f_external_url = str_replace($host, $external_host, $f_external_url);
+        }
+        $f_external_link = Link::fromTextAndUrl($name, Url::fromUri($f_external_url));
+        if (isset($f_external_link)) {
+          return $f_external_link;
+        }
+      }
     }
+    // open file in a new page
+    $options['attributes'] = [
+      'target' => '_blank',
+    ];
+    return Link::createFromRoute($name, 'filebrowser.page_download', ['fid' => $fid],$options);
   }
 
   /**
@@ -360,14 +397,25 @@ class DisplayFileList extends ControllerBase {
    * @param \Drupal\filebrowser\File\DisplayFile $file
    * @param null|int $fid
    */
-  protected function makeAnchor(DisplayFile $file, $fid = null) {
+  protected function makeAnchor(DisplayFile $file, $fid = NULL) {
   }
 
+  /**
+   * @param $fs_filename
+   * @param $encoding
+   *
+   * @return string
+   */
   protected function buildFileRelativePath($fs_filename, $encoding) {
     $filename = $this->validator->encodingToFs($encoding, $fs_filename);
     return $this->relativePath . ($this->relativePath != '/' ? '/' : '') . $filename;
   }
 
+  /**
+   * @param $array
+   *
+   * @return void
+   */
   protected function createUpDirContent(&$array){
     $parent_path = $this->parentFolder();
     $content = $this->storage->loadRecordFromPath($this->node->id(), $parent_path);
@@ -377,26 +425,36 @@ class DisplayFileList extends ControllerBase {
       }
     }
     else {
-      \Drupal::messenger()->addError($this->t('No content in method LoadRecordFromPath'));
+      Drupal::messenger()
+        ->addError($this->t('No content in method LoadRecordFromPath'));
     }
-    $array['exists'] = true;
+    $array['exists'] = TRUE;
     $array['display_name'] = '..';
   }
 
+  /**
+   * @return string
+   */
   protected function parentFolder() {
     $array = explode('/', $this->relativePath);
-    if (count($array) < 3 ) {
+    if (count($array) < 3) {
       return '/';
     }
     else {
-      unset($array[count($array)-1]);
+      unset($array[count($array) - 1]);
       return $result = implode('/', $array);
     }
   }
 
+  /**
+   * @param $list
+   *
+   * @return array
+   */
   protected function buildStatistics($list) {
-    //debug(array_keys($list));
-    $files = 0; $folders = 0; $total_size = 0;
+    $files = 0;
+    $folders = 0;
+    $total_size = 0;
     foreach($list as $key => $item) {
       if (in_array($key, ['.', '..'])) {
       }
@@ -418,3 +476,4 @@ class DisplayFileList extends ControllerBase {
   }
 
 }
+

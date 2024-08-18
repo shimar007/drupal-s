@@ -92,3 +92,7 @@ mailchimp_signup.mailchimp_signup.*:
         gdpr_consent_required:
           type: boolean
           label: 'GDPR consent required'
+        tags:
+          type: string
+          label: 'Tags'
+          description: 'Comma-separated list of member tags.'

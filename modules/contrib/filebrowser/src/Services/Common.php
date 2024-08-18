@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Services;
 
+use Drupal;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -78,8 +79,11 @@ class Common extends ControllerBase{
         'title' => $this->t('Private - Files are served by PHP/Drupal'),
       ],
       'public' => [
-        'title' => $this->t('Public - Files are served by the web server and should be accessible by it'),
+        'title' => $this->t('Public - Files are served by the web server using Drupal&#039;s file url'),
       ],
+      'server' => [
+        'title' => $this->t('Server - Files are served by the web server'),
+      ]
     ];
   }
 
@@ -113,7 +117,7 @@ class Common extends ControllerBase{
    */
   function canDownloadArchive(NodeInterface $node) {
     $download_archive = $node->filebrowser->downloadArchive;
-    return ($node->access('view') && $download_archive && \Drupal::currentUser()
+    return ($node->access('view') && $download_archive && Drupal::currentUser()
         ->hasPermission(Common::DOWNLOAD_ARCHIVE));
   }
 
@@ -144,7 +148,7 @@ class Common extends ControllerBase{
     if ($file_type == 'dir' && $mime_type != 'folder-parent') {
       $mime_type = 'directory';
     }
-    $theme_path = \Drupal::theme()->getActiveTheme()->getPath() . "/filebrowser/icons/";
+    $theme_path = Drupal::theme()->getActiveTheme()->getPath() . "/filebrowser/icons/";
 
     $icons = [
       // search first in active theme
@@ -264,10 +268,11 @@ class Common extends ControllerBase{
   /**
    * @func
    * Helper function to create the parameters when calling a route within filebrowser
-   * in case of a sub directory $fid is query_fid (node/18?fid=xx) to return to.
-   * @var int $nid
-   * @var int $query_fid
-   * @return string
+   * in case of a subdirectory $fid is query_fid (node/18?fid=xx) to return to.
+   *
+   * @param  int $nid
+   * @param  int $query_fid
+   * @return int[]
    */
   public function routeParam($nid, $query_fid = NULL) {
     $p = empty($query_fid) ? ['nid' => $nid, 'query_fid' => 0]
@@ -291,8 +296,9 @@ class Common extends ControllerBase{
   /**
    * Returns an array containing the allowed actions for logged in user.
    * Array is used to complete building the form ActionForm.php
+   *
    * @param $node
-   * @var array $actions
+   *
    * array with the following keys:
    * 'operation': the form action id that this element will trigger
    * 'title': title for the form element
@@ -300,12 +306,13 @@ class Common extends ControllerBase{
    *         'button' will create a button that opens in a slide-down window
    *         'default' creates a normal submit button
    * 'needs_item': this element needs items selected on the form
+   *
    * @return array
    */
   public function userAllowedActions($node) {
-    /** @var \Drupal\filebrowser\Filebrowser $filebrowser */
     $actions = [];
-    $account = \Drupal::currentUser();
+    $account = Drupal::currentUser();
+    /** @var \Drupal\filebrowser\Filebrowser $filebrowser */
     $filebrowser = $node->filebrowser;
 
     // needs_item indicates this button needs items selected on the form
@@ -487,7 +494,7 @@ class Common extends ControllerBase{
    * @return Node|Null
    */
   public function getNodeFromPath($route_match = NULL) {
-    $route_match = $route_match ?: \Drupal::routeMatch();
+    $route_match = $route_match ?: Drupal::routeMatch();
     if ($node = $route_match->getParameter('node')) {
       if (!is_object($node)) {
         // The parameter is node ID.
@@ -499,7 +506,7 @@ class Common extends ControllerBase{
   }
 
   public function filebrowserPath() {
-    $module_handler = \Drupal::service('module_handler');
+    $module_handler = Drupal::service('module_handler');
     return  $module_handler->getModule('filebrowser')->getPath();
   }
 

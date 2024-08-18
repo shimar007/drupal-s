@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\cdn\Unit;
 
 use Drupal\cdn\CdnSettings;
@@ -84,13 +86,13 @@ class CdnSettingsTest extends UnitTestCase {
           'status' => TRUE,
           'mapping' => [
             'type' => 'simple',
-            'domain' => '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80',
+            'domain' => '[F3DC:BA98:7654:3210:F3DC:BA98:7654:3210]:80',
             'conditions' => [],
           ],
           'scheme' => '//',
         ],
-        ['*' => '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80'],
-        ['[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80'],
+        ['*' => '[F3DC:BA98:7654:3210:F3DC:BA98:7654:3210]:80'],
+        ['[F3DC:BA98:7654:3210:F3DC:BA98:7654:3210]:80'],
       ],
       'simple, on, one empty condition, scheme-relative' => [
         [
@@ -173,7 +175,7 @@ class CdnSettingsTest extends UnitTestCase {
           'status' => TRUE,
           'mapping' => [
             'type' => 'complex',
-            'fallback_domain' => '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:42',
+            'fallback_domain' => '[F3DC:BA98:7654:3210:F3DC:BA98:7654:3210]:42',
             'domains' => [
               0 => [
                 'type' => 'simple',
@@ -194,7 +196,7 @@ class CdnSettingsTest extends UnitTestCase {
           'scheme' => '//',
         ],
         [
-          '*' => '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:42',
+          '*' => '[F3DC:BA98:7654:3210:F3DC:BA98:7654:3210]:42',
           'css' => 'static.example.com',
           'jpg' => 'static.example.com',
           'jpeg' => 'static.example.com',
@@ -202,7 +204,7 @@ class CdnSettingsTest extends UnitTestCase {
           'zip' => 'downloads.example.com',
         ],
         [
-          '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:42',
+          '[F3DC:BA98:7654:3210:F3DC:BA98:7654:3210]:42',
           'static.example.com',
           'downloads.example.com',
         ],
@@ -338,7 +340,7 @@ class CdnSettingsTest extends UnitTestCase {
   /**
    * @covers ::getLookupTable
    */
-  public function testAutobalancedWithoutConditions() {
+  public function testAutoBalancedWithoutConditions() {
     $this->expectException(ConfigValueException::class);
     $this->expectExceptionMessage("It does not make sense to apply auto-balancing to all files, regardless of extension.");
     $this->createCdnSettings([

@@ -5,7 +5,7 @@ namespace Mailchimp\Tests;
 use PHPUnit\Framework\TestCase;
 
 /**
- * MailChimp library test cases.
+ * Mailchimp library test cases.
  *
  * @package Mailchimp\Tests
  */
@@ -15,7 +15,8 @@ class MailchimpTest extends TestCase {
    * Tests library functionality for account information.
    */
   public function testGetAccount() {
-    $mc = new Mailchimp();
+    $api_user = new Mailchimp(['api_user' => null, 'api_key' => null]);
+    $mc = new MailchimpApiUser($api_user);
     $mc->getAccount();
 
     $this->assertEquals('GET', $mc->getClient()->method);
@@ -26,8 +27,7 @@ class MailchimpTest extends TestCase {
    * Test the version number.
    */
   public function testVersion() {
-    $mc = new Mailchimp();
-    $this->assertEquals($mc::VERSION, '2.0.0');
+    $mc = new Mailchimp(['api_user' => null, 'api_key' => null]);
     $this->assertEquals(json_decode(file_get_contents('composer.json'))->version, $mc::VERSION);
   }
 

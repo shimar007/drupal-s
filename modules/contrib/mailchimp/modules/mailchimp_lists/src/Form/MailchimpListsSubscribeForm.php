@@ -4,9 +4,10 @@ namespace Drupal\mailchimp_lists\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\mailchimp_lists\Plugin\Field\FieldFormatter\MailchimpListsFieldSubscribeFormatter;
 use Drupal\mailchimp_lists\Plugin\Field\FieldType\MailchimpListsSubscription;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
+
 /**
  * Subscribe to a Mailchimp list/audience.
  */
@@ -101,7 +102,7 @@ class MailchimpListsSubscribeForm extends FormBase {
     $field_name = $this->fieldInstance->getFieldDefinition()->getName();
 
     // Determine if a user is subscribed to the list.
-    $is_subscribed = mailchimp_is_subscribed($mc_list['id'], $email);
+    $is_subscribed = mailchimp_is_subscribed($mc_list->id, $email);
     $wrapper_key = 'mailchimp_' . $field_name;
     $form['wrapper_key'] = [
       '#type' => 'hidden',
@@ -129,10 +130,10 @@ class MailchimpListsSubscribeForm extends FormBase {
     // Present interest groups:
     if ($field_settings['show_interest_groups'] && $field_formatter_settings['show_interest_groups']) {
       // Perform test in case error comes back from MCAPI when getting groups:
-      if (is_array($mc_list['intgroups'])) {
+      if (is_array($mc_list->intgroups)) {
         $form[$wrapper_key]['interest_groups'] = [
           '#type' => 'fieldset',
-          '#title' => isset($field_settings['interest_groups_label']) ? $field_settings['interest_groups_label'] : $this->t('Interest Groups'),
+          '#title' => $field_settings['interest_groups_label'] ?? $this->t('Interest Groups'),
           '#weight' => 100,
           '#states' => [
             'invisible' => [
@@ -142,10 +143,6 @@ class MailchimpListsSubscribeForm extends FormBase {
         ];
 
         $groups_default = $this->fieldInstance->getInterestGroups();
-
-        if ($groups_default == NULL) {
-          $groups_default = [];
-        }
 
         $form[$wrapper_key]['interest_groups'] += mailchimp_interest_groups_form_elements($mc_list, $groups_default, $email);
       }
@@ -165,6 +162,13 @@ class MailchimpListsSubscribeForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $wrapper_key = $form_state->getValue('wrapper_key');
     $choices = $form_state->getValue($wrapper_key);
+
+    // Update field values in DB.
+    $fieldname = $this->fieldInstance->getFieldDefinition()->getName();
+    $entity = $this->fieldInstance->getEntity();
+    $entity->$fieldname->subscribe = $choices['subscribe'];
+    $entity->$fieldname->interest_groups = $choices['interest_groups'];
+    $entity->save();
 
     mailchimp_lists_process_subscribe_form_choices($choices, $this->fieldInstance, $this->fieldInstance->getEntity());
   }

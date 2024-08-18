@@ -2,14 +2,10 @@
 
 namespace Drupal\mailchimp_campaign\Entity;
 
-use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityViewBuilder;
-use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Link;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -35,36 +31,13 @@ class MailchimpCampaignViewBuilder extends EntityViewBuilder {
   protected $messenger;
 
   /**
-   * Constructs a new MailchimpCampaignViewBuilder.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type definition.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager service.
-   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
-   *   The language manager.
-   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
-   *   The date formatter service.
-   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
-   *   The messenger service.
-   */
-  public function __construct(EntityTypeInterface $entity_type, EntityManagerInterface $entity_manager, LanguageManagerInterface $language_manager, DateFormatterInterface $date_formatter, MessengerInterface $messenger) {
-    parent::__construct($entity_type, $entity_manager, $language_manager);
-    $this->dateFormatter = $date_formatter;
-    $this->messenger = $messenger;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
-    return new static(
-      $entity_type,
-      $container->get('entity.manager'),
-      $container->get('language_manager'),
-      $container->get('date.formatter'),
-      $container->get('messenger')
-    );
+    $class = parent::createInstance($container, $entity_type);
+    $class->dateFormatter = $container->get('date.formatter');
+    $class->messenger = $container->get('messenger');
+    return $class;
   }
 
   /**
@@ -77,7 +50,7 @@ class MailchimpCampaignViewBuilder extends EntityViewBuilder {
     $build['#attached']['library'][] = 'mailchimp_campaign/campaign-view';
 
     // Prepare rendered content.
-    /* @var $entity \Drupal\mailchimp_campaign\Entity\MailchimpCampaign */
+    /** @var \Drupal\mailchimp_campaign\Entity\MailchimpCampaign $entity */
     $content = $this->renderTemplate($entity->getTemplate());
     $rendered = '';
     foreach ($content as $key => $section) {

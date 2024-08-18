@@ -3,9 +3,9 @@
 namespace Drupal\mailchimp_campaign\Form;
 
 use Drupal\Core\Entity\EntityConfirmFormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
-use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -84,7 +84,7 @@ class MailchimpCampaignDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    *
-   * // TODO: Make sure override afterBuild is the correct solution.
+   * // @todo Make sure override afterBuild is the correct solution.
    *
    * Have to disable EntityForm::afterbuild for this form.
    * Drupal was attempting to get a field definition for the submit button

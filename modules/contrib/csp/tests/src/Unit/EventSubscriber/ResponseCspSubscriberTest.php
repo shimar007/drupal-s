@@ -2,7 +2,9 @@
 
 namespace Drupal\Tests\csp\Unit\EventSubscriber;
 
+use Drupal\Core\Asset\LibraryDependencyResolverInterface;
 use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Render\HtmlResponse;
 use Drupal\csp\Csp;
 use Drupal\csp\CspEvents;
@@ -82,7 +84,7 @@ class ResponseCspSubscriberTest extends UnitTestCase {
     $this->event = new ResponseEvent(
       $this->createMock(HttpKernelInterface::class),
       $this->createMock(Request::class),
-      HttpKernelInterface::MASTER_REQUEST,
+      HttpKernelInterface::MAIN_REQUEST,
       $this->response
     );
 
@@ -150,23 +152,23 @@ class ResponseCspSubscriberTest extends UnitTestCase {
 
     $this->response->headers->expects($this->exactly(2))
       ->method('set')
-      ->withConsecutive(
-        [
-          $this->equalTo('Content-Security-Policy-Report-Only'),
-          $this->equalTo("font-src 'self'; style-src *"),
-        ],
-        [
-          $this->equalTo('Content-Security-Policy'),
-          $this->equalTo("font-src 'self'; script-src 'self'"),
-        ]
-      );
+      ->willReturnCallback(function ($name, $value) {
+        $this->assertEquals(
+          match ($name) {
+            'Content-Security-Policy-Report-Only' => "font-src 'self'; style-src *",
+            'Content-Security-Policy' => "font-src 'self'; script-src 'self'",
+            default => FALSE,
+          },
+          $value
+        );
+      });
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
+      $this->eventDispatcher,
+      $this->nonce,
       $this->libraryPolicy,
       $this->reportingHandlerPluginManager,
-      $this->eventDispatcher,
-      $this->nonce
     );
 
     $subscriber->onKernelResponse($this->event);
@@ -193,10 +195,10 @@ class ResponseCspSubscriberTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
+      $this->eventDispatcher,
+      $this->nonce,
       $this->libraryPolicy,
       $this->reportingHandlerPluginManager,
-      $this->eventDispatcher,
-      $this->nonce
     );
 
     $this->response->headers->expects($this->never())
@@ -212,7 +214,7 @@ class ResponseCspSubscriberTest extends UnitTestCase {
   /**
    * Data provider for boolean directive config test.
    */
-  public function booleanDataProvider() {
+  public static function booleanDataProvider() {
     return [
       'TRUE' => [TRUE, TRUE],
       'FALSE' => [FALSE, FALSE],
@@ -250,10 +252,10 @@ class ResponseCspSubscriberTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
+      $this->eventDispatcher,
+      $this->nonce,
       $this->libraryPolicy,
       $this->reportingHandlerPluginManager,
-      $this->eventDispatcher,
-      $this->nonce
     );
 
     $this->response->headers
@@ -308,10 +310,10 @@ class ResponseCspSubscriberTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
-      $this->libraryPolicy,
-      $this->reportingHandlerPluginManager,
       $this->eventDispatcher,
-      $this->nonce
+      $this->nonce,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager
     );
 
     $this->response->headers->expects($this->once())
@@ -371,24 +373,24 @@ class ResponseCspSubscriberTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
-      $this->libraryPolicy,
-      $this->reportingHandlerPluginManager,
       $this->eventDispatcher,
-      $this->nonce
+      $this->nonce,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager
     );
 
     $this->response->headers->expects($this->exactly(2))
       ->method('set')
-      ->withConsecutive(
-        [
-          $this->equalTo('Content-Security-Policy-Report-Only'),
-          $this->equalTo("script-src * 'unsafe-inline'; style-src * 'unsafe-inline'"),
-        ],
-        [
-          $this->equalTo('Content-Security-Policy'),
-          $this->equalTo("script-src 'self'; style-src 'self'"),
-        ]
-      );
+      ->willReturnCallback(function ($name, $value) {
+        $this->assertEquals(
+          match ($name) {
+            'Content-Security-Policy-Report-Only' => "script-src * 'unsafe-inline'; style-src * 'unsafe-inline'",
+            'Content-Security-Policy' => "script-src 'self'; style-src 'self'",
+            default => FALSE,
+          },
+          $value
+        );
+      });
 
     $subscriber->onKernelResponse($this->event);
   }
@@ -435,10 +437,10 @@ class ResponseCspSubscriberTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
-      $this->libraryPolicy,
-      $this->reportingHandlerPluginManager,
       $this->eventDispatcher,
-      $this->nonce
+      $this->nonce,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager
     );
 
     $this->response->headers->expects($this->once())
@@ -491,10 +493,10 @@ class ResponseCspSubscriberTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
+      $this->eventDispatcher,
+      $this->nonce,
       $this->libraryPolicy,
       $this->reportingHandlerPluginManager,
-      $this->eventDispatcher,
-      $this->nonce
     );
 
     $this->response->headers->expects($this->once())
@@ -505,6 +507,61 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       );
 
     $subscriber->onKernelResponse($this->event);
+  }
+
+  /**
+   * Parameters from 1.21 and prior.
+   *
+   * @group legacy
+   */
+  public function testLegacyConstructorParameters() {
+    $container = new ContainerBuilder();
+    \Drupal::setContainer($container);
+    $container->set('csp.nonce', $this->nonce);
+
+    $configFactory = $this->getConfigFactoryStub([
+      'csp.settings' => [
+        'report-only' => [
+          'enable' => FALSE,
+          'directives' => [],
+        ],
+      ],
+    ]);
+
+    $this->expectDeprecation('Omitting the Nonce service is deprecated in csp:8.x-1.22 and will be required in csp:2.0.0. See https://www.drupal.org/project/csp/issues/3018679');
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+    );
+  }
+
+  /**
+   * Parameter order from 1.24 to 1.31 releases.
+   *
+   * @group legacy
+   */
+  public function testLegacyLibraryResolverParameter() {
+    $configFactory = $this->getConfigFactoryStub([
+      'csp.settings' => [
+        'report-only' => [
+          'enable' => FALSE,
+          'directives' => [],
+        ],
+      ],
+    ]);
+
+    $libraryDependencyResolver = $this->createMock(LibraryDependencyResolverInterface::class);
+    $this->expectDeprecation('The parameter order for ResponseCspSubscriber has changed for compatibility with 2.0.0. See https://www.drupal.org/docs/contributed-modules/content-security-policy/upgrading-from-1x-to-2x#s-for-developers');
+    $subscriber = new ResponseCspSubscriber(
+      $configFactory,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager,
+      $this->eventDispatcher,
+      $libraryDependencyResolver,
+      $this->nonce
+    );
   }
 
 }

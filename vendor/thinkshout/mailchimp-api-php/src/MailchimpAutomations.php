@@ -2,7 +2,7 @@
 
 namespace Mailchimp;
 
-class MailchimpAutomations extends Mailchimp {
+class MailchimpAutomations extends MailchimpApiUser {
 
   /**
    * Gets information about all automations owned by the authenticated account.
@@ -15,7 +15,7 @@ class MailchimpAutomations extends Mailchimp {
    * @see http://developer.mailchimp.com/documentation/mailchimp/reference/automations/#read-get_automations
    */
   public function getAutomations($parameters = []) {
-    return $this->request('GET', '/automations', NULL, $parameters);
+    return $this->api_class->request('GET', '/automations', NULL, $parameters);
   }
 
   /**
@@ -33,7 +33,7 @@ class MailchimpAutomations extends Mailchimp {
       'workflow_id' => $workflow_id,
     ];
 
-    return $this->request('GET', '/automations/{workflow_id}', $tokens);
+    return $this->api_class->request('GET', '/automations/{workflow_id}', $tokens);
   }
 
   /**
@@ -51,7 +51,7 @@ class MailchimpAutomations extends Mailchimp {
       'workflow_id' => $workflow_id,
     ];
 
-    return $this->request('GET', '/automations/{workflow_id}/emails', $tokens);
+    return $this->api_class->request('GET', '/automations/{workflow_id}/emails', $tokens);
   }
 
   /**
@@ -72,11 +72,11 @@ class MailchimpAutomations extends Mailchimp {
       'workflow_email_id' => $workflow_email_id,
     ];
 
-    return $this->request('GET', '/automations/{workflow_id}/emails/{workflow_email_id}', $tokens);
+    return $this->api_class->request('GET', '/automations/{workflow_id}/emails/{workflow_email_id}', $tokens);
   }
 
   /**
-   * Gets queued subscribers from a MailChimp workflow automation.
+   * Gets queued subscribers from a Mailchimp workflow automation.
    *
    * @param string $workflow_id
    *   The unique id for the Automation workflow.
@@ -93,11 +93,11 @@ class MailchimpAutomations extends Mailchimp {
       'workflow_email_id' => $workflow_email_id,
     ];
 
-    return $this->request('GET', '/automations/{workflow_id}/emails/{workflow_email_id}/queue', $tokens);
+    return $this->api_class->request('GET', '/automations/{workflow_id}/emails/{workflow_email_id}/queue', $tokens);
   }
 
   /**
-   * Gets a subscriber from a MailChimp workflow automation email queue.
+   * Gets a subscriber from a Mailchimp workflow automation email queue.
    *
    * @param string $workflow_id
    *   The unique id for the Automation workflow.
@@ -117,11 +117,11 @@ class MailchimpAutomations extends Mailchimp {
       'subscriber_hash' => md5(strtolower($email)),
     ];
 
-    return $this->request('GET', '/automations/{workflow_id}/emails/{workflow_email_id}/queue/{subscriber_hash}', $tokens);
+    return $this->api_class->request('GET', '/automations/{workflow_id}/emails/{workflow_email_id}/queue/{subscriber_hash}', $tokens);
   }
 
   /**
-   * Adds a subscriber to a MailChimp workflow automation email queue.
+   * Adds a subscriber to a Mailchimp workflow automation email queue.
    *
    * @param string $workflow_id
    *   The unique id for the Automation workflow.
@@ -146,7 +146,7 @@ class MailchimpAutomations extends Mailchimp {
       'email_address' => $email,
     ];
 
-    return $this->request('POST', '/automations/{workflow_id}/emails/{workflow_email_id}/queue', $tokens, $parameters);
+    return $this->api_class->request('POST', '/automations/{workflow_id}/emails/{workflow_email_id}/queue', $tokens, $parameters);
   }
 
 }

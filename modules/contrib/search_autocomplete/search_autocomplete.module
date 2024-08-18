@@ -87,7 +87,7 @@ function attach_configuration_to_element(&$element, $config_id) {
   }
 
   $source = $config->getSource();
-  $exposed_filters = [];
+  $exposed_filters = ['q'];
 
   // Build the callback URL.
   $input_source = explode('::', $source);
@@ -101,11 +101,19 @@ function attach_configuration_to_element(&$element, $config_id) {
       $display = $view->getDisplay();
       $source = '/' . $display->getPath();
 
-      // Build filters
+      // Build exposed filters
       $filters = $view->getHandlers('filter');
       foreach ($filters as $filter) {
         if (isset($filter['exposed']) && $filter['exposed'] && isset($filter['expose'])) {
           $exposed_filters[] = $filter['expose']['identifier'];
+        }
+      }
+
+      // Build contextual filters
+      $contextual_filters = $view->getHandlers('argument');
+      foreach ($contextual_filters as $filter) {
+        if (isset($filter['default_argument_options']['query_param']) && $filter['default_argument_type'] === 'query_parameter') {
+          $exposed_filters[] = $filter['default_argument_options']['query_param'];
         }
       }
     }
@@ -153,19 +161,11 @@ function attach_configuration_to_element(&$element, $config_id) {
     ->getLibraryByName('search_autocomplete', 'theme.' . $config->getTheme())) {
     $element['#attached']['library'][] = 'search_autocomplete/theme.' . $config->getTheme();
   }
-  return $element;
-}
 
-/**
- * Implements hook_install().
- *
- * Display a notice to user for cache rebuild after install.
- */
-function search_autocomplete_install() {
-  \Drupal::messenger()->addMessage(t('To finish install of Search Autocomplete, you must %clear_caches.', [
-    '%clear_caches' => Link::fromTextAndUrl(t('Clear all caches'),
-      Url::fromRoute('system.performance_settings'))->toString()
-  ]));
+  // Add configuration cache tag:
+  $element['#cache']['tags'][] = "config:search_autocomplete.autocompletion_configuration:$config_id";
+
+  return $element;
 }
 
 /**
@@ -184,7 +184,7 @@ function search_autocomplete_library_info_build() {
 
   // Find all available themes.
   $themes = [];
-  $files = \Drupal::service('file_system')->scanDirectory(drupal_get_path('module', 'search_autocomplete') . '/css/themes', '/.*\.css\z/', ['recurse' => FALSE]);
+  $files = \Drupal::service('file_system')->scanDirectory(\Drupal::service('extension.list.module')->getPath('search_autocomplete') . '/css/themes', '/.*\.css\z/', ['recurse' => FALSE]);
 
   // Create a new library for all themes.
   foreach ($files as $file) {
@@ -194,9 +194,6 @@ function search_autocomplete_library_info_build() {
           "css/themes/$file->filename" => [],
         ],
       ],
-      'dependencies' => [
-        'search_autocomplete/search_autocomplete.purify'
-      ]
     ];
   }
 
@@ -209,7 +206,10 @@ function search_autocomplete_library_info_build() {
 function search_autocomplete_library_info_alter(array &$libraries, $extension) {
   if ($extension == 'core' && isset($libraries['drupal.autocomplete'])) {
     $libraries['drupal.autocomplete']['js'] = array_merge($libraries['drupal.autocomplete']['js'], [
-      '/' . drupal_get_path('module', 'search_autocomplete') . '/js/jquery.autocomplete.js' => ['weight' => 0],
+      '/' . \Drupal::service('extension.list.module')->getPath('search_autocomplete') . '/js/jquery.autocomplete.js' => ['weight' => 0],
+    ]);
+    $libraries['drupal.autocomplete']['dependencies'] = array_merge($libraries['drupal.autocomplete']['dependencies'], [
+      'search_autocomplete/search_autocomplete.purify'
     ]);
   }
 }

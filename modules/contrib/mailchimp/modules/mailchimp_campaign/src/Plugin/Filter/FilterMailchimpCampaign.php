@@ -66,7 +66,7 @@ class FilterMailchimpCampaign extends FilterBase {
       if (isset($build[$entity_type][$entity_id]['#contextual_links'])) {
         unset($build[$entity_type][$entity_id]['#contextual_links']);
       }
-      $content = render($build);
+      $content = \Drupal::service('renderer')->render($build);
     }
 
     return $content;

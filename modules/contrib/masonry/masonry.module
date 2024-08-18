@@ -33,7 +33,6 @@ function masonry_libraries_info() {
     'download url' => 'http://desandro.github.io/imagesloaded/imagesloaded.pkgd.min.js',
     'version arguments' => [
       'file' => 'imagesloaded.pkgd.min.js',
-      // imagesLoaded 3.x
       'pattern' => '/imagesLoaded\s+PACKAGED\s+v?([0-9\.]+)/',
       'lines' => 2,
       'cols' => 35,
@@ -46,20 +45,6 @@ function masonry_libraries_info() {
   ];
 
   return $libraries;
-}
-
-/**
- * Check if the Masonry and imagesLoaded libraries have been loaded.
- *
- * @return
- *   A boolean indicating the loaded status.
- *
- * @deprecated
- * Use \Drupal::service('masonry.service')->isMasonryInstalled() and
- * \Drupal::service('masonry.service')->isImagesloadedInstalled() instead.
- */
-function masonry_loaded() {
-  return (\Drupal::service('masonry.service')->isMasonryInstalled() && \Drupal::service('masonry.service')->isImagesloadedInstalled());
 }
 
 /**
@@ -77,15 +62,14 @@ function masonry_library_info_alter(&$libraries, $extension) {
 
     if ($masonryPath = $masonryService->isMasonryInstalled()) {
       $libraries['masonry']['js'] = [
-        "/$masonryPath" => ['minified' => true]
+        "/$masonryPath" => ['minified' => TRUE],
       ];
     }
 
     if ($imagesLoaded = $masonryService->isImagesloadedInstalled()) {
-      $libraries['imagesloaded']['js'] =  [
-        "/$imagesLoaded" => ['minified' => true]
+      $libraries['imagesloaded']['js'] = [
+        "/$imagesLoaded" => ['minified' => TRUE],
       ];
     }
   }
 }
-

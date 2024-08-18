@@ -21,7 +21,7 @@ class CspSettingsFormTest extends UnitTestCase {
    * @return array[]
    *   An array of [URL, isValid] tuples.
    */
-  public function urlDataProvider() {
+  public static function urlDataProvider() {
     return [
       'tld' => ['com', FALSE],
       'wildcard_tld' => ['*.com', FALSE],

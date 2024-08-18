@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Form;
 
+use Drupal;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Form\FormBase;
@@ -90,8 +91,8 @@ class GridActionForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $items = null, $params = null) {
-    $this->common = \Drupal::service('filebrowser.common');
-    $this->helper = \Drupal::service('form.helper');
+    $this->common = Drupal::service('filebrowser.common');
+    $this->helper = Drupal::service('form.helper');
     $this->node = $params['node'];
     $this->nid = $this->node->id();
     $this->relativeFid = empty($params['data']['fid']) ? 0 : $params['data']['fid'];
@@ -167,7 +168,8 @@ class GridActionForm extends FormBase {
         }
         else {
           $form['container'][$row_name][$col_name][$content['content']['file']->fid] = [
-            '#markup' => render($content['content']['grid']),
+            '#markup' => Drupal::service('renderer')
+              ->render($content['content']['grid']),
           ];
         }
       }
@@ -192,7 +194,7 @@ class GridActionForm extends FormBase {
     $this->fids = $this->getFids($form, $form_state);
     if (empty($this->fids)) {
       //set the error to the submit function:
-      \Drupal::logger('filebrowser')->notice('Error no items selected');
+      Drupal::logger('filebrowser')->notice('Error no items selected');
       $this->error = true;
     }
   }

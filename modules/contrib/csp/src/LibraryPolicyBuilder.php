@@ -8,9 +8,9 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Utility\Error;
 use GuzzleHttp\Psr7\Uri;
+use Psr\Log\LoggerInterface;
 
 /**
  * Service to build policy information for libraries.
@@ -59,9 +59,9 @@ class LibraryPolicyBuilder {
   /**
    * The logger channel.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  protected LoggerChannelInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * Constructs a new Library Parser.
@@ -74,7 +74,7 @@ class LibraryPolicyBuilder {
    *   The Theme Handler service.
    * @param \Drupal\Core\Asset\LibraryDiscoveryInterface $libraryDiscovery
    *   The Library Discovery Collector service.
-   * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
+   * @param \Psr\Log\LoggerInterface|null $logger
    *   The logger channel.
    */
   public function __construct(
@@ -82,7 +82,7 @@ class LibraryPolicyBuilder {
     ModuleHandlerInterface $moduleHandler,
     ThemeHandlerInterface $themeHandler,
     LibraryDiscoveryInterface $libraryDiscovery,
-    ?LoggerChannelInterface $logger = NULL
+    ?LoggerInterface $logger = NULL,
   ) {
     $this->cache = $cache;
     $this->moduleHandler = $moduleHandler;

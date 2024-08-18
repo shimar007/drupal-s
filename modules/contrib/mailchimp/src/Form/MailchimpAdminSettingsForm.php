@@ -4,14 +4,53 @@ namespace Drupal\mailchimp\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Link;
+use Drupal\Core\State\StateInterface;
+use Drupal\Core\Url;
 use Mailchimp\MailchimpAPIException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Configure Mailchimp settings for this site.
  */
 class MailchimpAdminSettingsForm extends ConfigFormBase {
+  /**
+   * The language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
+   * StateService.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected StateInterface $stateService;
+
+  /**
+   * Creates a new MailchimpAdminSettingsForm instance.
+   *
+   * @param \Drupal\Core\Language\LanguageManagerInterface $languageManager
+   *   The language manager.
+   * @param \Drupal\Core\State\StateInterface $stateService
+   *   State service.
+   */
+  public function __construct(LanguageManagerInterface $languageManager, StateInterface $stateService) {
+    $this->languageManager = $languageManager;
+    $this->stateService = $stateService;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('language_manager'),
+      $container->get('state'),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -32,23 +71,39 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('mailchimp.settings');
+    $mc_oauth_url = Url::fromRoute('mailchimp.admin.oauth');
+
+    $form['use_oauth'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Use OAuth Authentication',
+      '#default_value' => $config->get('use_oauth'),
+      '#description' => $this->t('Check this box to use the new OAuth Authentication method. Authenticate on the @oauth_settings_page', ['@oauth_settings_page' => Link::fromTextAndUrl($this->t('OAuth Settings page'), $mc_oauth_url)->toString()]),
+    ];
 
     $mc_api_url = Url::fromUri('http://admin.mailchimp.com/account/api', ['attributes' => ['target' => '_blank']]);
     $form['api_key'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Mailchimp API Key'),
-      '#required' => TRUE,
+      '#title' => $this->t('Mailchimp API Key (deprecated)'),
+      '#required' => FALSE,
       '#default_value' => $config->get('api_key'),
       '#description' => $this->t('The API key for your Mailchimp account. Get or generate a valid API key at your @apilink.', ['@apilink' => Link::fromTextAndUrl($this->t('Mailchimp API Dashboard'), $mc_api_url)->toString()]),
+      '#states' => [
+        'visible' => [
+          ':input[name="use_oauth"]' => ['checked' => FALSE],
+        ],
+        'required'  => [
+          ':input[name="use_oauth"]' => ['checked' => FALSE],
+        ],
+      ],
     ];
 
-    $form['api_timeout'] = array(
+    $form['api_timeout'] = [
       '#type' => 'textfield',
-      '#title' => t('Mailchimp API Timeout'),
+      '#title' => $this->t('Mailchimp API Timeout'),
       '#required' => TRUE,
       '#default_value' => $config->get('api_timeout'),
-      '#description' => t('The timeout (in seconds) for calls to the MailChimp API. Set to something that won\'t take down the Drupal site.'),
-    );
+      '#description' => $this->t("The timeout (in seconds) for calls to the MailChimp API. Set to something that won't take down the Drupal site."),
+    ];
 
     $form['connected_sites'] = [
       '#type' => 'fieldset',
@@ -65,7 +120,7 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('enable_connected'),
     ];
 
-    /* @var \Mailchimp\MailchimpConnectedSites $mc_connected */
+    /** @var \Mailchimp\MailchimpConnectedSites $mc_connected */
     try {
       $mc_connected = mailchimp_get_api_object('MailchimpConnectedSites');
       if ($mc_connected) {
@@ -79,6 +134,10 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
     $connected_sites_options = [];
     if (!empty($connected_sites) && !empty($connected_sites->sites)) {
       foreach ($connected_sites->sites as $site) {
+        if (empty($site->domain)) {
+          $site->domain = $this->t('Unlabeled site :id',
+            [':id' => $site->foreign_id]);
+        }
         $connected_sites_options[$site->foreign_id] = $site->domain;
       }
     }
@@ -107,7 +166,7 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
         '#type' => 'textarea',
         '#default_value' => $config->get('connected_paths'),
         '#prefix' => $this->t("<p><b>Configure paths to embed Mailchimp's JavaScript code on.</b></p>"),
-        '#description' => $this->t('Specify pages using their paths. Enter one path per line. <front> is the front page. If you have created a pop-up subscription form in Mailchimp, it will appear on paths defined here.'),
+        '#description' => $this->t("Specify pages using their paths. The '*' character is a wildcard. Enter one path per line. %front is the front page.<br>If you have created a pop-up subscription form in Mailchimp, it will appear on paths defined here.", ['%front' => '<front>']),
       ];
     }
     else {
@@ -155,15 +214,23 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('batch_limit'),
     ];
 
-    global $base_url;
-    $current_webhook_hash = $config->get('webhook_hash');
+    $hash = $config->get('webhook_hash') ? $config->get('webhook_hash') : md5(uniqid(mt_rand(), TRUE));
 
     $form['webhook_hash'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Webhook Hash'),
-      '#default_value' => $current_webhook_hash ? $current_webhook_hash : md5(uniqid(mt_rand(), TRUE)),
+      '#default_value' => $hash,
       '#description' => $this->t('Hash to validate incoming webhooks. Whatever you put here should be appended to the URL you provide Mailchimp.'),
-      '#suffix' => '<strong>Your webhook URL:</strong> ' . $base_url . '/mailchimp/webhook/[hash]',
+      '#suffix' => $this->t("Your webhook URL: :url:", [
+        ':url:' => mailchimp_webhook_url($hash),
+      ]),
+    ];
+
+    $form['optin_check_email_msg'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Double Opt-in check email message'),
+      '#default_value' => $config->get('optin_check_email_msg'),
+      '#description' => $this->t('A message to display when the double opt-in process has been initiated.'),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -175,6 +242,7 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('mailchimp.settings');
     $config
+      ->set('use_oauth', $form_state->getValue('use_oauth'))
       ->set('api_key', $form_state->getValue('api_key'))
       ->set('api_timeout', $form_state->getValue('api_timeout'))
       ->set('enable_connected', $form_state->getValue('enable_connected'))
@@ -183,7 +251,14 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
       ->set('cron', $form_state->getValue('cron'))
       ->set('batch_limit', $form_state->getValue('batch_limit'))
       ->set('webhook_hash', $form_state->getValue('webhook_hash'))
+      ->set('optin_check_email_msg', $form_state->getValue('optin_check_email_msg'))
       ->save();
+
+    // Check for proper OAuth config and report problems.
+    $mc_oauth_url = Url::fromRoute('mailchimp.admin.oauth');
+    if (!$config->get('use_oauth')) {
+      $this->messenger()->addWarning('Your site is authenticating with an API key and that method of authentication is deprecated. Oauth is now the preferred method of authentication.');
+    }
 
     parent::submitForm($form, $form_state);
   }

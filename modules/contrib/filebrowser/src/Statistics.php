@@ -2,6 +2,8 @@
 
 namespace Drupal\filebrowser;
 
+use Drupal;
+
 class Statistics {
 
   /**
@@ -17,10 +19,10 @@ class Statistics {
     $stats = $listing['data']['stats'];
 
     if ($stats['folders'] > 0) {
-      $this->statistics['folders'] = \Drupal::translation()->formatPlural($stats['folders'], '1 folder', '@count folders');
+      $this->statistics['folders'] = Drupal::translation()->formatPlural($stats['folders'], '1 folder', '@count folders');
     }
     if ($stats['files'] > 0) {
-      $this->statistics['files'] = \Drupal::translation()->formatPlural($stats['files'], '1 file', '@count files');
+      $this->statistics['files'] = Drupal::translation()->formatPlural($stats['files'], '1 file', '@count files');
       $this->statistics['size'] = format_size($stats['size']);
     }
   }

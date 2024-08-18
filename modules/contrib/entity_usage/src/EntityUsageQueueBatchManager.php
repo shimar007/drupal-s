@@ -2,12 +2,13 @@
 
 namespace Drupal\entity_usage;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\Core\Utility\Error;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Manages Entity Usage integration with Batch API specifically for the queue.
@@ -225,7 +226,7 @@ class EntityUsageQueueBatchManager implements ContainerInjectionInterface {
         }
       }
       catch (\Exception $e) {
-        watchdog_exception('entity_usage.batch', $e);
+        Error::logException(\Drupal::logger('entity_usage.batch'), $e);
       }
 
       $context['results'][] = $entity_type_id;

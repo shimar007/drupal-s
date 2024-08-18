@@ -13,14 +13,14 @@ class ModuleFilterSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'module_filter_settings_form';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state): array {
     $config = $this->config('module_filter.settings');
     $form = parent::buildForm($form, $form_state);
 
@@ -44,16 +44,31 @@ class ModuleFilterSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('path'),
     ];
 
+    $form['filters'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Filters'),
+      '#description' => $this->t('Enable filters for use around the administration pages.'),
+      '#collapsible' => FALSE,
+    ];
+
+    $form['filters']['permissions'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Permissions'),
+      '#description' => $this->t('Enable the filter on the permissions page.'),
+      '#default_value' => $config->get('enabled_filters.permissions'),
+    ];
+
     return $form;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $values = $form_state->getValues();
     $this->config('module_filter.settings')
       ->set('tabs', $values['tabs'])
+      ->set('enabled_filters.permissions', $values['permissions'])
       ->set('path', $values['path'])
       ->save();
 
@@ -63,7 +78,7 @@ class ModuleFilterSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function getEditableConfigNames() {
+  protected function getEditableConfigNames(): array {
     return ['module_filter.settings'];
   }
 

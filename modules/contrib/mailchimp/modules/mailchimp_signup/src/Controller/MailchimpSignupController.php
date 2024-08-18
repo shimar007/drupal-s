@@ -2,10 +2,10 @@
 
 namespace Drupal\mailchimp_signup\Controller;
 
-use Drupal\mailchimp_signup\Form\MailchimpSignupPageForm;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\mailchimp_signup\Form\MailchimpSignupPageForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

@@ -1,13 +1,13 @@
 name: CDN UI
 description: 'Administrative interface for CDN.'
 type: module
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^9.4 || ^10
 package: 'Web services'
 configure: cdn_ui.settings
 dependencies:
   - cdn:cdn
 
-# Information added by Drupal.org packaging script on 2022-12-11
-version: '8.x-3.6'
+# Information added by Drupal.org packaging script on 2024-05-02
+version: '4.1.0'
 project: 'cdn'
-datestamp: 1670801782
+datestamp: 1714643493

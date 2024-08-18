@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Form;
 
+use Drupal;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -71,8 +72,8 @@ class RenameForm extends ConfirmFormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state, $nid = null, $query_fid = null, $fids_str = null, $ajax = null) {
     /** @var \Drupal\filebrowser\Services\FilebrowserValidator $validate */
-    $this->common = \Drupal::service('filebrowser.common');
-    $this->storage = \Drupal::service('filebrowser.storage');
+    $this->common = Drupal::service('filebrowser.common');
+    $this->storage = Drupal::service('filebrowser.storage');
     $this->node = Node::load($nid);
     $this->oldNames = [];
     $this->fids = explode(',', $fids_str);
@@ -86,7 +87,11 @@ class RenameForm extends ConfirmFormBase {
     // If this form is to be presented in a slide-down window we
     // will set the attributes and at a close-window link
     if($ajax) {
-      $form['#attributes'] = ['class' => ['form-in-slide-down'],];
+      $form['#attributes'] = [
+          'class' => [
+          'form-in-slide-down',
+        ],
+      ];
       $form['close-window'] = $this->common->closeButtonMarkup();
     }
 
@@ -96,7 +101,7 @@ class RenameForm extends ConfirmFormBase {
 
     foreach($this->contents as $key => $row) {
       $this->contents[$key]['data_array'] = $data = unserialize($row['file_data']);
-      $filename = \Drupal::service('file_system')->basename($data->uri);
+      $filename = Drupal::service('file_system')->basename($data->uri);
       $name = pathinfo($filename, PATHINFO_FILENAME);
       $this->oldNames[$key] = $name;
       $form['new_name'][$key] = [
@@ -155,7 +160,7 @@ class RenameForm extends ConfirmFormBase {
 
           $success = rename($file_data->uri, $new_uri);
           if ($success) {
-            \Drupal::messenger()->addMessage($this->t('Renamed @old to @new', [
+            Drupal::messenger()->addMessage($this->t('Renamed @old to @new', [
               '@old' => $file_data->uri,
               '@new' => $new_uri
             ]));
@@ -167,17 +172,17 @@ class RenameForm extends ConfirmFormBase {
             $this->storage->updateContentField('fid', $fid, 'path', $new_filename);
           }
           else {
-            \Drupal::messenger()->addError($this->t('Can not rename @old', ['@old' => $file_data->uri]));
+            Drupal::messenger()->addError($this->t('Can not rename @old', ['@old' => $file_data->uri]));
           }
         }
         else {
           // this is a folder, we will not change anything
-          \Drupal::messenger()->addError($this->t('@old is a folder. Folder rename is not supported', ['@old' => $file_data->uri]));
+          Drupal::messenger()->addError($this->t('@old is a folder. Folder rename is not supported', ['@old' => $file_data->uri]));
         }
       }
     }
     Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
-    $form_state->setRedirect($this->route['name'], $this->route['node'], $this->route['query']);;
+    $form_state->setRedirect($this->route['name'], $this->route['node'], $this->route['query']);
   }
 
 // Folder renaming is disabled in D8 version.
@@ -267,9 +272,10 @@ class RenameForm extends ConfirmFormBase {
 
   protected function updateFileData(&$file, $uri) {
     $file->uri = $uri;
-    $file->filename = \Drupal::service('file_system')->basename($uri);
+    $file->filename = Drupal::service('file_system')->basename($uri);
     $file->name = pathinfo($file->filename, PATHINFO_FILENAME);
-    $file->url = file_create_url($file->uri);
+    $file->url = Drupal::service('file_url_generator')
+      ->generateString($file->uri);
   }
 
 }

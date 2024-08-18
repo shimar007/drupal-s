@@ -3,10 +3,10 @@
 namespace Drupal\csp\EventSubscriber;
 
 use Drupal\Component\Plugin\Exception\PluginException;
-use Drupal\Core\Asset\LibraryDependencyResolverInterface;
 use Drupal\Core\Cache\CacheableResponseInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Render\AttachmentsInterface;
+use Drupal\Core\Utility\Error;
 use Drupal\csp\Csp;
 use Drupal\csp\CspEvents;
 use Drupal\csp\Event\PolicyAlterEvent;
@@ -18,88 +18,98 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+// @phpcs:disable Drupal.Commenting.FunctionComment.ExtraParamComment
+// @phpcs:disable Drupal.Commenting.FunctionComment.ParamNameNoMatch
+
 /**
  * Class ResponseSubscriber.
  */
 class ResponseCspSubscriber implements EventSubscriberInterface {
 
   /**
-   * The Config Factory service.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
-   */
-  protected $configFactory;
-
-  /**
    * The Library Policy Builder service.
    *
    * @var \Drupal\csp\LibraryPolicyBuilder
    */
-  protected $libraryPolicyBuilder;
+  protected LibraryPolicyBuilder $libraryPolicyBuilder;
 
   /**
    * The Reporting Handler Plugin Manager service.
    *
    * @var \Drupal\csp\ReportingHandlerPluginManager
    */
-  private $reportingHandlerPluginManager;
+  private ReportingHandlerPluginManager $reportingHandlerPluginManager;
 
   /**
    * The Event Dispatcher service.
    *
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
-  private $eventDispatcher;
-
-  /**
-   * The Library Dependency Resolver service.
-   *
-   * @var \Drupal\Core\Asset\LibraryDependencyResolverInterface
-   */
-  private $libraryDependencyResolver;
+  private EventDispatcherInterface $eventDispatcher;
 
   /**
    * The Nonce service.
    *
    * @var \Drupal\csp\Nonce
    */
-  private $nonce;
+  private Nonce $nonce;
 
   /**
    * Constructs a new ResponseSubscriber object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Config Factory service.
-   * @param \Drupal\csp\LibraryPolicyBuilder $libraryPolicyBuilder
-   *   The Library Parser service.
-   * @param \Drupal\csp\ReportingHandlerPluginManager $reportingHandlerPluginManager
-   *   The Reporting Handler Plugin Manager service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   The Event Dispatcher Service.
    * @param \Drupal\csp\Nonce|null $nonce
    *   The nonce service.
+   * @param \Drupal\csp\LibraryPolicyBuilder $libraryPolicyBuilder
+   *   The Library Parser service.
+   * @param \Drupal\csp\ReportingHandlerPluginManager $reportingHandlerPluginManager
+   *   The Reporting Handler Plugin Manager service.
    */
   public function __construct(
-    ConfigFactoryInterface $configFactory,
-    LibraryPolicyBuilder $libraryPolicyBuilder,
-    ReportingHandlerPluginManager $reportingHandlerPluginManager,
-    EventDispatcherInterface $eventDispatcher,
-    $nonce = NULL
+    protected ConfigFactoryInterface $configFactory,
+    $eventDispatcher,
+    $nonce,
+    $libraryPolicyBuilder = NULL,
+    $reportingHandlerPluginManager = NULL,
   ) {
-    $this->configFactory = $configFactory;
-    $this->libraryPolicyBuilder = $libraryPolicyBuilder;
-    $this->reportingHandlerPluginManager = $reportingHandlerPluginManager;
-    $this->eventDispatcher = $eventDispatcher;
+    $argOrder = FALSE;
+    foreach (func_get_args() as $index => $arg) {
+      if ($arg instanceof EventDispatcherInterface) {
+        $this->eventDispatcher = $arg;
+        $argOrder |= ($index !== 1);
+      }
+      elseif ($arg instanceof Nonce) {
+        $this->nonce = $arg;
+        $argOrder |= ($index !== 2);
+      }
+      elseif ($arg instanceof LibraryPolicyBuilder) {
+        $this->libraryPolicyBuilder = $arg;
+      }
+      elseif ($arg instanceof ReportingHandlerPluginManager) {
+        $this->reportingHandlerPluginManager = $arg;
+      }
+    }
+    if ($argOrder) {
+      // @phpcs:ignore Drupal.Semantics.FunctionTriggerError.TriggerErrorTextLayoutRelaxed
+      @trigger_error("The parameter order for ResponseCspSubscriber has changed for compatibility with 2.0.0. See https://www.drupal.org/docs/contributed-modules/content-security-policy/upgrading-from-1x-to-2x#s-for-developers", E_USER_DEPRECATED);
+    }
 
-    if ($nonce instanceof LibraryDependencyResolverInterface) {
-      @trigger_error("The LibraryDependencyResolver service is deprecated in csp:8.x-1.24 and will be removed in csp:2.0.0. See https://www.drupal.org/project/csp/issues/3409450", E_USER_DEPRECATED);
-      $nonce = func_get_arg(4);
+    if (empty($this->eventDispatcher)) {
+      throw new \InvalidArgumentException("EventDispatcher service is required.");
     }
-    if (empty($nonce) || !($nonce instanceof Nonce)) {
+    if (empty($this->nonce)) {
       @trigger_error("Omitting the Nonce service is deprecated in csp:8.x-1.22 and will be required in csp:2.0.0. See https://www.drupal.org/project/csp/issues/3018679", E_USER_DEPRECATED);
-      $nonce = \Drupal::service('csp.nonce');
+      $this->nonce = \Drupal::service('csp.nonce');
     }
-    $this->nonce = $nonce;
+    if (empty($this->libraryPolicyBuilder)) {
+      $this->libraryPolicyBuilder = \Drupal::service('csp.library_policy_builder');
+    }
+    if (empty($this->reportingHandlerPluginManager)) {
+      $this->reportingHandlerPluginManager = \Drupal::service('plugin.manager.csp_reporting_handler');
+    }
   }
 
   /**
@@ -238,7 +248,8 @@ class ResponseCspSubscriber implements EventSubscriberInterface {
             ->alterPolicy($policy);
         }
         catch (PluginException $e) {
-          watchdog_exception('csp', $e);
+          \Drupal::logger('csp')
+            ->error(Error::DEFAULT_ERROR_MESSAGE, Error::decodeException($e));
         }
       }
 

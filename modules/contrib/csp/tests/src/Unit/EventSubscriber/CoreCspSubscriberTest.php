@@ -135,7 +135,7 @@ class CoreCspSubscriberTest extends UnitTestCase {
       );
       $this->assertEquals(
         [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-        array_unique($alterEvent->getPolicy()->getDirective('script-src-elem'))
+        $alterEvent->getPolicy()->getDirective('script-src-elem')
       );
     }
 
@@ -163,7 +163,7 @@ class CoreCspSubscriberTest extends UnitTestCase {
       );
       $this->assertEquals(
         [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-        array_unique($alterEvent->getPolicy()->getDirective('style-src-elem'))
+        $alterEvent->getPolicy()->getDirective('style-src-elem')
       );
     }
 
@@ -194,113 +194,7 @@ class CoreCspSubscriberTest extends UnitTestCase {
   }
 
   /**
-   * Test that including ckeditor modifies enabled script directives.
-   *
-   * @covers ::onCspPolicyAlter
-   */
-  public function testCkeditorScript() {
-    $policy = new Csp();
-    $policy->setDirective('default-src', [Csp::POLICY_ANY]);
-    $policy->setDirective('script-src', [Csp::POLICY_SELF]);
-    $policy->setDirective('script-src-attr', [Csp::POLICY_SELF]);
-    $policy->setDirective('script-src-elem', [Csp::POLICY_SELF]);
-
-    $this->response->method('getAttachments')
-      ->willReturn([
-        'library' => [
-          'core/ckeditor',
-        ],
-      ]);
-
-    $alterEvent = new PolicyAlterEvent($policy, $this->response);
-
-    $this->coreCspSubscriber->onCspPolicyAlter($alterEvent);
-
-    $this->assertEquals(
-      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      $alterEvent->getPolicy()->getDirective('script-src')
-    );
-    $this->assertEquals(
-      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      $alterEvent->getPolicy()->getDirective('script-src-attr')
-    );
-    $this->assertEquals(
-      [Csp::POLICY_SELF],
-      $alterEvent->getPolicy()->getDirective('script-src-elem')
-    );
-  }
-
-  /**
-   * Test script-src-attr fallback if script-src enabled.
-   *
-   * @covers ::onCspPolicyAlter
-   */
-  public function testCkeditorScriptAttrFallback() {
-    $policy = new Csp();
-    $policy->setDirective('default-src', [Csp::POLICY_ANY]);
-    $policy->setDirective('script-src', [Csp::POLICY_SELF]);
-
-    $this->response->method('getAttachments')
-      ->willReturn([
-        'library' => [
-          'core/ckeditor',
-        ],
-      ]);
-
-    $alterEvent = new PolicyAlterEvent($policy, $this->response);
-
-    $this->coreCspSubscriber->onCspPolicyAlter($alterEvent);
-
-    $this->assertEquals(
-      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      $alterEvent->getPolicy()->getDirective('script-src')
-    );
-    $this->assertEquals(
-      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      array_unique($alterEvent->getPolicy()->getDirective('script-src-attr'))
-    );
-    $this->assertEquals(
-      [Csp::POLICY_SELF],
-      $alterEvent->getPolicy()->getDirective('script-src-elem')
-    );
-  }
-
-  /**
-   * Test fallback if only default-src is enabled.
-   *
-   * @covers ::onCspPolicyAlter
-   */
-  public function testCkeditorScriptDefaultFallback() {
-    $policy = new Csp();
-    $policy->setDirective('default-src', [Csp::POLICY_SELF]);
-
-    $this->response->method('getAttachments')
-      ->willReturn([
-        'library' => [
-          'core/ckeditor',
-        ],
-      ]);
-
-    $alterEvent = new PolicyAlterEvent($policy, $this->response);
-
-    $this->coreCspSubscriber->onCspPolicyAlter($alterEvent);
-
-    $this->assertEquals(
-      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      $alterEvent->getPolicy()->getDirective('script-src')
-    );
-    $this->assertEquals(
-      [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      array_unique($alterEvent->getPolicy()->getDirective('script-src-attr'))
-    );
-    $this->assertEquals(
-      [Csp::POLICY_SELF],
-      $alterEvent->getPolicy()->getDirective('script-src-elem')
-    );
-  }
-
-  /**
-   * Test that including ckeditor modifies enabled style directives.
+   * Test that including ckeditor5 modifies enabled style directives.
    *
    * @covers ::onCspPolicyAlter
    */
@@ -314,7 +208,7 @@ class CoreCspSubscriberTest extends UnitTestCase {
     $this->response->method('getAttachments')
       ->willReturn([
         'library' => [
-          'ckeditor/drupal.ckeditor',
+          'core/ckeditor5',
         ],
       ]);
 
@@ -337,11 +231,11 @@ class CoreCspSubscriberTest extends UnitTestCase {
   }
 
   /**
-   * Test style-src-elem fallback if style-src enabled.
+   * Test ckeditor5 fallback if style-src enabled.
    *
    * @covers ::onCspPolicyAlter
    */
-  public function testCkeditorStyleElemFallback() {
+  public function testCkeditorStyleFallback() {
     $policy = new Csp();
     $policy->setDirective('default-src', [Csp::POLICY_ANY]);
     $policy->setDirective('style-src', [Csp::POLICY_SELF]);
@@ -349,7 +243,7 @@ class CoreCspSubscriberTest extends UnitTestCase {
     $this->response->method('getAttachments')
       ->willReturn([
         'library' => [
-          'ckeditor/drupal.ckeditor',
+          'core/ckeditor5',
         ],
       ]);
 
@@ -363,16 +257,16 @@ class CoreCspSubscriberTest extends UnitTestCase {
     );
     $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      array_unique($alterEvent->getPolicy()->getDirective('style-src-attr'))
+      $alterEvent->getPolicy()->getDirective('style-src-attr')
     );
     $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      array_unique($alterEvent->getPolicy()->getDirective('style-src-elem'))
+      $alterEvent->getPolicy()->getDirective('style-src-elem')
     );
   }
 
   /**
-   * Test style-src-elem fallback if default-src enabled.
+   * Test ckeditor5 fallback if only default-src is enabled.
    *
    * @covers ::onCspPolicyAlter
    */
@@ -383,7 +277,7 @@ class CoreCspSubscriberTest extends UnitTestCase {
     $this->response->method('getAttachments')
       ->willReturn([
         'library' => [
-          'ckeditor/drupal.ckeditor',
+          'core/ckeditor5',
         ],
       ]);
 
@@ -397,11 +291,11 @@ class CoreCspSubscriberTest extends UnitTestCase {
     );
     $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      array_unique($alterEvent->getPolicy()->getDirective('style-src-attr'))
+      $alterEvent->getPolicy()->getDirective('style-src-attr')
     );
     $this->assertEquals(
       [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-      array_unique($alterEvent->getPolicy()->getDirective('style-src-elem'))
+      $alterEvent->getPolicy()->getDirective('style-src-elem')
     );
   }
 

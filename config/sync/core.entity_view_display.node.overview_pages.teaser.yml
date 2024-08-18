@@ -5,6 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.overview_pages.body
+    - field.field.node.overview_pages.field_view_reference
     - node.type.overview_pages
   module:
     - text
@@ -27,4 +28,6 @@ content:
     third_party_settings: {  }
     weight: 100
     region: content
-hidden: {  }
+hidden:
+  field_view_reference: true
+  search_api_excerpt: true

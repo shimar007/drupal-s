@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\cdn\Unit\File;
 
 use Drupal\cdn\CdnSettings;
 use Drupal\cdn\File\FileUrlGenerator;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\File\FileUrlGenerator as CoreFileUrlGenerator;
 use Drupal\Core\PrivateKey;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\LocalStream;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
+use Drupal\Core\Url;
 use Drupal\Tests\UnitTestCase;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +27,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @group cdn
  */
 class FileUrlGeneratorTest extends UnitTestCase {
+
+  /**
+   * A hardcoded return value for the mocked core file URL generator service.
+   *
+   * @var string
+   */
+  const DECORATED_SERVICE_RETURNED_URL = '//decorated';
 
   /**
    * The private key to use in tests.
@@ -43,11 +55,14 @@ class FileUrlGeneratorTest extends UnitTestCase {
   }
 
   /**
+   * @covers ::generateString
    * @covers ::generate
+   * @covers ::generateAbsoluteString
+   * @covers ::doGenerate
    * @dataProvider urlProvider
    */
   public function testGenerate($scheme, $base_path, $uri, $expected_result) {
-    $gen = $this->createFileUrlGenerator($base_path, [
+    [$gen, $module_handler_spy] = $this->createFileUrlGenerator($base_path, [
       'status' => TRUE,
       'mapping' => [
         'type' => 'complex',
@@ -78,7 +93,11 @@ class FileUrlGeneratorTest extends UnitTestCase {
       ],
       'stream_wrappers' => ['public'],
     ]);
-    $this->assertSame($expected_result, $gen->generate($uri));
+    $this->assertSame($expected_result, $gen->generateString($uri));
+    $this->assertSame($expected_result, $gen->generateAbsoluteString($uri));
+    $this->assertSame($expected_result, $gen->generate($uri)->toUriString());
+    $module_handler_spy->alter('file_url', Argument::any())->shouldHaveBeenCalledTimes(3);
+    $module_handler_spy->alter('file_url', $uri)->shouldHaveBeenCalledTimes(3);
   }
 
   public function urlProvider() {
@@ -119,7 +138,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
         'public://something.else',
         '//cdn.example.com/sites/default/files/something.else',
       ],
-      'managed public file (spublic public imple)' => [
+      'managed public file (simple)' => [
         'public://simple.css',
         '//static.example.com/sites/default/files/simple.css',
       ],
@@ -132,6 +151,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
         FALSE,
       ],
       'unicode' => [
+        // cspell:disable-next-line
         'public://újjáépítésérol — 100% in B&W.jpg',
         '//img1.example.com/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg',
       ],
@@ -140,8 +160,10 @@ class FileUrlGeneratorTest extends UnitTestCase {
         '//img2.example.com/sites/default/files/llama%2520.jpg',
       ],
       'reserved characters in RFC3986' => [
-        'public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something',
-        '//cdn.example.com/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+        // cspell:disable
+        'public://gen-delims :?#[]@ sub-delims !$&\'()*+,;=.something',
+        '//cdn.example.com/sites/default/files/gen-delims%20%3A%3F%23%5B%5D%40%20sub-delims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+        // cspell:enable
       ],
     ];
 
@@ -195,6 +217,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
         FALSE,
       ],
       'unicode' => [
+        // cspell:disable-next-line
         'public://újjáépítésérol — 100% in B&W.jpg',
         '//img1.example.com/subdir/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg',
       ],
@@ -203,8 +226,10 @@ class FileUrlGeneratorTest extends UnitTestCase {
         '//img2.example.com/subdir/sites/default/files/llama%2520.jpg',
       ],
       'reserved characters in RFC3986' => [
-        'public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something',
-        '//cdn.example.com/subdir/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+        // cspell:disable
+        'public://gen-delims :?#[]@ sub-delims !$&\'()*+,;=.something',
+        '//cdn.example.com/subdir/sites/default/files/gen-delims%20%3A%3F%23%5B%5D%40%20sub-delims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+        // cspell:enable
       ],
     ];
 
@@ -216,7 +241,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
    * @dataProvider urlProviderForNegatedCondition
    */
   public function testGenerateWithNegatedCondition($scheme, $base_path, $uri, $expected_result) {
-    $gen = $this->createFileUrlGenerator($base_path, [
+    [$gen, $module_handler_spy] = $this->createFileUrlGenerator($base_path, [
       'status' => TRUE,
       'mapping' => [
         'type' => 'simple',
@@ -233,7 +258,11 @@ class FileUrlGeneratorTest extends UnitTestCase {
       ],
       'stream_wrappers' => ['public'],
     ]);
-    $this->assertSame($expected_result, $gen->generate($uri));
+    $this->assertSame($expected_result, $gen->generateString($uri));
+    $this->assertSame($expected_result, $gen->generateAbsoluteString($uri));
+    $this->assertSame($expected_result, $gen->generate($uri)->toUriString());
+    $module_handler_spy->alter('file_url', Argument::any())->shouldHaveBeenCalledTimes(3);
+    $module_handler_spy->alter('file_url', $uri)->shouldHaveBeenCalledTimes(3);
   }
 
   public function urlProviderForNegatedCondition() {
@@ -287,6 +316,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
         FALSE,
       ],
       'unicode' => [
+        // cspell:disable-next-line
         'public://újjáépítésérol — 100% in B&W.jpg',
         '//cdn.example.com/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg',
       ],
@@ -295,8 +325,8 @@ class FileUrlGeneratorTest extends UnitTestCase {
         '//cdn.example.com/sites/default/files/llama%2520.jpg',
       ],
       'reserved characters in RFC3986' => [
-        'public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something',
-        '//cdn.example.com/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+        'public://gen-delims :?#[]@ sub-delims !$&\'()*+,;=.something',
+        '//cdn.example.com/sites/default/files/gen-delims%20%3A%3F%23%5B%5D%40%20sub-delims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
       ],
     ];
 
@@ -350,6 +380,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
         FALSE,
       ],
       'unicode' => [
+        // cspell:disable-next-line
         'public://újjáépítésérol — 100% in B&W.jpg',
         '//cdn.example.com/subdir/sites/default/files/%C3%BAjj%C3%A1%C3%A9p%C3%ADt%C3%A9s%C3%A9rol%20%E2%80%94%20100%25%20in%20B%26W.jpg',
       ],
@@ -358,8 +389,8 @@ class FileUrlGeneratorTest extends UnitTestCase {
         '//cdn.example.com/subdir/sites/default/files/llama%2520.jpg',
       ],
       'reserved characters in RFC3986' => [
-        'public://gendelims :?#[]@ subdelims !$&\'()*+,;=.something',
-        '//cdn.example.com/subdir/sites/default/files/gendelims%20%3A%3F%23%5B%5D%40%20subdelims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
+        'public://gen-delims :?#[]@ sub-delims !$&\'()*+,;=.something',
+        '//cdn.example.com/subdir/sites/default/files/gen-delims%20%3A%3F%23%5B%5D%40%20sub-delims%20%21%24%26%27%28%29%2A%2B%2C%3B%3D.something',
       ],
     ];
 
@@ -396,7 +427,7 @@ class FileUrlGeneratorTest extends UnitTestCase {
           $scheme,
           $base_path,
           $uri,
-          !is_string($expected_result) ? $expected_result : $scheme . substr($expected_result, 2),
+          !is_string($expected_result) ? static::DECORATED_SERVICE_RETURNED_URL : $scheme . substr($expected_result, 2),
         ];
       }
     }
@@ -405,7 +436,10 @@ class FileUrlGeneratorTest extends UnitTestCase {
   }
 
   /**
+   * @covers ::generateString
    * @covers ::generate
+   * @covers ::generateAbsoluteString
+   * @covers ::doGenerate
    */
   public function testGenerateFarfuture() {
     $config = [
@@ -435,24 +469,30 @@ class FileUrlGeneratorTest extends UnitTestCase {
     $this->assertTrue(file_exists($llama_jpg_filepath));
 
     // In root: 1) non-existing file, 2) shipped file, 3) managed file.
-    $gen = $this->createFileUrlGenerator('', $config);
-    $this->assertSame('//cdn.example.com/core/misc/does-not-exist.js', $gen->generate('core/misc/does-not-exist.js'));
+    [$gen, $module_handler_spy] = $this->createFileUrlGenerator('', $config);
+    $this->assertSame('//cdn.example.com/core/misc/does-not-exist.js', $gen->generateString('core/misc/does-not-exist.js'));
     $drupal_js_mtime = filemtime($this->root . '/core/misc/drupal.js');
     $drupal_js_security_token = Crypt::hmacBase64($drupal_js_mtime . ':relative:' . UrlHelper::encodePath('/core/misc/drupal.js'), static::$privateKey . Settings::getHashSalt());
-    $this->assertSame('//cdn.example.com/cdn/ff/' . $drupal_js_security_token . '/' . $drupal_js_mtime . '/:relative:/core/misc/drupal.js', $gen->generate('core/misc/drupal.js'));
+    $this->assertSame('//cdn.example.com/cdn/ff/' . $drupal_js_security_token . '/' . $drupal_js_mtime . '/:relative:/core/misc/drupal.js', $gen->generateString('core/misc/drupal.js'));
     // Since the public stream wrapper is not available in the unit test,
     // and we use file_exists() in the target method, we are using the
     // file:// scheme that ships with PHP. This does require
     // injecting a leading into the path that we compare against, to match
     // the method.
     $llama_jpg_security_token = Crypt::hmacBase64($llama_jpg_mtime . 'file' . UrlHelper::encodePath('/' . $llama_jpg_filepath), static::$privateKey . Settings::getHashSalt());
-    $this->assertSame('//cdn.example.com/cdn/ff/' . $llama_jpg_security_token . '/' . $llama_jpg_mtime . '/file/' . UrlHelper::encodePath($llama_jpg_filepath), $gen->generate('file://' . $llama_jpg_filepath));
+    $this->assertSame('//cdn.example.com/cdn/ff/' . $llama_jpg_security_token . '/' . $llama_jpg_mtime . '/file/' . UrlHelper::encodePath($llama_jpg_filepath), $gen->generateString('file://' . $llama_jpg_filepath));
+    $module_handler_spy->alter('file_url', Argument::any())->shouldHaveBeenCalledTimes(3);
+    $module_handler_spy->alter('file_url', 'core/misc/does-not-exist.js')->shouldHaveBeenCalledTimes(1);
 
     // In subdir: 1) non-existing file, 2) shipped file, 3) managed file.
-    $gen = $this->createFileUrlGenerator('/subdir', $config);
-    $this->assertSame('//cdn.example.com/subdir/core/misc/does-not-exist.js', $gen->generate('core/misc/does-not-exist.js'));
-    $this->assertSame('//cdn.example.com/subdir/cdn/ff/' . $drupal_js_security_token . '/' . $drupal_js_mtime . '/:relative:/core/misc/drupal.js', $gen->generate('core/misc/drupal.js'));
-    $this->assertSame('//cdn.example.com/subdir/cdn/ff/' . $llama_jpg_security_token . '/' . $llama_jpg_mtime . '/file/' . UrlHelper::encodePath($llama_jpg_filepath), $gen->generate('file://' . $llama_jpg_filepath));
+    [$gen, $module_handler_spy] = $this->createFileUrlGenerator('/subdir', $config);
+    $this->assertSame('//cdn.example.com/subdir/core/misc/does-not-exist.js', $gen->generateString('core/misc/does-not-exist.js'));
+    $this->assertSame('//cdn.example.com/subdir/cdn/ff/' . $drupal_js_security_token . '/' . $drupal_js_mtime . '/:relative:/core/misc/drupal.js', $gen->generateString('core/misc/drupal.js'));
+    $this->assertSame('//cdn.example.com/subdir/cdn/ff/' . $llama_jpg_security_token . '/' . $llama_jpg_mtime . '/file/' . UrlHelper::encodePath($llama_jpg_filepath), $gen->generateString('file://' . $llama_jpg_filepath));
+    $module_handler_spy->alter('file_url', Argument::any())->shouldHaveBeenCalledTimes(3);
+    $module_handler_spy->alter('file_url', 'core/misc/does-not-exist.js')->shouldHaveBeenCalledTimes(1);
+    $module_handler_spy->alter('file_url', 'core/misc/drupal.js')->shouldHaveBeenCalledTimes(1);
+    $module_handler_spy->alter('file_url', 'file://' . $llama_jpg_filepath)->shouldHaveBeenCalledTimes(1);
 
     unlink($llama_jpg_filepath);
   }
@@ -465,10 +505,20 @@ class FileUrlGeneratorTest extends UnitTestCase {
    * @param array $raw_config
    *   The raw config for the cdn.settings.yml config.
    *
-   * @return \Drupal\cdn\File\FileUrlGenerator
-   *   The FileUrlGenerator to test.
+   * @return array
+   *   An array containing:
+   *   - The FileUrlGenerator to test.
+   *   - The prophecy for the ModuleHandler, to allow test case-specific spying.
    */
   protected function createFileUrlGenerator($base_path, array $raw_config) {
+    $core_file_url_generator = $this->prophesize(CoreFileUrlGenerator::class);
+    $core_file_url_generator->generate(Argument::type('string'))
+      ->willReturn(Url::fromUri(static::DECORATED_SERVICE_RETURNED_URL));
+    $core_file_url_generator->generateString(Argument::type('string'))
+      ->willReturn(static::DECORATED_SERVICE_RETURNED_URL);
+    $core_file_url_generator->generateAbsoluteString(Argument::type('string'))
+      ->willReturn(static::DECORATED_SERVICE_RETURNED_URL);
+
     $request = $this->prophesize(Request::class);
     $request->getBasePath()
       ->willReturn($base_path);
@@ -514,17 +564,23 @@ class FileUrlGeneratorTest extends UnitTestCase {
         $current_uri = $args[0];
         return $s;
       });
+    $module_handler = $this->prophesize(ModuleHandlerInterface::class);
     $private_key = $this->prophesize(PrivateKey::class);
     $private_key->get()
       ->willReturn(static::$privateKey);
 
-    return new FileUrlGenerator(
-      $this->root,
-      $stream_wrapper_manager->reveal(),
-      $request_stack->reveal(),
-      $private_key->reveal(),
-      new CdnSettings($this->getConfigFactoryStub(['cdn.settings' => $raw_config]), $stream_wrapper_manager->reveal())
-    );
+    return [
+      new FileUrlGenerator(
+        $core_file_url_generator->reveal(),
+        $this->root,
+        $stream_wrapper_manager->reveal(),
+        $module_handler->reveal(),
+        $request_stack->reveal(),
+        $private_key->reveal(),
+        new CdnSettings($this->getConfigFactoryStub(['cdn.settings' => $raw_config]), $stream_wrapper_manager->reveal())
+      ),
+      $module_handler,
+    ];
   }
 
 }

@@ -4,5 +4,6 @@ status: true
 dependencies: {  }
 name: 'Feeds - Tags'
 vid: drupal_feeds_tags
-description: ''
+description: null
 weight: 0
+new_revision: false

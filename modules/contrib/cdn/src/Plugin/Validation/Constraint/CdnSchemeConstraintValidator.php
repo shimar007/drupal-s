@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\cdn\Plugin\Validation\Constraint;
 
@@ -16,7 +16,7 @@ class CdnSchemeConstraintValidator extends ConstraintValidator {
   /**
    * {@inheritdoc}
    */
-  public function validate($scheme, Constraint $constraint) {
+  public function validate($scheme, Constraint $constraint): void {
     if (!$constraint instanceof CdnSchemeConstraint) {
       throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\CdnScheme');
     }

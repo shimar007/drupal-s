@@ -2,8 +2,13 @@
 
 namespace Drupal\minifyhtml\EventSubscriber;
 
+use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Path\CurrentPathStack;
+use Drupal\Core\Path\PathMatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -12,13 +17,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * @see \Symfony\Component\EventDispatcher\EventSubscriberInterface
  */
 class MinifyHTMLExit implements EventSubscriberInterface {
-
-  /**
-   * Abort flag, when dependencies have not been injected.
-   *
-   * @var bool
-   */
-  protected $abort = FALSE;
 
   /**
    * Config Factory object.
@@ -44,7 +42,7 @@ class MinifyHTMLExit implements EventSubscriberInterface {
   /**
    * Logger Factory object.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
    */
   protected $logger;
 
@@ -78,46 +76,42 @@ class MinifyHTMLExit implements EventSubscriberInterface {
 
   /**
    * Constructs a MinifyHTMLExit object.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config
+   *   The config service.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger
+   *   The logger service.
+   * @param \Drupal\Core\Path\PathMatcherInterface $pathMatcher
+   *   The path matcher service.
+   * @param \Drupal\Core\Path\CurrentPathStack $currentPath
+   *   The current path service.
    */
-  public function __construct() {
+  public function __construct(
+    ConfigFactoryInterface $config,
+    TimeInterface $time,
+    LoggerChannelFactoryInterface $logger,
+    PathMatcherInterface $pathMatcher,
+    CurrentPathStack $currentPath
+  ) {
+    $this->config = $config;
+    $this->time = $time;
+    $this->logger = $logger;
+    $this->pathMatcher = $pathMatcher;
+    $this->currentPath = $currentPath;
 
-    // To prevent warnings thrown by func_get_arg(), only attempt to get the
-    // args if there are exactly 5.
-    $arg_error = TRUE;
-    if (func_num_args() == 5) {
-
-      // Assigning the arguments this way prevents a signature mismatch
-      // exception that will occur until the cache is cleared to update the
-      // service definition. However, the cache cannot be cleared due to the
-      // exception.
-      // @todo create proper signature in 2.0.0 version.
-      $this->config = func_get_arg(0);
-      $this->time = func_get_arg(1);
-      $this->logger = func_get_arg(2);
-      $this->pathMatcher = func_get_arg(3);
-      $this->currentPath = func_get_arg(4);
-
-      if ($this->config) {
-        $this->token = 'MINIFYHTML_' . random_int(0, $this->time->getRequestTime()) . '-';
-        $arg_error = FALSE;
-      }
-    }
-
-    // Abort minification until cache is cleared.
-    if ($arg_error) {
-      \Drupal::messenger()->addWarning(t('Minify HTML has been disabled until the cache has been cleared.'));
-      $this->abort = TRUE;
-    }
+    $this->token = 'MINIFYHTML_' . random_int(0, $this->time->getRequestTime()) . '-';
   }
 
   /**
    * Minifies the HTML.
    *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   Response event object.
    */
-  public function response(FilterResponseEvent $event) {
-    if (!$this->abort && $this->config->get('minifyhtml.config')->get('minify')) {
+  public function response(ResponseEvent $event) {
+    if ($this->config->get('minifyhtml.config')->get('minify')) {
 
       // Skip excluded pages.
       $pages = $this->config->get('minifyhtml.config')->get('exclude_pages');
@@ -168,8 +162,8 @@ class MinifyHTMLExit implements EventSubscriberInterface {
     $callbacks = [
       'minifyhtmlPlaceholderCallbackTextarea' => '/\\s*<textarea(\\b[^>]*?>[\\s\\S]*?<\\/textarea>)\\s*/i',
       'minifyhtmlPlaceholderCallbackPre' => '/\\s*<pre(\\b[^>]*?>[\\s\\S]*?<\\/pre>)\\s*/i',
-      'minifyhtmlPlaceholderCallbackScript' => '/\\s*<script(\\b[^>]*?>[\\s\\S]*?<\\/script>)\\s*/i',
       'minifyhtmlPlaceholderCallbackIframe' => '/\\s*<iframe(\\b[^>]*?>[\\s\\S]*?<\\/iframe>)\\s*/i',
+      'minifyhtmlPlaceholderCallbackScript' => '/\\s*<script(\\b[^>]*?>[\\s\\S]*?<\\/script>)\\s*/i',
       'minifyhtmlPlaceholderCallbackStyle' => '/\\s*<style(\\b[^>]*?>[\\s\\S]*?<\\/style>)\\s*/i',
     ];
 
@@ -190,7 +184,9 @@ class MinifyHTMLExit implements EventSubscriberInterface {
 
     // Restore all values that are currently represented by a placeholder.
     if (!empty($this->placeholders)) {
-      $this->content = str_replace(array_keys($this->placeholders), array_values($this->placeholders), $this->content);
+      foreach (array_reverse($this->placeholders, TRUE) as $placeholder => $value) {
+        $this->content = str_replace($placeholder, $value, $this->content);
+      }
     }
   }
 
@@ -209,7 +205,11 @@ class MinifyHTMLExit implements EventSubscriberInterface {
     $content = preg_replace_callback($pattern, [$this, $callback], $this->content);
 
     if ($error = preg_last_error()) {
-      $this->logger->get('minifyhtml')->error('Preg error. The error code is @error. You can view what this error code is by viewing http://php.net/manual/en/function.preg-last-error.php', ['@error' => $error]);
+      $this->logger->get('minifyhtml')->error('@error_message in regular expression "@pattern" (code: @error).', [
+        '@error_message' => preg_last_error_msg(),
+        '@pattern' => $pattern,
+        '@error' => $error,
+      ]);
     }
 
     return $content;
@@ -376,6 +376,7 @@ class MinifyHTMLExit implements EventSubscriberInterface {
     $search[] = '/\\s+(<\\/?(?:area|base(?:font)?|blockquote|body'
       . '|caption|center|col(?:group)?|dd|dir|div|dl|dt|fieldset|form'
       . '|frame(?:set)?|h[1-6]|head|hr|html|legend|li|link|map|menu|meta'
+      // cspell:disable-next-line 'itle' is part of the regex.
       . '|ol|opt(?:group|ion)|p|param|t(?:able|body|head|d|h||r|foot|itle)'
       . '|ul)\\b[^>]*>)/i';
     $replace[] = '$1';

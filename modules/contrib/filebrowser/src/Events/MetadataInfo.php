@@ -26,7 +26,7 @@ class MetadataInfo extends Event {
   }
 
   /**
-   * @return mixed
+   * @return array
    */
   public function getMetaDataInfo() {
     return $this->metaDataInfo;

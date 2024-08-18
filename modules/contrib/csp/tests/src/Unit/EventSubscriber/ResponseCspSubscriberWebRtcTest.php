@@ -71,21 +71,16 @@ class ResponseCspSubscriberWebRtcTest extends UnitTestCase {
   public function setUp(): void {
     parent::setUp();
 
-    $this->response = $this->getMockBuilder(HtmlResponse::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->response->headers = $this->getMockBuilder(ResponseHeaderBag::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $responseCacheableMetadata = $this->getMockBuilder(CacheableMetadata::class)
-      ->getMock();
+    $this->response = $this->createMock(HtmlResponse::class);
+    $this->response->headers = $this->createMock(ResponseHeaderBag::class);
+    $responseCacheableMetadata = $this->createMock(CacheableMetadata::class);
     $this->response->method('getCacheableMetadata')
       ->willReturn($responseCacheableMetadata);
 
     $this->event = new ResponseEvent(
       $this->createMock(HttpKernelInterface::class),
       $this->createMock(Request::class),
-      HttpKernelInterface::MASTER_REQUEST,
+      HttpKernelInterface::MAIN_REQUEST,
       $this->response
     );
 
@@ -125,10 +120,10 @@ class ResponseCspSubscriberWebRtcTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
-      $this->libraryPolicy,
-      $this->reportingHandlerPluginManager,
       $this->eventDispatcher,
-      $this->nonce
+      $this->nonce,
+      $this->libraryPolicy,
+      $this->reportingHandlerPluginManager
     );
 
     $this->response->headers->expects($this->never())
@@ -143,7 +138,7 @@ class ResponseCspSubscriberWebRtcTest extends UnitTestCase {
    * @return array[]
    *   Configuration values.
    */
-  public function webRtcConfigProvider() {
+  public static function webRtcConfigProvider() {
     return [
       'allow' => ['allow'],
       'block' => ['block'],
@@ -178,10 +173,10 @@ class ResponseCspSubscriberWebRtcTest extends UnitTestCase {
 
     $subscriber = new ResponseCspSubscriber(
       $configFactory,
+      $this->eventDispatcher,
+      $this->nonce,
       $this->libraryPolicy,
       $this->reportingHandlerPluginManager,
-      $this->eventDispatcher,
-      $this->nonce
     );
 
     $this->response->headers->expects($this->once())

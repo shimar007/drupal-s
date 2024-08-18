@@ -7,6 +7,12 @@ mailchimp.settings:
     api_key:
       type: string
       label: 'Mailchimp API Integration Key'
+    domain:
+      type: string
+      label: 'Website domain to authenticate with'
+    use_oauth:
+      type: boolean
+      label: 'Use OAuth for Authentication to Mailchimp API'
     api_timeout:
       type: integer
       label: 'Mailchimp API Timeout'
@@ -35,3 +41,6 @@ mailchimp.settings:
     webhook_hash:
       type: string
       lable: 'Hash to validate incoming webhooks'
+    optin_check_email_msg:
+      type: label
+      label: 'Message to display when double optin is initiated.'

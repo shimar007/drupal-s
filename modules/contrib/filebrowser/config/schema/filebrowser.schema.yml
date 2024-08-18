@@ -1,0 +1,106 @@
+filebrowser.settings:
+  type: config_object
+  label: 'Filebrowser settings'
+  mapping:
+    filebrowser:
+      type: mapping
+      label: 'Filebrowser default settings'
+      mapping:
+        folder_path:
+          type: string
+          label: 'Folder path'
+        folder_path_encoded:
+          type: string
+          label: 'Folder path encoded'
+        rights:
+          type: mapping
+          label: 'Folder rights'
+          mapping:
+            explore_subdirs:
+              type: integer
+              label: 'Show subdirectories if present.'
+            download_archive:
+              type: integer
+              label: "Allow folder's files to be downloaded as an archive"
+            create_folders:
+              type: integer
+              label: 'Allow folder to be created'
+            download_manager:
+              type: string
+              label: 'Download manager'
+            force_download:
+              type: integer
+              label: 'Force download'
+            forbidden_files:
+              type: string
+              label: 'Blacklist. These files will not show in your listing'
+            whitelist:
+              type: string
+              label: 'White list'
+        uploads:
+          type: mapping
+          label: 'Upload'
+          mapping:
+            enabled:
+              type: integer
+              label: 'Allow uploads'
+            allow_overwrite:
+              type: integer
+              label: 'Allow overwrites'
+            accepted:
+              type: string
+              label: 'Accepted files for upload'
+        presentation:
+          type: mapping
+          label: 'Presentation'
+          mapping:
+            overwrite_breadcrumb:
+              type: integer
+              label: 'Overwrite the breadcrumb provided by other modules'
+            default_view:
+              type: string
+              label: 'Default view'
+            encoding:
+              type: string
+              label: 'FileSystem encoding'
+            hide_extension:
+              type: integer
+              label: 'Hide file extensions'
+            visible_columns:
+              type: mapping
+              label: 'Visible columns'
+              mapping:
+                icon:
+                  type: string
+                  label: 'Icon'
+                name:
+                  type: string
+                  label: 'Name'
+                created:
+                  type: string
+                  label: 'Created'
+                size:
+                  type: string
+                  label: 'Size'
+                mimetype:
+                  type: string
+                  label: 'Mime type'
+                description:
+                  type: string
+                  label: 'Description'
+            default_sort:
+              type: string
+              label: 'Default sort'
+            default_sort_order:
+              type: string
+              label: 'Default sort order'
+            langcode:
+              type: string
+              label: 'Language code'
+        adhocsetting:
+          type: mapping
+          label: 'Adhoc Settings'
+          mapping:
+            external_host:
+              type: string
+              label: 'External host'

@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Entity;
 
+use Drupal;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
@@ -12,7 +13,7 @@ use Drupal\node\Entity\Node;
 use Drupal\user\UserInterface;
 
 /**
- * Defines the Filebrowser metadata entity entity.
+ * Defines the Filebrowser metadata entity.
  *
  * @ingroup filebrowser
  *
@@ -38,7 +39,7 @@ class FilebrowserMetadataEntity extends ContentEntityBase implements Filebrowser
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);
     $values += [
-      'user_id' => \Drupal::currentUser()->id(),
+      'user_id' => Drupal::currentUser()->id(),
     ];
   }
 

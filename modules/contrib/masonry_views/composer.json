@@ -6,7 +6,7 @@
     "minimum-stability": "dev",
     "type": "drupal-module",
     "require": {
-        "drupal/masonry": "^1.0"
+        "drupal/masonry": "^4.0"
     },
     "authors": [
         {

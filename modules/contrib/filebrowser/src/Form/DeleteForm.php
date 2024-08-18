@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Form;
 
+use Drupal;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -76,9 +77,9 @@ class DeleteForm extends ConfirmFormBase {
    * ConfirmForm constructor.
    */
   public function __construct() {
-    $this->validator = \Drupal::service('filebrowser.validator');
-    $this->common = \Drupal::service('filebrowser.common');
-    $this->fileSystem = \Drupal::service('file_system');
+    $this->validator = Drupal::service('filebrowser.validator');
+    $this->common = Drupal::service('filebrowser.common');
+    $this->fileSystem = Drupal::service('file_system');
     $this->itemsToDelete = null;
     $this->folderSelected = false;
     $this->folderDeleteConfirmed = false;
@@ -202,7 +203,7 @@ class DeleteForm extends ConfirmFormBase {
           Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
         }
         else {
-          \Drupal::messenger()->addWarning($this->t('Unable to delete @file', ['@file' => $data->uri]));
+          Drupal::messenger()->addWarning($this->t('Unable to delete @file', ['@file' => $data->uri]));
         }
       }
       $route = $this->common->redirectRoute($this->queryFid, $this->node->id());

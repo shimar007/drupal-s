@@ -3,9 +3,7 @@
 namespace Drupal\mailchimp_signup\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\mailchimp_signup\Entity\MailchimpSignup;
 use Drupal\mailchimp_signup\Form\MailchimpSignupPageForm;
 
@@ -41,12 +39,12 @@ class MailchimpSignupFormFormatter extends EntityReferenceFormatterBase {
 
       $signup_id = $entity->id();
 
-      /* @var $signup \Drupal\mailchimp_signup\Entity\MailchimpSignup */
+      /** @var \Drupal\mailchimp_signup\Entity\MailchimpSignup $signup */
       $signup = mailchimp_signup_load($signup_id);
 
       $messenger = \Drupal::messenger();
 
-      $form = new \Drupal\mailchimp_signup\Form\MailchimpSignupPageForm($messenger);
+      $form = new MailchimpSignupPageForm($messenger);
 
       $form->setFormID($this->getFormId($signup));
       $form->setSignup($signup);
@@ -85,4 +83,5 @@ class MailchimpSignupFormFormatter extends EntityReferenceFormatterBase {
 
     return $id;
   }
+
 }

@@ -23,7 +23,9 @@ filebrowser:
       icon:  'icon'
       created: 'created'
       size: 'size'
-      mimetype: 0
+      mimetype: '0'
     default_sort: 'name'
     default_sort_order: 'asc'
     langcode: 'en'
+  adhocsetting:
+    external_host: ''

@@ -15,6 +15,12 @@ entity.mailchimp_campaign.send:
   base_route: entity.mailchimp_campaign.view
   weight: 1
 
+entity.mailchimp_campaign.sendtestmail:
+  title: 'Send Test'
+  route_name: entity.mailchimp_campaign.sendtestmail
+  base_route: entity.mailchimp_campaign.view
+  weight: 1
+
 entity.mailchimp_campaign.edit_form:
   title: 'Edit'
   route_name: entity.mailchimp_campaign.edit_form

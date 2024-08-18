@@ -8,7 +8,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
 
 /**
- * Access controller for the Filebrowser metadata entity entity.
+ * Access controller for the Filebrowser metadata entity.
  *
  * @see \Drupal\filebrowser\Entity\FilebrowserMetadataEntity.
  */

@@ -1,5 +1,0 @@
-options-widget:
-  version: VERSION
-  css:
-    theme:
-      css/bat_options_widget.css: {}

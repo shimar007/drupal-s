@@ -13,13 +13,14 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 class MailchimpSignupSubscribeBlock extends DeriverBase {
 
   use StringTranslationTrait;
+
   /**
    * {@inheritdoc}
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
     $signups = mailchimp_signup_load_multiple();
 
-    /* @var $signup \Drupal\mailchimp_signup\Entity\MailchimpSignup */
+    /** @var \Drupal\mailchimp_signup\Entity\MailchimpSignup $signup */
     foreach ($signups as $signup) {
       if (intval($signup->mode) == MAILCHIMP_SIGNUP_BLOCK || intval($signup->mode) == MAILCHIMP_SIGNUP_BOTH) {
 

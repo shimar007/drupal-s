@@ -8,7 +8,7 @@
 # https://drupal.org/node/1905070
 
 search_autocomplete.autocompletion_configuration.*:
-  type: config_object
+  type: config_entity
   label: 'Autocompletion Configuration'
   mapping:
     id:

@@ -46,17 +46,12 @@ use Drupal\search_autocomplete\SuggestionGroup;
  *   label = @Translation("Autocompletion Configuration"),
  *   admin_permission = "administer search autocomplete",
  *   handlers = {
- *     "access" =
- *   "Drupal\search_autocomplete\AutocompletionConfigurationAccessControlHandler",
- *     "list_builder" =
- *   "Drupal\search_autocomplete\Controller\AutocompletionConfigurationListBuilder",
+ *     "access" = "Drupal\search_autocomplete\AutocompletionConfigurationAccessControlHandler",
+ *     "list_builder" = "Drupal\search_autocomplete\Controller\AutocompletionConfigurationListBuilder",
  *     "form" = {
- *       "add" =
- *   "Drupal\search_autocomplete\Form\AutocompletionConfigurationAddForm",
- *       "edit" =
- *   "Drupal\search_autocomplete\Form\AutocompletionConfigurationEditForm",
- *       "delete" =
- *   "Drupal\search_autocomplete\Form\AutocompletionConfigurationDeleteForm"
+ *       "add" = "Drupal\search_autocomplete\Form\AutocompletionConfigurationAddForm",
+ *       "edit" = "Drupal\search_autocomplete\Form\AutocompletionConfigurationEditForm",
+ *       "delete" = "Drupal\search_autocomplete\Form\AutocompletionConfigurationDeleteForm"
  *     }
  *   },
  *   entity_keys = {

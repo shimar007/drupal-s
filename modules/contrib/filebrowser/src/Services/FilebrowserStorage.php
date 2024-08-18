@@ -3,6 +3,7 @@
 namespace Drupal\filebrowser\Services;
 
 use Drupal\Core\Database\Connection;
+use PDO;
 
 class FilebrowserStorage {
 
@@ -26,7 +27,7 @@ class FilebrowserStorage {
    * {@inheritdoc}
    */
   public function storageLoadMultipleData($nids, $access = true) {
-    $query = $this->connection->select('filebrowser_nodes', 'fb', ['fetch' => \PDO::FETCH_ASSOC]);
+    $query = $this->connection->select('filebrowser_nodes', 'fb', ['fetch' => PDO::FETCH_ASSOC]);
     $query->fields('fb');
     $query->condition('fb.nid', $nids, 'IN');
 
@@ -38,7 +39,7 @@ class FilebrowserStorage {
   }
 
   public function storageLoadData($nid) {
-    $query = $this->connection->select('filebrowser_nodes', 'f', ['fetch' => \PDO::FETCH_ASSOC]);
+    $query = $this->connection->select('filebrowser_nodes', 'f', ['fetch' => PDO::FETCH_ASSOC]);
     $query->fields('f');
     $query->condition('f.nid', $nid, '=');
     return $query->execute()->fetchAssoc();
@@ -135,7 +136,7 @@ class FilebrowserStorage {
   public function loadRecordsFromRoot($nid, $root) {
     return $this->connection->query('SELECT * FROM {filebrowser_content} where nid = :nid and root = :root', [
       ':nid' => $nid,
-      ':root' => $root])->fetchAllAssoc('path', \PDO::FETCH_ASSOC);
+      ':root' => $root])->fetchAllAssoc('path', PDO::FETCH_ASSOC);
   }
 
   public function loadAllRecordsFromRoot($nid) {
@@ -173,7 +174,7 @@ class FilebrowserStorage {
   public function insertRecord($record) {
     //fixme: root folder has no 'file_data'
     if(!isset($record['nid'])) {
-      debug($record);
+      dump($record);
     }
     // todo: check file_data index is not set for an empty filebrowser node.
     if (empty($record['file_data'])) {
@@ -201,7 +202,8 @@ class FilebrowserStorage {
 
   /**
    * @param array $data   [$fid] => $description
-   * @return \Drupal\Core\Database\StatementInterface|int|null
+   *
+   * @return void
    */
     public function storeDescriptionMultiple($data) {
       //var_dump($data);
@@ -215,10 +217,11 @@ class FilebrowserStorage {
 
   /**
    * @param array $fids
-   * @return mixed
+   *
+   * @return array
    */
   public function nodeContentLoadMultiple($fids) {
-    $query = $this->connection->select('filebrowser_content', 'f', ['fetch' => \PDO::FETCH_ASSOC]);
+    $query = $this->connection->select('filebrowser_content', 'f', ['fetch' => PDO::FETCH_ASSOC]);
     $query->fields('f');
     $query->condition('f.fid', $fids, 'IN');
     return $query->execute()->fetchAllAssoc('fid');

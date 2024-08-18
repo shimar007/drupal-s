@@ -21,18 +21,28 @@ class FilebrowserUninstallValidator implements ModuleUninstallValidatorInterface
   protected $entityTypeManager;
 
   /**
+   * @var \Drupal\Core\Entity\Query\QueryInterface
+   */
+  protected $entityQuery;
+
+  /**
+   * @var \Drupal\Core\StringTranslation\TranslationInterface
+   */
+  protected $stringTranslation;
+
+  /**
    * Constructs a new FilebrowserUninstallValidator.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface EntityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity query factory.
-   * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
+   * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
    *   The string translation service.
    */
 
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, TranslationInterface $string_translation) {
-    $this->entityQuery = $entity_type_manager->getStorage('node')->getQuery();
-    $this->stringTranslation = $string_translation;
-    $this->entityTypeManager = $entity_type_manager;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, TranslationInterface $stringTranslation) {
+    $this->entityTypeManager = $entityTypeManager;
+    $this->entityQuery = $entityTypeManager->getStorage('node')->getQuery();
+    $this->stringTranslation = $stringTranslation;
   }
 
   /**

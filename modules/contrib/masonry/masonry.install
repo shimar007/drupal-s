@@ -12,8 +12,6 @@
  */
 function masonry_requirements($phase) {
   $requirements = [];
-  $masonry = NULL;
-  $imagesLoaded = NULL;
 
   if ($phase == 'runtime') {
     /** @var \Drupal\masonry\Services\MasonryService $masonryService */
@@ -61,5 +59,12 @@ function masonry_requirements($phase) {
  * Cache rebuild for new masonry service new injected dependencies.
  */
 function masonry_update_8001(&$sandbox) {
+  // Empty update to cause a cache rebuild.
+}
+
+/**
+ * Cache rebuild for new masonry configurations and JS.
+ */
+function masonry_update_9000(&$sandbox) {
   // Empty update to cause a cache rebuild.
 }

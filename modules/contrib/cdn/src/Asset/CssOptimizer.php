@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\cdn\Asset;
 
 use Drupal\Core\Asset\AssetOptimizerInterface;
@@ -13,19 +15,10 @@ use Drupal\Core\Asset\AssetOptimizerInterface;
 class CssOptimizer implements AssetOptimizerInterface {
 
   /**
-   * The decorated CSS asset optimizer service.
-   *
-   * @var \Drupal\Core\Asset\AssetOptimizerInterface
-   */
-  protected $decoratedCssOptimizer;
-
-  /**
-   * @param \Drupal\Core\Asset\AssetOptimizerInterface $decorated_css_optimizer
+   * @param \Drupal\Core\Asset\AssetOptimizerInterface $decoratedCssOptimizer
    *   The decorated CSS asset optimizer service.
    */
-  public function __construct(AssetOptimizerInterface $decorated_css_optimizer) {
-    $this->decoratedCssOptimizer = $decorated_css_optimizer;
-  }
+  public function __construct(protected AssetOptimizerInterface $decoratedCssOptimizer) {}
 
   /**
    * {@inheritdoc}

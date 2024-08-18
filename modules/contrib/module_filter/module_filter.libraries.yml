@@ -4,7 +4,7 @@ winnow:
     js/jquery.winnow.js: {}
   dependencies:
     - core/jquery
-    - core/jquery.ui.autocomplete
+    - jquery_ui_autocomplete/autocomplete
 filter:
   version: VERSION
   js:
@@ -22,6 +22,7 @@ modules:
     theme:
       css/module_filter.modules.css: {}
   dependencies:
+    - core/once
     - module_filter/filter
 modules.bare:
   version: VERSION
@@ -43,6 +44,7 @@ modules.uninstall:
   js:
     js/module_filter.modules_uninstall.js: {}
   dependencies:
+    - core/once
     - module_filter/filter
 update.status:
   version: VERSION
@@ -52,10 +54,12 @@ update.status:
     theme:
       css/module_filter.update_status.css: {}
   dependencies:
+    - core/once
     - module_filter/filter
 permissions:
   version: VERSION
   js:
     js/module_filter.permissions.js: {}
   dependencies:
+    - core/once
     - module_filter/filter

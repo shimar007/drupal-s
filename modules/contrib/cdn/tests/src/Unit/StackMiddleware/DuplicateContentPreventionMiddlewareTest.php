@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\cdn\Unit\StackMiddleware;
 
 use Drupal\cdn\StackMiddleware\DuplicateContentPreventionMiddleware;
@@ -46,6 +48,7 @@ class DuplicateContentPreventionMiddlewareTest extends UnitTestCase {
 
     // Mock the kernel to decorate.
     $kernel = $this->prophesize(HttpKernelInterface::class);
+    // @phpstan-ignore-next-line
     $kernel->handle($request, HttpKernelInterface::MASTER_REQUEST, TRUE)
       ->willReturn(new Response());
 

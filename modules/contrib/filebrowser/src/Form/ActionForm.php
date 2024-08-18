@@ -3,6 +3,7 @@
 
 namespace Drupal\filebrowser\Form;
 
+use Drupal;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
@@ -81,8 +82,8 @@ class ActionForm extends FormBase {
     $actions = $params['actions'];
     $this->nid = $node->id();
     $this->relativeFid = empty($params['dbFileList']['data']['fid']) ? 0 : $params['dbFileList']['data']['fid'];
-    $this->common = \Drupal::service('filebrowser.common');
-    $this->helper = \Drupal::service('form.helper');
+    $this->common = Drupal::service('filebrowser.common');
+    $this->helper = Drupal::service('form.helper');
 
     // Initiate the form according default filebrowser requirements
     $form = [];
@@ -144,6 +145,10 @@ class ActionForm extends FormBase {
       // \Drupal::logger('filebrowser')->notice('Error no items selected');
       $this->error = true;
     }
+  }
+
+  public function ajaxSubmitForm(array &$form, FormStateInterface $form_state) {
+    return $this->submitForm($form, $form_state);
   }
 
   /**

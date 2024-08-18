@@ -14,14 +14,14 @@ class WebhookHashTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'classy';
+  protected $defaultTheme = 'stark';
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  public static $modules = ['mailchimp'];
+  protected static $modules = ['mailchimp'];
 
   /**
    * Tests configuring a text editor for an existing text format.

@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Form;
 
+use Drupal;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
@@ -45,7 +46,7 @@ class FolderForm extends FormBase {
    * @var array $list
    */
   public function buildForm(array $form, FormStateInterface $form_state, $nid = null, $relative_fid = null, $fids = null, $ajax = null) {
-    $this->common = \Drupal::service('filebrowser.common');
+    $this->common = Drupal::service('filebrowser.common');
     $this->relativeRoot = $this->common->relativePath($relative_fid);
     $this->node = Node::load($nid);
     $this->relativeFid = $relative_fid;
@@ -94,9 +95,9 @@ class FolderForm extends FormBase {
     $folder_uri =
       $this->node->filebrowser->folderPath . $this->relativeRoot . '/' . $form_state->getValue('folder_name');
 
-    $success = \Drupal::service('file_system')->prepareDirectory($folder_uri, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+    $success = Drupal::service('file_system')->prepareDirectory($folder_uri, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
     if (!$success) {
-      \Drupal::messenger()->addError($this->t('Unable to create this folder, do you have filesystem right to do that ?'));
+      Drupal::messenger()->addError($this->t('Unable to create this folder, do you have filesystem right to do that ?'));
     }
     else{
       Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);

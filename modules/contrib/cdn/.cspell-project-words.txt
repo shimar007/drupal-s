@@ -1,0 +1,19 @@
+# RFC terminology.
+delims
+
+# Technology terminology.
+hotlinking
+
+# Technology names.
+flysystem
+lighttpd
+
+# Drupal core terminology.
+validatable
+
+# CDN terminology.
+farfuture
+nocssjs
+
+# README.
+Hasselt

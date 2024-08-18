@@ -79,6 +79,7 @@ class MailchimpListsClearCacheForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     mailchimp_get_lists([], TRUE);
+    $form_state->setRedirectUrl(Url::fromRoute('mailchimp_lists.overview'));
     $this->messenger->addStatus($this->t('Mailchimp audience cache cleared.'));
   }
 

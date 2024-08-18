@@ -320,6 +320,9 @@ class PolicyHelperNonceTest extends PolicyHelperTestBase {
     if (!$valid) {
       $this->expectException(\InvalidArgumentException::class);
     }
+    else {
+      $this->expectNotToPerformAssertions();
+    }
 
     $policyHelper->appendNonce($policy, $directive, self::TEST_FALLBACK_VALUE);
   }
@@ -364,6 +367,9 @@ class PolicyHelperNonceTest extends PolicyHelperTestBase {
 
     if (!$valid) {
       $this->expectException(\InvalidArgumentException::class);
+    }
+    else {
+      $this->expectNotToPerformAssertions();
     }
 
     $policyHelper->appendNonce($policy, 'script', self::TEST_FALLBACK_VALUE, $value);

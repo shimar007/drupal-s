@@ -160,7 +160,14 @@ abstract class BetterExposedFiltersWidgetBase extends PluginBase implements Bett
         return $carry || ($value === $default_value ? '' : ($value || $default_value === 0));
       }, FALSE);
 
-      if ($has_values) {
+      $collapsible_disable_automatic_open = FALSE;
+      if (isset($form[$element]['#collapsible_disable_automatic_open'])) {
+        $collapsible_disable_automatic_open = $form[$element]['#collapsible_disable_automatic_open'];
+      }
+      elseif (isset($form[$group]['#collapsible_disable_automatic_open'])) {
+        $collapsible_disable_automatic_open = $form[$group]['#collapsible_disable_automatic_open'];
+      }
+      if ($has_values && !$collapsible_disable_automatic_open) {
         $form[$group]['#open'] = TRUE;
       }
     }
@@ -176,18 +183,6 @@ abstract class BetterExposedFiltersWidgetBase extends PluginBase implements Bett
    *   Url object.
    */
   protected function getExposedFormActionUrl(FormStateInterface $form_state) {
-    /** @var \Drupal\views\ViewExecutable $view */
-    $view = $form_state->get('view');
-    $display = $form_state->get('display');
-
-    if (isset($display['display_options']['path'])) {
-      return Url::fromRoute(implode('.', [
-        'view',
-        $view->id(),
-        $display['id'],
-      ]));
-    }
-
     $request = \Drupal::request();
     $url = Url::createFromRequest(clone $request);
     $url->setAbsolute();

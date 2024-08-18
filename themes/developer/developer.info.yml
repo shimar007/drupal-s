@@ -1,6 +1,6 @@
 name: Developer Theme
 type: theme
-base theme: classy
+base theme: claro
 description: 'Developer Website'
 package: Core
 libraries:
@@ -19,5 +19,5 @@ regions:
   sidebar_second: 'Sidebar second'
   footer: 'Footer'
 version: VERSION
-core_version_requirement: '9.x'
+core_version_requirement: ^8 || ^9 || ^10
 project: 'drupal'

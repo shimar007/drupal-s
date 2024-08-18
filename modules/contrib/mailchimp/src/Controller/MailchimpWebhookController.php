@@ -3,10 +3,10 @@
 namespace Drupal\mailchimp\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Mailchimp Webhook controller.
@@ -89,7 +89,10 @@ class MailchimpWebhookController extends ControllerBase {
       }
 
       // Allow other modules to act on a webhook.
-      $this->moduleHandler->invokeAll('mailchimp_process_webhook', [$type, $data]);
+      $this->moduleHandler->invokeAll('mailchimp_process_webhook', [
+        $type,
+        $data,
+      ]);
 
       // Log event.
       $this->logger->info('Webhook type {type} has been processed.', [

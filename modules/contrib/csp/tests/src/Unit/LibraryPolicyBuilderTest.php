@@ -2,14 +2,15 @@
 
 namespace Drupal\Tests\csp\Unit;
 
+use Drupal\Component\Datetime\Time;
 use Drupal\Core\Asset\Exception\IncompleteLibraryDefinitionException;
 use Drupal\Core\Asset\LibraryDiscovery;
 use Drupal\Core\Cache\MemoryBackend;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Extension\ThemeHandler;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\csp\LibraryPolicyBuilder;
 use Drupal\Tests\UnitTestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @coversDefaultClass \Drupal\csp\LibraryPolicyBuilder
@@ -55,7 +56,7 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
   /**
    * Mock Logger Channel.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Psr\Log\LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $logger;
 
@@ -65,11 +66,11 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
   public function setUp(): void {
     parent::setUp();
 
-    $this->cache = new MemoryBackend();
+    $this->cache = new MemoryBackend(new Time());
     $this->moduleHandler = $this->createMock(ModuleHandler::class);
     $this->themeHandler = $this->createMock(ThemeHandler::class);
     $this->libraryDiscovery = $this->createMock(LibraryDiscovery::class);
-    $this->logger = $this->createMock(LoggerChannelInterface::class);
+    $this->logger = $this->createMock(LoggerInterface::class);
   }
 
   /**

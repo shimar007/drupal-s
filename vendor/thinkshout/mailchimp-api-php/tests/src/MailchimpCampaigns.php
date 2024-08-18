@@ -3,25 +3,34 @@
 namespace Mailchimp\Tests;
 
 /**
- * MailChimp Campaigns library test cases.
+ * Mailchimp Campaigns library test cases.
  *
  * @package Mailchimp\Tests
  */
 class MailchimpCampaigns extends \Mailchimp\MailchimpCampaigns {
 
   /**
+   * Test HTTP client.
+   *
+   * @var \Mailchimp\http\MailchimpHttpClientInterface
+   */
+  private $client;
+
+  /**
    * @inheritdoc
    */
-  public function __construct($api_key = 'apikey', $api_user = 'apikey', $http_options = []) {
+  public function __construct($api_class = null) {
     $this->client = new MailchimpTestHttpClient();
+
+    parent::__construct($api_class);
   }
 
   public function getClient() {
-    return $this->client;
+    return $this->api_class->client;
   }
 
   public function getEndpoint() {
-    return $this->endpoint;
+    return 'https://us1.api.mailchimp.com/3.0';
   }
 
   /**

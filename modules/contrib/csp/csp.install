@@ -51,6 +51,21 @@ function csp_requirements($phase) {
         'severity' => REQUIREMENT_WARNING,
       ];
     }
+
+    $sitelogPolicies = array_filter(['report-only', 'enforce'], function ($policyTypeKey) use ($cspSettingsConfig) {
+      return $cspSettingsConfig->get($policyTypeKey . '.reporting.plugin') === 'sitelog';
+    });
+    if ($sitelogPolicies) {
+      $requirements['csp_sitelog'] = [
+        'title' => 'Content Security Policy Reporting',
+        'value' => t('Deprecated reporting handler'),
+        'description' => t('The Site Log reporting handler is deprecated in 1.x and will be removed in 2.x. Use the <a href=":reporting-module">Reporting API module</a> instead.',
+        [
+          ':reporting-module' => 'https://www.drupal.org/project/reporting',
+        ]),
+        'severity' => REQUIREMENT_WARNING,
+      ];
+    }
   }
 
   return $requirements;

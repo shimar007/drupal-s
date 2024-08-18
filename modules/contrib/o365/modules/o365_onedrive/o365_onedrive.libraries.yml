@@ -1,6 +1,0 @@
-
-o365_onedrive:
-  version: 1.x
-  css:
-    component:
-      static/css/o365_onedrive.css: {}

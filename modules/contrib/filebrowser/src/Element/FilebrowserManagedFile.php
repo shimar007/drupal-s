@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Element;
 
+use Drupal;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\file\Element\ManagedFile;
@@ -30,15 +31,15 @@ class FilebrowserManagedFile extends ManagedFile {
 
   protected static function custom_file_managed_file_save_upload($element, FormStateInterface $form_state) {
     $upload_name = implode('_', $element['#parents']);
-    $all_files = \Drupal::request()->files->get('files', array());
+    $all_files = Drupal::request()->files->get('files', array());
     if (empty($all_files[$upload_name])) {
       return FALSE;
     }
     $file_upload = $all_files[$upload_name];
 
-    $destination = isset($element['#upload_location']) ? $element['#upload_location'] : NULL;
-    if (isset($destination) && !\Drupal::service('file_system')->prepareDirectory($destination, FileSystemInterface::CREATE_DIRECTORY)) {
-      \Drupal::logger('file')->notice('The upload directory %directory for the file field %name could not be created or is not accessible. A newly uploaded file could not be saved in this directory as a consequence, and the upload was canceled.', array('%directory' => $destination, '%name' => $element['#field_name']));
+    $destination = $element['#upload_location'] ?? NULL;
+    if (isset($destination) && !Drupal::service('file_system')->prepareDirectory($destination, FileSystemInterface::CREATE_DIRECTORY)) {
+      Drupal::logger('file')->notice('The upload directory %directory for the file field %name could not be created or is not accessible. A newly uploaded file could not be saved in this directory as a consequence, and the upload was canceled.', array('%directory' => $destination, '%name' => $element['#field_name']));
       $form_state->setError($element, t('The file could not be uploaded.'));
       return FALSE;
     }
@@ -47,7 +48,7 @@ class FilebrowserManagedFile extends ManagedFile {
     $files_uploaded = $element['#multiple'] && count(array_filter($file_upload)) > 0;
     $files_uploaded |= !$element['#multiple'] && !empty($file_upload);
     if ($files_uploaded) {
-      $nid = \Drupal::routeMatch()->getParameter('nid');
+      $nid = Drupal::routeMatch()->getParameter('nid');
       if(ctype_digit($nid)) {
         $node = Node::load($nid);
       }
@@ -55,10 +56,10 @@ class FilebrowserManagedFile extends ManagedFile {
         $node = null;
       }
       if ($node instanceof NodeInterface) {
-        $config = \Drupal::config('filebrowser.settings');
+        $config = Drupal::config('filebrowser.settings');
         $config = $config->get('filebrowser');
-        $nodeValues = isset($node->filebrowser) ? $node->filebrowser : null;
-        $allowOverwrite = isset($nodeValues->allowOverwrite) ? $nodeValues->allowOverwrite : $config['uploads']['allow_overwrite'];
+        $nodeValues = $node->filebrowser ?? NULL;
+        $allowOverwrite = $nodeValues->allowOverwrite ?? $config['uploads']['allow_overwrite'];
         if($allowOverwrite) {
           $files = file_save_upload($upload_name, $element['#upload_validators'], $destination, null, FileSystem::EXISTS_REPLACE);
         }
@@ -70,7 +71,7 @@ class FilebrowserManagedFile extends ManagedFile {
         $files = file_save_upload($upload_name, $element['#upload_validators'], $destination);
       }
       if (!$files) {
-        \Drupal::logger('file')->notice('The file upload failed. %upload', array('%upload' => $upload_name));
+        Drupal::logger('file')->notice('The file upload failed. %upload', array('%upload' => $upload_name));
         $form_state->setError($element, t('Files in the @name field were unable to be uploaded.', array('@name' => $element['#title'])));
         return array();
       }
@@ -132,7 +133,7 @@ class FilebrowserManagedFile extends ManagedFile {
               // Temporary files that belong to other users should never be
               // allowed.
               if ($file->isTemporary()) {
-                if ($file->getOwnerId() != \Drupal::currentUser()->id()) {
+                if ($file->getOwnerId() != Drupal::currentUser()->id()) {
                   $force_default = TRUE;
                   break;
                 }
@@ -141,9 +142,9 @@ class FilebrowserManagedFile extends ManagedFile {
                 // they do need to be able to reuse their own files from earlier
                 // submissions of the same form, so to allow that, check for the
                 // token added by $this->processManagedFile().
-                elseif (\Drupal::currentUser()->isAnonymous()) {
+                elseif (Drupal::currentUser()->isAnonymous()) {
                   $token = NestedArray::getValue($form_state->getUserInput(), array_merge($element['#parents'], ['file_' . $file->id(), 'fid_token']));
-                  if ($token !== Crypt::hmacBase64('file-' . $file->id(), \Drupal::service('private_key')->get() . Settings::getHashSalt())) {
+                  if ($token !== Crypt::hmacBase64('file-' . $file->id(), Drupal::service('private_key')->get() . Settings::getHashSalt())) {
                     $force_default = TRUE;
                     break;
                   }
@@ -162,11 +163,11 @@ class FilebrowserManagedFile extends ManagedFile {
     // default value.
     if ($input === FALSE || $force_default) {
       if ($element['#extended']) {
-        $default_fids = isset($element['#default_value']['fids']) ? $element['#default_value']['fids'] : [];
-        $return = isset($element['#default_value']) ? $element['#default_value'] : ['fids' => []];
+        $default_fids = $element['#default_value']['fids'] ?? [];
+        $return = $element['#default_value'] ?? ['fids' => []];
       }
       else {
-        $default_fids = isset($element['#default_value']) ? $element['#default_value'] : [];
+        $default_fids = $element['#default_value'] ?? [];
         $return = ['fids' => []];
       }
 
@@ -185,3 +186,4 @@ class FilebrowserManagedFile extends ManagedFile {
     return $return;
   }
 }
+

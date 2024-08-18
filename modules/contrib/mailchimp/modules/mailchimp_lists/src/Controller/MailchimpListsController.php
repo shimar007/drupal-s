@@ -64,22 +64,6 @@ class MailchimpListsController extends ControllerBase {
       ];
     }
 
-    $refresh_url = Url::fromRoute('mailchimp_lists.refresh', ['destination' => 'admin/config/services/mailchimp/lists']);
-
-    $content['refresh_link'] = [
-      '#title' => 'Refresh audiences from Mailchimp',
-      '#type' => 'link',
-      '#url' => $refresh_url,
-      '#attributes' => [
-        'class' => [
-          'button',
-          'button-action',
-          'button--primary',
-          'button--small',
-        ],
-      ],
-    ];
-
     $mailchimp_lists_url = Url::fromUri('https://admin.mailchimp.com/lists', ['attributes' => ['target' => '_blank']]);
 
     $content['mailchimp_list_link'] = [

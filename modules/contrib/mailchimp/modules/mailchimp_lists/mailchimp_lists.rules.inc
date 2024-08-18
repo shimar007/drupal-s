@@ -46,6 +46,13 @@ function mailchimp_lists_rules_action_entity_subscribe($entity, $field, $subscri
   $field_info = $field->info();
   $choices = reset($field_info['instance']['default_value']);
   $choices['subscribe'] = $subscribe;
+
+  // Update field values in DB.
+  $fieldname = $field_info['instance']->getFieldDefinition()->getName();
+  $entity->$fieldname->subscribe = $choices['subscribe'];
+  $entity->$fieldname->interest_groups = $choices['interest_groups'];
+  $entity->save();
+
   mailchimp_lists_process_subscribe_form_choices($choices, $field_info['instance'], $field_info['field'], $entity->raw());
 }
 

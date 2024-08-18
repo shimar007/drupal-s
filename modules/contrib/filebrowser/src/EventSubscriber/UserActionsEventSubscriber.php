@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\EventSubscriber;
 
+use Drupal;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\filebrowser\Events\UserActionsEvent;
 use Drupal\filebrowser\Services\Common;
@@ -30,22 +31,22 @@ class UserActionsEventSubscriber implements EventSubscriberInterface {
   public function handler(UserActionsEvent $event) {
     $actions= [];
     $fileData = $event->getFileData();
-    $node = \Drupal::request()->attributes->get('node');
+    $node = Drupal::request()->attributes->get('node');
 
     if ($fileData['data']['stats']['files_count'] || $fileData['data']['stats']['folders_count'] ) {
-      if (\Drupal::service('filebrowser.common')->canDownloadArchive($node) && function_exists('zip_open')) {
+      if (Drupal::service('filebrowser.common')->canDownloadArchive($node) && function_exists('zip_open')) {
         $actions[] = [
           'operation' => 'download',
           'title' => $this->t("Download selected items as an ZIP archive (only files)")
         ];
       }
-      if (\Drupal::currentUser()->hasPermission(Common::DELETE_FILES)) {
+      if (Drupal::currentUser()->hasPermission(Common::DELETE_FILES)) {
         $actions[] = [
           'operation' => 'delete',
           'title' => $this->t("Delete selected items")
         ];
       }
-      if (\Drupal::currentUser()->hasPermission(Common::RENAME_FILES)) {
+      if (Drupal::currentUser()->hasPermission(Common::RENAME_FILES)) {
         $actions[] = [
           'operation' => 'rename',
           'title' => $this->t("Rename selected items")

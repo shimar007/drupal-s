@@ -27,6 +27,7 @@
  * Install, update and uninstall functions for the Filebrowser module.
  */
 
+use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Database\Database;
 
 /**
@@ -44,7 +45,7 @@ function filebrowser_install() {
  */
 function filebrowser_uninstall() {
   // Clear filebrowser data out of the cache.
-  \Drupal::cache('data')->deleteAll();
+  Drupal::cache('data')->deleteAll();
 }
 
 function filebrowser_schema() {
@@ -68,6 +69,12 @@ function filebrowser_schema() {
         'not null' => TRUE,
         'size' => 'big',
         'description' => 'serialised data containing the filebrowser settings for this node',
+      ],
+      'external_host' => [
+        'type' => 'varchar',
+        'description' => "External host",
+        'length' => 256,
+        'not null' => FALSE,
       ],
     ],
     'primary key' => ['nid'],
@@ -139,12 +146,12 @@ function filebrowser_update_9101() {
     $schema->changeField($table, $field, $field, $content_schema);
   }
   $field = 'content';
-  $entity_type_manager = \Drupal::entityTypeManager();
+  $entity_type_manager = Drupal::entityTypeManager();
   $entity_type = $entity_type_manager->getDefinition($entity_type_id);
   $class = $entity_type->getClass();
   $fields = $class::baseFieldDefinitions($entity_type);
   $content_definition = $fields['content'];
-  \Drupal::entityDefinitionUpdateManager()
+  Drupal::entityDefinitionUpdateManager()
     ->installFieldStorageDefinition($field, $entity_type_id, 'filebrowser', $content_definition);
 }
 
@@ -152,10 +159,36 @@ function filebrowser_update_9101() {
  * Add overwrite_breadcrumb to Filebrowser settings configuration.
  */
 function filebrowser_update_9102() {
+  $module_path = Drupal::service('module_handler')->getModule('filebrowser')->getPath();
+  $source = new FileStorage($module_path . '/config/install');
   /** @var \Drupal\Core\Config\StorageInterface $active_storage */
-
-  $module_path = \Drupal::service('module_handler')->getModule('filebrowser')->getPath();
-  $source = new \Drupal\Core\Config\FileStorage($module_path . '/config/install');
-  $active_storage = \Drupal::service('config.storage');
+  $active_storage = Drupal::service('config.storage');
   $active_storage->write('filebrowser.settings', $source->read('filebrowser.settings'));
 }
+
+/**
+ * update database schema to include external_host
+ */
+function filebrowser_update_9103() {
+  $external_host = [
+    'type' => 'varchar',
+    'description' => "External host",
+    'length' => 256,
+    'not null' => FALSE,
+  ];
+  Database::setActiveConnection();
+  $schema = Database::getConnection()->schema();
+  $schema->addField('filebrowser_nodes', 'external_host', $external_host);
+}
+
+/**
+ * Add update active configuration to include new setting: external_host.
+ */
+function filebrowser_update_9104() {
+  $module_path = Drupal::service('module_handler')->getModule('filebrowser')->getPath();
+  $source = new FileStorage($module_path . '/config/install');
+  /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+  $active_storage = Drupal::service('config.storage');
+  $active_storage->write('filebrowser.settings', $source->read('filebrowser.settings'));
+}
+

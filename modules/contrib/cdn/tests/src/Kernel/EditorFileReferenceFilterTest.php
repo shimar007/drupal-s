@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\cdn\Kernel;
 
 use Drupal\file\Entity\File;
@@ -92,11 +94,17 @@ class EditorFileReferenceFilterTest extends KernelTestBase {
 
     $this->assertTrue(TRUE, 'Simple case: <img>.');
     $input = '<img src="llama.jpg" data-entity-type="file" data-entity-uuid="' . $uuid . '" />';
-    $expected_output = '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+    $expected_output = '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '">';
+    if (version_compare(\Drupal::VERSION, '10.2', '<')) {
+      $expected_output = '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+    }
     $output = $test($input);
     $this->assertSame($expected_output, $output->getProcessedText());
     $this->enableCdn();
-    $expected_output = '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+    $expected_output = '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '">';
+    if (version_compare(\Drupal::VERSION, '10.2', '<')) {
+      $expected_output = '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+    }
     $output = $test($input);
     $this->assertSame($expected_output, $output->getProcessedText());
     $this->disableCdn();
@@ -104,13 +112,21 @@ class EditorFileReferenceFilterTest extends KernelTestBase {
     $this->assertTrue(TRUE, 'Two identical <img> cases, must result in identical CDN file URLs.');
     $input = '<img src="llama.jpg" data-entity-type="file" data-entity-uuid="' . $uuid . '" />';
     $input .= '<img src="llama.jpg" data-entity-type="file" data-entity-uuid="' . $uuid . '" />';
-    $expected_output = '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
-    $expected_output .= '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+    $expected_output = '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '">';
+    $expected_output .= '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '">';
+    if (version_compare(\Drupal::VERSION, '10.2', '<')) {
+      $expected_output = '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+      $expected_output .= '<img src="/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+    }
     $output = $test($input);
     $this->assertSame($expected_output, $output->getProcessedText());
     $this->enableCdn();
-    $expected_output = '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
-    $expected_output .= '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+    $expected_output = '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '">';
+    $expected_output .= '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '">';
+    if (version_compare(\Drupal::VERSION, '10.2', '<')) {
+      $expected_output = '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+      $expected_output .= '<img src="//cdn-a.com/' . $this->siteDirectory . '/files/llama.jpg" data-entity-type="file" data-entity-uuid="' . $image->uuid() . '" />';
+    }
     $output = $test($input);
     $this->assertSame($expected_output, $output->getProcessedText());
     $this->disableCdn();

@@ -75,7 +75,7 @@ class MailchimpListsSubscribeDefaultFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
 
-    /* @var $item \Drupal\mailchimp_lists\Plugin\Field\FieldType\MailchimpListsSubscription */
+    /** @var \Drupal\mailchimp_lists\Plugin\Field\FieldType\MailchimpListsSubscription $item */
     foreach ($items as $delta => $item) {
       $elements[$delta] = [];
 

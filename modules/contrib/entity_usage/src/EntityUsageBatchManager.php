@@ -2,13 +2,15 @@
 
 namespace Drupal\entity_usage;
 
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\Core\Utility\Error;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Manages Entity Usage integration with Batch API.
@@ -176,10 +178,12 @@ class EntityUsageBatchManager implements ContainerInjectionInterface {
       ->execute();
     $entity_id = reset($entity_ids);
 
-    if (isset($entity_id) && $entity = $entity_storage->load($entity_id)) {
+    if (!empty($entity_id) && $entity = $entity_storage->load($entity_id)) {
       /** @var \Drupal\Core\Entity\EntityInterface $entity */
       try {
         if ($entity->getEntityType()->isRevisionable()) {
+          assert($entity_storage instanceof RevisionableStorageInterface);
+
           // We cannot query the revisions due to this bug
           // https://www.drupal.org/project/drupal/issues/2766135
           // so we will use offsets.
@@ -223,7 +227,7 @@ class EntityUsageBatchManager implements ContainerInjectionInterface {
         }
       }
       catch (\Exception $e) {
-        watchdog_exception('entity_usage.batch', $e);
+        Error::logException(\Drupal::logger('entity_usage_batch'), $e);
       }
 
       if (

@@ -1,0 +1,21 @@
+{
+    "name": "drupal/cdn",
+    "description": "Serves files (CSS, JS, images …) from a CDN.",
+    "license": "GPL-2.0+",
+    "type": "drupal-module",
+    "authors": [
+        {
+            "name": "Wim Leers",
+            "homepage": "https://wimleers.com"
+        }
+    ],
+    "homepage": "https://www.drupal.org/project/cdn",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/cdn",
+        "source": "https://git.drupalcode.org/project/cdn"
+    },
+    "require": {
+        "drupal/core": "^9.4 || ^10",
+        "php": ">=8.1"
+    }
+}

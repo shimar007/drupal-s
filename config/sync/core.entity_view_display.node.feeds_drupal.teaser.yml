@@ -5,6 +5,10 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.feeds_drupal.body
+    - field.field.node.feeds_drupal.feeds_item
+    - field.field.node.feeds_drupal.field_link_to
+    - field.field.node.feeds_drupal.field_meta_tags
+    - field.field.node.feeds_drupal.field_tags_drupal
     - node.type.feeds_drupal
   module:
     - text
@@ -32,3 +36,4 @@ hidden:
   field_link_to: true
   field_meta_tags: true
   field_tags_drupal: true
+  search_api_excerpt: true

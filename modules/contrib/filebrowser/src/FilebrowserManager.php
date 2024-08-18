@@ -2,12 +2,11 @@
 
 namespace Drupal\filebrowser;
 
+use Drupal;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Component\Utility;
-use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\filebrowser\Events\MetadataInfo;
 use Drupal\filebrowser\Services\FilebrowserValidator;
 use Drupal\filebrowser\Services\Common;
@@ -42,7 +41,7 @@ class FilebrowserManager extends ControllerBase {
    * FilebrowserManager constructor.
    * @param \Drupal\filebrowser\Services\FilebrowserStorage $storage
    * @param \Drupal\filebrowser\Services\FilebrowserValidator $validator
-   * @param \Drupal\Core\Session\AccountInterface
+   * @param \Drupal\Core\Session\AccountInterface $user
    * @param \Drupal\filebrowser\Services\Common $common
    */
   public function __construct(FilebrowserStorage $storage, FilebrowserValidator $validator, AccountInterface $user, Common
@@ -66,17 +65,17 @@ class FilebrowserManager extends ControllerBase {
   public function addFormExtraFields(&$form, $form_state, $node = null, $isConfigForm = false) {
     /** @var \Drupal\filebrowser\Filebrowser $nodeValues */
 
-    $config = \Drupal::config('filebrowser.settings');
+    $config = Drupal::config('filebrowser.settings');
     $config = $config->get('filebrowser');
-    $dispatcher = \Drupal::service('event_dispatcher');
-    $nodeValues = isset($node->filebrowser) ? $node->filebrowser : null;
+    $dispatcher = Drupal::service('event_dispatcher');
+    $nodeValues = $node->filebrowser ?? NULL;
 
     $form['filebrowser'] = [
       '#tree' => true,
       '#type' => 'fieldset',
       '#title' => ($isConfigForm) ? $this->t('Filebrowser default settings') : 'Filebrowser',
       '#weight' => 10,
-      '#collapsed' => ($isConfigForm ) ? true : false,
+      '#collapsed' => (bool) $isConfigForm,
     ];
 
     // Don't set the folder path and filesystem for a config form
@@ -86,7 +85,7 @@ class FilebrowserManager extends ControllerBase {
         '#title' => $this->t('Directory uri'),
         '#required' => true,
         '#description' => $this->folderPathDescription(),
-        '#default_value' => isset($nodeValues->folderPath) ? $nodeValues->folderPath : '',
+        '#default_value' => $nodeValues->folderPath ?? '',
         '#attributes' => [
           'placeholder' => 'public://your_folder_here'
         ],
@@ -95,7 +94,7 @@ class FilebrowserManager extends ControllerBase {
     }
 
     if (!$isConfigForm) {
-      if (\Drupal::moduleHandler()->moduleExists('token')) {
+      if (Drupal::moduleHandler()->moduleExists('token')) {
         $form['filebrowser']['token']['token_browser'] = [
           '#theme' => 'token_tree_link',
           '#token_types' => ['node'],
@@ -116,14 +115,14 @@ class FilebrowserManager extends ControllerBase {
     $form['filebrowser']['rights'] = [
       '#type' => 'details',
       '#title' => $this->t('Folder rights'),
-      '#open' => ($isConfigForm) ? false : true,
+      '#open' => !$isConfigForm,
     ];
 
     $form['filebrowser']['rights']['explore_subdirs'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Show subdirectories if present.'),
       '#options' => [0, 1],
-      '#default_value' => isset($nodeValues->exploreSubdirs) ? $nodeValues->exploreSubdirs : $config['rights']['explore_subdirs'],
+      '#default_value' => $nodeValues->exploreSubdirs ?? $config['rights']['explore_subdirs'],
     ];
 
     $form['filebrowser']['rights']['download_archive'] = [
@@ -131,7 +130,7 @@ class FilebrowserManager extends ControllerBase {
       '#title' => $this->t("Allow folder's files to be downloaded as an archive"),
       '#description' => $this->t("Users with proper permission may download files as an archive"),
       '#options' => [0, 1],
-      '#default_value' => isset($nodeValues->downloadArchive) ? $nodeValues->downloadArchive : $config['rights']['download_archive'],
+      '#default_value' => $nodeValues->downloadArchive ?? $config['rights']['download_archive'],
     ];
 
     $form['filebrowser']['rights']['create_folders'] = [
@@ -139,7 +138,7 @@ class FilebrowserManager extends ControllerBase {
       '#title' => $this->t("Allow folder to be created"),
       '#description' => $this->t("Users with proper permission may create create new folders."),
       '#options' => [0, 1],
-      '#default_value' => isset($nodeValues->createFolders) ? $nodeValues->createFolders : $config['rights']['create_folders'],
+      '#default_value' => $nodeValues->createFolders ?? $config['rights']['create_folders'],
     ];
 
     // D7 hook_filebrowser_download_manager_info changed to Event
@@ -152,7 +151,7 @@ class FilebrowserManager extends ControllerBase {
       '#title' => $this->t("Download manager"),
       '#description' => $this->t("A download manager will handle the way of download folder files."),
       '#options' => $this->common->toCheckboxes($manager_options),
-      '#default_value' => isset($nodeValues->downloadManager) ? $nodeValues->downloadManager : $config['rights']['download_manager'],
+      '#default_value' => $nodeValues->downloadManager ?? $config['rights']['download_manager'],
     ];
 
     $form['filebrowser']['rights']['force_download'] = [
@@ -160,15 +159,14 @@ class FilebrowserManager extends ControllerBase {
       '#title' => $this->t("Force download"),
       '#options' => [0, 1],
       '#description' => $this->t("If you select this options clicking a file-link will download the file. Leave this option off if you want the file to open in your browser."),
-      '#default_value' => isset($nodeValues->forceDownload) ? $nodeValues->forceDownload :
-        $config['rights']['force_download'],
+      '#default_value' => $nodeValues->forceDownload ?? $config['rights']['force_download'],
     ];
 
     $form['filebrowser']['rights']['forbidden_files'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Blacklist. These files will not show in your listing'),
       '#description' => $this->t('List of patterns of forbidden files, you can use wildcards (ex. .*).'),
-      '#default_value' => isset($nodeValues->forbiddenFiles) ? $nodeValues->forbiddenFiles : $config['rights']['forbidden_files'],
+      '#default_value' => $nodeValues->forbiddenFiles ?? $config['rights']['forbidden_files'],
     ];
 
     $form['filebrowser']['rights']['whitelist'] = [
@@ -176,14 +174,14 @@ class FilebrowserManager extends ControllerBase {
       '#title' => $this->t('White list'),
       '#description' => $this->t('List of patterns to filter, one per line, you can use wildcards (ex. *.pdf).'),
     //  '#weight' => $weight++,
-      '#default_value' => isset($nodeValues->whitelist) ? $nodeValues->whitelist : $config['rights']['whitelist'],
+      '#default_value' => $nodeValues->whitelist ?? $config['rights']['whitelist'],
     ];
 
     $form['filebrowser']['uploads'] = [
       //  '#tree' => false,
       '#type' => 'details',
       '#title' => $this->t('Upload'),
-      '#open' => ($isConfigForm) ? false : true,
+      '#open' => !$isConfigForm,
    //  '#weight' => $weight++,
     ];
 
@@ -192,7 +190,7 @@ class FilebrowserManager extends ControllerBase {
       '#title' => $this->t('Allow uploads'),
       '#description' => $this->t('Users with proper permissions may upload files.'),
       '#options' => [0, 1],
-      '#default_value' => isset($nodeValues->enabled) ? $nodeValues->enabled : $config['uploads']['enabled'],
+      '#default_value' => $nodeValues->enabled ?? $config['uploads']['enabled'],
     ];
 
     $form['filebrowser']['uploads']['allow_overwrite'] = [
@@ -200,14 +198,14 @@ class FilebrowserManager extends ControllerBase {
       '#title' => $this->t('Allow overwrites'),
       '#description' => $this->t('Overwrite existing files if they already exists.'),
       '#options' => [0, 1],
-      '#default_value' => isset($nodeValues->allowOverwrite) ? $nodeValues->allowOverwrite : $config['uploads']['allow_overwrite'],
+      '#default_value' => $nodeValues->allowOverwrite ?? $config['uploads']['allow_overwrite'],
     ];
 
     $form['filebrowser']['uploads']['accepted'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Accepted files for upload'),
       '#description' => $this->t('List of file extensions accepted for upload, separated by a comma or space. Do not include the leading dot.'),
-      '#default_value' => isset($nodeValues->accepted) ? $nodeValues->accepted : $config['uploads']['accepted'],
+      '#default_value' => $nodeValues->accepted ?? $config['uploads']['accepted'],
       '#required' => true,
     ];
 
@@ -215,7 +213,7 @@ class FilebrowserManager extends ControllerBase {
       // '#tree' => false,
       '#type' => 'details',
       '#title' => $this->t('Presentation'),
-      '#open' => ($isConfigForm) ? false : true,
+      '#open' => !$isConfigForm,
     ];
 
     // D7 hook_filebrowser_presentation converted to Event
@@ -228,34 +226,34 @@ class FilebrowserManager extends ControllerBase {
       '#type' => 'checkbox',
       '#title' => $this->t("Overwrite the breadcrumb provided by other modules"),
       '#options' => [0, 1],
-      '#default_value' => isset($nodeValues->overwriteBreadcrumb) ? $nodeValues->overwriteBreadcrumb : $config['presentation']['overwrite_breadcrumb'],
+      '#default_value' => $nodeValues->overwriteBreadcrumb ?? $config['presentation']['overwrite_breadcrumb'],
     ];
 
     $form['filebrowser']['presentation']['default_view'] = [
       '#type' => 'select',
       '#title' => $this->t("Default view"),
       '#options' => $this->common->toCheckboxes($view_options),
-      '#default_value' => isset($nodeValues->defaultView) ? $nodeValues->defaultView : $config['presentation']['default_view'],
+      '#default_value' => $nodeValues->defaultView ?? $config['presentation']['default_view'],
     ];
 
     $form['filebrowser']['presentation']['encoding'] = [
       '#type' => 'textfield',
       '#title' => $this->t('FileSystem encoding'),
       '#description' => $this->t('Set your file system encoding (UTF-8, ISO-8859-15, etc.).'),
-      '#default_value' => isset($nodeValues->encoding) ? $nodeValues->encoding : $config['presentation']['encoding'],
+      '#default_value' => $nodeValues->encoding ?? $config['presentation']['encoding'],
     ];
 
     $form['filebrowser']['presentation']['hide_extension'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Hide file extensions'),
       '#options' => [0, 1],
-      '#default_value' => isset($nodeValues->hideExtension) ? $nodeValues->hideExtension : $config['presentation']['hide_extension'],
+      '#default_value' => $nodeValues->hideExtension ?? $config['presentation']['hide_extension'],
     ];
 
     /**  @var MetadataInfo $event */
     $options = [];
     $e = new MetadataInfo($options);
-    $event = $dispatcher->dispatch('filebrowser.metadata_info', $e);
+    $event = $dispatcher->dispatch($e, 'filebrowser.metadata_info');
     $columns = $event->getMetaDataInfo();
     $column_options = $this->common->toCheckboxes($columns);
     $sortable = [];
@@ -264,7 +262,7 @@ class FilebrowserManager extends ControllerBase {
       '#type' => 'checkboxes',
       '#title' => $this->t("Visible columns"),
       '#options' => $column_options,
-      '#default_value' => isset($nodeValues->visibleColumns) ? $nodeValues->visibleColumns : $config['presentation']['visible_columns'],
+      '#default_value' => $nodeValues->visibleColumns ?? $config['presentation']['visible_columns'],
     ];
     // set name option to true and disable it
     $form['filebrowser']['presentation']['visible_columns']['name']['#value'] = Common::NAME;
@@ -280,7 +278,7 @@ class FilebrowserManager extends ControllerBase {
       '#type' => 'select',
       '#title' => $this->t("Default sort"),
       '#options' => $sortable,
-      '#default_value' => isset($nodeValues->defaultSort) ? $nodeValues->defaultSort : $config['presentation']['default_sort'],
+      '#default_value' => $nodeValues->defaultSort ?? $config['presentation']['default_sort'],
     ];
 
     $form['filebrowser']['presentation']['default_sort_order'] = [
@@ -290,7 +288,20 @@ class FilebrowserManager extends ControllerBase {
         'asc' => $this->t('Ascending'),
         'desc' => $this->t('Descending'),
       ],
-      '#default_value' => isset($nodeValues->defaultSortOrder) ? $nodeValues->defaultSortOrder : $config['presentation']['default_sort_order'],
+      '#default_value' => $nodeValues->defaultSortOrder ?? $config['presentation']['default_sort_order'],
+    ];
+
+    $form['filebrowser']['adhocsetting'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Ad hoc setting'),
+      '#open' => ($isConfigForm) ? FALSE : TRUE,
+    ];
+
+    $form['filebrowser']['adhocsetting']['external_host'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('External host'),
+      '#description' => $this->t('The external host field is for the non-programmer user easily to retrieve the external urls of the files in the public folder.'),
+      '#default_value' => !empty($nodeValues->externalHost) ? $nodeValues->externalHost : (!empty($config['adhocsetting']['external_host']) ? $config['adhocsetting']['external_host'] : []),
     ];
 
     // Don't set for a config form
@@ -315,10 +326,10 @@ class FilebrowserManager extends ControllerBase {
         '#max' => 9,
         '#step' => 1,
         '#title' => $this->t('Number of columns'),
-        '#default_value' => isset($nodeValues->gridColumns) ? $nodeValues->gridColumns : 4,
+        '#default_value' => $nodeValues->gridColumns ?? 4,
         //'#open'=> true,
       ];
-      $image_styles = \Drupal::service('entity_type.manager')->getStorage('image_style')->loadMultiple();
+      $image_styles = Drupal::service('entity_type.manager')->getStorage('image_style')->loadMultiple();
       $styles = [];
       foreach ($image_styles as $key => $image_style) {
         $styles[$key] = $image_style->label();
@@ -327,7 +338,7 @@ class FilebrowserManager extends ControllerBase {
         '#type' => 'select',
         '#title' => $this->t('Image style'),
         '#options' => $styles,
-        '#default_value' => isset($nodeValues->gridImageStyle) ? $nodeValues->gridImageStyle : 'thumbnail',
+        '#default_value' => $nodeValues->gridImageStyle ?? 'thumbnail',
         '#description' => $this->t('Select the image style to be applied to the images in the gris. You can define your own images in /admin/config/media/image-styles'),
       ];
 
@@ -342,7 +353,7 @@ class FilebrowserManager extends ControllerBase {
         '#type' => 'checkbox',
         '#title' => $this->t('Hide title'),
         '#options' => [0, 1],
-        '#default_value' => isset($nodeValues->gridHideTitle) ? $nodeValues->gridHideTitle : 0,
+        '#default_value' => $nodeValues->gridHideTitle ?? 0,
       ];
 
       $form['filebrowser']['presentation']['grid_settings']['grid_width'] = [
@@ -351,7 +362,7 @@ class FilebrowserManager extends ControllerBase {
         '#max' => 500,
         '#step' => 20,
         '#title' => $this->t('Width of the grid'),
-        '#default_value' => isset($nodeValues->gridWidth) ? $nodeValues->gridWidth : 100,
+        '#default_value' => $nodeValues->gridWidth ?? 100,
         //'#open'=> true,
       ];
       $form['filebrowser']['presentation']['grid_settings']['grid_height'] = [
@@ -360,7 +371,7 @@ class FilebrowserManager extends ControllerBase {
         '#max' => 500,
         '#step' => 20,
         '#title' => $this->t('Height of the grids'),
-        '#default_value' => isset($nodeValues->gridHeight) ? $nodeValues->gridHeight : 100,
+        '#default_value' => $nodeValues->gridHeight ?? 100,
         //'#open'=> true,
       ];
     }
@@ -371,13 +382,11 @@ class FilebrowserManager extends ControllerBase {
    * @inheritdoc
    */
   public function loadMultipleData($nids) {
-    $result = $this->storage->StorageLoadMultipleData($nids, true);
-    return $result;
+    return $this->storage->StorageLoadMultipleData($nids, true);
   }
 
   public function loadData($nid) {
-    $result = $this->storage->storageLoadData($nid);
-    return $result;
+    return $this->storage->storageLoadData($nid);
   }
 
 
@@ -385,13 +394,14 @@ class FilebrowserManager extends ControllerBase {
     /** @var \Drupal\Core\Database\Connection $connection */
 
     if (empty($filebrowser->nid)) {
-      \Drupal::messenger()->addError($this->t('No filebrowser data available in node - remove exit'));
+      Drupal::messenger()->addError($this->t('No filebrowser data available in node - remove exit'));
       exit();
     }
 
     $record['nid'] = $filebrowser->nid;
     $record['folder_path'] = $filebrowser->folderPath;
     $record['properties'] = serialize($filebrowser);
+    $record['external_host'] = $filebrowser->externalHost;
 
     if ($mode == 'insert') {
       $this->storage->insert($record);
@@ -405,7 +415,7 @@ class FilebrowserManager extends ControllerBase {
 
     $folder_path = $form_state->getValue('filebrowser')['folder_path'];
     /** @var \Drupal\Core\StreamWrapper\StreamWrapperManager $stream_wrapper_manager */
-    $stream_wrapper_manager = \Drupal::service('stream_wrapper_manager');
+    $stream_wrapper_manager = Drupal::service('stream_wrapper_manager');
     $scheme = $stream_wrapper_manager::getScheme($folder_path);
     $error = false;
     $message = '';
@@ -426,9 +436,9 @@ class FilebrowserManager extends ControllerBase {
     if (!$error) {
       // name is safe, create the folder if it doesn't exists.
       if (!file_exists($folder_path)) {
-        if (\Drupal::service('file_system')->mkdir($folder_path, NULL, TRUE, NULL)) {
+        if (Drupal::service('file_system')->mkdir($folder_path, NULL, TRUE, NULL)) {
           $message = t('Folder location @uri created.', ['@uri' => $folder_path]);
-          \Drupal::messenger()->addMessage($message);
+          Drupal::messenger()->addMessage($message);
         }
         else {
           $error = true;
@@ -522,15 +532,15 @@ class FilebrowserManager extends ControllerBase {
         return $presentation->iconView();
       default:
         return
-          \Drupal::messenger()->addError($this->t('Selected display @display not available ', ['@display' => $view]));
+          Drupal::messenger()->addError($this->t('Selected display @display not available ', ['@display' => $view]));
     }
   }
 
   protected function folderPathDescription() {
     $text = $this->t('Uri of the directory: <strong>scheme://directory[/sub-directory]</strong><br>The schemes <strong>public://</strong>&nbsp;and&nbsp;<strong>private://</strong> are available by default.<br>');
     $array = ['@drupal-flysystem' => 'http://drupal.org/project/flysystem'];
-    if (\Drupal::hasService('flysystem_factory')) {
-      $available_schemes = \Drupal::service('flysystem_factory')->getSchemes();
+    if (Drupal::hasService('flysystem_factory')) {
+      $available_schemes = Drupal::service('flysystem_factory')->getSchemes();
       $extra = $this->t('Schemes provided by <a href = "@drupal-flysystem">Flysystem module:</a><ul>', $array);
       foreach($available_schemes as $scheme) {
         $extra .= '<li><strong>' . $scheme . '://</strong></li>';

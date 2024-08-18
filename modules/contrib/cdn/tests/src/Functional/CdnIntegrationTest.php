@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\cdn\Functional;
 
 use Drupal\cdn\File\FileUrlGenerator;
@@ -104,27 +106,36 @@ class CdnIntegrationTest extends BrowserTestBase {
     $this->drupalGet('<front>');
     $this->assertSame('MISS', $session->getResponseHeader('X-Drupal-Cache'), 'Changing CDN settings causes Page Cache miss: setting changes have immediate effect.');
     $href = $this->cssSelect('link[rel=stylesheet]')[0]->getAttribute('href');
-    $regexp = '#/' . $this->siteDirectory . '/files/css/css_[a-zA-Z0-9_-]{43}\.css#';
-    $this->assertSame(1, preg_match($regexp, $href));
-    $this->assertCssFileUsesRootRelativeUrl($this->baseUrl . $href);
+    $regexp = '#^' . base_path() . $this->siteDirectory . '/files/css/css_[a-zA-Z0-9_-]{43}\.css\?delta=0&language=en&theme=stark&include=[a-zA-Z0-9_-]+$#';
+    if (version_compare(\Drupal::VERSION, '10.1', '<')) {
+      $regexp = '#^' . base_path() . $this->siteDirectory . '/files/css/css_[a-zA-Z0-9_-]{43}\.css$#';
+    }
+    $this->assertMatchesRegularExpression($regexp, $href);
+    $this->assertCssFileUsesRootRelativeUrl($href);
 
     // CDN enabled, "Forever cacheable files" disabled.
     $this->config('cdn.settings')->set('status', TRUE)->save();
     $this->drupalGet('<front>');
     $this->assertSame('MISS', $session->getResponseHeader('X-Drupal-Cache'), 'Changing CDN settings causes Page Cache miss: setting changes have immediate effect.');
     $href = $this->cssSelect('link[rel=stylesheet]')[0]->getAttribute('href');
-    $regexp = '#//cdn.example.com' . base_path() . $this->siteDirectory . '/files/css/css_[a-zA-Z0-9_-]{43}\.css#';
-    $this->assertSame(1, preg_match($regexp, $href));
-    $this->assertCssFileUsesRootRelativeUrl($this->baseUrl . str_replace('//cdn.example.com', '', $href));
+    $regexp = '#^//cdn.example.com' . base_path() . $this->siteDirectory . '/files/css/css_[a-zA-Z0-9_-]{43}\.css\?delta=0&language=en&theme=stark&include=[a-zA-Z0-9_-]+$#';
+    if (version_compare(\Drupal::VERSION, '10.1', '<')) {
+      $regexp = '#^//cdn.example.com' . base_path() . $this->siteDirectory . '/files/css/css_[a-zA-Z0-9_-]{43}\.css$#';
+    }
+    $this->assertMatchesRegularExpression($regexp, $href);
+    $this->assertCssFileUsesRootRelativeUrl(str_replace('//cdn.example.com', '', $href));
 
     // CDN enabled, "Forever cacheable files" enabled.
     $this->config('cdn.settings')->set('farfuture.status', TRUE)->save();
     $this->drupalGet('<front>');
     $this->assertSame('MISS', $session->getResponseHeader('X-Drupal-Cache'), 'Changing CDN settings causes Page Cache miss: setting changes have immediate effect.');
     $href = $this->cssSelect('link[rel=stylesheet]')[0]->getAttribute('href');
-    $regexp = '#//cdn.example.com' . base_path() . 'cdn/ff/[a-zA-Z0-9_-]{43}/[0-9]{10}/public/css/css_[a-zA-Z0-9_-]{43}\.css#';
-    $this->assertSame(1, preg_match($regexp, $href));
-    $this->assertCssFileUsesRootRelativeUrl($this->baseUrl . str_replace('//cdn.example.com', '', $href));
+    $regexp = '#^//cdn.example.com' . base_path() . 'cdn/ff/[a-zA-Z0-9_-]{43}/[0-9]{10}/' . FileUrlGenerator::RELATIVE . '/' . $this->siteDirectory . '/files/css/css_[a-zA-Z0-9_-]{43}\.css$#';
+    if (version_compare(\Drupal::VERSION, '10.1', '<')) {
+      $regexp = '#^//cdn.example.com' . base_path() . 'cdn/ff/[a-zA-Z0-9_-]{43}/[0-9]{10}/public/css/css_[a-zA-Z0-9_-]{43}\.css$#';
+    }
+    $this->assertMatchesRegularExpression($regexp, $href);
+    $this->assertCssFileUsesRootRelativeUrl(str_replace('//cdn.example.com', '', $href));
   }
 
   /**
@@ -133,12 +144,13 @@ class CdnIntegrationTest extends BrowserTestBase {
    * @param string $css_file_url
    *   The URL to a CSS file.
    */
-  protected function assertCssFileUsesRootRelativeUrl($css_file_url) {
-    $this->drupalGet($css_file_url);
+  protected function assertCssFileUsesRootRelativeUrl(string $css_file_url): void {
+    $this->getSession()->visit($css_file_url);
+    $css = $this->getSession()->getPage()->getContent();
     // CSS references other files.
-    $this->assertSession()->responseContains('url(');
+    $this->assertStringContainsString('url(', $css);
     // CSS references other files by root-relative URL, not CDN URL.
-    $this->assertSession()->responseContains('url(' . base_path() . 'core/misc/tree.png)');
+    $this->assertStringContainsString('url(' . base_path() . 'core/misc/icons/e32700/error.svg)', $css);
   }
 
   /**
@@ -182,28 +194,6 @@ class CdnIntegrationTest extends BrowserTestBase {
     $this->drupalGet('/node/1');
     $this->assertSame('MISS', $session->getResponseHeader('X-Drupal-Cache'));
     $this->assertSession()->responseContains('src="' . base_path() . $this->siteDirectory . '/files/' . UrlHelper::encodePath('druplicon ❤️.png') . '"');
-  }
-
-  /**
-   * Tests the legacy far future path.
-   *
-   * @group legacy
-   * @todo Remove before CDN 4.0.
-   */
-  public function testOldFarfuture() {
-    $druplicon_png_mtime = filemtime('public://druplicon ❤️.png');
-    $druplicon_png_security_token = Crypt::hmacBase64($druplicon_png_mtime . '/' . $this->siteDirectory . '/files/' . UrlHelper::encodePath('druplicon ❤️.png'), \Drupal::service('private_key')->get() . Settings::getHashSalt());
-
-    $this->drupalGet('/cdn/farfuture/' . $druplicon_png_security_token . '/' . $druplicon_png_mtime . '/' . $this->siteDirectory . '/files/druplicon ❤️.png');
-    $this->assertSession()->statusCodeEquals(200);
-    // Assert presence of headers that \Drupal\cdn\CdnFarfutureController sets.
-    $this->assertSame('Wed, 20 Jan 1988 04:20:42 GMT', $this->getSession()->getResponseHeader('Last-Modified'));
-    // Assert presence of headers that Symfony's BinaryFileResponse sets.
-    $this->assertSame('bytes', $this->getSession()->getResponseHeader('Accept-Ranges'));
-
-    // Any chance to the security token should cause a 403.
-    $this->drupalGet('/cdn/farfuture/' . substr($druplicon_png_security_token, 1) . '/' . $druplicon_png_mtime . '/sites/default/files/druplicon ❤️.png');
-    $this->assertSession()->statusCodeEquals(403);
   }
 
   /**
@@ -260,7 +250,10 @@ class CdnIntegrationTest extends BrowserTestBase {
         'core/modules/system/js/system.modules.js',
         FileUrlGenerator::RELATIVE,
         'core/modules/system/js/system.modules.js',
-        'application/javascript',
+        // @see https://www.drupal.org/node/3312139
+        version_compare(\Drupal::VERSION, '10.1', '>=')
+          ? 'text/javascript; charset=UTF-8'
+          : 'application/javascript',
       ],
     ];
   }

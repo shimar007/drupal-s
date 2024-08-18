@@ -1,20 +1,21 @@
 <?php
+
 /**
  * @file
  * Provides a Views plugin for displaying content in a Masonry layout.
  *
- * Sponsored by: www.freelance-drupal.com
+ * Sponsored by: www.freelance-drupal.com.
  */
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Template\Attribute;
 
 /**
- * Preprocess function for views-view-masonry.html.twig
+ * Preprocess function for views-view-masonry.html.twig.
  */
 function masonry_views_preprocess_views_view_masonry(&$variables) {
 
-  // Get view options
+  // Get view options.
   $view = $variables['view'];
   $rows = $variables['rows'];
   $style = $view->style_plugin;
@@ -49,7 +50,7 @@ function masonry_views_preprocess_views_view_masonry(&$variables) {
     ->applyMasonryDisplay($variables, $container, $item_selector, $options, [
       'masonry_view',
       'masonry_view_' . $view->storage->id(),
-      'masonry_view_display_' . $view->current_display
+      'masonry_view_display_' . $view->current_display,
     ]);
 }
 
@@ -64,4 +65,11 @@ function masonry_views_preprocess_views_view(&$variables) {
     $variables['rows']['#theme_wrappers']['container']['#attributes']['data-drupal-masonry-layout'] = TRUE;
     $variables['rows']['#theme_wrappers']['container']['#attributes']['class'][] = 'masonry-layout-' . Html::cleanCssIdentifier($view->storage->id());
   }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function masonry_views_preprocess_eva_display_entity_view(array &$variables) {
+  masonry_views_preprocess_views_view($variables);
 }

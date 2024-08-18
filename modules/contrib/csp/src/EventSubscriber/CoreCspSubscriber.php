@@ -86,7 +86,6 @@ class CoreCspSubscriber implements EventSubscriberInterface {
       // exceptions applied to the calling page.
       $ajaxEditorLoader = (
         in_array('layout_builder/drupal.layout_builder', $libraries)
-        || in_array('quickedit/quickedit', $libraries)
       );
 
       // CKEditor5 requires inline styles for interface.
@@ -94,27 +93,6 @@ class CoreCspSubscriber implements EventSubscriberInterface {
       if (
         in_array('core/ckeditor5', $libraries)
         || ($ajaxEditorLoader && $this->moduleHandler->moduleExists('ckeditor5'))
-      ) {
-        $policy->fallbackAwareAppendIfEnabled('style-src', [Csp::POLICY_UNSAFE_INLINE]);
-        $policy->fallbackAwareAppendIfEnabled('style-src-attr', [Csp::POLICY_UNSAFE_INLINE]);
-        $policy->fallbackAwareAppendIfEnabled('style-src-elem', [Csp::POLICY_UNSAFE_INLINE]);
-      }
-
-      // CKEditor4 requires script attribute on interface buttons.
-      if (
-        in_array('core/ckeditor', $libraries)
-        || ($ajaxEditorLoader && $this->moduleHandler->moduleExists('ckeditor'))
-      ) {
-        $policy->fallbackAwareAppendIfEnabled('script-src-elem', []);
-        $policy->fallbackAwareAppendIfEnabled('script-src', [Csp::POLICY_UNSAFE_INLINE]);
-        $policy->fallbackAwareAppendIfEnabled('script-src-attr', [Csp::POLICY_UNSAFE_INLINE]);
-      }
-
-      // Inline style element is added by ckeditor.off-canvas-css-reset.js.
-      // @see https://www.drupal.org/project/drupal/issues/2952390
-      if (
-        in_array('ckeditor/drupal.ckeditor', $libraries)
-        || ($ajaxEditorLoader && $this->moduleHandler->moduleExists('ckeditor'))
       ) {
         $policy->fallbackAwareAppendIfEnabled('style-src', [Csp::POLICY_UNSAFE_INLINE]);
         $policy->fallbackAwareAppendIfEnabled('style-src-attr', [Csp::POLICY_UNSAFE_INLINE]);

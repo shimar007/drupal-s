@@ -3,55 +3,55 @@
  * JQuery plugin to filter out elements based on user input.
  */
 
-(function ($) {
-
-  var now = Date.now || function () {
-      return new Date().getTime();
-    };
+(($) => {
+  const now = () => new Date().getTime() || Date.now;
 
   function debounce(func, wait, immediate) {
-    var timeout;
-    var args;
-    var context;
-    var timestamp;
-    var result;
+    let timeout;
+    let args;
+    let context;
+    let timestamp;
+    let result;
 
-    var later = function () {
-      var last = now() - timestamp;
+    const later = () => {
+      const last = now() - timestamp;
 
       if (last < wait && last >= 0) {
         timeout = setTimeout(later, wait - last);
-      }
-      else {
+      } else {
         timeout = null;
         if (!immediate) {
           result = func.apply(context, args);
-          if (!timeout) {
-            args = context = null;
-          }
+          // eslint-disable-next-line no-multi-assign
+          args = context = null;
         }
       }
     };
 
+    // eslint-disable-next-line func-names
     return function () {
       context = this;
+      // eslint-disable-next-line prefer-rest-params
       args = arguments;
       timestamp = now();
-      var callNow = immediate && !timeout;
+      const callNow = immediate && !timeout;
       if (!timeout) {
         timeout = setTimeout(later, wait);
       }
       if (callNow) {
         result = func.apply(context, args);
+        // eslint-disable-next-line no-multi-assign
         args = context = null;
       }
 
       return result;
-    }
+    };
   }
 
   function explode(string) {
-    return string.match(/(\w*\:(\w+|"[^"]+")*)|\w+|"[^"]+"/g);
+    return string.match(
+      /([a-zA-Z]+:(\w+|"[^"]+")*)|\w+|"[^"]+"|[\u0590-\u05FF]+/g,
+    );
   }
 
   function preventEnterKey(e) {
@@ -59,10 +59,11 @@
       e.preventDefault();
       e.stopPropagation();
     }
-  };
+  }
 
-  var Winnow = function (element, selector, options) {
-    var self = this;
+  // eslint-disable-next-line func-names
+  const Winnow = function (element, selector, options) {
+    const self = this;
 
     self.element = element;
     self.selector = selector;
@@ -71,125 +72,111 @@
     self.results = [];
     self.state = {};
 
-    self.options = $.extend({
-      delay: 500,
-      striping: false,
-      selector: '',
-      textSelector: null,
-      emptyMessage: '',
-      clearLabel: 'clear',
-      rules: [],
-      buildIndex: [],
-      additionalOperators: {}
-    }, $.fn.winnow.defaults, options);
+    self.options = $.extend(
+      {
+        delay: 500,
+        striping: false,
+        selector: '',
+        textSelector: null,
+        emptyMessage: '',
+        rules: [],
+        buildIndex: [],
+        additionalOperators: {},
+      },
+      $.fn.winnow.defaults,
+      options,
+    );
     if (self.options.wrapper === undefined) {
       self.options.wrapper = $(self.selector).parent();
     }
 
     self.element.wrap('<div class="winnow-input"></div>');
-
-    // Add clear button.
-    self.clearButton = $('<a href="#" class="winnow-clear">' + self.options.clearLabel + '</a>');
-    self.clearButton.css({
-      'display': 'inline-block',
-      'margin-left': '0.75em'
-    });
-    if (self.element.val() == '') {
-      self.clearButton.hide();
-    }
-    self.clearButton.click(function (e) {
-      e.preventDefault();
-
-      self.clearFilter();
-    });
-    self.element.after(self.clearButton);
-
     self.element.on({
-      keyup: debounce(function () {
-        var value = self.element.val();
+      keyup: debounce(() => {
+        const value = self.element.val();
         if (!value || explode(value).pop().slice(-1) !== ':') {
           // Only filter if we aren't using the operator autocomplete.
           self.filter();
         }
       }, self.options.delay),
-      keydown: preventEnterKey
+      keydown: preventEnterKey,
     });
     self.element.on({
-      keyup: function () {
-        // Show/hide the clear button.
-        if (self.element.val() != '') {
-          self.clearButton.show();
+      search() {
+        if (self.element.val() === '') {
+          self.clearFilter();
         }
-        else {
-          self.clearButton.hide();
-        }
-      }
+      },
     });
 
     // Autocomplete operators. When last query is ":", return list of available
-    // operators with the exception of "text".
+    // operators except "text".
     if (typeof self.element.autocomplete === 'function') {
-      var operators = Object.keys(self.getOperators());
-      var source = [];
-      for (var i in operators) {
-        if (operators[i] != 'text') {
+      const operators = Object.keys(self.getOperators());
+      const source = [];
+      for (let i = 0; i < operators.length; i++) {
+        const operator = operators[i];
+        if (operator !== 'text') {
           source.push({
-            label: operators[i],
-            value: operators[i] + ':'
+            label: operator,
+            value: `${operator}:`,
           });
         }
       }
 
       self.element.autocomplete({
-        'search': function (event) {
-          if (explode(event.target.value).pop() != ':') {
+        search(event) {
+          if (explode(event.target.value).pop() !== ':') {
             return false;
           }
         },
-        'source': function (request, response) {
+        source(request, response) {
           return response(source);
         },
-        'select': function (event, ui) {
-          var terms = explode(event.target.value);
+        select(event, ui) {
+          const terms = explode(event.target.value);
           // Remove the current input.
           terms.pop();
           // Add the selected item.
           terms.push(ui.item.value);
           event.target.value = terms.join(' ');
-          // Return false to tell jQuery UI that we've filled in the value already.
+          // Return false to tell jQuery UI that we've filled in the value
+          // already.
           return false;
         },
-        'focus': function () {
+        focus() {
           return false;
-        }
+        },
       });
     }
 
     self.element.data('winnow', self);
   };
 
+  // eslint-disable-next-line func-names
   Winnow.prototype.setQueries = function (string) {
-    var self = this;
-    var strings = explode(string);
+    const self = this;
+    const strings = explode(string);
 
     self.text = string;
     self.queries = [];
 
-    for (var i in strings) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const i in strings) {
       if (strings.hasOwnProperty(i)) {
-        var query = { operator: 'text', string: strings[i] };
-        var operators = self.getOperators();
+        const query = { operator: 'text', string: strings[i] };
+        const operators = self.getOperators();
 
         if (query.string.indexOf(':') > 0) {
-          var parts = query.string.split(':', 2);
-          var operator = parts.shift();
+          const parts = query.string.split(':', 2);
+          const operator = parts.shift();
           if (operators[operator] !== undefined) {
             query.operator = operator;
             query.string = parts.shift();
           }
         }
 
-        if (query.string.charAt(0) == '"') {
+        if (query.string.charAt(0) === '"') {
           // Remove wrapping double quotes.
           query.string = query.string.replace(/^"|"$/g, '');
         }
@@ -201,19 +188,24 @@
     }
   };
 
+  // eslint-disable-next-line func-names
   Winnow.prototype.buildIndex = function () {
-    var self = this;
+    const self = this;
     this.index = [];
 
+    // eslint-disable-next-line func-names
     $(self.selector, self.wrapper).each(function (i) {
-      var text = (self.options.textSelector) ? $(self.options.textSelector, this).text() : $(this).text();
-      var item = {
+      const text = self.options.textSelector
+        ? $(self.options.textSelector, this).text()
+        : $(this).text();
+      let item = {
         key: i,
         element: $(this),
-        text: text.toLowerCase()
+        text: text.toLowerCase(),
       };
 
-      for (var j in self.options.buildIndex) {
+      // eslint-disable-next-line guard-for-in,no-restricted-syntax
+      for (const j in self.options.buildIndex) {
         item = $.extend(self.options.buildIndex[j].apply(this, [item]), item);
       }
 
@@ -221,25 +213,31 @@
       self.index.push(item);
     });
 
-    return self.trigger('finishIndexing', [ self ]);
+    return self.trigger('finishIndexing', [self]);
   };
 
+  // eslint-disable-next-line func-names
   Winnow.prototype.bind = function () {
-    var args = arguments;
-    args[0] = 'winnow:' + args[0];
+    // eslint-disable-next-line prefer-rest-params
+    const args = arguments;
+    args[0] = `winnow:${args[0]}`;
 
+    // eslint-disable-next-line prefer-spread
     return this.element.bind.apply(this.element, args);
   };
 
-  Winnow.prototype.trigger = function (event) {
-    var args = arguments;
-    args[0] = 'winnow:' + args[0];
-
+  // eslint-disable-next-line func-names
+  Winnow.prototype.trigger = function () {
+    // eslint-disable-next-line prefer-rest-params
+    const args = arguments;
+    args[0] = `winnow:${args[0]}`;
+    // eslint-disable-next-line prefer-spread
     return this.element.trigger.apply(this.element, args);
   };
 
+  // eslint-disable-next-line func-names
   Winnow.prototype.filter = function () {
-    var self = this;
+    const self = this;
 
     self.results = [];
     self.setQueries(self.element.val());
@@ -248,28 +246,30 @@
       self.buildIndex();
     }
 
-    var start = self.trigger('start');
+    self.trigger('start');
 
+    // eslint-disable-next-line func-names
     $.each(self.index, function (key, item) {
-      var $item = item.element;
-      var operatorMatch = true;
+      const $item = item.element;
+      let operatorMatch = true;
 
-      if (self.text != '') {
+      let result;
+      if (self.text !== '') {
         operatorMatch = false;
-        for (var i in self.queries) {
-          var query = self.queries[i];
-          var operators = self.getOperators();
+        for (let i = 0; i < self.queries.length; i++) {
+          const query = self.queries[i];
+          const operators = self.getOperators();
 
           if (operators[query.operator] !== undefined) {
-            result = operators[query.operator].apply($item, [query.string, item]);
-            if (!result) {
-              // Is not a text match so continue to next query string.
-              continue;
+            result = operators[query.operator].apply($item, [
+              query.string,
+              item,
+            ]);
+            if (result) {
+              operatorMatch = true;
+              break;
             }
           }
-
-          operatorMatch = true;
-          break;
         }
       }
 
@@ -280,43 +280,53 @@
         return true;
       }
 
-      // By reaching here, the $item is not a match so we hide it.
+      // By reaching here, the $item is not a match, so we hide it.
       $item.hide();
     });
 
-    var finish = self.trigger('finish', [ self.results ]);
+    self.trigger('finish', [self.results]);
 
     if (self.options.striping) {
-      stripe();
+      self.stripe();
     }
 
     if (self.options.emptyMessage) {
       if (self.results.length > 0) {
         self.options.wrapper.children('.winnow-no-results').remove();
-      }
-      else if (!self.options.wrapper.children('.winnow-no-results').length) {
-        self.options.wrapper.append($('<p class="winnow-no-results"></p>').text(self.options.emptyMessage));
+      } else if (!self.options.wrapper.children('.winnow-no-results').length) {
+        self.options.wrapper.append(
+          $('<p class="winnow-no-results"></p>').text(
+            self.options.emptyMessage,
+          ),
+        );
       }
     }
   };
 
+  // eslint-disable-next-line func-names
   Winnow.prototype.getOperators = function () {
-    return $.extend({}, {
-      text: function (string, item) {
-        if (item.text.indexOf(string) >= 0) {
-          return true;
-        }
-      }
-    }, this.options.additionalOperators);
+    return $.extend(
+      {},
+      {
+        text(string, item) {
+          if (item.text.indexOf(string) >= 0) {
+            return true;
+          }
+        },
+      },
+      this.options.additionalOperators,
+    );
   };
 
+  // eslint-disable-next-line func-names
   Winnow.prototype.processRules = function (item) {
-    var self = this;
-    var $item = item.element;
-    var result = true;
+    const self = this;
+    const $item = item.element;
+    let result = true;
 
     if (self.options.rules.length > 0) {
-      for (var i in self.options.rules) {
+      // eslint-disable-next-line guard-for-in,no-restricted-syntax
+      for (const i in self.options.rules) {
         result = self.options.rules[i].apply($item, [item]);
         if (result === false) {
           break;
@@ -327,10 +337,12 @@
     return result;
   };
 
+  // eslint-disable-next-line func-names
   Winnow.prototype.stripe = function () {
-    var flip = { even: 'odd', odd: 'even' };
-    var stripe = 'odd';
+    const flip = { even: 'odd', odd: 'even' };
+    let stripe = 'odd';
 
+    // eslint-disable-next-line func-names
     $.each(this.index, function (key, item) {
       if (!item.element.is(':visible')) {
         item.element.removeClass('odd even').addClass(stripe);
@@ -339,23 +351,25 @@
     });
   };
 
+  // eslint-disable-next-line func-names
   Winnow.prototype.clearFilter = function () {
     this.element.val('');
     this.filter();
-    this.clearButton.hide();
     this.element.focus();
   };
 
+  // eslint-disable-next-line func-names
   $.fn.winnow = function (selector, options) {
-    var $input = this.not('.winnow-processed').addClass('winnow-processed');
+    const $input = this.not('.winnow-processed').addClass('winnow-processed');
 
+    // eslint-disable-next-line func-names
     $input.each(function () {
-      var winnow = new Winnow($input, selector, options);
+      // eslint-disable-next-line no-new
+      new Winnow($input, selector, options);
     });
 
     return this;
   };
 
   $.fn.winnow.defaults = {};
-
 })(jQuery);

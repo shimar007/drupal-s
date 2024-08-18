@@ -5,9 +5,9 @@
   position: relative;
   overflow: hidden;
   margin: 10px 0;
-  background: #e6e5e1;
   border: 1px solid #bdbdbd;
   border-radius: 4px;
+  background: #e6e5e1;
 }
 .modules-tabs__menu {
   float: left; /* LTR */
@@ -17,13 +17,13 @@
   border-bottom: 1px solid #ccc;
   line-height: 1;
 }
-[dir="rtl"] .modules-tabs__menu {
+[dir='rtl'] .modules-tabs__menu {
   float: right;
   margin: 0 0 -1px -100%;
 }
 .modules-tabs__menu-item {
-  background: #eee;
   border-top: 1px solid #ccc;
+  background: #eee;
 }
 .modules-tabs__menu-item:first-child {
   border-top: 0 none;
@@ -36,35 +36,35 @@
   background: #f9f9f9;
 }
 .modules-tabs__menu-item.disabled {
-  background: #ccc;
   border-top-color: #bbb;
   border-bottom-color: #bbb;
+  background: #ccc;
 }
 .modules-tabs__menu-item a {
   display: block;
-  text-decoration: none;
   padding: 10px;
+  text-decoration: none;
 }
 .modules-tabs__menu-item a:hover,
 .modules-tabs__menu-item a:focus {
-  background: #d5d5d5;
   text-decoration: none;
   outline: 0;
+  background: #d5d5d5;
 }
 .modules-tabs__menu-item.is-selected a,
 .modules-tabs__menu-item.is-selected a:hover,
 .modules-tabs__menu-item.is-selected a:focus,
 .modules-tabs__menu-item.is-selected a:active {
-  background-color: #fcfcfa;
   margin-right: -1px;
+  background-color: #fcfcfa;
 }
 .modules-tabs__menu-item.disabled a,
 .modules-tabs__menu-item.disabled span {
   color: #999;
 }
 .modules-tabs__menu-item.disabled a {
-  pointer-events: none;
   cursor: default;
+  pointer-events: none;
 }
 .modules-tabs__menu-item .summary {
   padding-top: 0.4em;
@@ -78,7 +78,7 @@
   font-size: 0.75em;
   font-weight: bold;
 }
-.modules-tabs__menu-item ul.enabling:before {
+.modules-tabs__menu-item ul.enabling::before {
   content: '+';
 }
 .modules-tabs__menu-item span.result {
@@ -93,18 +93,18 @@
 .modules-tabs__pane {
   margin: 0 0 0 240px; /* LTR */
   padding: 10px 15px;
-  background: #fcfcfa;
   border-left: 1px solid #a6a5a1; /* LTR */
+  background: #fcfcfa;
 }
-[dir="rtl"] .modules-tabs__pane {
+[dir='rtl'] .modules-tabs__pane {
   margin: 0 240px 0 0;
-  border-left: none;
   border-right: 1px solid #a6a5a1;
+  border-left: none;
 }
-.modules-tabs__pane:after {
-  content: '';
+.modules-tabs__pane::after {
   display: table;
   clear: both;
+  content: '';
 }
 .modules-tabs__pane input.table-filter-text {
   width: 100%;

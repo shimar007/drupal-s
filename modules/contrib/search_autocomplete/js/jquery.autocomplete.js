@@ -1,11 +1,11 @@
 /**
  * @file
- * SEARCH AUTOCOMPLETE javascript mechanism for D8.
+ * SEARCH AUTOCOMPLETE javascript mechanism.
  */
 
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once, DOMPurify) {
 
-  "use strict";
+  'use strict';
 
   if (typeof DOMPurify !== 'undefined') {
     // Add a hook to keep script tag but sanitize it via Drupal.checkPlain().
@@ -22,7 +22,7 @@
   // Escape characters in pattern before creating regexp.
   function escapeRegExp(str) {
     str = $.trim(str);
-    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
   }
 
   /**
@@ -105,7 +105,7 @@
     }
 
     // Retrieve the key for this element.
-    var key = this.element.data("key");
+    var key = this.element.data('key');
 
     /**
      * Filter through the suggestions removing all terms already tagged and
@@ -207,12 +207,12 @@
     terms.pop();
 
     // Trick here to handle encoded characters (see #2936846).
-    const helper = document.createElement("textarea");
+    const helper = document.createElement('textarea');
     helper.innerHTML = ui.item.value;
     ui.item.value = helper.value;
 
     // Add the selected item.
-    if (ui.item.value.search(",") > 0) {
+    if (ui.item.value.search(',') > 0) {
       terms.push('"' + ui.item.value + '"');
     }
     else {
@@ -222,12 +222,14 @@
     var key = $(event.target).data('key');
 
     // Add our own handling on submission if needed
-    if (key && autocomplete.options.forms[key].autoRedirect == 1 && ui.item.link) {
-      document.location.href = ui.item.link;
+    if (key && autocomplete.options.forms[key].autoRedirect && ui.item.link) {
+      // Decode '&' characters in links: #3240117.
+      helper.innerHTML = ui.item.link;
+      document.location.href = helper.value;
     }
-    else if (key && autocomplete.options.forms[key].autoSubmit == 1 && ui.item.value) {
+    else if (key && autocomplete.options.forms[key].autoSubmit && ui.item.value) {
       $(this).val(ui.item.value);
-      const form = $(this).closest("form");
+      const form = $(this).closest('form');
       const submit = $('[type="submit"]', form);
       // If we find a submit input click on it rather then submit the form to
       // trigger the attached click behavior such as AJAX refresh
@@ -243,6 +245,24 @@
     return false;
   }
 
+  function renderMenu(ul, items) {
+    var that = this;
+    let currentGroup = null;
+    const content = $('<div class="ui-autocomplete-content"></div>')
+    ul.append(content);
+    $.each( items, function( index, item ) {
+      if ('group' in item) {
+        currentGroup = $('<div class="ui-autocomplete-container ui-autocomplete-container-' + item.group.group_id + '"></div>');
+        if (item.group.group_id === 'more_results' || item.group.group_id === 'no_results') {
+          ul.append(currentGroup);
+        } else {
+          content.append(currentGroup)
+        }
+      }
+      that._renderItemData(currentGroup || ul, item);
+    });
+  }
+
   /**
    * Override jQuery UI _renderItem function to output HTML by default.
    *
@@ -253,69 +273,67 @@
    */
   function renderItem(ul, item) {
     var term = this.term;
-    var first = ("group" in item) ? 'first' : '';
-    var innerHTML = '<div class="ui-autocomplete-fields ' + first + '">';
+    var first = ('group' in item) ? 'first' : '';
+    let innerHTML = '';
     var regex = new RegExp('(' + escapeRegExp(term) + ')', 'gi');
-    if (item.fields) {
-      var helper = document.createElement("textarea");
-      $.each(item.fields, function (key, value) {
-        helper.innerHTML = value;
-        let output = value;
-        if (typeof DOMPurify !== 'undefined') {
-          output = DOMPurify.sanitize(helper.value, {ADD_TAGS: ['script']});
-        }
-        else {
-           let parser = new DOMParser();
-           let doc = parser.parseFromString(helper.value, 'text/html');
-           output = doc.body.textContent;
-        }
-        if (output.indexOf('src=') == -1 && output.indexOf('href=') == -1) {
-          output = output.replace(regex, "<span class='ui-autocomplete-field-term'>$1</span>");
-        }
-        innerHTML += ('<div class="ui-autocomplete-field-' + key + '">' + output + '</div>');
-      });
+
+    // Move everything to fields if none defined.
+    if (!item.fields) {
+      item.fields = [item.label];
     }
-    else {
-      var output = item.label;
-      if (item.group && item.group.group_id != 'more_results' && item.group.group_id != 'no_results') {
-        output = item.label.replace(regex, "<span class='ui-autocomplete-field-term'>$1</span>");
+
+    var helper = document.createElement('textarea');
+    innerHTML = '<div class="ui-autocomplete-fields ' + first + '">';
+    $.each(item.fields, function (key, value) {
+      helper.innerHTML = value;
+      let output = value;
+      if (typeof DOMPurify !== 'undefined') {
+        output = DOMPurify.sanitize(helper.value, {ADD_TAGS: ['script']});
       }
-      innerHTML += ('<div class="ui-autocomplete-field">' + output + '</div>');
-    }
+      else {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(helper.value, 'text/html');
+        output = doc.body.textContent;
+      }
+      if (output.indexOf('src=') === -1 && output.indexOf('href=') === -1) {
+        output = output.replace(regex, '<span class="ui-autocomplete-field-term">$1</span>');
+      }
+      innerHTML += ('<div class="ui-autocomplete-field-' + key + '">' + output + '</div>');
+    });
     innerHTML += '</div>';
 
-    if ("group" in item) {
+    if ('group' in item) {
       var groupId = typeof (item.group.group_id) !== 'undefined' ? item.group.group_id : '';
       var groupName = typeof (item.group.group_name) !== 'undefined' ? item.group.group_name : '';
       $('<div class="ui-autocomplete-field-group ui-state-disabled ' + groupId + '">' + groupName + '</div>').appendTo(ul);
     }
-    var elem = $("<li class=ui-menu-item-" + first + "></li>")
-    .append("<a>" + innerHTML + "</a>");
-    if (item.value == '') {
-      elem = $("<li class='ui-state-disabled ui-menu-item-" + first + " ui-menu-item'>" + item.label + "</li>");
+    var elem = $('<li class="ui-menu-item-' + first + ' ui-menu-item"></li>').append('<a>' + innerHTML + '</a>');
+    if (item.value === '') {
+      elem = $('<li class="ui-state-disabled ui-menu-item-' + first + ' ui-menu-item">' + item.label + '</li>');
     }
-    elem.data("item.autocomplete", item).appendTo(ul);
+    elem.data('item.autocomplete', item).appendTo(ul);
     return elem;
   }
 
   /**
-   * This methods resize the suggestion panel property.
-   * Not used currently.
+   * This method resizes the suggestion panel property.
    */
   function resizeMenu() {
     var ul = this.menu.element;
-    ul.outerWidth(Math.max(ul.width("").outerWidth() + 5, this.options.position.of == null ? this.element.outerWidth() : this.options.position.of.outerWidth()));
+    ul.outerWidth(Math.max(ul.width('').outerWidth() + 5, this.options.position.of == null ? this.element.outerWidth() : this.options.position.of.outerWidth()));
+    const parent = ul.parent()[0];
+    ul.css({"maxHeight": (window.innerHeight - parent.offsetHeight - parent.getBoundingClientRect().top) + 'px'});
   }
 
   /**
-   * This methods replaces needle by replacement in stash.
+   * This method replaces needle by replacement in stash.
    */
   function replaceInObject(stash, needle, replacement) {
-    var regex = new RegExp(needle, "g");
+    var regex = new RegExp(needle, 'g');
     var input = Drupal.checkPlain(replacement);
     var result = {};
     $.each(stash, function (index, value) {
-      if ($.type(value) === "string") {
+      if ($.type(value) === 'string') {
         result[index] = value.replace(regex, input);
       }
       else {
@@ -334,17 +352,17 @@
       var $autocomplete = $(context).find('input.form-autocomplete');
       // Act also on registered fields
       $.each(autocomplete.options.forms, function (key, value) {
-        var elem = $(context).find(autocomplete.options.forms[key].selector).data("key", key).addClass('form-autocomplete').attr('data-id', key);
+        var elem = $(context).find(autocomplete.options.forms[key].selector).data('key', key).addClass('form-autocomplete').attr('data-id', key);
         $autocomplete = $.merge($autocomplete, elem);
       });
 
-      $.each($autocomplete, function (key, value) {
+      $.each($autocomplete, function (_, value) {
         value = $(value);
         // Retrieve the key for this element.
-        var key = value.data("key");
+        var key = value.data('key');
 
         // Run only once on found elements
-        value.once('autocomplete');
+        once('autocomplete', value);
 
         // If present: autocomplete those fields
         if (value.length) {
@@ -359,21 +377,24 @@
           });
 
           // Use jQuery UI Autocomplete on the textfield.
-          value.autocomplete(autocomplete.options)
-          .data("ui-autocomplete")
-            ._renderItem = autocomplete.options.renderItem;
-          // Add theme id to suggestion list.
-          if (value.data("key")) {
-            value.autocomplete("widget").attr("data-sa-theme", autocomplete.options.forms[value.data("key")].theme);
+          value.autocomplete(autocomplete.options).autocomplete('widget').menu( 'option', 'items', '.ui-autocomplete-container > *' );
+          value.autocomplete(autocomplete.options).data('ui-autocomplete')._renderItem = autocomplete.options.renderItem;
+          value.autocomplete(autocomplete.options).data('ui-autocomplete')._renderMenu = autocomplete.options.renderMenu;
+          value.autocomplete(autocomplete.options).data('ui-autocomplete')._resizeMenu = autocomplete.options.resizeMenu;
+
+          if (key) {
+            // Add theme id to suggestion list.
+            value.autocomplete('widget').attr('data-sa-theme', autocomplete.options.forms[key].theme);
+            // Add unique key (helpfull for styling differently multiple instances on a single form).
+            value.autocomplete('widget').attr('data-input-ref', key);
           }
         }
       });
     },
     detach: function (context, settings, trigger) {
       if (trigger === 'unload') {
-        $(context).find('input.form-autocomplete')
-        .removeOnce('autocomplete')
-        .autocomplete('destroy');
+        $(once.remove('autocomplete', 'input.form-autocomplete', context))
+          .autocomplete('destroy');
       }
     }
   };
@@ -393,6 +414,7 @@
       search: searchHandler,
       select: selectHandler,
       renderItem: renderItem,
+      renderMenu: renderMenu,
       resizeMenu: resizeMenu,
       minLength: 1,
       // Custom options, used by Drupal.autocomplete.
@@ -406,4 +428,4 @@
 
   Drupal.autocomplete = autocomplete;
 
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once, DOMPurify);

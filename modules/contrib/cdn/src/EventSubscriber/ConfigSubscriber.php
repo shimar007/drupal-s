@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\cdn\EventSubscriber;
 
 use Drupal\Component\Render\PlainTextOutput;
@@ -18,51 +20,23 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class ConfigSubscriber implements EventSubscriberInterface {
 
   /**
-   * The cache tags invalidator.
-   *
-   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
-   */
-  protected $cacheTagsInvalidator;
-
-  /**
-   * The typed config manager.
-   *
-   * @var \Drupal\Core\Config\TypedConfigManagerInterface
-   */
-  protected $typedConfigManager;
-
-  /**
-   * The Drupal kernel.
-   *
-   * @var \Drupal\Core\DrupalKernelInterface
-   */
-  protected $drupalKernel;
-
-  /**
-   * The config installer.
-   *
-   * @var \Drupal\Core\Config\ConfigInstallerInterface
-   */
-  protected $configInstaller;
-
-  /**
    * Constructs a ConfigSubscriber object.
    *
-   * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cache_tags_invalidator
+   * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cacheTagsInvalidator
    *   The cache tags invalidator.
-   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typed_config_manager
+   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typedConfigManager
    *   The typed config manager.
-   * @param \Drupal\Core\DrupalKernelInterface $drupal_kernel
+   * @param \Drupal\Core\DrupalKernelInterface $drupalKernel
    *   The Drupal kernel.
-   * @param \Drupal\Core\Config\ConfigInstallerInterface $config_installer
+   * @param \Drupal\Core\Config\ConfigInstallerInterface $configInstaller
    *   The config installer.
    */
-  public function __construct(CacheTagsInvalidatorInterface $cache_tags_invalidator, TypedConfigManagerInterface $typed_config_manager, DrupalKernelInterface $drupal_kernel, ConfigInstallerInterface $config_installer) {
-    $this->cacheTagsInvalidator = $cache_tags_invalidator;
-    $this->typedConfigManager = $typed_config_manager;
-    $this->drupalKernel = $drupal_kernel;
-    $this->configInstaller = $config_installer;
-  }
+  public function __construct(
+    protected CacheTagsInvalidatorInterface $cacheTagsInvalidator,
+    protected TypedConfigManagerInterface $typedConfigManager,
+    protected DrupalKernelInterface $drupalKernel,
+    protected ConfigInstallerInterface $configInstaller,
+  ) {}
 
   /**
    * Invalidates all render caches when CDN settings are modified.
@@ -70,7 +44,7 @@ class ConfigSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Config\ConfigCrudEvent $event
    *   The Event to process.
    */
-  public function onSave(ConfigCrudEvent $event) {
+  public function onSave(ConfigCrudEvent $event): void {
     // Stream wrappers may be provided by contrib modules, e.g. Flysystem.
     // In the case of modules, there is no API to determine and dynamically add
     // the module dependency. If Drupal is installed from configuration, this
@@ -105,7 +79,7 @@ class ConfigSubscriber implements EventSubscriberInterface {
    * @throws \DomainException
    *   When invalid CDN settings were saved.
    */
-  protected function validate(Config $config) {
+  protected function validate(Config $config): void {
     $typed_updated_config = $this->typedConfigManager->createFromNameAndData('cdn.settings', $config->getRawData());
     $violations = $typed_updated_config->validate();
     if ($violations->count() > 0) {

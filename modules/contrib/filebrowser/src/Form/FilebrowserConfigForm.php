@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser\Form;
 
+use Drupal;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -29,7 +30,7 @@ class FilebrowserConfigForm extends ConfigFormBase {
   }
 
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form = \Drupal::service('filebrowser.manager')->addFormExtraFields($form, $form_state, null, true);
+    $form = Drupal::service('filebrowser.manager')->addFormExtraFields($form, $form_state, null, true);
     return parent::buildForm($form, $form_state);
   }
 
@@ -50,7 +51,7 @@ class FilebrowserConfigForm extends ConfigFormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $form_values = $form_state->getValue('filebrowser');
-    \Drupal::configFactory()->getEditable('filebrowser.settings')
+    Drupal::configFactory()->getEditable('filebrowser.settings')
       ->set('filebrowser', $form_values)
       ->save();
 

@@ -200,8 +200,46 @@ class CspOptimizationTest extends UnitTestCase {
   }
 
   /**
-   * Test reducing the source list when 'none' is included.
+   * A source list with only 'none' should not produce a deprecation warning.
    *
+   * @covers ::reduceSourceList
+   */
+  public function testSourceListWithNone() {
+    $policy = new Csp();
+
+    $policy->setDirective('object-src', [
+      Csp::POLICY_NONE,
+    ]);
+
+    $this->assertEquals(
+      "object-src 'none'",
+      $policy->getHeaderValue()
+    );
+  }
+
+  /**
+   * A source list with 'report-sample' and 'none' should not produce a warning.
+   *
+   * @covers ::reduceSourceList
+   */
+  public function testSourceListWithNoneAndReportSample() {
+    $policy = new Csp();
+
+    $policy->setDirective('script-src', [
+      Csp::POLICY_NONE,
+      Csp::POLICY_REPORT_SAMPLE,
+    ]);
+
+    $this->assertEquals(
+      "script-src 'none' 'report-sample'",
+      $policy->getHeaderValue()
+    );
+  }
+
+  /**
+   * Legacy test for reducing the source list when 'none' is included.
+   *
+   * @group legacy
    * @covers ::reduceSourceList
    */
   public function testReduceSourceListWithNone() {
@@ -212,8 +250,35 @@ class CspOptimizationTest extends UnitTestCase {
       'example.com',
       "'hash-123abc'",
     ]);
+
+    $this->expectDeprecation("'none' overriding other sources is deprecated in csp:8.x-1.30 and behavior will change in csp:2.0.0. See https://www.drupal.org/node/3411477");
+
     $this->assertEquals(
       "object-src 'none'",
+      $policy->getHeaderValue()
+    );
+  }
+
+  /**
+   * Legacy test that 'report-sample' is kept when 'none' is included.
+   *
+   * @group legacy
+   * @covers ::reduceSourceList
+   */
+  public function testReduceSourceListWithNoneAndReportSample() {
+    $policy = new Csp();
+
+    $policy->setDirective('script-src', [
+      Csp::POLICY_NONE,
+      'example.com',
+      "'hash-123abc'",
+      Csp::POLICY_REPORT_SAMPLE,
+    ]);
+
+    $this->expectDeprecation("'none' overriding other sources is deprecated in csp:8.x-1.30 and behavior will change in csp:2.0.0. See https://www.drupal.org/node/3411477");
+
+    $this->assertEquals(
+      "script-src 'none' 'report-sample'",
       $policy->getHeaderValue()
     );
   }

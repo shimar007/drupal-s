@@ -15,11 +15,13 @@
        * (internal) Sub-function for code factoring: actually build masonry.
        */
       function _buildMasonry($container, options) {
+        const masonryExists = $container.hasClass('masonry');
+
         // If no masonry find in container: init it...
-        if ($container.findOnce('masonry').length === 0) {
-          $container.once('masonry').addClass('masonry').masonry(options);
+        if (!masonryExists) {
+          $container.addClass('masonry').addClass('masonry-layout').masonry(options);
           $(window).resize(function () {
-            $container.findOnce('masonry').masonry('bindResize');
+            $container.masonry('bindResize');
           });
         } else {
           // ...otherwise, simply rebuild the layout.
@@ -51,8 +53,11 @@
             });
           });
 
-          $('img.' + options.lazyloadSelector, $container).once('imgloaded').each(function() {
-            observer.observe(this, { attributes: true });
+          $('img.' + options.lazyloadSelector, $container).each(function() {
+            if (!$(this).hasClass('imgloaded')) {
+              $(this).addClass('imgloaded');
+              observer.observe(this, {attributes: true});
+            }
           });
         }
       }
@@ -66,17 +71,11 @@
         $.each(drupalSettings.masonry, function (container, settings) {
 
           // Set container.
+          settings.lazyload_selector = undefined;
           const $container = $(container);
 
           // Set options.
           const options = {};
-
-          // Sets the item selector.
-          if (settings.item_selector) {
-            options.itemSelector = settings.item_selector;
-            // Add custom class to all items.
-            $(settings.item_selector, $container).addClass('masonry-item');
-          }
 
           // Apply column width units accordingly.
           if (settings.column_width) {
@@ -84,10 +83,38 @@
               options.columnWidth = parseInt(settings.column_width);
             }
             else if (settings.column_width_units === '%') {
-              options.columnWidth = ($container.width() * (settings.column_width / 100)) - settings.gutter_width;
+              const column_width = parseInt(settings.column_width);
+              options.columnWidth = ($container.width() * (column_width / 100)) - column_width;
             }
             else {
+              settings.force_width = false; // Can't force width on CSS selector.
               options.columnWidth = settings.column_width;
+            }
+          }
+
+          // Apply gutter width units accordingly.
+          if (settings.gutter_width) {
+            if (settings.gutter_width_units === 'px') {
+              options.gutter = parseInt(settings.gutter_width);
+            }
+            else if (settings.gutter_width_units === '%') {
+              const gutter = parseInt(settings.gutter_width);
+              options.gutter = ($container.width() * (gutter / 100)) - gutter;
+            }
+            else {
+              options.gutter = settings.gutter_width;
+            }
+          }
+
+          // Sets the item selector and size force.
+          if (settings.item_selector) {
+            options.itemSelector = settings.item_selector;
+            // Add custom class to all items.
+            const $items = $(settings.item_selector, $container)
+              $items.addClass('masonry-item');
+            // Force the column size.
+            if (settings.force_width) {
+              $items.css('width', settings.column_width);
             }
           }
 
@@ -97,7 +124,6 @@
           }
 
           // Add the various options.
-          options.gutter = settings.gutter_width;
           options.isResizeBound = settings.resizable;
           options.isFitWidth = settings.fit_width;
           options.imagesFirst = settings.images_first;

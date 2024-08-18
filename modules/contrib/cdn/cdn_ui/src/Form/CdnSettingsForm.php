@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\cdn_ui\Form;
 
@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Configure CDN settings for this site.
  */
-class CdnSettingsForm extends ValidatableConfigFormBase {
+final class CdnSettingsForm extends ValidatableConfigFormBase {
 
   /**
    * The 'nocssjs' conditions preset: all files except CSS and JS.

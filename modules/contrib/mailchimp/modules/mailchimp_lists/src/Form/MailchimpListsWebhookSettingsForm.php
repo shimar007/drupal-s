@@ -95,7 +95,7 @@ class MailchimpListsWebhookSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    /* @var \Mailchimp\MailchimpLists $mc_lists */
+    /** @var \Mailchimp\MailchimpLists $mc_lists */
     $mc_lists = mailchimp_get_api_object('MailchimpLists');
     $list = $form_state->get('list');
 
@@ -128,7 +128,7 @@ class MailchimpListsWebhookSettingsForm extends ConfigFormBase {
         'api' => FALSE,
       ];
 
-      // Add webhook with enabled events.
+       // Add webhook with enabled events.
       $result = mailchimp_webhook_add(
         $list->id,
         mailchimp_webhook_url(),

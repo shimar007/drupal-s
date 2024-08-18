@@ -4,19 +4,10 @@ declare(strict_types=1);
 
 namespace Drupal\csp;
 
-// phpcs:disable Drupal.Functions.MultiLineFunctionDeclaration.MissingTrailingComma
-
 /**
  * A helper service for modifying Csp policy objects.
  */
 class PolicyHelper {
-
-  /**
-   * The Nonce service.
-   *
-   * @var \Drupal\csp\Nonce
-   */
-  private $nonce;
 
   /**
    * Construct a PolicyHelper.
@@ -25,9 +16,9 @@ class PolicyHelper {
    *   The Nonce service.
    */
   public function __construct(
-    Nonce $nonce
+    private Nonce $nonce,
   ) {
-    $this->nonce = $nonce;
+
   }
 
   /**
@@ -42,7 +33,7 @@ class PolicyHelper {
    * @param string|null $value
    *   The nonce to add, or NULL to use the nonce service.
    */
-  public function appendNonce(Csp $policy, string $directive, $fallback, ?string $value = NULL): void {
+  public function appendNonce(Csp $policy, string $directive, array|string $fallback, ?string $value = NULL): void {
     if ($directive != 'script' && $directive != 'style') {
       throw new \InvalidArgumentException("Directive must be 'script' or 'style'");
     }
@@ -73,7 +64,7 @@ class PolicyHelper {
    * @param string $value
    *   The hash value to add.
    */
-  public function appendHash(Csp $policy, string $directive, string $type, $fallback, string $value): void {
+  public function appendHash(Csp $policy, string $directive, string $type, array|string $fallback, string $value): void {
     if ($directive != 'script' && $directive != 'style') {
       throw new \InvalidArgumentException("Directive must be 'script' or 'style'");
     }
@@ -107,7 +98,7 @@ class PolicyHelper {
    * @param array|string $value
    *   The nonce or hash to add.
    */
-  private function appendToUnsafeDisabler(Csp $policy, string $directive, $fallback, $value): void {
+  private function appendToUnsafeDisabler(Csp $policy, string $directive, array|string $fallback, array|string $value): void {
     $directiveList = $policy::getDirectiveFallbackList($directive);
     array_unshift($directiveList, $directive);
 

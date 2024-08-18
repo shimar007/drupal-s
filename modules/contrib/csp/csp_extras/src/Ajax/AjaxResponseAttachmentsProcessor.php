@@ -109,7 +109,7 @@ class AjaxResponseAttachmentsProcessor implements AttachmentsResponseProcessorIn
     AssetCollectionRendererInterface $js_collection_renderer,
     RequestStack $request_stack,
     RendererInterface $renderer,
-    ModuleHandlerInterface $module_handler
+    ModuleHandlerInterface $module_handler,
   ) {
     $this->decoratedAjaxResponseAttachmentsProcessor = $decoratedAjaxResponseAttachmentsProcessor;
     $this->assetResolver = $asset_resolver;

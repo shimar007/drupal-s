@@ -34,7 +34,7 @@ function minifyhtml_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_form_FORM_ID_alter() for system_performance_settings form.
  */
 function minifyhtml_form_system_performance_settings_alter(array &$form, FormStateInterface $form_state) {
-  $config = \Drupal::config('minifyhtml.config');
+  $config = \Drupal::configFactory()->getEditable('minifyhtml.config');
   $access = \Drupal::currentUser()->hasPermission('administer minifyhtml');
 
   $form['bandwidth_optimization']['minifyhtml_minify'] = [
@@ -57,7 +57,7 @@ function minifyhtml_form_system_performance_settings_alter(array &$form, FormSta
     '#type' => 'checkbox',
     '#default_value' => $config->get('strip_comments'),
     '#states' => [
-      'enabled' => [
+      'visible' => [
         ':input[name="minifyhtml_minify"]' => ['checked' => TRUE],
       ],
     ],

@@ -16,7 +16,7 @@ class MailchimpCampaignAccessControlHandler extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   public function access(EntityInterface $entity, $operation, AccountInterface $account = NULL, $return_as_object = FALSE) {
-    /* @var $entity \Drupal\mailchimp_campaign\Entity\MailchimpCampaign */
+    /** @var \Drupal\mailchimp_campaign\Entity\MailchimpCampaign $entity */
 
     // Ensure the associated list/audience still exists.
     if (!$entity->mc_data) {
@@ -28,6 +28,7 @@ class MailchimpCampaignAccessControlHandler extends EntityAccessControlHandler {
     $return = NULL;
     switch ($operation) {
       case 'send':
+      case 'sendtestmail':
       case 'edit':
       case 'delete':
         $return = ($status == MAILCHIMP_STATUS_SENT) ? AccessResult::forbidden() : AccessResult::allowed();

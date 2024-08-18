@@ -2,10 +2,7 @@
 
 namespace Mailchimp\Tests;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Mailchimp\http\MailchimpHttpClientInterface;
-use Mailchimp\MailchimpAPIException;
 
 /**
  * A dummy HTTP client used when running unit tests.
@@ -25,6 +22,7 @@ class MailchimpTestHttpClient implements MailchimpHttpClientInterface {
    * @inheritdoc
    */
   public function handleRequest($method, $uri = '', $options = [], $parameters = [], $returnAssoc = FALSE) {
+
     if (!empty($parameters)) {
       if ($method == 'GET') {
         // Send parameters as query string parameters.

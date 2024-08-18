@@ -7,7 +7,7 @@ namespace Mailchimp;
  *
  * @package Mailchimp
  */
-class MailchimpLists extends Mailchimp {
+class MailchimpLists extends MailchimpApiUser {
 
   const MEMBER_STATUS_SUBSCRIBED = 'subscribed';
   const MEMBER_STATUS_UNSUBSCRIBED = 'unsubscribed';
@@ -25,11 +25,11 @@ class MailchimpLists extends Mailchimp {
    * @see http://developer.mailchimp.com/documentation/mailchimp/reference/lists/#read-get_lists
    */
   public function getLists($parameters = []) {
-    return $this->request('GET', '/lists', NULL, $parameters);
+    return $this->api_class->request('GET', '/lists', NULL, $parameters);
   }
 
   /**
-   * Gets a MailChimp list.
+   * Gets a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -45,7 +45,7 @@ class MailchimpLists extends Mailchimp {
       'list_id' => $list_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}', $tokens, $parameters);
   }
 
   /**
@@ -65,7 +65,91 @@ class MailchimpLists extends Mailchimp {
       'list_id' => $list_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/interest-categories', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/interest-categories', $tokens, $parameters);
+  }
+
+  /**
+   * Create new interest category associated with a list.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $title
+   *   The title of interest category.
+   * @param string $type
+   *   The type of interest category.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://developer.mailchimp.com/documentation/mailchimp/reference/lists/interest-categories/#create-post_lists_list_id_interest_categories
+   */
+  public function addInterestCategories($list_id, $title, $type, $parameters = [], $batch = FALSE) {
+    $tokens = [
+      'list_id' => $list_id,
+    ];
+
+    $parameters += [
+      'title' => $title,
+      'type' => $type,
+    ];
+
+    return $this->api_class->request('POST', '/lists/{list_id}/interest-categories', $tokens, $parameters);
+  }
+
+  /**
+   * Update interest category associated with a list.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $interest_category_id
+   *   The ID of the interest category.
+   * @param string $title
+   *   The title of interest category.
+   * @param string $type
+   *   The type of interest category.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://developer.mailchimp.com/documentation/mailchimp/reference/lists/interest-categories/#create-post_lists_list_id_interest_categories
+   */
+  public function updateInterestCategories($list_id, $interest_category_id, $title, $type, $parameters = [], $batch = FALSE) {
+    $tokens = [
+      'list_id' => $list_id,
+      'interest_category_id' => $interest_category_id,
+    ];
+
+    $parameters += [
+      'title' => $title,
+      'type' => $type,
+    ];
+
+    return $this->api_class->request('PATCH', '/lists/{list_id}/interest-categories/{interest_category_id}', $tokens, $parameters);
+  }
+
+  /**
+   * Update interest category associated with a list.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $interest_category_id
+   *   The ID of the interest category.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://developer.mailchimp.com/documentation/mailchimp/reference/lists/interest-categories/#create-post_lists_list_id_interest_categories
+   */
+  public function deleteInterestCategories($list_id, $interest_category_id, $parameters = [], $batch = FALSE) {
+    $tokens = [
+      'list_id' => $list_id,
+      'interest_category_id' => $interest_category_id,
+    ];
+
+    return $this->api_class->request('DELETE', '/lists/{list_id}/interest-categories/{interest_category_id}', $tokens, $parameters);
   }
 
   /**
@@ -88,11 +172,98 @@ class MailchimpLists extends Mailchimp {
       'interest_category_id' => $interest_category_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/interest-categories/{interest_category_id}/interests', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/interest-categories/{interest_category_id}/interests', $tokens, $parameters);
   }
 
   /**
-   * Gets merge fields associated with a MailChimp list.
+   * Create new interest in category.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $interest_category_id
+   *   The ID of interest category.
+   * @param string $name
+   *   The name of interest.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://mailchimp.com/developer/reference/lists/interest-categories/interests/
+   */
+  public function addInterests($list_id, $interest_category_id, $name, $parameters = [], $batch = FALSE) {
+    $tokens = [
+      'list_id' => $list_id,
+      'interest_category_id' => $interest_category_id,
+    ];
+
+    $parameters += [
+      'name' => $name,
+    ];
+
+    return $this->api_class->request('POST', '/lists/{list_id}/interest-categories/{interest_category_id}/interests', $tokens, $parameters);
+  }
+
+  /**
+   * Edit interest in category.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $interest_category_id
+   *   The ID of interest category.
+   * @param string $interest_id
+   *   The ID of interest.
+   * @param string $name
+   *   The name of interest.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://developer.mailchimp.com/documentation/mailchimp/reference/lists/interest-categories/#create-post_lists_list_id_interest_categories
+   */
+  public function updateInterests($list_id, $interest_category_id, $interest_id, $name, $parameters = [], $batch = FALSE) {
+    $tokens = [
+      'list_id' => $list_id,
+      'interest_category_id' => $interest_category_id,
+      'interest_id' => $interest_id,
+    ];
+
+    $parameters += [
+      'name' => $name,
+    ];
+
+    return $this->api_class->request('PATCH', '/lists/{list_id}/interest-categories/{interest_category_id}/interests/{interest_id}', $tokens, $parameters);
+  }
+
+  /**
+   * Delete interest in category.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $interest_category_id
+   *   The ID of interest category.
+   * @param string $interest_id
+   *   The ID of interest.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://developer.mailchimp.com/documentation/mailchimp/reference/lists/interest-categories/#create-post_lists_list_id_interest_categories
+   */
+  public function deleteInterests($list_id, $interest_category_id, $interest_id, $parameters = [], $batch = FALSE) {
+    $tokens = [
+      'list_id' => $list_id,
+      'interest_category_id' => $interest_category_id,
+      'interest_id' => $interest_id,
+    ];
+
+    return $this->api_class->request('DELETE', '/lists/{list_id}/interest-categories/{interest_category_id}/interests/{interest_id}', $tokens, $parameters);
+  }
+
+  /**
+   * Gets merge fields associated with a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -108,11 +279,11 @@ class MailchimpLists extends Mailchimp {
       'list_id' => $list_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/merge-fields', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/merge-fields', $tokens, $parameters);
   }
 
   /**
-   * Add merge field associated with a MailChimp list.
+   * Add merge field associated with a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -137,11 +308,11 @@ class MailchimpLists extends Mailchimp {
       'type' => $type,
     ];
 
-    return $this->request('POST', '/lists/{list_id}/merge-fields', $tokens, $parameters);
+    return $this->api_class->request('POST', '/lists/{list_id}/merge-fields', $tokens, $parameters);
   }
 
   /**
-   * Gets information about all members of a MailChimp list.
+   * Gets information about all members of a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -157,11 +328,11 @@ class MailchimpLists extends Mailchimp {
       'list_id' => $list_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/members', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/members', $tokens, $parameters);
   }
 
   /**
-   * Gets information about a member of a MailChimp list.
+   * Gets information about a member of a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -180,11 +351,34 @@ class MailchimpLists extends Mailchimp {
       'subscriber_hash' => md5(strtolower($email)),
     ];
 
-    return $this->request('GET', '/lists/{list_id}/members/{subscriber_hash}', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/members/{subscriber_hash}', $tokens, $parameters);
   }
 
   /**
-   * Gets information about a member of a MailChimp list.
+   * Add an event for a Mailchimp list member.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $email
+   *   The member's email address.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://mailchimp.com/developer/marketing/api/list-member-events/add-event/
+   */
+  public function addMemberEvent($list_id, $email, $parameters = []) {
+    $tokens = [
+      'list_id' => $list_id,
+      'subscriber_hash' => md5(strtolower($email)),
+    ];
+
+    return $this->api_class->request('POST', '/lists/{list_id}/members/{subscriber_hash}/events', $tokens, $parameters);
+  }
+
+  /**
+   * Gets information about a member of a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -206,11 +400,11 @@ class MailchimpLists extends Mailchimp {
         'unique_email_id' => $mc_eid,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/members/', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/members/', $tokens, $parameters);
   }
 
   /**
-   * Gets activity related to a member of a MailChimp list.
+   * Gets activity related to a member of a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -229,11 +423,34 @@ class MailchimpLists extends Mailchimp {
       'subscriber_hash' => md5(strtolower($email)),
     ];
 
-    return $this->request('GET', '/lists/{list_id}/members/{subscriber_hash}/activity', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/members/{subscriber_hash}/activity', $tokens, $parameters);
   }
 
   /**
-   * Adds a new member to a MailChimp list.
+   * Get events for a Mailchimp contact.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $email
+   *   The member's email address.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://mailchimp.com/developer/marketing/api/list-member-events/list-member-events/
+   */
+  public function getMemberEvents($list_id, $email, $parameters = []) {
+    $tokens = [
+      'list_id' => $list_id,
+      'subscriber_hash' => md5(strtolower($email)),
+    ];
+
+    return $this->api_class->request('GET', '/lists/{list_id}/members/{subscriber_hash}/events', $tokens, $parameters);
+  }
+
+  /**
+   * Adds a new member to a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -257,11 +474,11 @@ class MailchimpLists extends Mailchimp {
       'email_address' => $email,
     ];
 
-    return $this->request('POST', '/lists/{list_id}/members', $tokens, $parameters, $batch);
+    return $this->api_class->request('POST', '/lists/{list_id}/members', $tokens, $parameters, $batch);
   }
 
   /**
-   * Removes a member from a MailChimp list.
+   * Removes a member from a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -278,11 +495,11 @@ class MailchimpLists extends Mailchimp {
       'subscriber_hash' => md5(strtolower($email)),
     ];
 
-    return $this->request('DELETE', '/lists/{list_id}/members/{subscriber_hash}', $tokens);
+    return $this->api_class->request('DELETE', '/lists/{list_id}/members/{subscriber_hash}', $tokens);
   }
 
   /**
-   * Updates a member of a MailChimp list.
+   * Updates a member of a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -303,11 +520,11 @@ class MailchimpLists extends Mailchimp {
       'subscriber_hash' => md5(strtolower($email)),
     ];
 
-    return $this->request('PATCH', '/lists/{list_id}/members/{subscriber_hash}', $tokens, $parameters, $batch);
+    return $this->api_class->request('PATCH', '/lists/{list_id}/members/{subscriber_hash}', $tokens, $parameters, $batch);
   }
 
   /**
-   * Adds a new or update an existing member of a MailChimp list.
+   * Adds a new or update an existing member of a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -332,11 +549,34 @@ class MailchimpLists extends Mailchimp {
       'email_address' => $email,
     ];
 
-    return $this->request('PUT', '/lists/{list_id}/members/{subscriber_hash}', $tokens, $parameters, $batch);
+    return $this->api_class->request('PUT', '/lists/{list_id}/members/{subscriber_hash}', $tokens, $parameters, $batch);
   }
 
   /**
-   * Gets information about segments associated with a MailChimp list.
+   * Gets tags related to a member of a MailChimp list.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $email
+   *   The member's email address.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/tags/#read-get_lists_list_id_members_subscriber_hash_tags
+   */
+  public function getMemberTags($list_id, $email, $parameters = []) {
+    $tokens = [
+      'list_id' => $list_id,
+      'subscriber_hash' => md5(strtolower($email)),
+    ];
+
+    return $this->api_class->request('GET', '/lists/{list_id}/members/{subscriber_hash}/tags', $tokens, $parameters);
+  }
+
+  /**
+   * Gets information about segments associated with a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -352,11 +592,11 @@ class MailchimpLists extends Mailchimp {
       'list_id' => $list_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/segments', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/segments', $tokens, $parameters);
   }
 
   /**
-   * Gets a MailChimp list segment.
+   * Gets a Mailchimp list segment.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -375,11 +615,11 @@ class MailchimpLists extends Mailchimp {
       'segment_id' => $segment_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/segments/{segment_id}', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/segments/{segment_id}', $tokens, $parameters);
   }
 
   /**
-   * Adds a new segment to a MailChimp list.
+   * Adds a new segment to a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -403,11 +643,11 @@ class MailchimpLists extends Mailchimp {
       'name' => $name,
     ];
 
-    return $this->request('POST', '/lists/{list_id}/segments', $tokens, $parameters, $batch);
+    return $this->api_class->request('POST', '/lists/{list_id}/segments', $tokens, $parameters, $batch);
   }
 
   /**
-   * Updates a segment associated with a MailChimp list.
+   * Updates a segment associated with a Mailchimp list.
    *
    * @param string $list_id
    *   The ID of the list.
@@ -434,7 +674,7 @@ class MailchimpLists extends Mailchimp {
       'name' => $name,
     ];
 
-    return $this->request('PATCH', '/lists/{list_id}/segments/{segment_id}', $tokens, $parameters, $batch);
+    return $this->api_class->request('PATCH', '/lists/{list_id}/segments/{segment_id}', $tokens, $parameters, $batch);
   }
 
   /**
@@ -457,7 +697,7 @@ class MailchimpLists extends Mailchimp {
       'segment_id' => $segment_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/segments/{segment_id}/members', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/segments/{segment_id}/members', $tokens, $parameters);
   }
 
   /**
@@ -467,7 +707,7 @@ class MailchimpLists extends Mailchimp {
    *   The ID of the list.
    * @param string $segment_id
    *   The ID of the segment.
-   * @param array $email
+   * @param string $email
    *   The email address to add to the segment.
    * @param array $parameters
    *   Associative array of optional request parameters.
@@ -486,7 +726,95 @@ class MailchimpLists extends Mailchimp {
       'email_address' => $email,
     ];
 
-    return $this->request('POST', '/lists/{list_id}/segments/{segment_id}/members', $tokens, $parameters);
+    return $this->api_class->request('POST', '/lists/{list_id}/segments/{segment_id}/members', $tokens, $parameters);
+  }
+
+  /**
+   * Removes a member from a list segment.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string $segment_id
+   *   The ID of the segment.
+   * @param string $email
+   *   The email address to remove from the segment.
+   *
+   * @return object
+   *
+   * @see http://developer.mailchimp.com/documentation/mailchimp/reference/lists/segments/members/#delete-delete_lists_list_id_segments_segment_id_members_subscriber_hash
+   */
+  public function removeSegmentMember($list_id, $segment_id, $email) {
+    $tokens = [
+      'list_id' => $list_id,
+      'segment_id' => $segment_id,
+      'subscriber_hash' => md5(strtolower($email)),
+    ];
+
+    return $this->api_class->request('DELETE', '/lists/{list_id}/segments/{segment_id}/members/{subscriber_hash}', $tokens);
+  }
+
+  /**
+   * Adds tags to a member.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string[] $tags
+   *   A list of tags to add.
+   * @param string $email
+   *   The email address to add the tag to.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/tags/
+   */
+  public function addTagsMember($list_id, array $tags, $email, array $parameters = []) {
+    $tokens = [
+      'list_id' => $list_id,
+      'subscriber_hash' => md5(strtolower($email)),
+    ];
+
+    foreach ($tags as $tag) {
+      $parameters['tags'][] = [
+        'name' => $tag,
+        'status' => 'active',
+      ];
+    }
+
+    return $this->api_class->request('POST', '/lists/{list_id}/members/{subscriber_hash}/tags', $tokens, $parameters);
+  }
+
+  /**
+   * Removes tags from a member.
+   *
+   * @param string $list_id
+   *   The ID of the list.
+   * @param string[] $tags
+   *   A list of tags to remove.
+   * @param string $email
+   *   The email address to remove the tag from.
+   * @param array $parameters
+   *   Associative array of optional request parameters.
+   *
+   * @return object
+   *
+   * @see https://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/tags/
+   */
+  public function removeTagsMember($list_id, array $tags, $email, array $parameters = []) {
+    $tokens = [
+      'list_id' => $list_id,
+      'subscriber_hash' => md5(strtolower($email)),
+    ];
+
+    foreach ($tags as $tag) {
+      $parameters['tags'][] = [
+        'name' => $tag,
+        'status' => 'inactive',
+      ];
+    }
+
+    return $this->api_class->request('POST', '/lists/{list_id}/members/{subscriber_hash}/tags', $tokens, $parameters);
   }
 
   /**
@@ -506,7 +834,7 @@ class MailchimpLists extends Mailchimp {
       'list_id' => $list_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/webhooks', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/webhooks', $tokens, $parameters);
   }
 
   /**
@@ -529,7 +857,7 @@ class MailchimpLists extends Mailchimp {
       'webhook_id' => $webhook_id,
     ];
 
-    return $this->request('GET', '/lists/{list_id}/webhooks/{webhook_id}', $tokens, $parameters);
+    return $this->api_class->request('GET', '/lists/{list_id}/webhooks/{webhook_id}', $tokens, $parameters);
   }
 
   /**
@@ -555,7 +883,7 @@ class MailchimpLists extends Mailchimp {
       'url' => $url,
     ];
 
-    return $this->request('POST', '/lists/{list_id}/webhooks', $tokens, $parameters, $batch);
+    return $this->api_class->request('POST', '/lists/{list_id}/webhooks', $tokens, $parameters, $batch);
   }
 
   /**
@@ -576,7 +904,7 @@ class MailchimpLists extends Mailchimp {
       'webhook_id' => $webhook_id,
     ];
 
-    return $this->request('DELETE', '/lists/{list_id}/webhooks/{webhook_id}', $tokens, $parameters);
+    return $this->api_class->request('DELETE', '/lists/{list_id}/webhooks/{webhook_id}', $tokens, $parameters);
   }
 
   /**

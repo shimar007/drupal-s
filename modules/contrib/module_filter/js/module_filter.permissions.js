@@ -1,67 +1,73 @@
 /**
  * @file
+ * Module filter behaviors for the permissions page.
  */
 
-(function ($) {
-
-  'use strict';
-
+(($) => {
   /**
    * Filter enhancements.
    */
   Drupal.behaviors.moduleFilterPermissions = {
-    attach: function (context) {
-      var $input = $('input.table-filter-text', context).once('module-filter');
+    attach(context) {
+      const $input = $(
+        once('module-filter', 'input.table-filter-text', context),
+      );
       if ($input.length) {
-        var wrapperId = $input.attr('data-table');
-        var selector = 'tbody tr';
-        var lastModuleItem;
+        const wrapperId = $input.attr('data-table');
+        const selector = 'tbody tr';
+        let lastModuleItem;
 
-        // Move location of filter input to before the permissions table.
-        $(wrapperId).parent().prepend($input.closest('.table-filter'));
-
-        $input.winnow(wrapperId + ' ' + selector, {
-          textSelector: 'td.module',
+        $input.winnow(`${wrapperId} ${selector}`, {
+          // Match on module name or permission text.
+          textSelector: 'td.module, div.permission',
           buildIndex: [
-            function (item) {
-              item.isModule = item.text != '';
+            (item) => {
+              // Use .module class to determine if it is a module or a permission.
+              item.isModule = item.element.has('.module').length;
 
               if (item.isModule) {
+                // This is a module so initialize the children array to store
+                // the permission items.
                 item.children = [];
                 lastModuleItem = item;
-              }
-              else {
+              } else {
+                // This is a permission item, so record its parent and add it to
+                // its parents array of children items.
                 item.parent = lastModuleItem;
                 lastModuleItem.children.push(item);
               }
 
               return item;
-            }
+            },
           ],
           additionalOperators: {
-            perm: function (string, item) {
+            perm(string, item) {
               if (!item.isModule) {
-                if (item.permission == undefined) {
-                  item.permission = $('.permission .title', item.element).text().toLowerCase();
+                if (item.permission === undefined) {
+                  item.permission = $('.permission .title', item.element)
+                    .text()
+                    .toLowerCase();
                 }
 
                 if (item.permission.indexOf(string) >= 0) {
                   return true;
                 }
               }
-            }
-          }
+            },
+          },
         });
 
-        var winnow = $input.data('winnow');
-        $input.bind('winnow:finish', function () {
+        const winnow = $input.data('winnow');
+        $input.bind('winnow:finish', () => {
           if (winnow.results.length > 0) {
-            for (var i in winnow.results) {
+            for (const i in winnow.results) {
               if (winnow.results[i].isModule) {
-                for (var k in winnow.results[i].children) {
+                // The match is a module name so also show all the permissions.
+                for (const k in winnow.results[i].children) {
                   winnow.results[i].children[k].element.show();
                 }
               }
+              // Otherwise it is a permission, so show the module name.
               else {
                 winnow.results[i].parent.element.show();
               }
@@ -69,7 +75,6 @@
           }
         });
       }
-    }
+    },
   };
-
-})(jQuery);
+})(jQuery, once);

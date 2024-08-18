@@ -221,6 +221,7 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
+          pagination_heading_level: h4
       exposed_form:
         type: bef
         options:
@@ -248,7 +249,7 @@ display:
         type: none
         options: {  }
       cache:
-        type: none
+        type: search_api_none
         options: {  }
       empty: {  }
       sorts: {  }
@@ -273,7 +274,6 @@ display:
             query_param: search_query
             fallback: ''
             multiple: and
-          default_argument_skip_url: false
           summary_options: {  }
           summary:
             sort_order: asc

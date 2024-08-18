@@ -39,7 +39,7 @@ class FilebrowserAccessCheck implements AccessInterface {
       'rename' => Common::RENAME_FILES,
       'archive' => Common::DOWNLOAD_ARCHIVE,
     ];
-    return isset($permissions[$action]) ? $permissions[$action] : NULL;
+    return $permissions[$action] ?? NULL;
   }
 }
 

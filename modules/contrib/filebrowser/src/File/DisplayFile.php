@@ -3,6 +3,7 @@
 namespace Drupal\filebrowser\File;
 
 use Drupal\Core\Controller\ControllerBase;
+use stdClass;
 
 class DisplayFile extends ControllerBase {
 
@@ -109,11 +110,12 @@ class DisplayFile extends ControllerBase {
    * @param $stats
    * @param $db_content
    * @param $root
-   * @return array
+   *
+   * @return \Drupal\filebrowser\File\DisplayFile
    */
   public function fileSetData($file_relative_path, $fs_file, &$stats, $db_content, $root) {
-    $this->fid = isset($db_content['fid']) ? $db_content['fid'] : null;
-    $this->description = isset($db_content['description']) ? $db_content['description'] : null;
+    $this->fid = $db_content['fid'] ?? NULL;
+    $this->description = $db_content['description'] ?? NULL;
     $this->displayName = $db_content['display_name'];
     $this->name = $db_content['display_name'];
     $this->fsRoot = $root;
@@ -139,7 +141,7 @@ class DisplayFile extends ControllerBase {
 
   public function createSubdir($relative_path) {
 
-    function s3_create_subdir($nid, $fs_root){
+    function s3_create_subdir($nid, $fs_root) {
       return [
         'nid' => $nid,
         'display-name' => '..',
@@ -162,7 +164,7 @@ class DisplayFile extends ControllerBase {
     $this->fullPath = $this->fsRoot;
     //todo: mark logic
     $this->status = MARK_READ;
-    $this->fileData = new \stdClass();
+    $this->fileData = new stdClass();
     $this->fileData->mimetype = 'folder/parent';
     $this->fileData->type = 'directory';
     return $this;
@@ -178,11 +180,11 @@ class DisplayFile extends ControllerBase {
     $this->description =  null;
     $this->displayName = '.';
     $this->fsRoot = null;
-    $this->relativePath = $relative_path;;
+    $this->relativePath = $relative_path;
     $this->fullPath = $this->fsRoot;
     //todo: mark logic
     $this->status = MARK_READ;
-    $this->fileData = new \stdClass();
+    $this->fileData = new stdClass();
     $this->fileData->mimetype = 'folder';
     $this->fileData->type = 'directory';
     return $this;

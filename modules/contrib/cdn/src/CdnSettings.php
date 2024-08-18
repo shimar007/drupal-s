@@ -1,12 +1,13 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\cdn;
 
 use Drupal\Component\Assertion\Inspector;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ConfigValueException;
+use Drupal\Core\Config\ImmutableConfig;
 
 /**
  * Wraps the CDN settings configuration, contains all parsing.
@@ -17,17 +18,13 @@ class CdnSettings {
 
   /**
    * The CDN settings.
-   *
-   * @var \Drupal\Core\Config\ImmutableConfig
    */
-  protected $rawSettings;
+  protected ImmutableConfig $rawSettings;
 
   /**
    * The lookup table.
-   *
-   * @var array|null
    */
-  protected $lookupTable;
+  protected ?array $lookupTable;
 
   /**
    * Constructs a new CdnSettings object.
@@ -120,6 +117,7 @@ class CdnSettings {
    *       more conditions besides extensions are added. For now, KISS.
    */
   protected function buildLookupTable(array $mapping) : array {
+    // @phpstan-ignore-next-line
     assert(!\Drupal::hasContainer() || \Drupal::service('config.typed')->get('cdn.settings')->validate()->count() === 0, 'There are validation errors for the "cdn.settings" configuration.');
     $lookup_table = [];
     if ($mapping['type'] === 'simple') {

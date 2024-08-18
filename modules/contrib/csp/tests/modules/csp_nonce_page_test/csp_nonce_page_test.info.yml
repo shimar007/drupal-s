@@ -3,7 +3,7 @@ type: module
 description: 'Provides a test page for CSP Nonce automated tests.'
 package: Testing
 
-# Information added by Drupal.org packaging script on 2024-06-15
-version: '8.x-1.25'
+# Information added by Drupal.org packaging script on 2024-07-18
+version: '8.x-1.33'
 project: 'csp'
-datestamp: 1718435393
+datestamp: 1721292909

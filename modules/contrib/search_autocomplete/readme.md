@@ -13,7 +13,7 @@ For a full description visit project page: https://www.drupal.org/project/search
 
 # REQUIREMENTS
 
-*None. (Other than a clean Drupal 8 installation)
+*None. (Other than a clean Drupal installation)
 
 # INSTALLATION
 

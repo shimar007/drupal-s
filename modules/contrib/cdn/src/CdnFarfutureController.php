@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\cdn;
 
@@ -17,29 +17,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class CdnFarfutureController {
 
   /**
-   * The private key service.
-   *
-   * @var \Drupal\Core\PrivateKey
-   */
-  protected $privateKey;
-
-  /**
-   * The stream wrapper manager.
-   *
-   * @var \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface
-   */
-  protected $streamWrapperManager;
-
-  /**
-   * @param \Drupal\Core\PrivateKey $private_key
+   * @param \Drupal\Core\PrivateKey $privateKey
    *   The private key service.
-   * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
+   * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $streamWrapperManager
    *   The stream wrapper manager.
    */
-  public function __construct(PrivateKey $private_key, StreamWrapperManagerInterface $stream_wrapper_manager) {
-    $this->privateKey = $private_key;
-    $this->streamWrapperManager = $stream_wrapper_manager;
-  }
+  public function __construct(
+    protected PrivateKey $privateKey,
+    protected StreamWrapperManagerInterface $streamWrapperManager,
+  ) {}
 
   /**
    * Serves the requested file with optimal far future expiration headers.
@@ -64,7 +50,7 @@ class CdnFarfutureController {
    *   only happen in case of malicious requests or in case of a malfunction in
    *   \Drupal\cdn\PathProcessor\CdnFarfuturePathProcessor.
    */
-  public function downloadByScheme(Request $request, string $security_token, int $mtime, string $scheme) : Response {
+  public function download(Request $request, string $security_token, int $mtime, string $scheme) : Response {
     // Validate the scheme early.
     if (!$request->query->has('relative_file_url') || ($scheme !== FileUrlGenerator::RELATIVE && !$this->streamWrapperManager->isValidScheme($scheme))) {
       throw new BadRequestHttpException();
@@ -88,55 +74,7 @@ class CdnFarfutureController {
     $response = new BinaryFileResponse($file_to_stream, 200, $this->getFarfutureHeaders(), TRUE, NULL, FALSE, FALSE);
     $response->isNotModified($request);
     // @todo Remove once the CDN module requires a version of Drupal core that includes https://www.drupal.org/project/drupal/issues/3172550.
-    if ($mime_type = \Drupal::service('file.mime_type.guesser')->guessMimeType($relative_file_path)) {
-      $response->headers->set('Content-Type', $mime_type);
-    }
-    return $response;
-  }
-
-  /**
-   * Serves the requested file with optimal far future expiration headers.
-   *
-   * @param \Symfony\Component\HttpFoundation\Request $request
-   *   The current request. $request->query must have root_relative_file_url,
-   *   set by \Drupal\cdn\PathProcessor\CdnFarfuturePathProcessor.
-   * @param string $security_token
-   *   The security token. Ensures that users can not request any file they want
-   *   by manipulating the URL (they could otherwise request settings.php for
-   *   example). See https://www.drupal.org/node/1441502.
-   * @param int $mtime
-   *   The file's mtime.
-   *
-   * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Symfony\Component\HttpFoundation\Response
-   *   The response that will efficiently send the requested file.
-   *
-   * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-   *   Thrown when the 'root_relative_file_url' query argument is not set, which
-   *   can only happen in case of malicious requests or in case of a malfunction
-   *   in \Drupal\cdn\PathProcessor\CdnFarfuturePathProcessor.
-   *
-   * @todo Remove in 4.x.
-   */
-  public function download(Request $request, $security_token, $mtime) {
-    // Ensure \Drupal\cdn\PathProcessor\CdnFarfuturePathProcessor did its job.
-    if (!$request->query->has('root_relative_file_url')) {
-      throw new BadRequestHttpException();
-    }
-
-    // Validate security token.
-    $root_relative_file_url = $request->query->get('root_relative_file_url');
-    $calculated_token = Crypt::hmacBase64($mtime . $root_relative_file_url, $this->privateKey->get() . Settings::getHashSalt());
-    if ($security_token !== $calculated_token) {
-      return new Response('Invalid security token.', 403);
-    }
-
-    // A relative URL for a file contains '%20' instead of spaces. A relative
-    // file path contains spaces.
-    $relative_file_path = rawurldecode($root_relative_file_url);
-
-    $response = new BinaryFileResponse(substr($relative_file_path, 1), 200, $this->getFarfutureHeaders(), TRUE, NULL, FALSE, FALSE);
-    $response->isNotModified($request);
-    // @todo Remove once the CDN module requires a version of Drupal core that includes https://www.drupal.org/project/drupal/issues/3172550.
+    // @phpstan-ignore-next-line
     if ($mime_type = \Drupal::service('file.mime_type.guesser')->guessMimeType($relative_file_path)) {
       $response->headers->set('Content-Type', $mime_type);
     }
@@ -164,14 +102,13 @@ class CdnFarfutureController {
       // for this route.
       'Access-Control-Allow-Origin' => '*',
       'Access-Control-Allow-Methods' => 'GET, HEAD',
-      // Set a far future Cache-Control header (480 weeks), which prevents
-      // intermediate caches from transforming the data and allows any
+      // Set a far future Cache-Control header (480 weeks), and allows any
       // intermediate cache to cache it, since it's marked as a public resource.
       // Finally, it's also marked as "immutable", which helps avoid
       // revalidation, see:
       // - https://bitsup.blogspot.be/2016/05/cache-control-immutable.html
       // - https://tools.ietf.org/html/rfc8246
-      'Cache-Control' => 'max-age=290304000, no-transform, public, immutable',
+      'Cache-Control' => 'max-age=290304000, public, immutable',
       // Set a far future Expires header. The maximum UNIX timestamp is
       // somewhere in 2038. Set it to a date in 2037, just to be safe.
       'Expires' => 'Tue, 20 Jan 2037 04:20:42 GMT',

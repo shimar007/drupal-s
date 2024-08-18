@@ -29,9 +29,9 @@ class FormHelper extends ControllerBase {
       '#type' => 'value',
       '#value' => null,
     ];
-    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    //$form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    $form['#attached']['library'][] = 'core/drupal.ajax';
     $form['#attached']['library'][] = 'filebrowser/filebrowser-styles';
-    $form['#attached']['library'][] = 'core/jquery.form';
   }
 
   public function createActionBar(&$form, array $actions, $relative_fid) {
@@ -92,20 +92,10 @@ class FormHelper extends ControllerBase {
       '#value' => $action['title'],
       '#name' => $action['operation'],
       '#title' => $action['title'],
-      '#attributes' => [
-        'class' => [
-          'use-ajax-submit',
-        ],
+      '#ajax' => [
+        '#callback' => ['::ajaxSubmitForm'],
       ],
       '#validate' => ['::ajaxValidate'],
-      // We do not specify #action so the normal submit function is used
-//            '#action' => Url::fromRoute('filebrowser.form.link.action', [
-//            'op' => $action['operation'],
-//            'method' => 'nojs',
-//            'nid' => $this->nid,
-//            'query_fid' => $this->relativeFid,
-//            ])->getInternalPath(),
-//            '#submit' => [],
     ];
   }
 

@@ -3,11 +3,11 @@
 namespace Mailchimp;
 
 /**
- * MailChimp Campaigns library.
+ * Mailchimp Campaigns library.
  *
  * @package Mailchimp
  */
-class MailchimpCampaigns extends Mailchimp {
+class MailchimpCampaigns extends MailchimpApiUser {
 
   const EMAIL_TYPE_HTML = 'html';
   const EMAIL_TYPE_PLAIN_TEXT = 'plain_text';
@@ -29,7 +29,7 @@ class MailchimpCampaigns extends Mailchimp {
    * @see http://developer.mailchimp.com/documentation/mailchimp/reference/campaigns/#read-get_campaigns
    */
   public function getCampaigns($parameters = []) {
-    return $this->request('GET', '/campaigns', NULL, $parameters);
+    return $this->api_class->request('GET', '/campaigns', NULL, $parameters);
   }
 
   /**
@@ -49,7 +49,7 @@ class MailchimpCampaigns extends Mailchimp {
       'campaign_id' => $campaign_id,
     ];
 
-    return $this->request('GET', '/campaigns/{campaign_id}', $tokens, $parameters);
+    return $this->api_class->request('GET', '/campaigns/{campaign_id}', $tokens, $parameters);
   }
 
   /**
@@ -77,11 +77,11 @@ class MailchimpCampaigns extends Mailchimp {
       'settings' => $settings,
     ];
 
-    return $this->request('POST', '/campaigns', NULL, $parameters, $batch);
+    return $this->api_class->request('POST', '/campaigns', NULL, $parameters, $batch);
   }
 
   /**
-   * Gets the HTML, plain-text, and template content for a MailChimp campaign.
+   * Gets the HTML, plain-text, and template content for a Mailchimp campaign.
    *
    * @param string $campaign_id
    *   The ID of the campaign.
@@ -97,11 +97,11 @@ class MailchimpCampaigns extends Mailchimp {
       'campaign_id' => $campaign_id,
     ];
 
-    return $this->request('GET', '/campaigns/{campaign_id}/content', $tokens, $parameters);
+    return $this->api_class->request('GET', '/campaigns/{campaign_id}/content', $tokens, $parameters);
   }
 
   /**
-   * Sets the HTML, plain-text, and template content for a MailChimp campaign.
+   * Sets the HTML, plain-text, and template content for a Mailchimp campaign.
    *
    * @param string $campaign_id
    *   The ID of the campaign.
@@ -117,11 +117,11 @@ class MailchimpCampaigns extends Mailchimp {
       'campaign_id' => $campaign_id,
     ];
 
-    return $this->request('PUT', '/campaigns/{campaign_id}/content', $tokens, $parameters);
+    return $this->api_class->request('PUT', '/campaigns/{campaign_id}/content', $tokens, $parameters);
   }
 
   /**
-   * Get the send checklist for a MailChimp campaign.
+   * Get the send checklist for a Mailchimp campaign.
    *
    * @param string $campaign_id
    *   The ID of the campaign.
@@ -135,7 +135,7 @@ class MailchimpCampaigns extends Mailchimp {
       'campaign_id' => $campaign_id,
     ];
 
-    return $this->request('GET', '/campaigns/{campaign_id}/send-checklist', $tokens, NULL);
+    return $this->api_class->request('GET', '/campaigns/{campaign_id}/send-checklist', $tokens, []);
   }
 
   /**
@@ -169,7 +169,7 @@ class MailchimpCampaigns extends Mailchimp {
       'settings' => $settings,
     ];
 
-    return $this->request('PATCH', '/campaigns/{campaign_id}', $tokens, $parameters, $batch);
+    return $this->api_class->request('PATCH', '/campaigns/{campaign_id}', $tokens, $parameters, $batch);
   }
 
   /**
@@ -200,11 +200,11 @@ class MailchimpCampaigns extends Mailchimp {
       'send_type' => $send_type,
     ];
 
-    return $this->request('POST', '/campaigns/{campaign_id}/actions/test', $tokens, $parameters, $batch);
+    return $this->api_class->request('POST', '/campaigns/{campaign_id}/actions/test', $tokens, $parameters, $batch);
   }
 
   /**
-   * Schedule a MailChimp campaign.
+   * Schedule a Mailchimp campaign.
    *
    * @param string $campaign_id
    *   The ID of the campaign.
@@ -233,11 +233,11 @@ class MailchimpCampaigns extends Mailchimp {
       'batch_delivery' => $batch_delivery,
     ];
 
-    return $this->request('POST', '/campaigns/{campaign_id}/actions/schedule', $tokens, $parameters, $batch);
+    return $this->api_class->request('POST', '/campaigns/{campaign_id}/actions/schedule', $tokens, $parameters, $batch);
   }
 
   /**
-   * Unschedule a MailChimp campaign.
+   * Unschedule a Mailchimp campaign.
    *
    * @param string $campaign_id
    *   The ID of the campaign.
@@ -251,11 +251,11 @@ class MailchimpCampaigns extends Mailchimp {
       'campaign_id' => $campaign_id,
     ];
 
-    return $this->request('POST', '/campaigns/{campaign_id}/actions/unschedule', $tokens, NULL);
+    return $this->api_class->request('POST', '/campaigns/{campaign_id}/actions/unschedule', $tokens, []);
   }
 
   /**
-   * Send a MailChimp campaign.
+   * Send a Mailchimp campaign.
    *
    * @param string $campaign_id
    *   The ID of the campaign.
@@ -271,7 +271,7 @@ class MailchimpCampaigns extends Mailchimp {
       'campaign_id' => $campaign_id,
     ];
 
-    return $this->request('POST', '/campaigns/{campaign_id}/actions/send', $tokens, NULL, $batch);
+    return $this->api_class->request('POST', '/campaigns/{campaign_id}/actions/send', $tokens, [], $batch);
   }
 
   /**
@@ -289,7 +289,7 @@ class MailchimpCampaigns extends Mailchimp {
       'campaign_id' => $campaign_id,
     ];
 
-    return $this->request('DELETE', '/campaigns/{campaign_id}', $tokens);
+    return $this->api_class->request('DELETE', '/campaigns/{campaign_id}', $tokens);
   }
 
 }

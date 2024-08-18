@@ -5,28 +5,35 @@ namespace Mailchimp\Tests;
 use Mailchimp\MailchimpAPIException;
 
 /**
- * MailChimp Ecommerce library test cases.
+ * Mailchimp Ecommerce library test cases.
  *
  * @package Mailchimp\Tests
  */
 class MailchimpEcommerce extends \Mailchimp\MailchimpEcommerce {
 
   /**
-   * Storage for stores. Used in place of real MailChimp API.
+   * Test HTTP client.
+   *
+   * @var \Mailchimp\http\MailchimpHttpClientInterface
+   */
+  private $client;
+
+  /**
+   * Storage for stores. Used in place of real Mailchimp API.
    *
    * @var array $stores
    */
   private $stores = [];
 
   /**
-   * Storage for customers. Used in place of real MailChimp API.
+   * Storage for customers. Used in place of real Mailchimp API.
    *
    * @var array $customers
    */
   private $customers = [];
 
   /**
-   * Storage for orders. Used in place of real MailChimp API.
+   * Storage for orders. Used in place of real Mailchimp API.
    *
    * @var array $orders
    */
@@ -35,16 +42,18 @@ class MailchimpEcommerce extends \Mailchimp\MailchimpEcommerce {
   /**
    * @inheritdoc
    */
-  public function __construct($api_key = 'apikey', $api_user = 'apikey', $http_options = []) {
+  public function __construct($api_class = null) {
     $this->client = new MailchimpTestHttpClient();
-  }
 
+    parent::__construct($api_class);
+  }
+  
   public function getClient() {
-    return $this->client;
+    return $this->api_class->client;
   }
 
   public function getEndpoint() {
-    return $this->endpoint;
+    return 'https://us1.api.mailchimp.com/3.0';
   }
 
   /**

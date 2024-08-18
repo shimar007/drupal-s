@@ -1,7 +1,6 @@
 # Sitemap
 
-This module provides a site map that gives visitors an overview of your site. It
-can also display the RSS feeds for all blogs and categories.
+The Sitemap module displays one or more a human-readable lists of links on a page. A sitemap is a way for visitors to navigate your website using an overview of notable pages on the site. Sitemaps tend to be useful for sites with lots of lightly-organized content, for example, colleges and universities, governments, or organizations with many different units.
 
 
 ## Requirements

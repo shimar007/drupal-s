@@ -1,34 +1,75 @@
 # Changelog
 
-## Minifyhtml 8.x-1.13, 2023-07-25
+## Minifyhtml 2.0.5, 2024-05-01
+
+Changes since 2.0.4:
+
+- Issue #3442131: Mark words as safe for cspell
+- Issue #3442060: Add GitLab CI template
+- Added Drupal 11 compatibility.
+
+## Minifyhtml 2.0.4, 2024-03-06
+
+Changes since 2.0.3:
+
+- Issue #3421156: Provide a human-readable error message when minify callback has an error
+
+## Minifyhtml 2.0.3, 2023-07-25
+
+Changes since 2.0.2:
+
+- Swap md5 for random_int when generating placeholder token.
+- Issue #3376670: Tests are not compatible with D10
+
+## Minifyhtml 2.0.2, 2023-04-12
+
+Changes since 2.0.1:
+
+- Issue #3334480: Settings form should not use overridden config
+- Issue #3258507: HTML source code minification does not work after the last
+update
+- Issue #3339543: Fix coding standards
+
+## Minifyhtml 2.0.1, 2022-06-20
+
+Changes since 2.0.0
+
+- Issue #3291473: TypeError :
+Drupal\minifyhtml\EventSubscriber\MinifyHTMLExit::__construct(): Argument #3
+($logger) must be of type Drupal\Core\Logger\LoggerChannelFactory
+
+## Minifyhtml 2.0.0, 2022-06-16
 
 Changes since 8.x-1.12:
 
-- Swap md5 for random_int when generating placeholder token.
+- Issue #3288665: Automated Drupal 10 compatibility fixes
+- Issue #3290946: Fix constructor signature version version 9/10
 
 ## Minifyhtml 8.x-1.12, 2022-06-16
 
 Changes since 8.x-1.11:
 
-- Issue #3230610 - Minify Settings Ignore Admin Pages
+- Issue #3230610: Minify Settings Ignore Admin Pages
 
 ## Minifyhtml 8.x-1.11, 2022-01-10
 
 Changes since 8.x-1.10:
 
-- Issue #3188015 - README file mode is 755, should be 644
-- Issue #3188014 - Set strip comments a dependent option
-- Issue #3202188 - Change order Callback for replace placeholders in placeholders
-- Issue #3207580 - JSON-LD not getting minified
-- Issue #3135600 - core key no longer required in info file
-- Issue #3188013 - Move module settings to the main performance options page
+- Issue #3188015: README file mode is 755, should be 644
+- Issue #3188014: Set strip comments a dependent option
+- Issue #3202188: Change order Callback for replace placeholders in
+placeholders
+- Issue #3207580: JSON-LD not getting minified
+- Issue #3135600: core key no longer required in info file
+- Issue #3188013: Move module settings to the main performance options page
 
 ## Minifyhtml 8.x-1.10, 2020-05-14
 
 Changes since 8.x-1.9:
 
-- Issue #3038554 - Create tests
-- Issue #3133705 - minifyhtml - drush commands don't exist and/or don't work (still)
+- Issue #3038554: Create tests
+- Issue #3133705: minifyhtml - drush commands don't exist and/or don't work
+(still)
 
 ## Minifyhtml 8.x-1.9, 2019-12-11
 
@@ -84,7 +125,8 @@ Changes since 8.x-1.2:
 Changes since 8.x-1.1:
 
 - Issue #2973794 - system.performance:minifyhtml missing schema
-- Issue #3000443 - Only use minified HTML if there was not a preg_replace() error
+- Issue #3000443 - Only use minified HTML if there was not a preg_replace()
+error
 
 ## Minifyhtml 8.x-1.1, 2017-08-18
 

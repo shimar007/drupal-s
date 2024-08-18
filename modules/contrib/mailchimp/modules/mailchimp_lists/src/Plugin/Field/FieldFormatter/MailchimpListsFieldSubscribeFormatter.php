@@ -2,13 +2,13 @@
 
 namespace Drupal\mailchimp_lists\Plugin\Field\FieldFormatter;
 
-use Drupal\mailchimp_lists\Form\MailchimpListsSubscribeForm;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\mailchimp_lists\Form\MailchimpListsSubscribeForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -111,7 +111,7 @@ class MailchimpListsFieldSubscribeFormatter extends FormatterBase implements Con
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
 
-    /* @var $item \Drupal\mailchimp_lists\Plugin\Field\FieldType\MailchimpListsSubscription */
+    /** @var \Drupal\mailchimp_lists\Plugin\Field\FieldType\MailchimpListsSubscription $item */
     foreach ($items as $delta => $item) {
       $form = new MailchimpListsSubscribeForm();
 

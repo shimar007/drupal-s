@@ -11,7 +11,8 @@ include:
 
 ################
 # Pipeline configuration variables
-# https://git.drupalcode.org/project/gitlab_templates/-/blob/1.0.x/includes/include.drupalci.variables.yml
+# https://git.drupalcode.org/project/gitlab_templates/-/blob/main/includes/include.drupalci.variables.yml
 ################
 variables:
-  OPT_IN_TEST_PREVIOUS_MAJOR: 1
+  OPT_IN_TEST_PREVIOUS_MAJOR: 0
+  OPT_IN_TEST_NEXT_MAJOR: 1
