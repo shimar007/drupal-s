@@ -1,0 +1,9 @@
+_core:
+  default_config_hash: GUKBlXIBQ2d0H8Q7M_Rqn1Q93tRxLPfs9cG-VeQC9NI
+page_title: Sitemap
+path: sitemap
+message:
+  format: plain_text
+  value: ''
+plugins: {  }
+include_css: true
