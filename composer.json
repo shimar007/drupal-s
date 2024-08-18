@@ -15,7 +15,7 @@
         "drupal/link_attributes": "^2.1",
         "drupal/core": "^10",
         "drupal/twig_field_value": "^2.0",
-        "drupal/webform": "^6.1",
+        "drupal/webform": "^6.2",
         "drupal/imce": "^3.0",
         "drupal/entity_reference_display": "^2.0",
         "drupal/viewsreference": "^2.0@beta",
