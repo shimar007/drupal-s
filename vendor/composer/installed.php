@@ -3,7 +3,7 @@
         'name' => 'drupal/drupal',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'f92529806fdca3123274f1c09f06648b84fadd87',
+        'reference' => '7bbe2038ed885dfc09cb8c82b627253d116218fb',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -334,6 +334,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'drupal/ckeditor_templates' => array(
+            'pretty_version' => '1.4.0',
+            'version' => '1.4.0.0',
+            'reference' => '8.x-1.4',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../modules/contrib/ckeditor_templates',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'drupal/classy' => array(
             'pretty_version' => '1.0.2',
             'version' => '1.0.2.0',
@@ -589,7 +598,7 @@
         'drupal/drupal' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'f92529806fdca3123274f1c09f06648b84fadd87',
+            'reference' => '7bbe2038ed885dfc09cb8c82b627253d116218fb',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

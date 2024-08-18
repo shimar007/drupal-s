@@ -81,7 +81,8 @@
         "drupal/config_filter": "^2.6",
         "drupal/stable": "^2.1",
         "drupal/classy": "^1.0",
-        "drupal/ckeditor_plugin_report": "^1.0"
+        "drupal/ckeditor_plugin_report": "^1.0",
+        "drupal/ckeditor_templates": "^1.4"
     },
     "replace": {
     },

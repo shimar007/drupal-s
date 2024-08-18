@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4154d1b2ac1d1e9b11c2417ea7c1179c",
+    "content-hash": "dd61efbe770e9baacd41cc28ace9aa00",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2468,6 +2468,61 @@
             "homepage": "https://www.drupal.org/project/ckeditor_plugin_report",
             "support": {
                 "source": "https://git.drupalcode.org/project/ckeditor_plugin_report"
+            }
+        },
+        {
+            "name": "drupal/ckeditor_templates",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/ckeditor_templates.git",
+                "reference": "8.x-1.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/ckeditor_templates-8.x-1.4.zip",
+                "reference": "8.x-1.4",
+                "shasum": "d7e1f4f542eb3ae04b02acf226a5653f8f91a22f"
+            },
+            "require": {
+                "drupal/ckeditor": "*",
+                "drupal/core": "^9.3 || ^10 || ^11"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.4",
+                    "datestamp": "1713711694",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Lucas Le Goff",
+                    "homepage": "https://www.drupal.org/u/lucaslg",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "lucaslg",
+                    "homepage": "https://www.drupal.org/user/3128975"
+                },
+                {
+                    "name": "mandclu",
+                    "homepage": "https://www.drupal.org/user/52136"
+                }
+            ],
+            "description": "This module integrates the CKEditor templates plugin.",
+            "homepage": "https://www.drupal.org/project/ckeditor_templates",
+            "support": {
+                "source": "https://cgit.drupalcode.org/ckeditor_templates",
+                "issues": "https://www.drupal.org/project/ckeditor_templates"
             }
         },
         {
