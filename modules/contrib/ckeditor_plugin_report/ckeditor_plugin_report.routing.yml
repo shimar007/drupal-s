@@ -1,0 +1,7 @@
+ckeditor_plugin_report.plugin_report:
+  path: '/admin/reports/ckeditor-plugins'
+  defaults:
+    _controller: '\Drupal\ckeditor_plugin_report\Controller\PluginReportController::content'
+    _title: 'CKEditor plugins'
+  requirements:
+    _permission: 'view ckeditor plugin report'

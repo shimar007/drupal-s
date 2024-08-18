@@ -50,7 +50,6 @@
         "drupal/entity_reference_revisions": "^1.10",
         "drupal/cdn": "^4.1",
         "drupal/advagg": "^6.0@alpha",
-        "drupal/ckeditor_templates": "^1.1",
         "drupal/masonry": "^4.0",
         "drupal/masonry_views": "^4.0",
         "drupal/search_api": "^1.13",
@@ -81,7 +80,8 @@
         "drupal/migrate_tools": "^6.0",
         "drupal/config_filter": "^2.6",
         "drupal/stable": "^2.1",
-        "drupal/classy": "^1.0"
+        "drupal/classy": "^1.0",
+        "drupal/ckeditor_plugin_report": "^1.0"
     },
     "replace": {
     },

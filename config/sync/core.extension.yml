@@ -23,9 +23,8 @@ module:
   captcha: 0
   cdn: 0
   cdn_ui: 0
-  ckeditor: 0
   ckeditor5: 0
-  ckeditor_templates: 0
+  ckeditor_plugin_report: 0
   comment: 0
   config: 0
   config_filter: 0

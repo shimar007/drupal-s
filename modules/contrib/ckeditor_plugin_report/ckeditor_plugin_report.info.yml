@@ -1,0 +1,10 @@
+name: CKEditor Plugin Report
+description: Provides a report listing CKEditor plugins
+package: Administration
+type: module
+core_version_requirement: ^9 || ^10
+
+# Information added by Drupal.org packaging script on 2023-04-14
+version: '1.0.0'
+project: 'ckeditor_plugin_report'
+datestamp: 1681480079

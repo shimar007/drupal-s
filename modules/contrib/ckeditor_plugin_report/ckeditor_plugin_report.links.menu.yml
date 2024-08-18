@@ -1,0 +1,5 @@
+ckeditor_plugin_report.plugin_report:
+  title: 'CKEditor plugins'
+  description: 'Provides a report listing CKEditor plugins'
+  route_name: ckeditor_plugin_report.plugin_report
+  parent: system.admin_reports

@@ -1,0 +1,4 @@
+view ckeditor plugin report:
+  title: 'View CKEditor plugin report'
+  description: 'View a list of CKEditor plugins provided by enabled modules for both CKEditor 4 and CKEditor 5'
+  restrict access: true
