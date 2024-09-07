@@ -9,8 +9,8 @@ use Drupal\Component\Plugin\PluginBase;
  */
 abstract class FullcalendarViewProcessorBase extends PluginBase implements FullcalendarViewProcessorInterface {
 
-  // Abstract method
-  
+  // Abstract method.
+
   /**
    * Process the view variable array.
    *
@@ -18,4 +18,5 @@ abstract class FullcalendarViewProcessorBase extends PluginBase implements Fullc
    *   Template variables.
    */
   abstract  public function process(array &$variables);
+
 }

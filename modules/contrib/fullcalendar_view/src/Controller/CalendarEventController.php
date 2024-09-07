@@ -2,13 +2,13 @@
 
 namespace Drupal\fullcalendar_view\Controller;
 
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Drupal\Core\Access\CsrfTokenGenerator;
 use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Calendar Event Controller.
@@ -142,14 +142,13 @@ class CalendarEventController extends ControllerBase {
                     ($entity->$end_field)[0]->end_value = gmdate("Y-m-d\TH:i:s", strtotime($end_date));
                   }
                   else {
-                    if ($length == strlen($end_date))
-                    {
+                    if ($length == strlen($end_date)) {
                       ($entity->$end_field)[0]->end_value = $end_date;
                     }
                     else {
                       ($entity->$end_field)[0]->end_value = substr($end_date, 0, $length ? : strlen($end_date));
                     }
-                    
+
                   }
                 }
                 // Timestamp field.
@@ -168,8 +167,7 @@ class CalendarEventController extends ControllerBase {
                     $entity->$end_field->value = gmdate("Y-m-d\TH:i:s", strtotime($end_date));
                   }
                   else {
-                    if ($length == strlen($end_date))
-                    {
+                    if ($length == strlen($end_date)) {
                       $entity->$end_field->value = $end_date;
                     }
                     else {
@@ -186,8 +184,7 @@ class CalendarEventController extends ControllerBase {
                     $entity->$end_field->end_value = gmdate("Y-m-d\TH:i:s", strtotime($end_date));
                   }
                   else {
-                    if ($length == strlen($end_date))
-                    {
+                    if ($length == strlen($end_date)) {
                       $entity->$end_field->end_value = $end_date;
                     }
                     else {
@@ -250,7 +247,7 @@ class CalendarEventController extends ControllerBase {
         ];
         // Create a new event entity for this form.
         $entity = $this->entityTypeManager()
-        ->getStorage($entity_type_id)
+          ->getStorage($entity_type_id)
           ->create($data);
 
         if (!empty($entity)) {

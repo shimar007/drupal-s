@@ -46,8 +46,19 @@ class ManualOriginDefault extends GeofieldProximitySourceBase {
    */
   public function buildOptionsForm(array &$form, FormStateInterface $form_state, array $options_parents, $is_exposed = FALSE) {
 
-    $lat = $this->configuration['origin']['lat'] ?? $this->origin['lat'];
-    $lon = $this->configuration['origin']['lon'] ?? $this->origin['lon'];
+    $user_input = $form_state->getUserInput();
+    $origin = $this->origin;
+
+    if ($is_exposed && isset($user_input["field_geofield_proximity"]["source_configuration"]["origin"])) {
+      $origin = $user_input["field_geofield_proximity"]["source_configuration"]["origin"];
+    }
+
+    $lat = $origin['lat'];
+    $lon = $origin['lon'];
+
+    $form['#attributes'] = [
+      'class' => ['proximity-origin'],
+    ];
 
     $form["origin"] = [
       '#title' => $this->t('Origin Coordinates'),
@@ -56,6 +67,9 @@ class ManualOriginDefault extends GeofieldProximitySourceBase {
       '#default_value' => [
         'lat' => $lat,
         'lon' => $lon,
+      ],
+      '#attributes' => [
+        'class' => ['proximity-origin-input'],
       ],
     ];
 
@@ -97,20 +111,20 @@ class ManualOriginDefault extends GeofieldProximitySourceBase {
           "#type" => 'html_tag',
           "#tag" => 'div',
           '#value' => $this->t('from Latitude: @lat and Longitude: @lon.', [
-            '@lat' => new FormattableMarkup('<span class="geofield-lat"> @lat</span>', [
-              '@lat' => $lat,
+            '@lat' => new FormattableMarkup('<span class="geofield-lat geofield-lat-summary"> @lat</span>', [
+              '@lat' => !empty($lat) ? $lat : $this->t('undefined'),
             ]),
-            '@lon' => new FormattableMarkup('<span class="geofield-lon"> @lon</span>', [
-              '@lon' => $lon,
+            '@lon' => new FormattableMarkup('<span class="geofield-lon geofield-lon-summary"> @lon</span>', [
+              '@lon' => !empty($lon) ? $lon : $this->t('undefined'),
             ]),
           ]),
           '#attributes' => [
             'class' => ['proximity-origin-summary'],
           ],
         ];
+        $form['origin_summary']['#attached']['library'][] = 'geofield/proximity_origin_summary_update';
       }
     }
-
   }
 
 }

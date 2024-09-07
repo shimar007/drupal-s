@@ -20,7 +20,7 @@ function template_preprocess_views_view_fullcalendar(array &$variables) {
   // The list of available plugins:
   $plugin_definitions = $processor_plugins->getDefinitions();
 
-  // Getting supported field types from plugin definitions
+  // Getting supported field types from plugin definitions.
   $field_types = [];
   foreach ($plugin_definitions as $definition) {
     if (isset($definition['field_types'])) {
@@ -30,7 +30,7 @@ function template_preprocess_views_view_fullcalendar(array &$variables) {
   $variables['fullcalendar_fieldtypes'] = $field_types;
 
   $preprocess_service->process($variables);
-  
+
   // Allow plugins to alter the view variables.
   foreach ($plugin_definitions as $definition) {
     $instance = $processor_plugins->createInstance($definition['id']);
@@ -39,5 +39,5 @@ function template_preprocess_views_view_fullcalendar(array &$variables) {
       $instance->process($variables);
     }
   }
-  
+
 }

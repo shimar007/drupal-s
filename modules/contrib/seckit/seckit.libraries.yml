@@ -1,3 +1,7 @@
-seckit/listener:
+listener:
   js:
     js/seckit.listener.js: {}
+admin-styles:
+  css:
+    theme:
+      css/seckit.admin.css: {}

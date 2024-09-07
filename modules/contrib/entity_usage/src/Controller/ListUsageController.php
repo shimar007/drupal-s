@@ -12,10 +12,9 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\Core\Link;
+use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\entity_usage\EntityUsageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Pager\PagerManagerInterface;
 
 /**
  * Controller for our pages.
@@ -344,8 +343,8 @@ class ListUsageController extends ControllerBase {
       $rel = 'canonical';
     }
 
-    // Block content likely used in Layout Builder inline blocks.
-    if ($source_entity instanceof BlockContentInterface && !$source_entity->isReusable()) {
+    // Block content likely used in Layout Builder inline or reusable blocks.
+    if ($source_entity instanceof BlockContentInterface) {
       $rel = NULL;
     }
 

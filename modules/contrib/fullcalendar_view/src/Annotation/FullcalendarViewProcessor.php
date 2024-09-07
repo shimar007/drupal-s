@@ -32,7 +32,7 @@ class FullcalendarViewProcessor extends Plugin {
   public $label;
 
   /**
-   * supported field types
+   * Supported field types.
    *
    * @var array
    */

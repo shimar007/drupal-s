@@ -90,7 +90,7 @@ class FullCalendarDisplay extends StylePluginBase {
     TaxonomyColor $taxonomyColorService,
     ModuleHandlerInterface $module_handler,
     EntityTypeManagerInterface $entity_type_manager,
-    EntityTypeBundleInfo $entity_type_bundle_info
+    EntityTypeBundleInfo $entity_type_bundle_info,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->taxonomyColorService = $taxonomyColorService;
@@ -251,7 +251,7 @@ class FullCalendarDisplay extends StylePluginBase {
       '#description' => $this->t(
         'Left side buttons. Buttons are separated by commas or space. See the %fullcalendar_doc for available buttons.',
         [
-          '%fullcalendar_doc' => Link::fromTextAndUrl($this->t('Fullcalendar documentation'), Url::fromUri('https://fullcalendar.io/docs/v4/header', array('attributes' => array('target' => '_blank'))))->toString(),
+          '%fullcalendar_doc' => Link::fromTextAndUrl($this->t('Fullcalendar documentation'), Url::fromUri('https://fullcalendar.io/docs/v4/header', ['attributes' => ['target' => '_blank']]))->toString(),
         ]
       ),
     ];
@@ -263,7 +263,7 @@ class FullCalendarDisplay extends StylePluginBase {
       '#title' => $this->t('Display toggles'),
       '#description' => $this->t('Shown as buttons on the right side of the calendar view. See the %fullcalendar_doc.',
           [
-            '%fullcalendar_doc' => Link::fromTextAndUrl($this->t('Fullcalendar "Views" documentation'), Url::fromUri('https://fullcalendar.io/docs/v4', array('attributes' => array('target' => '_blank'))))->toString(),
+            '%fullcalendar_doc' => Link::fromTextAndUrl($this->t('Fullcalendar "Views" documentation'), Url::fromUri('https://fullcalendar.io/docs/v4', ['attributes' => ['target' => '_blank']]))->toString(),
           ]),
     ];
     // Default view.
@@ -306,7 +306,7 @@ class FullCalendarDisplay extends StylePluginBase {
       '#default_value' => (empty($this->options['firstDay'])) ? '0' : $this->options['firstDay'],
       '#title' => $this->t('First Day'),
     ];
-    // MinTime
+    // MinTime.
     $form['minTime'] = [
       '#type' => 'datetime',
       '#fieldset' => 'display',
@@ -316,7 +316,7 @@ class FullCalendarDisplay extends StylePluginBase {
       '#default_value' => new DrupalDateTime(!empty($this->options['minTime']) ? $this->options['minTime'] : '2000-01-01 00:00:00'),
       '#required' => TRUE,
     ];
-    // MaxTime
+    // MaxTime.
     $form['maxTime'] = [
       '#type' => 'datetime',
       '#fieldset' => 'display',
@@ -334,15 +334,15 @@ class FullCalendarDisplay extends StylePluginBase {
       '#title' => $this->t('Day/Week are links'),
       '#description' => $this->t('If this option is selected, day/week names will be linked to navigation views.'),
     ];
-    // Time format
+    // Time format.
     $form['timeFormat'] = [
       '#fieldset' => 'display',
       '#type' => 'textfield',
       '#title' => $this->t('Time Format settings for month view'),
       '#default_value' => (isset($this->options['timeFormat'])) ? $this->options['timeFormat'] : 'hh:mm a',
-      '#description' => $this->t('See %momentjs_doc for available formatting options. <br />Leave it blank to use the default format "hh:mm a".<br />Set it to [ ] if you do not want Fullcalendar View to prepend Title Field with any time at all.', array(
-        '%momentjs_doc' => Link::fromTextAndUrl($this->t('MomentJS’s formatting characters'), Url::fromUri('http://momentjs.com/docs/#/displaying/format/', array('attributes' => array('target' => '_blank'))))->toString(),
-      )),
+      '#description' => $this->t('See %momentjs_doc for available formatting options. <br />Leave it blank to use the default format "hh:mm a".<br />Set it to [ ] if you do not want Fullcalendar View to prepend Title Field with any time at all.', [
+        '%momentjs_doc' => Link::fromTextAndUrl($this->t('MomentJS’s formatting characters'), Url::fromUri('http://momentjs.com/docs/#/displaying/format/', ['attributes' => ['target' => '_blank']]))->toString(),
+      ]),
       '#size' => 20,
     ];
     // Allow/disallow event overlap.
@@ -599,7 +599,7 @@ class FullCalendarDisplay extends StylePluginBase {
       // Content type colors.
       $form['color_bundle'][$id] = [
         '#title' => $label,
-        '#default_value' => isset($this->options['color_bundle'][$id]) ? $this->options['color_bundle'][$id] : '#3a87ad',
+        '#default_value' => $this->options['color_bundle'][$id] ?? '#3a87ad',
         '#type' => 'color',
       ];
     }
@@ -616,7 +616,7 @@ class FullCalendarDisplay extends StylePluginBase {
       '#description' => $this->t('You can generate an valid rrule string via <a href=":tool-url" target="_blank">the online toole</a><br><a href=":doc-url" target="_blank">See the documentation</a> for more about RRule.',
           [
             ':tool-url' => 'https://jakubroztocil.github.io/rrule/',
-            ':doc-url' => 'https://github.com/jakubroztocil/rrule'
+            ':doc-url' => 'https://github.com/jakubroztocil/rrule',
           ]),
       '#type' => 'select',
       '#empty_value' => '',
@@ -712,7 +712,6 @@ class FullCalendarDisplay extends StylePluginBase {
     return $this;
   }
 
-
   /**
    * Options form submit handle function.
    *
@@ -722,7 +721,7 @@ class FullCalendarDisplay extends StylePluginBase {
     $options = &$form_state->getValue('style_options');
     // As the color pickup element, here has to use getUserInput().
     $input_value = $form_state->getUserInput();
-    $input_colors = isset($input_value['style_options']['color_taxonomies']) ? $input_value['style_options']['color_taxonomies'] : [];
+    $input_colors = $input_value['style_options']['color_taxonomies'] ?? [];
     // Save the input of colors.
     foreach ($input_colors as $id => $color) {
       if (!empty($color)) {
@@ -769,7 +768,10 @@ class FullCalendarDisplay extends StylePluginBase {
     return TRUE;
   }
 
-protected function buildOptionsFormGoogleCalendar(array &$form, FormStateInterface $form_state) {
+  /**
+   *
+   */
+  protected function buildOptionsFormGoogleCalendar(array &$form, FormStateInterface $form_state) {
     $form['fetchGoogleHolidays'] = [
       '#type' => 'checkbox',
       '#fieldset' => 'display',
@@ -800,7 +802,7 @@ protected function buildOptionsFormGoogleCalendar(array &$form, FormStateInterfa
         '#description' => $this->t(
           'You can get an API Key following the procedure outlined <a href=":url" target="_blank">here</a>.',
           [
-            ':url' => 'https://fullcalendar.io/docs/google-calendar'
+            ':url' => 'https://fullcalendar.io/docs/google-calendar',
           ],
         ),
         '#states' => [
@@ -1029,4 +1031,5 @@ protected function buildOptionsFormGoogleCalendar(array &$form, FormStateInterfa
       'en.zw#holiday@group.v.calendar.google.com' => $this->t('Holidays in Zimbabwe'),
     ];
   }
+
 }

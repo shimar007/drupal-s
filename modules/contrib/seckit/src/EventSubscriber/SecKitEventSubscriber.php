@@ -2,17 +2,18 @@
 
 namespace Drupal\seckit\EventSubscriber;
 
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Drupal\Component\Utility\Xss;
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\seckit\SeckitInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Subscribing an event.
@@ -50,16 +51,26 @@ class SecKitEventSubscriber implements EventSubscriberInterface {
   protected $logger;
 
   /**
+   * The module extension list.
+   *
+   * @var \Drupal\Core\Extension\ModuleExtensionList
+   */
+  protected $moduleExtensionList;
+
+  /**
    * Constructs an SecKitEventSubscriber object.
    *
    * @param \Psr\Log\LoggerInterface $logger
    *   The Seckit logger channel.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
+   * @param \Drupal\Core\Extension\ModuleExtensionList $extension_list_module
+   *   The module extension list.
    */
-  public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory) {
+  public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory, ModuleExtensionList $extension_list_module) {
     $this->logger = $logger;
     $this->config = $config_factory->get('seckit.settings');
+    $this->moduleExtensionList = $extension_list_module;
   }
 
   /**
@@ -168,7 +179,7 @@ class SecKitEventSubscriber implements EventSubscriberInterface {
       // separated by a single space).  All values must be on the whitelist
       // (order is not important).  We intentionally do not handle this
       // because the feature has been confirmed as a design mistake which
-      // user agents do not utilise in practice.  For details, see
+      // user agents do not utilize in practice.  For details, see
       // http://lists.w3.org/Archives/Public/www-archive/2012Jun/0001.html
       // and https://www.drupal.org/node/2406075
     }
@@ -260,7 +271,7 @@ class SecKitEventSubscriber implements EventSubscriberInterface {
       if (!UrlHelper::isExternal($csp_report_uri)) {
         // Strip leading slashes from internal paths to prevent them becoming
         // external URLs without protocol. /report-csp-violation should not be
-        // turned into //report-csp-violation
+        // turned into //report-csp-violation.
         $csp_report_uri = ltrim($csp_report_uri, '/');
         $base_path = base_path();
       }
@@ -332,7 +343,7 @@ class SecKitEventSubscriber implements EventSubscriberInterface {
    * More information can be found at initial article about it at
    * http://blogs.msdn.com/ie/archive/2009/01/27/ie8-security-part-vii-clickjacking-defenses.aspx.
    *
-   * Implementation of X-Frame-Options is based on specification draft availabe
+   * Implementation of X-Frame-Options is based on specification draft available
    * at http://tools.ietf.org/html/draft-ietf-websec-x-frame-options-01.
    */
   public function seckitXframe($setting, $event) {
@@ -372,7 +383,7 @@ class SecKitEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events[KernelEvents::REQUEST][] = ['onKernelRequest', 100];
     $events[KernelEvents::RESPONSE][] = ['onKernelResponse'];
     return $events;
@@ -387,10 +398,11 @@ class SecKitEventSubscriber implements EventSubscriberInterface {
    * desired sequence.
    */
   public function seckitJsCssNoscript() {
-    // @todo Consider batter solution?
+    // @todo Consider better solution?
     $content = $this->response->getContent();
     $head_close_position = strpos($content, '</head>');
-    if ($head_close_position) {
+    $seckit_code_position = strpos($content, 'seckit-clickjacking-no-body');
+    if ($head_close_position && $seckit_code_position === FALSE) {
       $content = substr_replace($content, $this->seckitGetJsCssNoscriptCode(), $head_close_position, 0);
       $this->response->setContent($content);
     }
@@ -409,7 +421,7 @@ class SecKitEventSubscriber implements EventSubscriberInterface {
         $this->config->get('seckit_clickjacking.noscript_message');
 
     $message = Xss::filter($noscript_message);
-    $path = base_path() . \Drupal::service('extension.list.module')->getPath('seckit');
+    $path = base_path() . $this->moduleExtensionList->getPath('seckit');
     return <<< EOT
         <script type="text/javascript" src="$path/js/seckit.document_write.js"></script>
         <link type="text/css" rel="stylesheet" id="seckit-clickjacking-no-body" media="all" href="$path/css/seckit.no_body.css" />

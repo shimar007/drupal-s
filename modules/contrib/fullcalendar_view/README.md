@@ -194,5 +194,3 @@ API:
      * dialog_options
      
          The options of the pop-up dialog object.
-         
-

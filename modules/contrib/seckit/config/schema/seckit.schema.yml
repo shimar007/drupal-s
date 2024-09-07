@@ -72,18 +72,6 @@ seckit.settings:
           type: mapping
           label: 'X-XSS'
           mapping:
-            seckit_x_xss_option_disable:
-              type: string
-              label: 'Disabled'
-            seckit_x_xss_option_0:
-              type: string
-              label: '0'
-            seckit_x_xss_option_1:
-              type: string
-              label: '1'
-            seckit_x_xss_option_1_block:
-              type: string
-              label: '1; mode=block'
             select:
               type: integer
               label: 'Select'

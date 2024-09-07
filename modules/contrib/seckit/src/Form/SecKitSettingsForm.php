@@ -3,11 +3,8 @@
 namespace Drupal\seckit\Form;
 
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Path\PathValidatorInterface;
-use Drupal\Core\Render\RendererInterface;
 use Drupal\seckit\SeckitInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -31,30 +28,15 @@ class SecKitSettingsForm extends ConfigFormBase {
   protected $pathValidator;
 
   /**
-   * Constructs a SecKitSettingsForm object.
-   *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The factory for configuration objects.
-   * @param \Drupal\Core\Path\PathValidatorInterface $path_validator
-   *   The path validator.
-   * @param \Drupal\Core\Render\RendererInterface $renderer
-   *   The renderer.
-   */
-  public function __construct(ConfigFactoryInterface $config_factory, PathValidatorInterface $path_validator, RendererInterface $renderer) {
-    parent::__construct($config_factory);
-    $this->pathValidator = $path_validator;
-    $this->renderer = $renderer;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('config.factory'),
-      $container->get('path.validator'),
-      $container->get('renderer')
-    );
+    $instance = parent::create($container);
+
+    $instance->renderer = $container->get('renderer');
+    $instance->pathValidator = $container->get('path.validator');
+
+    return $instance;
   }
 
   /**
@@ -76,6 +58,7 @@ class SecKitSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['#attached']['library'][] = 'seckit/listener';
+    $form['#attached']['library'][] = 'seckit/admin-styles';
 
     $config = $this->config('seckit.settings');
 
@@ -103,7 +86,7 @@ class SecKitSettingsForm extends ConfigFormBase {
       ':wiki' => 'https://wiki.mozilla.org/Security/CSP',
       '@wiki' => 'Mozilla Wiki',
       ':caniuse' => 'https://caniuse.com/#feat=contentsecuritypolicy',
-      '@caniuse' => 'Can I use'
+      '@caniuse' => 'Can I use',
     ];
 
     $form['seckit_xss']['csp'] = [
@@ -144,13 +127,12 @@ class SecKitSettingsForm extends ConfigFormBase {
       '#return_value' => 1,
       '#description' => $this->t('Send vendor-prefixed X-WebKit-CSP HTTP response headers with the list of Content Security Policy directives.'),
     ];
-    // CSP Upgrade Insecure Requests
     $form['seckit_xss']['csp']['upgrade-req'] = [
       '#type' => 'checkbox',
       '#default_value' => $config->get('seckit_xss.csp.upgrade-req'),
       '#title' => $this->t('Enable Upgrade Insecure Requests'),
       '#return_value' => 1,
-      '#description' => $this->t('Upgrade Insecure Requests (upgrade-insecure-requests) instructs user agents to rewrite URL schemes, changing HTTP to HTTPS. This directive is used to protect your visitors from insecure content or for websites with large numbers of old URL\'s that need to be rewritten.'),
+      '#description' => $this->t('Upgrade Insecure Requests (upgrade-insecure-requests) instructs user agents to rewrite URL schemes, changing HTTP to HTTPS. This directive is used to protect your visitors from insecure content or for websites with large numbers of old URLs that need to be rewritten.'),
     ];
     // CSP report-only mode.
     $form['seckit_xss']['csp']['report-only'] = [
@@ -188,104 +170,130 @@ class SecKitSettingsForm extends ConfigFormBase {
     ];
     // CSP default-src directive.
     $form['seckit_xss']['csp']['default-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.default-src'),
       '#title' => 'default-src',
       '#description' => $this->t("Specify security policy for all types of content, which are not specified further (frame-ancestors excepted). Default is 'self'."),
     ];
     // CSP script-src directive.
     $form['seckit_xss']['csp']['script-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.script-src'),
       '#title' => 'script-src',
       '#description' => $this->t('Specify trustworthy sources for &lt;script&gt; elements.'),
     ];
     // CSP object-src directive.
     $form['seckit_xss']['csp']['object-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.object-src'),
       '#title' => 'object-src',
       '#description' => $this->t('Specify trustworthy sources for &lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; elements.'),
     ];
     // CSP style-src directive.
     $form['seckit_xss']['csp']['style-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.style-src'),
       '#title' => 'style-src',
       '#description' => $this->t('Specify trustworthy sources for stylesheets. Note, that inline stylesheets and style attributes of HTML elements are allowed.'),
     ];
     // CSP img-src directive.
     $form['seckit_xss']['csp']['img-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.img-src'),
       '#title' => 'img-src',
       '#description' => $this->t('Specify trustworthy sources for &lt;img&gt; elements.'),
     ];
     // CSP media-src directive.
     $form['seckit_xss']['csp']['media-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.media-src'),
       '#title' => 'media-src',
       '#description' => $this->t('Specify trustworthy sources for &lt;audio&gt; and &lt;video&gt; elements.'),
     ];
     // CSP frame-src directive.
     $form['seckit_xss']['csp']['frame-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.frame-src'),
       '#title' => 'frame-src',
       '#description' => $this->t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements. This directive is deprecated and will be replaced by child-src. It is recommended to use the both the frame-src and child-src directives until all browsers you support recognize the child-src directive.'),
     ];
     // CSP frame-ancestors directive.
     $form['seckit_xss']['csp']['frame-ancestors'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.frame-ancestors'),
       '#title' => 'frame-ancestors',
       '#description' => $this->t("Specify trustworthy hosts which are allowed to embed this site's resources via &lt;iframe&gt;, &lt;frame&gt;, &lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; elements."),
     ];
     // CSP child-src directive.
     $form['seckit_xss']['csp']['child-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.child-src'),
       '#title' => 'child-src',
       '#description' => $this->t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements as well as for loading Workers.'),
     ];
     // CSP font-src directive.
     $form['seckit_xss']['csp']['font-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.font-src'),
       '#title' => 'font-src',
       '#description' => $this->t('Specify trustworthy sources for @font-src CSS loads.'),
     ];
     // CSP connect-src directive.
     $form['seckit_xss']['csp']['connect-src'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.connect-src'),
       '#title' => 'connect-src',
       '#description' => $this->t('Specify trustworthy sources for XMLHttpRequest, WebSocket and EventSource connections.'),
     ];
     // CSP report-uri directive.
     $form['seckit_xss']['csp']['report-uri'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.report-uri'),
       '#title' => 'report-uri',
       '#description' => $this->t('Specify a URL (can be relative to the Drupal root, or absolute) to which user-agents will report CSP violations. Use the default value, unless you have set up an alternative handler for these reports. Note that if you specify a custom relative path, it should typically be accessible by all users (including anonymous). Defaults to <code>@report-url</code> which logs the report data.', ['@report-url' => SeckitInterface::CSP_REPORT_URL]),
     ];
     // CSP policy-uri directive.
     $form['seckit_xss']['csp']['policy-uri'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 1024,
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#default_value' => $config->get('seckit_xss.csp.policy-uri'),
       '#title' => 'policy-uri',
       '#description' => $this->t("Specify a URL (relative to the Drupal root) for a file containing the (entire) policy. <strong>All other directives will be omitted</strong> by Security Kit, as <code>policy-uri</code> may only be defined in the <em>absence</em> of other policy definitions in the <code>X-Content-Security-Policy</code> HTTP header. The MIME type for this URI <strong>must</strong> be <code>text/x-content-security-policy</code>, otherwise user-agents will enforce the policy <code>allow 'none'</code>  instead."),
@@ -302,10 +310,10 @@ class SecKitSettingsForm extends ConfigFormBase {
     ];
     // Options for X-XSS-Protection.
     $x_xss_protection_options = [
-      SeckitInterface::X_XSS_DISABLE => $config->get('seckit_xss.x_xss.seckit_x_xss_option_disable', $this->t('Disabled')),
-      SeckitInterface::X_XSS_0 => $config->get('seckit_xss.x_xss.seckit_x_xss_option_0', '0'),
-      SeckitInterface::X_XSS_1 => $config->get('seckit_xss.x_xss.seckit_x_xss_option_1', '1;'),
-      SeckitInterface::X_XSS_1_BLOCK => $config->get('seckit_xss.x_xss.seckit_x_xss_option_1_block', '1; mode=block'),
+      SeckitInterface::X_XSS_DISABLE => $this->t('Disabled'),
+      SeckitInterface::X_XSS_0 => '0',
+      SeckitInterface::X_XSS_1 => '1',
+      SeckitInterface::X_XSS_1_BLOCK => '1; mode=block',
     ];
     // Configure X-XSS-Protection.
     $args = [
@@ -350,11 +358,13 @@ class SecKitSettingsForm extends ConfigFormBase {
     ];
     // Origin whitelist.
     $form['seckit_csrf']['origin_whitelist'] = [
-      '#type' => 'textfield',
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#title' => $this->t('Allow requests from'),
       '#default_value' => $config->get('seckit_csrf.origin_whitelist'),
       '#size' => 90,
-      '#maxlength' => 255,
       '#description' => $this->t('Comma separated list of trustworthy sources. Do not enter your website URL - it is automatically added. Syntax of the source is: [protocol] :// [host] : [port] . E.g, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080'),
     ];
 
@@ -468,7 +478,10 @@ class SecKitSettingsForm extends ConfigFormBase {
 
     // Custom text for "disabled JavaScript" message.
     $form['seckit_clickjacking']['javascript']['noscript_message'] = [
-      '#type' => 'textfield',
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#title' => $this->t('Custom text for disabled JavaScript message'),
       '#default_value' => $config->get('seckit_clickjacking.noscript_message'),
       '#description' => $this->t('This message will be shown to user when JavaScript is disabled or unsupported in his browser. Default is "Sorry, you need to enable JavaScript to visit this website."'),
@@ -574,11 +587,12 @@ class SecKitSettingsForm extends ConfigFormBase {
     ];
 
     $form['seckit_ct']['report_uri'] = [
-      '#type' => 'textfield',
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#title' => $this->t('Report-uri'),
       '#default_value' => $config->get('seckit_ct.report_uri'),
-      '#size' => 90,
-      '#maxlength' => 255,
       '#description' => $this->t('Specify the (absolute) URI to which the user agent should report Expect-CT failures.'),
     ];
 
@@ -612,11 +626,13 @@ class SecKitSettingsForm extends ConfigFormBase {
     ];
 
     $form['seckit_fp']['feature_policy_policy'] = [
-      '#type' => 'textfield',
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#title' => $this->t('Policy'),
       '#default_value' => $config->get('seckit_fp.feature_policy_policy'),
       '#size' => 90,
-      '#maxlength' => 255,
       '#description' => $this->t('Specify the policy to be sent out with Feature-Policy headers.'),
     ];
 
@@ -652,10 +668,12 @@ class SecKitSettingsForm extends ConfigFormBase {
     ];
 
     $form['seckit_various']['from_origin_destination'] = [
-      '#type' => 'textfield',
+      '#type' => 'textarea',
+      '#attributes' => [
+        'rows' => 1,
+      ],
       '#title' => $this->t('Allow loading content to'),
       '#default_value' => $config->get('seckit_various.from_origin_destination'),
-      '#size' => 90,
       '#description' => $this->t('Trustworthy destination. Possible variants are: @items', $args),
       '#states' => [
         'required' => [
@@ -733,15 +751,24 @@ class SecKitSettingsForm extends ConfigFormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // If From-Origin is enabled, it should be explicitly set.
-    $from_origin_enable = $form_state->getValue(['seckit_various', 'from_origin']);
-    $from_origin_destination = $form_state->getValue(['seckit_various', 'from_origin_destination']);
+    $from_origin_enable = $form_state->getValue([
+      'seckit_various',
+      'from_origin',
+    ]);
+    $from_origin_destination = $form_state->getValue([
+      'seckit_various',
+      'from_origin_destination',
+    ]);
     if ($from_origin_enable && !$from_origin_destination) {
       $form_state->setErrorByName('seckit_various][from_origin_destination', $this->t('You have to set up trustworthy destination for From-Origin HTTP response header. Default is same.'));
     }
     // If X-Frame-Options is set to ALLOW-FROM, it should be explicitly set.
     $x_frame_value = $form_state->getValue(['seckit_clickjacking', 'x_frame']);
     if ($x_frame_value == SeckitInterface::X_FRAME_ALLOW_FROM) {
-      $x_frame_allow_from = $form_state->getValue(['seckit_clickjacking', 'x_frame_allow_from']);
+      $x_frame_allow_from = $form_state->getValue([
+        'seckit_clickjacking',
+        'x_frame_allow_from',
+      ]);
       if (!$this->seckitExplodeValue($x_frame_allow_from)) {
         $form_state->setErrorByName('seckit_clickjacking][x_frame_allow_from', $this->t('You must specify a trusted Origin for the ALLOW-FROM value of the X-Frame-Options HTTP response header.'));
       }
@@ -758,8 +785,14 @@ class SecKitSettingsForm extends ConfigFormBase {
     }
     // If JS + CSS + Noscript Clickjacking protection is enabled,
     // custom text for disabled JS must be specified.
-    $js_css_noscript_enable = $form_state->getValue(['seckit_clickjacking', 'js_css_noscript']);
-    $noscript_message = $form_state->getValue(['seckit_clickjacking', 'noscript_message']);
+    $js_css_noscript_enable = $form_state->getValue([
+      'seckit_clickjacking',
+      'js_css_noscript',
+    ]);
+    $noscript_message = $form_state->getValue([
+      'seckit_clickjacking',
+      'noscript_message',
+    ]);
     if ($js_css_noscript_enable && !$noscript_message) {
       $form_state->setErrorByName('seckit_clickjacking][noscript_message', $this->t('You have to set up Custom text for disabled JavaScript message when JS + CSS + Noscript protection is enabled.'));
     }
@@ -781,6 +814,39 @@ class SecKitSettingsForm extends ConfigFormBase {
         $form_state->setErrorByName('seckit_xss][csp][report-uri', $this->t('The CSP report-uri seems relative but does not seem to be a valid path.'));
       }
     }
+    // Check for newlines in some textarea inputs where there should be none.
+    $csp_textareas = [
+      'default-src',
+      'script-src',
+      'object-src',
+      'style-src',
+      'img-src',
+      'media-src',
+      'frame-src',
+      'frame-ancestors',
+      'child-src',
+      'font-src',
+      'connect-src',
+    ];
+    foreach ($csp_textareas as $csp_textarea) {
+      $value = $form_state->getValue(['seckit_xss', 'csp', $csp_textarea]);
+      if ($value !== str_replace(["\r", "\n"], '', (string) $value)) {
+        $form_state->setErrorByName('seckit_xss][csp][' . $csp_textarea, t('CSP directives cannot contain newlines.'));
+      }
+    }
+    $value = $form_state->getValue(['seckit_csrf', 'origin_whitelist']);
+    if ($value !== str_replace(["\r", "\n"], '', (string) $value)) {
+      $form_state->setErrorByName('seckit_csrf][origin_whitelist', t('CSRF Origin Whitelist cannot contain newlines.'));
+    }
+    $value = $form_state->getValue(['seckit_fp', 'feature_policy_policy']);
+    if ($value !== str_replace(["\r", "\n"], '', (string) $value)) {
+      $form_state->setErrorByName('seckit_fp][feature_policy_policy', t('Feature policy cannot contain newlines.'));
+    }
+    $value = $form_state->getValue(['seckit_various', 'from_origin_destination']);
+    if ($value !== str_replace(["\r", "\n"], '', (string) $value)) {
+      $form_state->setErrorByName('seckit_various][from_origin_destination', t('Allow loading content to cannot contain newlines.'));
+    }
+
   }
 
   /**
@@ -812,10 +878,7 @@ class SecKitSettingsForm extends ConfigFormBase {
   /**
    * Build the configuration form value list.
    */
-  protected function buildAttributeList(
-    array &$list = [],
-      array $rawAttributes = [],
-      $currentName = '') {
+  protected function buildAttributeList(array &$list = [], array $rawAttributes = [], $currentName = '') {
     foreach ($rawAttributes as $key => $rawAttribute) {
       $name = $currentName ? $currentName . '.' . $key : $key;
       if (in_array(
@@ -836,7 +899,7 @@ class SecKitSettingsForm extends ConfigFormBase {
   /**
    * Converts a multi-line configuration option to an array.
    *
-   * Sanitises by trimming whitespace, and filtering empty options.
+   * Sanitizes by trimming whitespace, and filtering empty options.
    */
   protected function seckitExplodeValue($string) {
     $values = explode("\n", $string);

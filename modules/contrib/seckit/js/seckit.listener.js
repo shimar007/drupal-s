@@ -3,7 +3,7 @@
 // https://api.drupal.org/api/drupal/includes!common.inc/function/drupal_process_states/8.2.x
 
 Drupal.behaviors.seckit = {
-  attach: function(context) {
+  attach: function (context) {
     seckit_listener_hsts(context);
     seckit_listener_csp(context);
     seckit_listener_origin(context);

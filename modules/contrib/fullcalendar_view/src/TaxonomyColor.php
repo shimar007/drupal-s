@@ -44,9 +44,9 @@ class TaxonomyColor {
     if (isset($terms[$vid])) {
       // Create a color box for each terms.
       foreach ($terms[$vid] as $taxonomy) {
-         // If the term name is a valid hex color, use it for the initial default color.
+        // If the term name is a valid hex color, use it for the initial default color.
         $initial_color = preg_match('/^#[a-fA-F0-9]{6}$/', $taxonomy->name->value) ? $taxonomy->name->value : '#3a87ad';
-        $color = isset($defaultValues[$taxonomy->id()]) ? $defaultValues[$taxonomy->id()] : $initial_color;
+        $color = $defaultValues[$taxonomy->id()] ?? $initial_color;
         $elements[$taxonomy->id()] = [
           '#title' => $taxonomy->name->value,
           '#default_value' => $color,

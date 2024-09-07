@@ -34,4 +34,32 @@ class FullcalendarViewJavascriptTest extends FullcalendarViewJavascriptTestBase 
     $assert->pageTextContains($title_2);
   }
 
+  /**
+   * Tests adding event function.
+   */
+  public function testAddEvent() {
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('/admin/structure/views/view/fullcalendar_view_page/edit/page_1');
+    $page = $this->getSession()->getPage();
+    $assert = $this->assertSession();
+    // Set up the off-canvas function.
+    $page->findLink('Settings')->click();
+    $assert->waitForButton('Apply');
+    $page->find('css', 'details[data-drupal-selector=edit-style-options-display]')->click();
+    $page->findField('Create a new event via the Off-Canvas dialog.')->click();
+    // Event bundle setting.
+    $bundle_field = $assert->waitForField('Event bundle (Content) type');
+    $bundle_field->setValue('event');
+    $dialog_buttons = $page->find('css', '.ui-dialog-buttonset');
+    $dialog_buttons->pressButton('Apply');
+    $page->findButton('Save')->click();
+    // Go to the calendar view.
+    $this->drupalGet('/fullcalendar-view-page');
+    $assert->waitForLink('Add event');
+    $page->clickLink('Add event');
+    // Check if the save button exists.
+    $assert->waitForButton('Save');
+    $assert->buttonExists('Save');
+  }
+
 }

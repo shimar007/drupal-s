@@ -2,15 +2,14 @@
 
 namespace Drupal\fullcalendar_view\Plugin;
 
-use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
  * Provides the Fullcalendar view processor plugin manager.
  */
 class FullcalendarViewProcessorManager extends DefaultPluginManager {
-
 
   /**
    * Constructs a new FullcalendarViewProcessorManager object.

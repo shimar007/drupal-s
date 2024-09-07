@@ -3,12 +3,10 @@
 namespace Drupal\entity_usage;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Core\Utility\Error;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Manages Entity Usage integration with Batch API specifically for the queue.
@@ -18,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * order to create items for the queue, we will use a batch process, to avoid
  * timeouts and memory issues.
  */
-class EntityUsageQueueBatchManager implements ContainerInjectionInterface {
+class EntityUsageQueueBatchManager {
 
   use StringTranslationTrait;
 
@@ -28,44 +26,14 @@ class EntityUsageQueueBatchManager implements ContainerInjectionInterface {
   const BATCH_SIZE = 100;
 
   /**
-   * The entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected $entityTypeManager;
-
-  /**
-   * The entity usage configuration.
-   *
-   * @var \Drupal\Core\Config\Config
-   */
-  protected $config;
-
-  /**
    * Creates a EntityUsageQueueBatchManager object.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager service.
-   * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
-   *   The string translation service.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config factory.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, TranslationInterface $string_translation, ConfigFactoryInterface $config_factory) {
-    $this->entityTypeManager = $entity_type_manager;
-    $this->stringTranslation = $string_translation;
-    $this->config = $config_factory->get('entity_usage.settings');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('entity_type.manager'),
-      $container->get('string_translation'),
-      $container->get('config.factory')
-    );
+  final public function __construct(
+    private EntityTypeManagerInterface $entityTypeManager,
+    TranslationInterface $stringTranslation,
+    private ConfigFactoryInterface $configFactory,
+  ) {
+    $this->setStringTranslation($stringTranslation);
   }
 
   /**
@@ -101,7 +69,9 @@ class EntityUsageQueueBatchManager implements ContainerInjectionInterface {
   public function generateBatch($batch_size = 0, $keep_existing_records = FALSE) {
     $batch_size = (int) $batch_size > 0 ? (int) $batch_size : static::BATCH_SIZE;
     $operations = [];
-    $to_track = $this->config->get('track_enabled_source_entity_types');
+    $to_track = $this->configFactory
+      ->get('entity_usage.settings')
+      ->get('track_enabled_source_entity_types');
     foreach ($this->entityTypeManager->getDefinitions() as $entity_type_id => $entity_type) {
       // Only look for entities enabled for tracking on the settings form.
       $track_this_entity_type = FALSE;
