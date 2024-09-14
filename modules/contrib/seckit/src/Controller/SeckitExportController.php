@@ -69,7 +69,12 @@ class SeckitExportController extends ControllerBase implements ContainerInjectio
 
     // Log the report data.
     foreach ($reports as $report) {
-      if (!isset($report->{'violated-directive'})) {
+      if (
+        !isset($report->{'violated-directive'})
+        || !is_string($report->{'violated-directive'})
+        || !isset($report->{'blocked-uri'})
+        || !is_string($report->{'blocked-uri'})
+      ) {
         continue;
       }
       $info = [

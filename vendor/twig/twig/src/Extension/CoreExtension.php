@@ -82,6 +82,7 @@ use Twig\TokenParser\ImportTokenParser;
 use Twig\TokenParser\IncludeTokenParser;
 use Twig\TokenParser\MacroTokenParser;
 use Twig\TokenParser\SetTokenParser;
+use Twig\TokenParser\TypesTokenParser;
 use Twig\TokenParser\UseTokenParser;
 use Twig\TokenParser\WithTokenParser;
 use Twig\TwigFilter;
@@ -182,6 +183,7 @@ final class CoreExtension extends AbstractExtension
             new ImportTokenParser(),
             new FromTokenParser(),
             new SetTokenParser(),
+            new TypesTokenParser(),
             new FlushTokenParser(),
             new DoTokenParser(),
             new EmbedTokenParser(),
@@ -330,26 +332,39 @@ final class CoreExtension extends AbstractExtension
     }
 
     /**
-     * Cycles over a value.
+     * Cycles over a sequence.
      *
-     * @param \ArrayAccess|array $values
-     * @param int                $position The cycle position
+     * @param array|\ArrayAccess $values   A non-empty sequence of values
+     * @param positive-int       $position The position of the value to return in the cycle
      *
-     * @return string The next value in the cycle
+     * @return mixed The value at the given position in the sequence, wrapping around as needed
      *
      * @internal
      */
-    public static function cycle($values, $position): string
+    public static function cycle($values, $position): mixed
     {
-        if (!\is_array($values) && !$values instanceof \ArrayAccess) {
-            return $values;
+        if (!\is_array($values)) {
+            if (!$values instanceof \ArrayAccess) {
+                throw new RuntimeError('The "cycle" function expects an array or "ArrayAccess" as first argument.');
+            }
+
+            if (!is_countable($values)) {
+                // To be uncommented in 4.0
+                // throw new RuntimeError('The "cycle" function expects a countable sequence as first argument.');
+
+                trigger_deprecation('twig/twig', '3.12', 'Passing a non-countable sequence of values to "%s()" is deprecated.', __METHOD__);
+
+                return $values;
+            }
+
+            $values = self::toArray($values, false);
         }
 
-        if (!\count($values)) {
-            throw new RuntimeError('The "cycle" function does not work on empty sequences/mappings.');
+        if (!$count = \count($values)) {
+            throw new RuntimeError('The "cycle" function does not work on empty sequences.');
         }
 
-        return $values[$position % \count($values)];
+        return $values[$position % $count];
     }
 
     /**
@@ -1416,13 +1431,6 @@ final class CoreExtension extends AbstractExtension
             if (!$alreadySandboxed = $sandbox->isSandboxed()) {
                 $sandbox->enableSandbox();
             }
-
-            foreach ((\is_array($template) ? $template : [$template]) as $name) {
-                // if a Template instance is passed, it might have been instantiated outside of a sandbox, check security
-                if ($name instanceof TemplateWrapper || $name instanceof Template) {
-                    $name->unwrap()->checkSecurity();
-                }
-            }
         }
 
         try {
@@ -1433,9 +1441,15 @@ final class CoreExtension extends AbstractExtension
                 if (!$ignoreMissing) {
                     throw $e;
                 }
+
+                return '';
             }
 
-            return $loaded ? $loaded->render($variables) : '';
+            if ($isSandboxed) {
+                $loaded->unwrap()->checkSecurity();
+            }
+
+            return $loaded->render($variables);
         } finally {
             if ($isSandboxed && !$alreadySandboxed) {
                 $sandbox->disableSandbox();
@@ -1818,6 +1832,10 @@ final class CoreExtension extends AbstractExtension
      */
     public static function map(Environment $env, $array, $arrow)
     {
+        if (!is_iterable($array)) {
+            throw new RuntimeError(\sprintf('The "map" filter expects a sequence/mapping or "Traversable", got "%s".', get_debug_type($array)));
+        }
+
         self::checkArrowInSandbox($env, $arrow, 'map', 'filter');
 
         $r = [];

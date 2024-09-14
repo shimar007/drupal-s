@@ -40,6 +40,13 @@ A public location is accessible by the web browser. Your files can be accessed o
 Please take note of Public Security Announcement 2016-03 that advises against granting upload permission for anonymous or non-trusted users to the public file directory: https://www.drupal.org/psa-2016-003
 A private location is defined in your settings.php file. Files will be served by Drupal/PHP. Preferably locate your private directory outside the web root so it can not be accessed by the user outside of Filebrowser.
 
+### Symbolic links ###
+Filebrowser only partially supports symbolic links. Symbolic links to directories *on the same storage* will work well. However, symbolic links to files will not work.
+The code, at the moment, does not distinguish between a linked file or a linked directory. As soon as it detects a link it will assume it's a directory.
+PHP functions like is_link() is_dir() etc. should be able to execute without an error in order to manage symbolic links. However, a lot of things (like permissions on webservers level) will influence this, making it tricky.
+And I am not even talking about a symbolic link within a WSL2 system linking to a Windows file system.
+There is a initiative to make FB fully compatible with symbolic links, so it might become available in a future release.
+
 ### Download method ###
 Public download method directs the browser to the file location for download. PHP (Filebrowser) is not involved.
 In case of Private download method, the files are served by filebrowser.

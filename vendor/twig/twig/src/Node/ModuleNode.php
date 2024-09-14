@@ -318,7 +318,7 @@ final class ModuleNode extends Node
     protected function compileDisplay(Compiler $compiler)
     {
         $compiler
-            ->write("protected function doDisplay(array \$context, array \$blocks = [])\n", "{\n")
+            ->write("protected function doDisplay(array \$context, array \$blocks = []): iterable\n", "{\n")
             ->indent()
             ->write("\$macros = \$this->macros;\n")
             ->subcompile($this->getNode('display_start'))
@@ -353,7 +353,7 @@ final class ModuleNode extends Node
         $compiler->subcompile($this->getNode('display_end'));
 
         if (!$this->hasNode('parent')) {
-            $compiler->write("return; yield '';\n"); // ensure at least one yield call even for templates with no output
+            $compiler->write("yield from [];\n");
         }
 
         $compiler
@@ -415,14 +415,6 @@ final class ModuleNode extends Node
 
             foreach ($nodes as $node) {
                 if (!\count($node)) {
-                    continue;
-                }
-
-                if ($node instanceof TextNode && ctype_space($node->getAttribute('data'))) {
-                    continue;
-                }
-
-                if ($node instanceof BlockReferenceNode) {
                     continue;
                 }
 
@@ -493,20 +485,5 @@ final class ModuleNode extends Node
         } else {
             throw new \LogicException('Trait templates can only be constant nodes.');
         }
-    }
-
-    private function hasNodeOutputNodes(Node $node): bool
-    {
-        if ($node instanceof NodeOutputInterface) {
-            return true;
-        }
-
-        foreach ($node as $child) {
-            if ($this->hasNodeOutputNodes($child)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

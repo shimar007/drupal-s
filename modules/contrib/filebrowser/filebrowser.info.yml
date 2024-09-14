@@ -8,7 +8,7 @@ dependencies:
   - drupal:node
   - drupal:system (>=8.7.0)
 
-# Information added by Drupal.org packaging script on 2024-06-09
-version: '3.1.0-rc4'
+# Information added by Drupal.org packaging script on 2024-09-12
+version: '3.1.0'
 project: 'filebrowser'
-datestamp: 1717968585
+datestamp: 1726151670

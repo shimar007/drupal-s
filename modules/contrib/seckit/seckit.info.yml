@@ -5,7 +5,7 @@ core_version_requirement: ^9.5 || ^10 || ^11
 configure: seckit.settings
 type: module
 
-# Information added by Drupal.org packaging script on 2024-08-27
-version: '2.0.2'
+# Information added by Drupal.org packaging script on 2024-09-11
+version: '2.0.3'
 project: 'seckit'
-datestamp: 1724766051
+datestamp: 1726048466

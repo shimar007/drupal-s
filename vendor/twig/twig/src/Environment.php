@@ -43,10 +43,10 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '3.12.0';
-    public const VERSION_ID = 301200;
+    public const VERSION = '3.14.0';
+    public const VERSION_ID = 31400;
     public const MAJOR_VERSION = 3;
-    public const MINOR_VERSION = 12;
+    public const MINOR_VERSION = 14;
     public const RELEASE_VERSION = 0;
     public const EXTRA_VERSION = '';
 
@@ -107,7 +107,7 @@ class Environment
      *               false (default): allows templates to use a mix of "yield" and "echo" calls to allow for a progressive migration
      *               Switch to "true" when possible as this will be the only supported mode in Twig 4.0
      */
-    public function __construct(LoaderInterface $loader, $options = [])
+    public function __construct(LoaderInterface $loader, array $options = [])
     {
         $this->setLoader($loader);
 
@@ -830,17 +830,20 @@ class Environment
         return array_merge($this->extensionSet->getGlobals(), $this->globals);
     }
 
+    public function resetGlobals(): void
+    {
+        $this->resolvedGlobals = null;
+        $this->extensionSet->resetGlobals();
+    }
+
+    /**
+     * @deprecated since Twig 3.14
+     */
     public function mergeGlobals(array $context): array
     {
-        // we don't use array_merge as the context being generally
-        // bigger than globals, this code is faster.
-        foreach ($this->getGlobals() as $key => $value) {
-            if (!\array_key_exists($key, $context)) {
-                $context[$key] = $value;
-            }
-        }
+        trigger_deprecation('twig/twig', '3.14', 'The "%s" method is deprecated.', __METHOD__);
 
-        return $context;
+        return $context + $this->getGlobals();
     }
 
     /**

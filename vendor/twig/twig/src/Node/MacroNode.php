@@ -73,7 +73,7 @@ class MacroNode extends Node
             ->write("{\n")
             ->indent()
             ->write("\$macros = \$this->macros;\n")
-            ->write("\$context = \$this->env->mergeGlobals([\n")
+            ->write("\$context = [\n")
             ->indent()
         ;
 
@@ -86,7 +86,7 @@ class MacroNode extends Node
             ;
         }
 
-        $node = new CaptureNode($this->getNode('body'), $this->getNode('body')->lineno, $this->getNode('body')->tag);
+        $node = new CaptureNode($this->getNode('body'), $this->getNode('body')->lineno);
 
         $compiler
             ->write('')
@@ -94,7 +94,7 @@ class MacroNode extends Node
             ->raw(' => ')
             ->raw("\$__varargs__,\n")
             ->outdent()
-            ->write("]);\n\n")
+            ->write("] + \$this->env->getGlobals();\n\n")
             ->write("\$blocks = [];\n\n")
             ->write('return ')
             ->subcompile($node)
