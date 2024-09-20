@@ -1,6 +1,10 @@
 _core:
   default_config_hash: Qa0Wwo59NSFGS3lPsFxj55zyk3uJXxPqLJuQ4soNCaQ
 report-only:
-  enable: false
+  enable: true
+  reporting:
+    plugin: sitelog
 enforce:
   enable: false
+  reporting:
+    plugin: none

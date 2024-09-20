@@ -222,3 +222,10 @@ function feeds_update_8007() {
     $schema->renameTable('feeds_clean_list_new', 'feeds_clean_list');
   }
 }
+
+/**
+ * Flush all caches to reset dependency injection for services.
+ */
+function feeds_update_8008() {
+  drupal_flush_all_caches();
+}

@@ -60,6 +60,17 @@ parameters:
       count: 1
       path: src/Feeds/Parser/SyndicationParser.php
 
+    # Calling \Drupal\feeds\Feeds\Target\Text::__construct() without the
+    # $filter_format_storage argument is deprecated and the argument will be
+    # required in feeds:4.0.0.
+    # For now, we get a value for it from a global \Drupal call if it is not
+    # set.
+    # @see https://www.drupal.org/project/feeds/issues/3473603
+    -
+      message: "#^\\\\Drupal calls should be avoided in classes, use dependency injection instead$#"
+      count: 1
+      path: src/Feeds/Target/Text.php
+
     # We should deprecate calling getConfiguration() with a parameter.
     # @todo deprecate it for removal in Feeds 4.0. And update all calls in the
     # code base.
