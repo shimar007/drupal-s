@@ -1,3 +1,14 @@
+_core:
+  default_config_hash: Jf4526WHuU7GV95r5Zf107vA07RskjHFmq-9QWKnpbc
+allowed_menus:
+  account: account
+  admin: admin
+  devel: devel
+  footer: footer
+  internal-page---navigation: internal-page---navigation
+  main: main
+  social---links: social---links
+  tools: tools
 output_values:
   key: key
   title: title
@@ -13,5 +24,3 @@ output_values:
   enabled: enabled
   uuid: uuid
   options: options
-_core:
-  default_config_hash: Jf4526WHuU7GV95r5Zf107vA07RskjHFmq-9QWKnpbc
