@@ -86,5 +86,20 @@ function hook_mailchimp_lists_interest_groups_alter(array &$interests, EntityInt
 }
 
 /**
+ * Alter campaign template and content.
+ *
+ * @param array $template
+ *   Associative array of template content indexed by section ID.
+ * @param array $content
+ *   Associative array of filtered template content indexed by section ID.
+ * @param string $campaign_id
+ *   The ID of the campaign to save, if updating.
+ *
+ * @ingroup mailchimp
+ */
+function hook_mailchimp_campaign_content_alter(array &$template, array &$content, string $campaign_id) {
+}
+
+/**
  * @} End of "addtogroup hooks".
  */

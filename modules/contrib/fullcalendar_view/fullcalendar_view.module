@@ -2,14 +2,18 @@
 
 /**
  * @file
- * Full Canlendar Views module help and theme functions.
+ * Full Calendar Views module help and theme functions.
+ *
+ * @todo Since Drupal 11.1.0, Drupal supports object oriented hook
+ * implementations using autowired services.
+ * @see https://www.drupal.org/node/3442349
  */
 
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
 
 // Store the preprocess theme functions in a separate .inc file.
-\Drupal::moduleHandler()->loadInclude('fullcalendar_view', 'inc', 'fullcalendar_view.theme');
+require_once 'fullcalendar_view.theme.inc';
 
 /**
  * Implements hook_theme().

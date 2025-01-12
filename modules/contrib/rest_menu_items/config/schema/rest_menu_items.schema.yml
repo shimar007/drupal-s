@@ -2,8 +2,12 @@
 
 rest_menu_items.config:
   type: config_entity
-  label: 'REST Menu Items settings'
+  label: 'REST menu items settings'
   mapping:
+    allowed_menus:
+      type: sequence
+      sequence:
+        type: string
     add_fragment:
       type: integer
       label: ''

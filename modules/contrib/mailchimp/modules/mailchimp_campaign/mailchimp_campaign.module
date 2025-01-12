@@ -94,6 +94,9 @@ function mailchimp_campaign_save_campaign(array $template, $recipients, $setting
     ];
   }
 
+  // Allow alter of template and content used in campaign.
+  \Drupal::moduleHandler()->alter('mailchimp_campaign_content', $template, $content, $campaign_id);
+
   // Test for valid list segment, if selected.
   if (isset($recipients->segment_opts)) {
     if (!isset($recipients->segment_opts->saved_segment_id)

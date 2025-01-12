@@ -89,7 +89,7 @@ class FilterMailchimpCampaign extends FilterBase {
   private function convertUrl($text) {
     global $base_url;
     $matches = [];
-    preg_match_all('/<(a|img).*?(href|src)="(.*?)"/', $text, $matches);
+    preg_match_all('/<(a|img)[^>]*?(href|src)="(.*?)"/', $text, $matches);
     foreach ($matches[3] as $key => $url) {
       if ($url[0] == '/') {
         $new_url = $base_url . $url;

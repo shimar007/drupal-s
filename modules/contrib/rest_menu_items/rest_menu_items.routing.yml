@@ -3,7 +3,7 @@ rest_menu_items.config_form:
   path: '/admin/config/services/rest_menu_items'
   defaults:
     _form: '\Drupal\rest_menu_items\Form\ConfigForm'
-    _title: 'Rest Menu Items'
+    _title: 'REST menu items'
   requirements:
     _permission: 'administer rest menu items'
   options:

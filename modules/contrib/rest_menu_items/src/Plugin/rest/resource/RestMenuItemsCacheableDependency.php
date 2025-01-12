@@ -2,8 +2,8 @@
 
 namespace Drupal\rest_menu_items\Plugin\rest\resource;
 
-use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableDependencyInterface;
 
 /**
  * The cacheable dependency class.
@@ -66,6 +66,7 @@ class RestMenuItemsCacheableDependency implements CacheableDependencyInterface {
   public function getCacheTags() {
     $tags = [];
     $tags[] = 'config:system.menu.' . $this->menuName;
+    $tags[] = 'config:rest_menu_items.config';
     return $tags;
   }
 

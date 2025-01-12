@@ -204,7 +204,9 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
     $this->assertStringContainsString($host_node->toUrl()->toString(), $first_row_title_link->getAttribute('href'));
     $first_row_field_label = $this->xpath('//table/tbody/tr[1]/td[4]')[0];
     $this->assertEquals('Layout', $first_row_field_label->getText());
-    $assert_session->pageTextNotContains('Translations or previous revisions');
+    $assert_session->pageTextNotContains('Old revision(s)');
+    $assert_session->pageTextNotContains('Pending revision(s) / Draft(s)');
+    $assert_session->pageTextNotContains('Default:');
 
     // Verify we can edit the layout and add another item to the same region.
     $page->clickLink($host_node->getTitle());
@@ -295,7 +297,7 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
     $first_row_field_label = $this->xpath('//table/tbody/tr[1]/td[4]')[0];
     $this->assertEquals('Layout', $first_row_field_label->getText());
     $first_row_used_in = $this->xpath('//table/tbody/tr[1]/td[6]')[0];
-    $this->assertEquals('Translations or previous revisions', $first_row_used_in->getText());
+    $this->assertEquals('Old revision(s)', $first_row_used_in->getText());
   }
 
 }

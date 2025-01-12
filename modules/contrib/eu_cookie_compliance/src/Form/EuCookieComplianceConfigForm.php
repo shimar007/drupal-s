@@ -18,6 +18,8 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\user\RoleStorageInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Config\TypedConfigManagerInterface;
+
 
 /**
  * Provides settings for eu_cookie_compliance module.
@@ -103,8 +105,8 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache_page
    *   The page cache.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, PathValidatorInterface $path_validator, RequestContext $request_context, RoleStorageInterface $role_storage, ModuleHandlerInterface $module_handler, EntityTypeManagerInterface $entity_type_manager, ConsentStorageManager $consent_storage, CacheBackendInterface $cache_bootstrap, CacheBackendInterface $cache_page) {
-    parent::__construct($config_factory);
+  public function __construct(ConfigFactoryInterface $config_factory, PathValidatorInterface $path_validator, RequestContext $request_context, RoleStorageInterface $role_storage, ModuleHandlerInterface $module_handler, EntityTypeManagerInterface $entity_type_manager, ConsentStorageManager $consent_storage, CacheBackendInterface $cache_bootstrap, CacheBackendInterface $cache_page,  TypedConfigManagerInterface $typed_config_manager) {
+    parent::__construct($config_factory, $typed_config_manager);
 
     $this->pathValidator = $path_validator;
     $this->requestContext = $request_context;
@@ -114,6 +116,7 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
     $this->consentStorage = $consent_storage;
     $this->cacheBootstrap = $cache_bootstrap;
     $this->cachePage = $cache_page;
+    $this->typedConfigManager = $typed_config_manager;
   }
 
   /**
@@ -132,7 +135,8 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
       $container->get('cache.bootstrap'),
       // Use a cache that's available to the user if the page cache isn't
       // available.
-      $module_handler->moduleExists('page_cache') ? $container->get('cache.page') : $container->get('cache.render')
+      $module_handler->moduleExists('page_cache') ? $container->get('cache.page') : $container->get('cache.render'),
+      $container->get('config.typed')
     );
   }
 
@@ -340,7 +344,7 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
       '#title' => $this->t('Disable JavaScripts'),
       '#default_value' => $config->get('disabled_javascripts'),
       '#description' => $this->t("<span class='eu-cookie-compliance-word-break'>Include the full path of JavaScripts, each on a separate line. When using the opt-in or opt-out consent options, you can block certain JavaScript files from being loaded when consent isn't given. The on-site JavaScripts should be written as root relative paths <strong>without the leading slash</strong>, you can use public://path/to/file.js and private://path/to/file.js, and off-site JavaScripts should be written as complete URLs <strong>with the leading http(s)://</strong>. Note that after the user gives consent, the scripts will be executed in the order you enter here.<br /><br />Libraries and scripts that attach to Drupal.behaviors are supported. To indicate a behavior that needs to be loaded on consent, append the behavior name after the script with a | (vertical bar). If you also want to conditionally load a library, place that as the third parameter, following another | (vertical bar). <strong>Example: modules/custom/custom_module/js/custom.js|customModule|custom_module/custom_module</strong>.<br />If your script file does not attach to Drupal.attributes, you may skip the second parameter. <strong>Example: modules/custom/custom_module/js/custom.js||custom_module/custom_module</strong><br /><strong>Note that Drupal behavior name and library parameters are both optional</strong>, but may be required to achieve your objective.</span>") .
-      '<br /><br />' . $this->t('When using the consent method "Opt-in with categories", you can link the script to a specific category by using the format: "category:path/to/the/script.js".'),
+        '<br /><br />' . $this->t('When using the consent method "Opt-in with categories", you can link the script to a specific category by using the format: "category:path/to/the/script.js".'),
     ];
 
     $form['cookies'] = [
@@ -365,8 +369,8 @@ class EuCookieComplianceConfigForm extends ConfigFormBase {
       '#title' => $this->t('Allowed cookies'),
       '#default_value' => $config->get('allowed_cookies'),
       '#description' => $this->t("Include the name of cookies, each on a separate line. When using the opt-in or opt-out consent options, this module will <strong>delete cookies from your domain that are not allowed</strong> every few seconds when consent isn't given. PHP session cookies and the cookie for this module are always allowed.") .
-      '<br /><br />' . $this->t('When using the consent method "Opt-in with categories", you can link the cookie to a specific consent category by using the format: "category:cookie_name".  Only when consent is given for the given category, will the cookie be allowed.') .
-      '<br />' . $this->t('Cookie names can contain "*" characters which mean a series of any characters.'),
+        '<br /><br />' . $this->t('When using the consent method "Opt-in with categories", you can link the cookie to a specific consent category by using the format: "category:cookie_name".  Only when consent is given for the given category, will the cookie be allowed.') .
+        '<br />' . $this->t('Cookie names can contain "*" characters which mean a series of any characters.'),
       '#states' => ['visible' => ['input[name="automatic_cookies_removal"]' => ['checked' => TRUE]]],
     ];
 

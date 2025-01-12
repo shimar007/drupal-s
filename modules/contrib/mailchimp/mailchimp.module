@@ -7,6 +7,7 @@
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
 use function GuzzleHttp\default_user_agent;
@@ -97,27 +98,24 @@ function mailchimp_get_list($list_id) {
 /**
  * Returns all Mailchimp lists for a given account.
  *
- * Optionally limit lists to those with the given IDs. Lists are stored in the
- *  cache.
+ * Optionally limit lists to those with the given IDs. Lists are stored in a
+ * collection.
  *
  * @param array $list_ids
  *   An array of list IDs to filter the results by.
  * @param bool $reset
- *   Force a cache reset.
+ *   Force a refresh of the lists from Mailchimp.
  *
  * @return array
  *   An array of list data arrays.
  */
 function mailchimp_get_lists(array $list_ids = [], $reset = FALSE) {
-  $lists = [];
-  $cache = \Drupal::cache('mailchimp');
-  $cached_data = $reset ? NULL : $cache->get('lists');
+  $collection = \Drupal::keyValue('mailchimp_lists');
+  $lists = $reset ? NULL : $collection->get('lists');
 
-  // Return cached lists.
-  if ($cached_data) {
-    $lists = $cached_data->data;
-  }
-  else {
+  // If we have no stored lists, or we are forcing a refresh, get them from
+  // Mailchimp.
+  if (empty($lists)) {
     try {
       /** @var \Mailchimp\MailchimpLists $mcapi */
       $mcapi = mailchimp_get_api_object('MailchimpLists');
@@ -153,7 +151,13 @@ function mailchimp_get_lists(array $list_ids = [], $reset = FALSE) {
 
         uasort($lists, '_mailchimp_list_cmp');
 
-        $cache->set('lists', $lists);
+        if ($reset) {
+          // Delete entire collection. This will also cause merge vars to be
+          // refreshed when they are requested.
+          // @see mailchimp_get_mergevars()
+          $collection->deleteAll();
+        }
+        $collection->set('lists', $lists);
       }
     }
     catch (\Exception $e) {
@@ -212,14 +216,15 @@ function _mailchimp_list_cmp($a, $b) {
  */
 function mailchimp_get_mergevars(array $list_ids, $reset = FALSE) {
   $mergevars = [];
-  $cache = \Drupal::cache('mailchimp');
+  $collection = \Drupal::keyValue('mailchimp_lists');
 
   if (!$reset) {
     foreach ($list_ids as $key => $list_id) {
-      $cached_data = $cache->get($list_id . '-mergevars');
+
+      $state_data = $collection->get("list_{$list_id}_mergevars");
       // Get cached data and unset from our remaining lists to query.
-      if ($cached_data) {
-        $mergevars[$list_id] = $cached_data->data;
+      if ($state_data) {
+        $mergevars[$list_id] = $state_data;
         unset($list_ids[$key]);
       }
     }
@@ -259,7 +264,7 @@ function mailchimp_get_mergevars(array $list_ids, $reset = FALSE) {
           $mergevars[$list_id] = array_merge($mergevars[$list_id], $result->merge_fields);
         }
 
-        $cache->set($list_id . '-mergevars', $mergevars[$list_id]);
+        $collection->set("list_{$list_id}_mergevars", $mergevars[$list_id]);
       }
     }
 
@@ -434,8 +439,9 @@ function mailchimp_subscribe_process($list_id, $email, $merge_vars = NULL, $inte
     }
 
     $parameters = [
-      // If double opt-in is required, set member status to 'pending'.
-      'status' => ($double_optin) ? MailchimpLists::MEMBER_STATUS_PENDING : MailchimpLists::MEMBER_STATUS_SUBSCRIBED,
+      // If double opt-in is required, set member status to 'pending', but only
+      // if the user isn't already subscribed.
+      'status' => ($double_optin && !mailchimp_is_subscribed($list_id, $email)) ? MailchimpLists::MEMBER_STATUS_PENDING : MailchimpLists::MEMBER_STATUS_SUBSCRIBED,
       'email_type' => $format,
     ];
 
@@ -565,14 +571,21 @@ function mailchimp_subscribe_process($list_id, $email, $merge_vars = NULL, $inte
   }
   catch (\Exception $e) {
     if ($e->getCode() == '400' && strpos($e->getMessage(), 'Member In Compliance State') !== FALSE && !$double_optin) {
-      \Drupal::logger('mailchimp')->error('Detected "Member In Compliance State" subscribing {email} to list {list}. Trying again using double-opt in.', [
+      \Drupal::logger('mailchimp')->notice('Detected "Member In Compliance State" subscribing {email} to list {list}. Trying again using double-opt in.', [
         'email' => $email,
         'list' => $list_id,
       ]);
       return mailchimp_subscribe_process($list_id, $email, $merge_vars, $interests, TRUE, $format, $language, $gdpr_consent, $tags);
     }
 
-    \Drupal::logger('mailchimp')->error('An error occurred subscribing {email} to list {list}. "{message}"', [
+    $log_level = RfcLogLevel::ERROR;
+    // Mailchimp API validation errors should not be considered Drupal errors
+    // because they are unpredictable and not fixable from the Drupal side.
+    // Therefore, reduce the log level for those.
+    if ($e->getCode() == '400' && strpos($e->getMessage(), 'Invalid Resource') !== FALSE) {
+      $log_level = RfcLogLevel::NOTICE;
+    }
+    \Drupal::logger('mailchimp')->log($log_level, 'An error occurred subscribing {email} to list {list}. "{message}"', [
       'email' => $email,
       'list' => $list_id,
       'message' => $e->getMessage(),
@@ -702,7 +715,7 @@ function mailchimp_update_member_process($list_id, $email, $merge_vars, $interes
   }
   catch (\Exception $e) {
     if ($e->getCode() == '400' && strpos($e->getMessage(), 'Member In Compliance State') !== FALSE && !$double_optin) {
-      \Drupal::logger('mailchimp')->error('Detected "Member In Compliance State" subscribing {email} to list {list}.  Trying again using double-opt in.', [
+      \Drupal::logger('mailchimp')->notice('Detected "Member In Compliance State" subscribing {email} to list {list}.  Trying again using double-opt in.', [
         'email' => $email,
         'list' => $list_id,
       ]);
@@ -1252,11 +1265,19 @@ function mailchimp_interest_groups_form_elements($list, array $defaults = [], $e
   }
 
   try {
-    foreach ($list->intgroups as $group) {
-      /** @var \Mailchimp\MailchimpLists $mc_lists */
-      $mc_lists = mailchimp_get_api_object('MailchimpLists');
+    $collection = \Drupal::keyValue('mailchimp_lists');
 
-      $interest_data = $mc_lists->getInterests($list->id, $group->id, ['count' => 500]);
+    foreach ($list->intgroups as $group) {
+      $collection_data = $collection->get("list_{$list->id}_$group->id");
+      if ($collection_data) {
+        $interest_data = $collection_data;
+      }
+      else {
+        /** @var \Mailchimp\MailchimpLists $mc_lists */
+        $mc_lists = mailchimp_get_api_object('MailchimpLists');
+        $interest_data = $mc_lists->getInterests($list->id, $group->id, ['count' => 500]);
+        $collection->set("list_{$list->id}_$group->id", $interest_data);
+      }
 
       if (!empty($email)) {
         $memberinfo = mailchimp_get_memberinfo($list->id, $email);
@@ -1423,6 +1444,7 @@ function mailchimp_insert_drupal_form_tag($mergevar) {
 
     case 'phone':
       $input['#type'] = 'tel';
+      $input['#attributes']['autocomplete'] = 'tel';
       break;
 
     case 'radio':
@@ -1449,6 +1471,7 @@ function mailchimp_insert_drupal_form_tag($mergevar) {
         // Set to standard text type if 'emailfield' isn't defined:
         $input['#type'] = 'textfield';
       };
+      $input['#attributes']['autocomplete'] = 'email';
       $input['#size'] = $mergevar->options->size;
       if (!empty($mergevar->options->size)) {
         $input['#size'] = $mergevar->options->size;

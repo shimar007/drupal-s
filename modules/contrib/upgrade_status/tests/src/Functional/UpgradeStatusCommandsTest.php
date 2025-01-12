@@ -6,6 +6,8 @@ use Drush\TestTraits\DrushTestTrait;
 
 /**
  * @coversDefaultClass \Drupal\upgrade_status\Drush\Commands\UpgradeStatusCommands
+ *
+ * @group upgrade_status
  */
 class UpgradeStatusCommandsTest extends UpgradeStatusTestBase {
 

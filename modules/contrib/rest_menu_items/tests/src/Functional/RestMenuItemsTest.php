@@ -3,6 +3,7 @@
 namespace Drupal\Tests\rest_menu_items\Functional;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Url;
 use Drupal\Tests\rest\Functional\CookieResourceTestTrait;
 use Drupal\Tests\rest\Functional\ResourceTestBase;
@@ -127,6 +128,7 @@ class RestMenuItemsTest extends ResourceTestBase {
       $response,
       [
         'config:rest.resource.rest_menu_item',
+        'config:rest_menu_items.config',
         'config:system.menu.' . $this->menuName,
         'http_response',
       ],
@@ -219,6 +221,11 @@ class RestMenuItemsTest extends ResourceTestBase {
    * {@inheritdoc}
    */
   protected function getExpectedUnauthorizedAccessCacheability() {
+    return (new CacheableMetadata())
+      ->setCacheTags(static::$auth
+        ? ['4xx-response', 'http_response']
+        : ['4xx-response', 'config:user.role.anonymous', 'http_response'])
+      ->setCacheContexts(['user.permissions']);
   }
 
 }

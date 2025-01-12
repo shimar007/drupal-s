@@ -2,11 +2,12 @@ name: 'Block Class'
 type: module
 description: 'Allows assigning the classes to Blocks.'
 package: User interface
-core_version_requirement: ^8.8 || ^9 || ^10 || ^11
+configure: block_class.settings
+core_version_requirement: ^9 || ^10 || ^11
 dependencies:
   - drupal:block
 
-# Information added by Drupal.org packaging script on 2024-07-25
-version: '8.x-1.4'
+# Information added by Drupal.org packaging script on 2024-11-02
+version: '4.0.0'
 project: 'block_class'
-datestamp: 1721949810
+datestamp: 1730520925

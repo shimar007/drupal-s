@@ -183,7 +183,14 @@ class MailchimpListsSelectWidget extends WidgetBase {
         $groups_default = $this->getInterestGroupsDefaults($instance);
       }
       else {
-        $groups_default = $instance->getValue()['interest_groups'] ? $instance->getValue()['interest_groups'] : [];
+        $value_array = $instance->getValue();
+        // $groups_default must be an array.
+        if (array_key_exists('interest_groups', $value_array) && is_array($value_array['interest_groups'])) {
+          $groups_default = $value_array['interest_groups'];
+        }
+        else {
+          $groups_default = [];
+        }
       }
 
       if (!empty($mc_instance_list->intgroups)) {

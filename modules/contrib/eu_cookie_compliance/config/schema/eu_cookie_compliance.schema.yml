@@ -4,6 +4,9 @@ eu_cookie_compliance.settings:
   type: config_object
   label: 'EU Cookie Compliance Settings'
   mapping:
+    dependencies:
+      type: config_dependencies
+      label: 'Dependencies'
     uuid:
       type: uuid
       label: 'UUID'

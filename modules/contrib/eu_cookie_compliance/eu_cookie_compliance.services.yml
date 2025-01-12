@@ -6,6 +6,7 @@ services:
     class: Drupal\eu_cookie_compliance\EventSubscriber\EuCookieComplianceConfigEventsSubscriber
     tags:
       - { name: event_subscriber }
+    arguments: ['@file_system', '@messenger']
   eu_cookie_compliance.clear_cache:
     class: Drupal\eu_cookie_compliance\Plugin\EuCcClearCache
     arguments: ['@module_handler', '@language_manager', '@entity_type.manager', '@extension.list.theme', '@cache.render']

@@ -14,16 +14,22 @@ use Drupal\Core\Url;
  * Show a message to the settings page.
  */
 function rest_menu_items_install() {
+
+  // Enable all menus by default.
+  $menus = \Drupal::entityTypeManager()->getStorage('menu')->getQuery()->execute();
+  $config = \Drupal::configFactory()->getEditable('rest_menu_items.config');
+  $config->set('allowed_menus', $menus)->save();
+
   $settings_link = Link::fromTextAndUrl(t('here'), Url::fromRoute('rest_menu_items.config_form'))
     ->toString();
 
   // Display a message.
   \Drupal::messenger()
-    ->addMessage(t('Click @link to configure Rest Menu Items!', ['@link' => $settings_link]));
+    ->addMessage(t('Configure REST menu items: @link', ['@link' => $settings_link]));
 }
 
 /**
- * Add our config to the default configuration for Rest Menu Items.
+ * Add our config to the default configuration for REST menu items.
  */
 function rest_menu_items_update_8200() {
   $config_factory = \Drupal::configFactory();
@@ -45,4 +51,14 @@ function rest_menu_items_update_8200() {
     'options',
   ]);
   $config->save(TRUE);
+}
+
+/**
+ * Allow to expose only some menus (issue #3321847).
+ */
+function rest_menu_items_update_8201() {
+  // Enable all menus by default.
+  $menus = \Drupal::entityTypeManager()->getStorage('menu')->getQuery()->execute();
+  $config = \Drupal::configFactory()->getEditable('rest_menu_items.config');
+  $config->set('allowed_menus', $menus)->save();
 }

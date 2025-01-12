@@ -5,9 +5,9 @@ namespace Drupal\eu_cookie_compliance\EventSubscriber;
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\Component\Serialization\Json;
 
 /**
  * Updates a javascript on config save.
@@ -16,7 +16,34 @@ use Drupal\Component\Serialization\Json;
  */
 class EuCookieComplianceConfigEventsSubscriber implements EventSubscriberInterface {
 
+  /**
+   * The file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
   use StringTranslationTrait;
+
+  /**
+   * Constructs a new FileUploadForm.
+   *
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file repository service.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
+   */
+  public function __construct(FileSystemInterface $file_system, MessengerInterface $messenger) {
+    $this->fileSystem = $file_system;
+    $this->messenger = $messenger;
+  }
 
   /**
    * {@inheritdoc}
@@ -47,8 +74,7 @@ class EuCookieComplianceConfigEventsSubscriber implements EventSubscriberInterfa
         // Check if already directory exists.
         $directory = "public://eu_cookie_compliance";
         if (!is_dir($directory) || !is_writable($directory)) {
-          $file_system = \Drupal::service('file_system');
-          $file_system->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+          $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
         }
         $uri = $directory . "/eu_cookie_compliance.script.js";
         if (is_writable($directory)) {
@@ -56,13 +82,11 @@ class EuCookieComplianceConfigEventsSubscriber implements EventSubscriberInterfa
             file_save_data($script_snippet, $uri, FileSystemInterface::EXISTS_REPLACE);
           }
           else {
-            \Drupal::service('file.repository')
-              ->writeData($script_snippet, $uri, FileSystemInterface::EXISTS_REPLACE);
+            \Drupal::service('file.repository')->writeData($script_snippet, $uri, FileSystemInterface::EXISTS_REPLACE);
           }
         }
         else {
-          \Drupal::messenger()
-            ->addError($this->t('Could not generate the EU Cookie Compliance JavaScript file that would be used for handling disabled JavaScripts. There may be a problem with your files folder.'));
+          $this->messenger->addError($this->t('Could not generate the EU Cookie Compliance JavaScript file that would be used for handling disabled JavaScripts. There may be a problem with your files folder.'));
         }
       }
     }
@@ -104,6 +128,9 @@ class EuCookieComplianceConfigEventsSubscriber implements EventSubscriberInterfa
         }
 
         _eu_cookie_compliance_convert_relative_uri($script);
+        // Remove URL decoding from the strings, as url encoding makes the urls
+        // not load when the javascript executes.
+        $script = urldecode(urldecode($script));
 
         if (strpos($script, 'http') !== 0 && strpos($script, '//') !== 0) {
           $script = '/' . $script;
@@ -116,7 +143,7 @@ class EuCookieComplianceConfigEventsSubscriber implements EventSubscriberInterfa
           $load_disabled_scripts .= 'if (category === "' . $category . '") {';
         }
         $load_disabled_scripts .= 'var scriptTag = document.createElement("script");';
-        $load_disabled_scripts .= 'scriptTag.src = ' . Json::encode($script) . ';';
+        $load_disabled_scripts .= 'scriptTag.src = decodeURI("' . $script . '");';
         $load_disabled_scripts .= 'document.body.appendChild(scriptTag);';
         // The script will not immediately load, so we need to trigger the
         // attach in an interval function.

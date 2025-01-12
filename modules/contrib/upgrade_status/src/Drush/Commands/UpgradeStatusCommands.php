@@ -11,6 +11,7 @@ use Drupal\upgrade_status\ProjectCollector;
 use Drupal\upgrade_status\ScanResultFormatter;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
+use Drush\Exceptions\CommandFailedException;
 
 /**
  * Upgrade Status Drush command
@@ -246,10 +247,17 @@ class UpgradeStatusCommands extends DrushCommands {
    *
    * @throws \InvalidArgumentException
    *   Thrown when one of the passed arguments is invalid or no arguments were provided.
+   * @throws Drush\Exceptions\CommandFailedException
+   *   Thrown when the environment is not ready to run the analysis.
    */
   protected function doAnalyze(array $projects, array $options = ['all' => FALSE, 'skip-existing' => FALSE, 'ignore-uninstalled' => FALSE, 'ignore-contrib' => FALSE, 'ignore-custom' => FALSE, 'ignore-list' => '', 'phpstan-memory-limit' => '1500M']) {
-    // Group by type here so we can tell loader what is type of each one of
-    // these.
+    try {
+      $this->deprecationAnalyzer->initEnvironment();
+    }
+    catch (\Exception $e) {
+      throw new CommandFailedException($e->getMessage() . ' ' . dt('Analysis is not possible until this is resolved.'));
+    }
+
     $extensions = [];
     $invalid_names = [];
 

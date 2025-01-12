@@ -16,6 +16,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Asset\AttachedAssetsInterface;
 use Drupal\Component\Utility\Xss;
 use Drupal\eu_cookie_compliance\PersonalInformationFormInterface;
+use Drupal\smart_ip\SmartIp;
 
 /**
  * Implements hook_help().
@@ -159,7 +160,9 @@ function eu_cookie_compliance_page_attachments(&$variables) {
 
   // Check if the domain should be added to the cache tag.
   $moduleHandler = \Drupal::service('module_handler');
-  if ($moduleHandler->moduleExists('domain') && count(\Drupal::entityTypeManager()->getStorage('domain')->getQuery()->range(0, 1)->execute()) > 0) {
+  if ($moduleHandler->moduleExists('domain') && count(\Drupal::entityTypeManager()->getStorage('domain')->getQuery()
+    ->accessCheck(TRUE)
+    ->range(0, 1)->execute()) > 0) {
     $cid .= ':' . \Drupal::service('domain.negotiator')->getActiveId();
   }
   // Add the current theme to the cache tag.
@@ -282,6 +285,16 @@ function eu_cookie_compliance_page_attachments(&$variables) {
   if (!empty($disabled_javascripts)) {
     // Check if disabled scripts are in page html_head.
     $disabled_javascripts = array_filter($disabled_javascripts);
+    foreach ($disabled_javascripts as $key => $script) {
+      // Files in the public folder need the URI adjusted.
+      if (strpos($script, 'sites') === 0) {
+        $disabled_javascripts[$key] = preg_replace('/\.js\?[^"]+/', '.js', $script);
+        $disabled_javascripts[$key] = preg_replace('/\.js%3F[^"]+/', '.js', $script);
+      }
+      if (strpos($script, 'http') !== 0 && strpos($script, '//') !== 0 && strpos($script, 'sites/') === 0) {
+        $disabled_javascripts[$key] = '/' . $disabled_javascripts[$key];
+      }
+    }
 
     foreach ($variables['#attached']['html_head'] as $index => $asset) {
       $is_script = !empty($asset[0]['#type']) && $asset[0]['#type'] === 'html_tag' && $asset[0]['#tag'] === 'script';
@@ -396,7 +409,10 @@ function eu_cookie_compliance_build_data() {
         'legacy' => 'eu_cookie_compliance_popup_info_consent_default',
         'new' => 'eu_cookie_compliance_popup_info',
       ];
-      $popup_info_template = $info_templates[$config->get('popup_info_template')];
+
+      if ($config->get('popup_info_template')) {
+        $popup_info_template = $info_templates[$config->get('popup_info_template')];
+      }
       break;
 
     case 'opt_in':
@@ -789,6 +805,7 @@ function eu_cookie_compliance_user_in_eu() {
   if (\Drupal::moduleHandler()->moduleExists('smart_ip')) {
     /** @var \Drupal\smart_ip\SmartIpLocation $location_service */
     $location_service = \Drupal::service('smart_ip.smart_ip_location');
+    SmartIp::query($ip_address);
     $country_code = $location_service->get('countryCode');
   }
   // Try to get country_code by geoip module.
@@ -805,7 +822,7 @@ function eu_cookie_compliance_user_in_eu() {
     $country_code = $_SERVER['HTTP_CF_IPCOUNTRY'];
   }
 
-  if (in_array($country_code, $eu_countries) || $country_code == '' || $country_code == '-') {
+  if (in_array($country_code, $eu_countries) || $country_code === '' || $country_code === '-') {
     $geoip_match = TRUE;
   }
 
@@ -822,8 +839,9 @@ function eu_cookie_compliance_js_alter(&$javascript, AttachedAssetsInterface $as
   $config = \Drupal::config('eu_cookie_compliance.settings');
   $disabled_javascripts = $config->get('disabled_javascripts');
   $disabled_javascripts = _eu_cookie_compliance_explode_multiple_lines($disabled_javascripts);
-
-  $exclude_paths = explode(PHP_EOL, $config->get('exclude_paths'));
+  
+  $exclude_paths_value = $config->get('exclude_paths');
+  $exclude_paths = !is_null($exclude_paths_value) ? explode(PHP_EOL, $exclude_paths_value) : [];
   $current_path = \Drupal::service('path.current')->getPath();
 
   $path_is_excluded = FALSE;
@@ -937,7 +955,7 @@ function eu_cookie_compliance_page_attachments_alter(array &$attachments) {
  *   Text split into an array.
  */
 function _eu_cookie_compliance_explode_multiple_lines($text) {
-  $text = explode("\r\n", $text);
+  $text = explode("\r\n", $text ?? "");
   if (count($text) == 1) {
     $text = explode("\r", $text[0]);
   }

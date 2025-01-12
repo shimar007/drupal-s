@@ -5,6 +5,9 @@ namespace Drupal\eu_cookie_compliance\Plugin\Block;
 use Drupal\Core\Url;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Access\AccessResult;
 
 /**
@@ -15,7 +18,43 @@ use Drupal\Core\Access\AccessResult;
  *   admin_label = @Translation("EU Cookie Compliance Button Block")
  * )
  */
-class CookieSettingsButtonBlock extends BlockBase {
+class CookieSettingsButtonBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * Config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * Constructs the SchemaListenerController object.
+   *
+   * @param array $configuration
+   *   Configuration.
+   * @param string $plugin_id
+   *   Plugin id.
+   * @param mixed $plugin_definition
+   *   Plugin definition.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->configFactory = $config_factory;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('config.factory')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -28,7 +67,7 @@ class CookieSettingsButtonBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    $config = \Drupal::config('eu_cookie_compliance.settings');
+    $config = $this->configFactory->get('eu_cookie_compliance.settings');
     if ($config->get('withdraw_enabled')) {
       return [
         '#type' => 'button',

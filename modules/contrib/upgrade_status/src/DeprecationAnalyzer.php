@@ -557,11 +557,6 @@ final class DeprecationAnalyzer {
       "parameters:\n\ttmpDir: '" . $this->temporaryDirectory . '/phpstan' . "'",
       $config
     );
-    $config = str_replace(
-      "\tdrupal:",
-      "\tdrupal:\n\t\tdrupal_root: '" . DRUPAL_ROOT . "'",
-      $config
-    );
 
     if (!class_exists('PHPStan\ExtensionInstaller\GeneratedConfig')) {
       $extension_neon = $this->vendorPath . '/mglaman/phpstan-drupal/extension.neon';
@@ -671,6 +666,11 @@ final class DeprecationAnalyzer {
     // released yet, so compatibility cannot be proven. Stop ignoring this error from
     // Drupal 11 as a safeguard.
     if (strpos($error, 'guzzlehttp/guzzle:8.0') !== FALSE && ProjectCollector::getDrupalCoreMajorVersion() < 11) {
+      $category = 'ignore';
+    }
+
+    // Ignore twig 3.12 false positives (until core fixes them).
+    if (strpos($error, 'Since twig/twig 3.12') !== FALSE && ProjectCollector::getDrupalCoreMajorVersion() < 11) {
       $category = 'ignore';
     }
 

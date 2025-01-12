@@ -1,17 +1,4 @@
-CONTENTS OF THIS FILE
----------------------
-
- * Introduction
- * Features
- * Requirements
- * Installation
- * Configuration
- * Working with the events
- * Maintainers
-
-
-INTRODUCTION
-------------
+# EU Cookie Compliance (GDPR Compliance)
 
 This module intends to deal with the EU Directive on Privacy and
 Electronic Communications that comes into effect on 26th May 2012.
@@ -19,73 +6,83 @@ From that date, if you are not compliant or visibly working towards
 compliance, you run the risk of enforcement action, which can include a
 fine of up to half a million pounds for a serious breach.
 
+For a full description of the module, visit the
+[project page](https://www.drupal.org/project/eu_cookie_compliance).
 
-FEATURES
-------------
+Submit bug reports and feature suggestions, or track changes in the
+[issue queue](https://www.drupal.org/project/issues/eu_cookie_compliance).
+
+
+## Table of contents
+
+- Features
+- Requirements
+- Installation
+- Configuration
+- Working with the events
+- Main file 
+- Working with the events
+- Maintainers
+
+
+## Features
 
 If you want to conditionally set cookies in your module, there is a
 javascript function provided that returns TRUE if the current user has
 given his consent:
-
 Drupal.eu_cookie_compliance.hasAgreed()
-
-Prevent "Consent by clicking" on some links
---------------------------------------------
+Prevent `Consent by clicking` on some links
 
 The module offers a feature to accept consent by clicking. It may be
 relevant to prevent this for certain links. In such cases, the link(s)
 can be wrapped in an element with the class "popup-content".
 
 
-REQUIREMENTS
-------------
+## Requirements
 
 This module requires no modules outside of Drupal core.
 
 
-INSTALLATION
-------------
+## Installation
 
-1. Unzip the files to the "sites/all/modules" OR "modules" directory and enable
+1. Unzip the files to the `sites/all/modules` OR `modules` directory and enable
    the module.
 
 2. If desired, give the 'administer EU Cookie Compliance banner' permissions
    that allow users of certain roles access the administration page. You can
-   do so on the admin/people/permissions page.
-
-  - there is also a 'display EU cookie compliance banner' permission that helps
-    you show the banner to the roles you desire.
+   do so on the `admin/people/permissions` page.
+   there is also a `display EU cookie compliance banner` permission that helps
+   you show the banner to the roles you desire.
 
 3. You may want to create a page that would explain how your site uses cookies.
    Alternatively, if you have a privacy policy, you can link the banner to that
    page (see next step).
 
-4. Go to the admin/config/system/eu-cookie-compliance/settings page to
+4. Go to the `admin/config/system/eu-cookie-compliance/settings` page to
    configure and enable the banner.
 
 5. If you want to customize the banner background and text color, either type
    in the hex values or simply install
-   http://drupal.org/project/coloris.
+   [Coloris Color Selector](http://drupal.org/project/coloris).
 
 6. If you want to theme your banner, override the templates in your theme.
 
 7. If you want to show the message in EU countries only, install the Smart IP
-   module: http://drupal.org/project/smart_ip or the GeoIP
-   module: http://drupal.org/project/geoip and enable the option "Only
-   display banner in EU countries" on the admin page. There is a JavaScript
+   module: [Smart IP](http://drupal.org/project/smart_ip) or the GeoIP
+   module: [GeoIP API](http://drupal.org/project/geoip) and enable the option
+   `Only display banner in EU countries` on the admin page. There is a JavaScript
    based option available for sites that use Varnish (or other caching
    strategies). The JavaScript based variant also works for visitors that bypass
    Varnish.
 
 
-CONFIGURATION
---------------
+## Configuration
 
 A fully customizable banner which is used to gather consent for storing
 cookies on the visitor's computer.
 
 Configurable Information
---------------------------------------------
+
 - Permissions
 - Consent for processing of personal information
 - Disable JavaScripts
@@ -97,8 +94,8 @@ Configurable Information
 - Privacy policy
 - Appearance
 
-WORKING WITH THE EVENTS
------------------------
+
+## Working with the events
 
 This module now exposes a JS API which other modules can use to hook into the
 events fired by this module. Eg. read the cookie preferences when they are saved
@@ -106,8 +103,9 @@ or do something based on the user's response. For example, the JS in the
 [EU Cookie Compliance GTM module](https://www.drupal.org/project/eu_cookie_compliance_gtm)
 uses the Events to do things with GTM.
 
-### Inside the scripts
-#### Main file
+
+## Main file
+
 Our main script (`eu_cookie_compliance.js`) loads via `defer`, which means it
 is executed while parsing the page + just a few moments BEFORE the
 DOMContentLoaded event gets fired.
@@ -143,20 +141,45 @@ Cookie is accepted by the user (public use):
   are loaded (from a cookie)
 - postPreferencesLoad: Executed AFTER the cookie acceptance preferences
   are loaded (from a cookie)
-#### Secondary file
+
+
+## Secondary file
+
 **How to hook into the events:**
 Use this method in your JS,
 where `MY_EVENT` should be replaced by one of the Events mentioned above
 and `MY_HANDLER` is a function that reads the data provided by the Method
 `Drupal.eu_cookie_compliance(MY_EVENT, MY_HANDLER);`
-Example: reading the cookie preferences after submission + save it
-somewhere else for later use
+
+To use `Drupal.eu_cookie_compliance` in you custom code, don't forget to
+instanciate it putting this code in top of your script :
 ```
-var postPreferencesLoadHandler = function(response) {
-   console.log(response);
-   window.cookieResponse = response;
-};
-Drupal.eu_cookie_compliance('postPreferencesLoad', postPreferencesLoadHandler);
+// Sep up the namespace as a function to store list of arguments in a queue.
+Drupal.eu_cookie_compliance = Drupal.eu_cookie_compliance || function() {
+  (Drupal.eu_cookie_compliance.queue = Drupal.eu_cookie_compliance.queue || [])
+  .push(arguments)
+}; 
+```
+
+As this type of code only needs to be called once, it shouldn't be necessary to
+add it as a `Drupal.behavior`.
+
+Example: reading the cookie preferences after submission + save it somewhere
+else for later use
+```
+(function(Drupal) {
+  // Sep up the namespace as a function to store list of arguments in a queue.
+  Drupal.eu_cookie_compliance = Drupal.eu_cookie_compliance || function() {
+    (Drupal.eu_cookie_compliance.queue = Drupal.eu_cookie_compliance.queue || [])
+    .push(arguments)
+  }; 
+
+  var postPreferencesLoadHandler = function(response) {
+    console.log(response);
+    window.cookieResponse = response;
+  };
+  Drupal.eu_cookie_compliance('postPreferencesLoad', postPreferencesLoadHandler);
+ })(Drupal);
 ```
 
 The `response` variable is an object with the following structure:
@@ -169,9 +192,11 @@ The `response` variable is an object with the following structure:
 }
 ```
 
-MAINTAINERS
------------
 
- * Neslee Canil Pinto - https://www.drupal.org/u/neslee-canil-pinto
- * Sven Berg Ryen - https://www.drupal.org/u/svenryen
- * Marcin Pajdzik - https://www.drupal.org/u/marcin-pajdzik
+## Maintainers
+
+- MP1 - [Miszel](https://www.drupal.org/u/miszel)
+- Grant McEwan - [atowl](https://www.drupal.org/u/atowl)
+- Nick Vanpraet - [Grayle](https://www.drupal.org/u/grayle)
+- Sven Berg Ryen - [svenryen](https://www.drupal.org/u/svenryen)
+- Neslee Canil Pinto - [Neslee Canil Pinto](https://www.drupal.org/u/neslee-canil-pinto)

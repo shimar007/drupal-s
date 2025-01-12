@@ -7,7 +7,6 @@ eu_cookie_compliance:
     - core/drupal
     - core/drupalSettings
     - core/once
-    - core/js-cookie
 eu_cookie_compliance_default:
   version: VERSION
   css:

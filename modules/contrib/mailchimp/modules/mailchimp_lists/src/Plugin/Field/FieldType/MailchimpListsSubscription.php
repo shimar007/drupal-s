@@ -421,7 +421,10 @@ class MailchimpListsSubscription extends FieldItemBase {
         // collections).
         // But we only offer 1 level of depth to avoid loops.
         if ($target_definition->entityClassImplements(FieldableEntityInterface::class) && !$prefix) {
-          $options = $this->getOptionsForSubEntity($required, $field_definition, $target_definition, $target_type, $keypath, $label, $options);
+          $new_options = $this->getOptionsForSubEntity($required, $field_definition, $target_definition, $target_type, $keypath, $label, $options);
+          if ($new_options) {
+            $options = $new_options;
+          }
         }
       }
       elseif (!$required || $field_definition->isRequired() || $field_definition->isComputed()) {

@@ -1,10 +1,9 @@
 # Geofield
 
-Geofield is an advanced module for storing, managing and representing dynamic
-Geographic data in Drupal. It supports all geo-types (points, lines, polygons,
-multi types geometries, etc.), and integrates with various Js Mapping Libraries
-(Google Maps, Leaflet, etc.) and advanced Geocoding / Reverse Geocoding
-functionalities, via many other Drupal Geo Mapping modules.
+Provides a geo-location field for storing and managing geographic data, enabling
+the integration of maps, geocoding and location-based functionalities. It
+supports all geo-types (points, lines, polygons, multi types geometries), and
+integrates with various Js Mapping Libraries (Google Maps, Leaflet, etc.)
 
 For a full description of the module, visit the
 [project page](https://www.drupal.org/project/geofield).

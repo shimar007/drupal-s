@@ -19,6 +19,41 @@
   var cookieValueAgreedShowThankYou = (typeof drupalSettings.eu_cookie_compliance.cookie_value_agreed_show_thank_you === 'undefined' || drupalSettings.eu_cookie_compliance.cookie_value_agreed_show_thank_you === '') ? '1' : drupalSettings.eu_cookie_compliance.cookie_value_agreed_show_thank_you;
   var cookieValueAgreed = (typeof drupalSettings.eu_cookie_compliance.cookie_value_agreed === 'undefined' || drupalSettings.eu_cookie_compliance.cookie_value_agreed === '') ? '2' : drupalSettings.eu_cookie_compliance.cookie_value_agreed;
 
+  function setCookie(name,value,settings) {
+    var expires = "";
+
+    if (settings['expires'] !== undefined) {
+      if (typeof (settings['expires']) == 'number') {
+        var date = new Date();
+        settings['expires'] = date.setTime(date.getTime() + (settings['expires']*24*60*60*1000));
+      }
+      expires = "; expires=" + settings['expires'].toUTCString();
+    }
+    var path = (settings['path'] === undefined)?'/':settings['path'];
+    var domain = "";
+    if (settings['domain'] !== undefined) {
+      domain = "; domain=" + settings['domain'];
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=" + path  + domain + "; SameSite=Strict";
+  }
+
+  function getCookie(name) {
+    var ca = document.cookie.split(';');
+    if (name !== undefined) {
+      var nameEQ = name + "=";
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+    return ca;
+  }
+  function eraseCookie(name) {
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  }
+
   Drupal.behaviors.euCookieCompliancePopup = {
     attach: function (context) {
       if (typeof drupalSettings.eu_cookie_compliance !== 'undefined') {
@@ -127,7 +162,7 @@
       // Closed if status has a value and the version hasn't changed or user has not agreed.
       var cookieName = (typeof drupalSettings.eu_cookie_compliance.cookie_name === 'undefined' || drupalSettings.eu_cookie_compliance.cookie_name === '') ? 'cookie-agreed' : drupalSettings.eu_cookie_compliance.cookie_name;
       var closed = !drupalSettings.eu_cookie_compliance.open_by_default ||
-        (_euccCurrentStatus !== null && !versionChanged || (cookies.get(cookieName) === 'null' && drupalSettings.eu_cookie_compliance.settings_tab_enabled));
+        (_euccCurrentStatus !== null && !versionChanged || (getCookie(cookieName) === 'null' && drupalSettings.eu_cookie_compliance.settings_tab_enabled));
 
       // Only worried about OPT_IN / GDPR method at present for the perm. settings tab.
       if (_euccCurrentStatus === cookieValueDisagreed && drupalSettings.eu_cookie_compliance.settings_tab_enabled && (drupalSettings.eu_cookie_compliance.method === 'opt_in' || drupalSettings.eu_cookie_compliance.method === 'categories')) {
@@ -628,6 +663,7 @@
   }
 
   Drupal.eu_cookie_compliance.rejectAllAction = function () {
+    Drupal.eu_cookie_compliance.setStatus(cookieValueDisagreed);
     Drupal.eu_cookie_compliance.setPreferenceCheckboxes([]);
     Drupal.eu_cookie_compliance.acceptAction();
   }
@@ -682,6 +718,9 @@
       }
       else {
         popup.animate({top: Drupal.eu_cookie_compliance.getBannerTopHiddenPosition(height)}, drupalSettings.eu_cookie_compliance.popup_delay, null, function () {
+          if (!drupalSettings.eu_cookie_compliance.fixed_top_position) {
+            $('body').css({ 'margin-top': 0 });
+          }
           popup.hide();
         }).trigger('eu_cookie_compliance_popup_close');
       }
@@ -741,7 +780,7 @@
 
   Drupal.eu_cookie_compliance.getCookieStatus = function () {
     var cookieName = (typeof drupalSettings.eu_cookie_compliance.cookie_name === 'undefined' || drupalSettings.eu_cookie_compliance.cookie_name === '') ? 'cookie-agreed' : drupalSettings.eu_cookie_compliance.cookie_name;
-    var currentStatus = cookies.get(cookieName);
+    var currentStatus = getCookie(cookieName);
     if (typeof currentStatus === 'undefined' || currentStatus === 'null') {
       currentStatus = null;
     }
@@ -783,7 +822,7 @@
     self.handleEvent('prePreferencesLoad', prePreferencesLoadObject);
 
     var cookieName = (typeof drupalSettings.eu_cookie_compliance.cookie_name === 'undefined' || drupalSettings.eu_cookie_compliance.cookie_name === '') ? 'cookie-agreed-categories' : drupalSettings.eu_cookie_compliance.cookie_name + '-categories';
-    var storedCategories = cookies.get(cookieName);
+    var storedCategories = getCookie(cookieName);
 
     if (storedCategories !== null && typeof storedCategories !== 'undefined') {
       // JS cookie introduced unescaped cookie values.
@@ -969,12 +1008,12 @@
 
     var cookie_session = parseInt(drupalSettings.eu_cookie_compliance.cookie_session);
     if (cookie_session) {
-      cookies.set(cookieName, status, { path: path, domain: domain, sameSite: 'strict' });
+      setCookie(cookieName, status, { path: path, domain: domain, sameSite: 'strict' });
     }
     else {
       var lifetime = parseInt(drupalSettings.eu_cookie_compliance.cookie_lifetime);
       date.setDate(date.getDate() + lifetime);
-      cookies.set(cookieName, status, { expires: date, path: path, domain: domain, sameSite: 'strict' });
+      setCookie(cookieName, status, { expires: date, path: path, domain: domain, sameSite: 'strict' });
     }
 
     var currentStatusClass = 'eu-cookie-compliance-status-' + _euccCurrentStatus;
@@ -1019,12 +1058,12 @@
     var categoriesString = JSON.stringify(categories);
     var cookie_session = parseInt(drupalSettings.eu_cookie_compliance.cookie_session);
     if (cookie_session) {
-      cookies.set(cookieName, categoriesString, { path: path, domain: domain, sameSite: 'strict' });
+      setCookie(cookieName, categoriesString, { path: path, domain: domain, sameSite: 'strict' });
     }
     else {
       var lifetime = parseInt(drupalSettings.eu_cookie_compliance.cookie_lifetime);
       date.setDate(date.getDate() + lifetime);
-      cookies.set(cookieName, categoriesString, { expires: date, path: path, domain: domain, sameSite: 'strict' });
+      setCookie(cookieName, categoriesString, { expires: date, path: path, domain: domain, sameSite: 'strict' });
     }
     _euccSelectedCategories = categories;
     $(document).trigger('eu_cookie_compliance.changePreferences', [categories]);
@@ -1069,8 +1108,9 @@
   Drupal.eu_cookie_compliance.cookiesEnabled = function () {
     var cookieEnabled = (navigator.cookieEnabled);
     if (typeof navigator.cookieEnabled === 'undefined' && !cookieEnabled) {
-      cookies.set('testcookie', 'testcookie', { expires: 100, sameSite: 'strict' });
-      cookieEnabled = (cookies.get('testcookie').indexOf('testcookie') !== -1);
+      date.setDate(date.getDate() + 100);
+      setCookie('testcookie', 'testcookie', { expires: date, sameSite: 'strict' });
+      cookieEnabled = (getCookie('testcookie').indexOf('testcookie') !== -1);
     }
 
     return (cookieEnabled);
@@ -1136,7 +1176,7 @@
     }
 
     var cookieName = (typeof drupalSettings.eu_cookie_compliance.cookie_name === 'undefined' || drupalSettings.eu_cookie_compliance.cookie_name === '') ? 'cookie-agreed-version' : drupalSettings.eu_cookie_compliance.cookie_name + '-version';
-    return cookies.get(cookieName);
+    return getCookie(cookieName);
   };
 
   Drupal.eu_cookie_compliance.setVersion = function (force_this_version) {
@@ -1159,12 +1199,12 @@
     var eucc_version = (force_this_version !== undefined) ? force_this_version : drupalSettings.eu_cookie_compliance.cookie_policy_version;
     var cookie_session = parseInt(drupalSettings.eu_cookie_compliance.cookie_session);
     if (cookie_session) {
-      cookies.set(cookieName, eucc_version, { path: path, domain: domain, sameSite: 'strict' });
+      setCookie(cookieName, eucc_version, { path: path, domain: domain, sameSite: 'strict' });
     }
     else {
       var lifetime = parseInt(drupalSettings.eu_cookie_compliance.cookie_lifetime);
       date.setDate(date.getDate() + lifetime);
-      cookies.set(cookieName, eucc_version, { expires: date, path: path, domain: domain, sameSite: 'strict' });
+      setCookie(cookieName, eucc_version, { expires: date, path: path, domain: domain, sameSite: 'strict' });
     }
   };
 
@@ -1199,7 +1239,7 @@
       }
     }
     // Load all cookies from jQuery.
-    var allCookies = cookies.get();
+    var allCookies = getCookie();
 
     // Check each cookie and try to remove it if it's not allowed.
     for (var i in allCookies) {
@@ -1214,11 +1254,11 @@
       if (remove) {
         while (!cookieRemoved && hostname !== '') {
           // Attempt to remove.
-          cookies.remove(i, { domain: '.' + hostname, path: '/' });
-          cookieRemoved = !cookies.get(i);
+          eraseCookie(i, { domain: '.' + hostname, path: '/' });
+          cookieRemoved = !getCookie(i);
           if (!cookieRemoved) {
-            cookies.remove(i, { domain: hostname, path: '/' });
-            cookieRemoved = !cookies.get(i);
+            eraseCookie(i, { domain: hostname, path: '/' });
+            cookieRemoved = !getCookie(i);
           }
 
           index = hostname.indexOf('.');

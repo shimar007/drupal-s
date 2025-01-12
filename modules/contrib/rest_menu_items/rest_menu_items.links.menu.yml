@@ -1,5 +1,5 @@
 rest_menu_items.config_form:
-  title: 'Rest Menu Items'
+  title: 'REST menu items'
   route_name: rest_menu_items.config_form
-  description: 'Configure Rest Menu Items'
+  description: 'Configure REST menu items'
   parent: system.admin_config_services

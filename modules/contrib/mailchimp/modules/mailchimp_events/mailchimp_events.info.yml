@@ -7,7 +7,7 @@ dependencies:
   - mailchimp:mailchimp_lists
 configure: entity.mailchimp_event.collection
 
-# Information added by Drupal.org packaging script on 2024-07-25
-version: '2.2.4'
+# Information added by Drupal.org packaging script on 2024-10-10
+version: '2.2.5'
 project: 'mailchimp'
-datestamp: 1721931135
+datestamp: 1728582245

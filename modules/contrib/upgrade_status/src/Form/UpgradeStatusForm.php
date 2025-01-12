@@ -988,7 +988,7 @@ MARKUP
       '#rows' => [],
     ];
 
-    $build['description'] = $this->t('Drupal 11 requirements are mostly already known and checked, however these checks will be updated as more details are defined.');
+    $build['description'] = $this->t('Below are Drupal 11\'s system requirements. If you are working with multiple (dev, stage, live) environments, make sure to check the same requirements there.');
 
     // Check Drupal version. Link to update if available.
     $core_version_info = [
@@ -1016,6 +1016,9 @@ MARKUP
       }
     }
     if (version_compare(\Drupal::VERSION, '10.3.0') >= 0) {
+      if (version_compare(\Drupal::VERSION, '10.4.0') >= 0) {
+        $this->messenger()->addWarning('Drupal 11.0 is not a supported upgrade from Drupal 10.4. Make sure to upgrade to 11.1!');
+      }
       if (!$has_core_update) {
         $class = 'color-success';
       }
@@ -1135,8 +1138,9 @@ MARKUP
     }
     elseif ($database_type == 'sqlite') {
       $database_type_full_name = 'SQLite';
-      $requirement = $this->t('When using SQLite, minimum version is 3.26');
-      if (version_compare($version, '3.45') >= 0) {
+      $minimum_sqlite = '3.45';
+      $requirement = $this->t('When using SQLite, minimum version is @minimum_sqlite', ['@minimum_sqlite' => $minimum_sqlite]);
+      if (version_compare($version, $minimum_sqlite) >= 0) {
         $class = 'color-success';
       }
       else {

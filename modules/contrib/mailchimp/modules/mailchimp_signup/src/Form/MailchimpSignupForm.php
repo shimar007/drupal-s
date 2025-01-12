@@ -5,6 +5,7 @@ namespace Drupal\mailchimp_signup\Form;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -158,6 +159,7 @@ class MailchimpSignupForm extends EntityForm {
       '#type' => 'details',
       '#title' => $this->t('Mailchimp Tags & Audience Selection/Configuration'),
       '#open' => TRUE,
+      '#attributes' => ['id' => ['mc-lists-config']],
     ];
 
     $form['mc_lists_config']['tags'] = [
@@ -167,11 +169,43 @@ class MailchimpSignupForm extends EntityForm {
       '#description' => $this->t('Optionally add one or more member tags. Separate multiple tags with a comma.'),
     ];
 
-    $lists = mailchimp_get_lists();
+    $refresh_label = $this->t('Refresh Audiences');
+    $form['mc_lists_config']['mc_lists_refresh'] = [
+      '#type' => 'submit',
+      '#value' => $refresh_label,
+      '#ajax' => [
+        'callback' => [$this, 'listsRefreshCallback'],
+        'progress' => [
+          'type' => 'throbber',
+          'message' => $this->t('Retrieving audiences.'),
+        ],
+      ],
+      '#limit_validation_errors' => [],
+    ];
+
+    // In case the audiences refresh button was clicked.
+    $reset = FALSE;
+    $user_input = $form_state->getUserInput();
+    if (
+      isset($user_input['_triggering_element_value'])
+      && $user_input['_triggering_element_value'] === $refresh_label->render()
+    ) {
+      $reset = TRUE;
+    }
+
+    $lists = mailchimp_get_lists([], $reset);
     $options = [];
     foreach ($lists as $mc_list) {
       $options[$mc_list->id] = $mc_list->name;
     }
+
+    // Make sure we don't try to assign default values that are not available
+    // (anymore).
+    $default_values = [];
+    if (is_array($signup->mc_lists)) {
+      $default_values = array_intersect_key($signup->mc_lists, $options);
+    }
+
     $mc_admin_url = Link::fromTextAndUrl('Mailchimp', Url::fromUri('https://admin.mailchimp.com', ['attributes' => ['target' => '_blank']]));
     $form['mc_lists_config']['mc_lists'] = [
       '#type' => 'checkboxes',
@@ -179,12 +213,12 @@ class MailchimpSignupForm extends EntityForm {
       '#description' => $this->t('Select which audiences to show on your signup form. You can create additional audiences at @Mailchimp.',
         ['@Mailchimp' => $mc_admin_url->toString()]),
       '#options' => $options,
-      '#default_value' => is_array($signup->mc_lists) ? $signup->mc_lists : [],
+      '#default_value' => $default_values,
       '#required' => TRUE,
       '#ajax' => [
         'callback' => '::mergefields_callback',
         'wrapper' => 'mergefields-wrapper',
-        'method' => 'replace',
+        'method' => 'replaceWith',
         'effect' => 'fade',
         'progress' => [
           'type' => 'throbber',
@@ -344,7 +378,7 @@ class MailchimpSignupForm extends EntityForm {
         $selected_lists = array_filter($selected_lists);
 
         // Default value for the list-specific groups.
-        if (!$groups_items = $signup->settings['group_items']) {
+        if (!array_key_exists('group_items', $signup->settings) || !$groups_items = $signup->settings['group_items']) {
           $groups_items = [];
         }
 
@@ -383,6 +417,19 @@ class MailchimpSignupForm extends EntityForm {
    */
   public function configureInterestGroups(array &$form, FormStateInterface $form_state) {
     return $form['subscription_settings']['groups_container'];
+  }
+
+  /**
+   * AJAX callback handler for refreshing the audiences.
+   */
+  public function listsRefreshCallback(array &$form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
+    $response->addCommand(new ReplaceCommand(
+      '#mc-lists-config',
+      $form['mc_lists_config']
+    ));
+
+    return $response;
   }
 
   /**

@@ -38,6 +38,10 @@ function mailchimp_requirements($phase) {
 function mailchimp_uninstall() {
   $queue = \Drupal::queue(MAILCHIMP_QUEUE_CRON);
   $queue->deleteQueue();
+
+  $collection = \Drupal::keyValue('mailchimp_lists');
+  $collection->deleteAll();
+
   \Drupal::state()->deleteMultiple([
     'mailchimp_access_token',
     'mailchimp_data_center',
