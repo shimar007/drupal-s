@@ -82,7 +82,8 @@
         "drupal/stable": "^2.1",
         "drupal/classy": "^1.0",
         "drupal/ckeditor_plugin_report": "^1.0",
-        "drupal/ckeditor_templates": "^1.4"
+        "drupal/ckeditor_templates": "^1.4",
+        "drupal/meaofd": "^1.0"
     },
     "replace": {
     },
