@@ -72,9 +72,9 @@ class ToolbarMenuElementEditForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    parent::save($form, $form_state);
     $this->messenger()->addMessage($this->t('Toolbar menu element @label saved.', ['@label' => $this->entity->label()]));
     $form_state->setRedirectUrl($this->entity->toUrl('collection'));
+    return parent::save($form, $form_state);
   }
 
 }

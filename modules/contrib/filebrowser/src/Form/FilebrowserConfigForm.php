@@ -4,6 +4,7 @@ namespace Drupal\filebrowser\Form;
 
 use Drupal;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -13,9 +14,10 @@ class FilebrowserConfigForm extends ConfigFormBase {
    * FilebrowserConfigForm constructor.
    * @param $config_factory
    */
-  public function __construct( ConfigFactoryInterface $config_factory) {
-    parent:: __construct($config_factory);
+  public function __construct( ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typed_config_manager) {
+    parent:: __construct($config_factory, $typed_config_manager);
     $this->setConfigFactory($config_factory);
+    $this->typedConfigManager = $typed_config_manager;
   }
 
   /**

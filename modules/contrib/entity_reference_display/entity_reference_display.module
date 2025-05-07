@@ -20,7 +20,8 @@ function entity_reference_display_form_field_storage_config_edit_form_alter(&$fo
  * Implements hook_form_FORM_ID_alter().
  */
 function entity_reference_display_form_field_config_edit_form_alter(&$form, FormStateInterface $form_state) {
-  entity_reference_display_disable_cardinality_settings($form['field_storage']['subform']['cardinality_container'], $form_state);
+  $cardinality_container = $form['field_storage']['subform']['cardinality_container'] ?? [];
+  entity_reference_display_disable_cardinality_settings($cardinality_container, $form_state);
 }
 
 /**

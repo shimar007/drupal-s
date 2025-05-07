@@ -2,6 +2,8 @@
 
 namespace Drupal\filebrowser;
 
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal;
 
 class Statistics {
@@ -23,7 +25,7 @@ class Statistics {
     }
     if ($stats['files'] > 0) {
       $this->statistics['files'] = Drupal::translation()->formatPlural($stats['files'], '1 file', '@count files');
-      $this->statistics['size'] = format_size($stats['size']);
+      $this->statistics['size'] = DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.2.0', fn() => ByteSizeMarkup::create($stats['size']), fn() => format_size($stats['size']));
     }
   }
 

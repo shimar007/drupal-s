@@ -17,7 +17,7 @@ class MetadataEventSubscriber implements EventSubscriberInterface {
    */
   protected $nid;
 
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events['filebrowser.metadata_event'][] = ['createModified', 0];
     return $events;
   }

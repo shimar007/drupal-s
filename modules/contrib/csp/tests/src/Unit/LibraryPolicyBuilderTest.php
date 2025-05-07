@@ -69,6 +69,7 @@ class LibraryPolicyBuilderTest extends UnitTestCase {
     $this->cache = new MemoryBackend(new Time());
     $this->moduleHandler = $this->createMock(ModuleHandler::class);
     $this->themeHandler = $this->createMock(ThemeHandler::class);
+    // @phpstan-ignore classConstant.deprecatedClass
     $this->libraryDiscovery = $this->createMock(LibraryDiscovery::class);
     $this->logger = $this->createMock(LoggerInterface::class);
   }

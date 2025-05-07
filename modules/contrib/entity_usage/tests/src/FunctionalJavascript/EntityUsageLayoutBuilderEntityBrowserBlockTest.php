@@ -2,11 +2,11 @@
 
 namespace Drupal\Tests\entity_usage\FunctionalJavascript;
 
+use Drupal\Tests\contextual\FunctionalJavascript\ContextualLinkClickTrait;
+use Drupal\Tests\entity_usage\Traits\EntityUsageLastEntityQueryTrait;
 use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\contextual\FunctionalJavascript\ContextualLinkClickTrait;
-use Drupal\Tests\entity_usage\Traits\EntityUsageLastEntityQueryTrait;
 use Drupal\user\Entity\Role;
 
 /**
@@ -76,7 +76,7 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
   /**
    * Test usage tracking in Layout Builder through Entity Browser Block.
    */
-  public function testLayoutBuilderEntityBrowserBlockUsage() {
+  public function testLayoutBuilderEntityBrowserBlockUsage(): void {
     $session = $this->getSession();
     $page = $session->getPage();
     $assert_session = $this->assertSession();
@@ -167,7 +167,7 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
     $assert_session->assertWaitOnAjaxRequest();
     $this->saveHtmlOutput();
     $this->getSession()->switchToIFrame();
-    // wait for the table to finish loading.
+    // Wait for the table to finish loading.
     $assert_session->waitForElement('css', '#drupal-off-canvas table .entity-browser-block-delta-order');
     // Verify we have selected in the block config the node that was created.
     $assert_session->elementTextContains('css', '#drupal-off-canvas table', 'First target node');
@@ -228,7 +228,7 @@ class EntityUsageLayoutBuilderEntityBrowserBlockTest extends EntityUsageJavascri
     $assert_session->assertWaitOnAjaxRequest();
     $this->saveHtmlOutput();
     $this->getSession()->switchToIFrame();
-    // wait for the table to finish loading.
+    // Wait for the table to finish loading.
     $assert_session->waitForElement('css', '#drupal-off-canvas table .entity-browser-block-delta-order');
     $assert_session->elementTextContains('css', '#drupal-off-canvas table', 'Second target node');
     $add_block_button = $assert_session->elementExists('css', '#drupal-off-canvas input[value="Add block"]');

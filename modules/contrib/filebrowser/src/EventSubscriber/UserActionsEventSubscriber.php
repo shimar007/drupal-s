@@ -22,7 +22,7 @@ class UserActionsEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  static function getSubscribedEvents() {
+  static function getSubscribedEvents(): array {
 
     $events['filebrowser.user_actions'][] = ['handler', 0 ];
     return $events;

@@ -16,12 +16,12 @@ class ToolbarMenuFunctionalTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['toolbar_menu', 'toolbar'];
+  protected static $modules = ['toolbar_menu'];
 
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'claro';
+  protected $defaultTheme = 'stark';
 
   /**
    * Tests crop type crud pages.

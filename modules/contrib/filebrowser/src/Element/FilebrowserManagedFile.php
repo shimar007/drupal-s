@@ -3,6 +3,7 @@
 namespace Drupal\filebrowser\Element;
 
 use Drupal;
+use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\file\Element\ManagedFile;
@@ -61,7 +62,7 @@ class FilebrowserManagedFile extends ManagedFile {
         $nodeValues = $node->filebrowser ?? NULL;
         $allowOverwrite = $nodeValues->allowOverwrite ?? $config['uploads']['allow_overwrite'];
         if($allowOverwrite) {
-          $files = file_save_upload($upload_name, $element['#upload_validators'], $destination, null, FileSystem::EXISTS_REPLACE);
+          $files = file_save_upload($upload_name, $element['#upload_validators'], $destination, null, FileExists::Replace);
         }
         else {
           $files = file_save_upload($upload_name, $element['#upload_validators'], $destination);

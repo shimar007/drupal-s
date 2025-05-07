@@ -75,9 +75,10 @@ class UploadForm extends FormBase {
       '#type' => 'filebrowser_managed_file',
       '#description' => $this->t('File types accepted: @accepted', ['@accepted' => $accepted]) . '<br>' . $this->t('You can upload multiple files.'),
       '#upload_validators' => [
-        'file_validate_extensions' => [$this->node->filebrowser->accepted],
-      ],
+        'FileExtension' => ['extensions' =>$this->node->filebrowser->accepted]],
       '#upload_location' => $upload_location, '#progress_indicator' => 'bar', '#progress_message' => $this->t('Please wait...'),
+      '#progress_indicator' => 'bar',
+      '#progress_message' => $this->t('Please wait...'),
     ];
 
     $form['submit'] = [
@@ -91,7 +92,7 @@ class UploadForm extends FormBase {
    * @inheritdoc
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-  // all required validation is done in filebrowser_managed_file form element
+    // Validation is done in filebrowser_managed_file form element.
   }
 
   /**

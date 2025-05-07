@@ -53,7 +53,7 @@ class ToolbarMenuManager {
       if ($this->account->hasPermission($this->getPermissionName($element))) {
         $elements[$key] = $element;
       }
-    };
+    }
     return $elements;
   }
 

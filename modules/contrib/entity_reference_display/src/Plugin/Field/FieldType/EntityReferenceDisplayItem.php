@@ -17,7 +17,7 @@ use Drupal\Core\TypedData\OptionsProviderInterface;
  *   id = "entity_reference_display",
  *   label = @Translation("Display mode"),
  *   description = @Translation("This field allows you to specify a display mode for entity reference field."),
- *   category = @Translation("Reference"),
+ *   category = "reference",
  *   default_widget = "options_select",
  *   default_formatter = "list_default"
  * )

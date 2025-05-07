@@ -7,7 +7,7 @@ dependencies:
   - drupal:views
 configure: autocompletion_configuration.list
 
-# Information added by Drupal.org packaging script on 2023-07-21
-version: '3.0.0'
+# Information added by Drupal.org packaging script on 2025-04-04
+version: '3.0.1'
 project: 'search_autocomplete'
-datestamp: 1689925915
+datestamp: 1743745347

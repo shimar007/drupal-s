@@ -66,22 +66,6 @@ class CoreCspSubscriber implements EventSubscriberInterface {
           $response->getAttachments()['library'] ?? []
         );
 
-      // Ajax needs 'unsafe-inline' for CSS assets required by responses prior
-      // to Drupal 10.1.
-      // @see https://www.drupal.org/project/csp/issues/3100084
-      if (
-        in_array('core/drupal.ajax', $libraries)
-        &&
-        version_compare(\Drupal::VERSION, '10.1', '<')
-        &&
-        // The CSP Extras module alters core to not require 'unsafe-inline'.
-        !$this->moduleHandler->moduleExists('csp_extras')
-      ) {
-        $policy->fallbackAwareAppendIfEnabled('style-src-attr', []);
-        $policy->fallbackAwareAppendIfEnabled('style-src', [Csp::POLICY_UNSAFE_INLINE]);
-        $policy->fallbackAwareAppendIfEnabled('style-src-elem', [Csp::POLICY_UNSAFE_INLINE]);
-      }
-
       // Libraries that load an editor after an AJAX request need their
       // exceptions applied to the calling page.
       $ajaxEditorLoader = (

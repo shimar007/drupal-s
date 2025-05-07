@@ -251,7 +251,7 @@ class CspOptimizationTest extends UnitTestCase {
       "'hash-123abc'",
     ]);
 
-    $this->expectDeprecation("'none' overriding other sources is deprecated in csp:8.x-1.30 and behavior will change in csp:2.0.0. See https://www.drupal.org/node/3411477");
+    $this->expectDeprecation("Unsilenced deprecation: 'none' overriding other sources is deprecated in csp:8.x-1.30 and behavior will change in csp:2.0.0. See https://www.drupal.org/node/3411477");
 
     $this->assertEquals(
       "object-src 'none'",
@@ -275,7 +275,7 @@ class CspOptimizationTest extends UnitTestCase {
       Csp::POLICY_REPORT_SAMPLE,
     ]);
 
-    $this->expectDeprecation("'none' overriding other sources is deprecated in csp:8.x-1.30 and behavior will change in csp:2.0.0. See https://www.drupal.org/node/3411477");
+    $this->expectDeprecation("Unsilenced deprecation: 'none' overriding other sources is deprecated in csp:8.x-1.30 and behavior will change in csp:2.0.0. See https://www.drupal.org/node/3411477");
 
     $this->assertEquals(
       "script-src 'none' 'report-sample'",

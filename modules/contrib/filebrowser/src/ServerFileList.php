@@ -2,6 +2,7 @@
 
 namespace Drupal\filebrowser;
 
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 use Drupal;
 use Drupal\Core\Site\Settings;
 use Drupal\filebrowser\Services\Common;
@@ -73,7 +74,7 @@ class ServerFileList {
     $validator = Drupal::service('filebrowser.validator');
     $guesser = Drupal::service('file.mime_type.guesser');
     // fixme: this is for compatibility with D9
-    $drupal10_guesser = $guesser instanceof \Symfony\Component\Mime\MimeTypeGuesserInterface;
+    $drupal10_guesser = $guesser instanceof MimeTypeGuesserInterface;
     foreach ($files as $key => $file) {
       $file->url = Drupal::service('file_url_generator')
         ->generateAbsoluteString($file->uri);

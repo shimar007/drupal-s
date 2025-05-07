@@ -67,7 +67,13 @@ class BreadcrumbBuilder implements BreadcrumbBuilderInterface {
     }
     $links = $this->buildLinks($title, $content, $fid);
     $breadcrumb->setLinks($links);
-    $breadcrumb->addCacheContexts(['url', 'url.query_args']);
+    $breadcrumb->addCacheContexts([
+      'route',
+      'url',
+      'url.path.is_front',
+      'url.path.parent',
+      'url.query_args',
+    ]);
     return $breadcrumb;
   }
 

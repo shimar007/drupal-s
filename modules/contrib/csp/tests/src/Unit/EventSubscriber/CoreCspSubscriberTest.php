@@ -114,59 +114,23 @@ class CoreCspSubscriberTest extends UnitTestCase {
 
     $this->coreCspSubscriber->onCspPolicyAlter($alterEvent);
 
-    if (class_exists('Drupal\Core\Ajax\AddJsCommand')) {
-      // Drupal >= 9.5 should not make changes to script-src.
-      $this->assertEquals(
-        [Csp::POLICY_SELF],
-        $alterEvent->getPolicy()->getDirective('script-src')
-      );
-      $this->assertFalse($alterEvent->getPolicy()->hasDirective('script-src-attr'));
-      $this->assertFalse($alterEvent->getPolicy()->hasDirective('script-src-elem'));
-    }
-    else {
-      // Drupal <=9.4 requires script-src-elem 'unsafe-inline'.
-      $this->assertEquals(
-        [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-        $alterEvent->getPolicy()->getDirective('script-src')
-      );
-      $this->assertEquals(
-        [Csp::POLICY_SELF],
-        $alterEvent->getPolicy()->getDirective('script-src-attr')
-      );
-      $this->assertEquals(
-        [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-        $alterEvent->getPolicy()->getDirective('script-src-elem')
-      );
-    }
+    $this->assertEquals(
+      [Csp::POLICY_SELF],
+      $alterEvent->getPolicy()->getDirective('script-src')
+    );
+    $this->assertFalse($alterEvent->getPolicy()->hasDirective('script-src-attr'));
+    $this->assertFalse($alterEvent->getPolicy()->hasDirective('script-src-elem'));
 
-    if (version_compare(\Drupal::VERSION, '10.1', '>=')) {
-      $this->assertEquals(
-        [Csp::POLICY_SELF],
-        $alterEvent->getPolicy()->getDirective('style-src')
-      );
-      $this->assertFalse(
-        $alterEvent->getPolicy()->hasDirective('style-src-attr')
-      );
-      $this->assertFalse(
-        $alterEvent->getPolicy()->hasDirective('style-src-elem')
-      );
-    }
-    else {
-      // Drupal <=10.0 requires style-src-elem 'unsafe-inline'.
-      $this->assertEquals(
-        [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-        $alterEvent->getPolicy()->getDirective('style-src')
-      );
-      $this->assertEquals(
-        [Csp::POLICY_SELF],
-        $alterEvent->getPolicy()->getDirective('style-src-attr')
-      );
-      $this->assertEquals(
-        [Csp::POLICY_SELF, Csp::POLICY_UNSAFE_INLINE],
-        $alterEvent->getPolicy()->getDirective('style-src-elem')
-      );
-    }
-
+    $this->assertEquals(
+      [Csp::POLICY_SELF],
+      $alterEvent->getPolicy()->getDirective('style-src')
+    );
+    $this->assertFalse(
+      $alterEvent->getPolicy()->hasDirective('style-src-attr')
+    );
+    $this->assertFalse(
+      $alterEvent->getPolicy()->hasDirective('style-src-elem')
+    );
   }
 
   /**

@@ -1,12 +1,15 @@
-name: Content Security Policy Extras
+name: CSP Extras (Obsolete)
 type: module
-description: Optional extra features for Content Security Policy
-core_version_requirement: ^9.5 || ^10
+description: Obsolete extension for Drupal < 10.1
+core_version_requirement: ^10.1 || ^11
+
+lifecycle: obsolete
+lifecycle_link: https://www.drupal.org/project/csp/issues/3408404
 
 dependencies:
   - csp:csp
 
-# Information added by Drupal.org packaging script on 2024-07-18
-version: '8.x-1.33'
+# Information added by Drupal.org packaging script on 2025-03-12
+version: '8.x-1.40'
 project: 'csp'
-datestamp: 1721292909
+datestamp: 1741745879

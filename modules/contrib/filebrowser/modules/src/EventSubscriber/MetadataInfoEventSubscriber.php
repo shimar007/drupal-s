@@ -7,7 +7,7 @@ use Drupal\filebrowser\Events\MetadataInfo;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MetadataInfoEventSubscriber implements EventSubscriberInterface {
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events['filebrowser.metadata_info'][] = ['setInfo', 0];
     return $events;
   }

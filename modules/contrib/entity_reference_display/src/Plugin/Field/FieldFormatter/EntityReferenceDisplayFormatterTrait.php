@@ -5,11 +5,36 @@ namespace Drupal\entity_reference_display\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Plugin trait for the 'entity_reference_display' formatters.
  */
 trait EntityReferenceDisplayFormatterTrait {
+
+  /**
+   * The entity repository service.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
+   */
+  protected $entityRepository;
+
+  /**
+   * The entity field manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
+  protected $entityFieldManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    $instance->entityRepository = $container->get('entity.repository');
+    $instance->entityFieldManager = $container->get('entity_field.manager');
+    return $instance;
+  }
 
   /**
    * {@inheritdoc}
@@ -68,6 +93,7 @@ trait EntityReferenceDisplayFormatterTrait {
     $display_field = $this->getDisplayField($display_fields);
     /** @var \Drupal\Core\Entity\FieldableEntityInterface $entity */
     $entity = $items->getEntity();
+    $entity = $this->entityRepository->getTranslationFromContext($entity, $langcode);
     // Only if entity has this field.
     if ($entity->hasField($display_field)) {
       // Get selected display mode value from field.
@@ -111,8 +137,7 @@ trait EntityReferenceDisplayFormatterTrait {
     // Get all fields associated with current entity.
     $entity_type = $this->fieldDefinition->getTargetEntityTypeId();
     $entity_bundle = $this->fieldDefinition->getTargetBundle();
-    $entity_fields = \Drupal::service('entity_field.manager')
-      ->getFieldDefinitions($entity_type, $entity_bundle);
+    $entity_fields = $this->entityFieldManager->getFieldDefinitions($entity_type, $entity_bundle);
     /** @var \Drupal\Core\Field\FieldDefinitionInterface $field */
     foreach ($entity_fields as $key => $field) {
       // Find display mode fields.

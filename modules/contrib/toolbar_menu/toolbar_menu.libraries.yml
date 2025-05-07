@@ -1,11 +1,9 @@
 icons:
-  version: 1.4
   js:
     js/toolbar_menu.js: {}
   css:
     base:
       css/toolbar_menu.module.css: {}
   dependencies:
-    - core/drupal
-    - core/drupalSettings
-    - core/once
+    # Require the Core Toolbar module library for the 'ToolbarModel' class.
+    - toolbar/toolbar

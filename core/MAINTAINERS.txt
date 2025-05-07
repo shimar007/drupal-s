@@ -7,11 +7,11 @@ This file lists the active maintainers. For a list of past maintainers, see:
 https://www.drupal.org/core/maintainers/past
 
 
-Core committers
----------------
+Drupal Core Leadership team
+---------------------------
 
-The Drupal core committers oversee the development of Drupal as a whole. The
-core committers for Drupal are (in alphabetical order):
+Consists of people with varied skills who make decisions about the general
+direction of the project. Members by role (in alphabetical order):
 
 Project Lead
 - Dries Buytaert 'dries' https://www.drupal.org/u/dries
@@ -46,10 +46,11 @@ Core JavaScript packages
 - Théodore Biadala 'nod_' https://www.drupal.org/u/nod_
 - Sally Young 'justafish' https://www.drupal.org/u/justafish
 
-Committer team facilitators
+Team facilitators
 - Pamela Barone 'pameeela' https://www.drupal.org/u/pameeela
+- Griffyn Heels 'griffynh' https://www.drupal.org/u/griffynh (provisional)
 
-Core initiative facilitators
+Initiative facilitators
 - Gábor Hojtsy 'Gábor Hojtsy' https://www.drupal.org/u/gábor-hojtsy
 
 Subsystem maintainers
@@ -240,7 +241,7 @@ Help
 - Andrey Postnikov 'andypost' https://www.drupal.org/u/andypost
 
 Image
-- Claudiu Cristea 'claudiu.cristea' https://www.drupal.org/u/claudiu.cristea
+- ?
 
 Inline Form Errors
 - Daniël Smidt 'dmsmidt' https://www.drupal.org/u/dmsmidt
@@ -285,7 +286,6 @@ Markup
 Media
 - Sean Blommaert 'seanB' https://www.drupal.org/u/seanb
 - Marcos Cano 'marcoscano' https://www.drupal.org/u/marcoscano
-- Christian Fritsch 'chr.fritsch' https://www.drupal.org/u/chr.fritsch
 - Adam Globus-Hoenich 'phenaproxima' https://www.drupal.org/u/phenaproxima
 
   Media Library
@@ -293,11 +293,9 @@ Media
   - Adam Globus-Hoenich 'phenaproxima' https://www.drupal.org/u/phenaproxima
 
 Menu
-- Daniel Wehner 'dawehner' https://www.drupal.org/u/dawehner
 - Peter Wolanin 'pwolanin' https://www.drupal.org/u/pwolanin
 
 Menu Link Content
-- Daniel Wehner 'dawehner' https://www.drupal.org/u/dawehner
 - Peter Wolanin 'pwolanin' https://www.drupal.org/u/pwolanin
 
 Menu UI
@@ -454,7 +452,6 @@ User
 - Kristiaan Van den Eynde 'kristiaanvandeneynde' https://www.drupal.org/u/kristiaanvandeneynde
 
 Views
-- Daniel Wehner 'dawehner' https://www.drupal.org/u/dawehner
 - Tim Plunkett 'tim.plunkett' https://www.drupal.org/u/tim.plunkett
 - Damian Lee 'damiankloip' https://www.drupal.org/u/damiankloip
 - Jess Myrbo 'xjm' https://www.drupal.org/u/xjm
@@ -489,7 +486,6 @@ Performance
 Testing
 - Alex Pott 'alexpott' https://www.drupal.org/u/alexpott
 - Sascha Grossenbacher 'Berdir' https://www.drupal.org/u/berdir
-- Daniel Wehner 'dawehner' https://www.drupal.org/u/dawehner
 - Alberto M. 'mondrake' https://www.drupal.org/u/mondrake
 
 Usability

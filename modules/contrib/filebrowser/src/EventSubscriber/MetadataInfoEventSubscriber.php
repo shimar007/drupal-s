@@ -14,7 +14,7 @@ class MetadataInfoEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events['filebrowser.metadata_info'][] =  ['setInfo', 0];
     return $events;
   }

@@ -3,10 +3,10 @@
 namespace Drupal\Tests\entity_usage\FunctionalJavascript;
 
 use Drupal\Core\Entity\RevisionableInterface;
+use Drupal\Tests\entity_usage\Traits\EntityUsageLastEntityQueryTrait;
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\node\Entity\Node;
-use Drupal\Tests\entity_usage\Traits\EntityUsageLastEntityQueryTrait;
 use Drupal\user\Entity\Role;
 
 /**
@@ -28,7 +28,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     'content_translation',
     // To test entities which implement RevisionableInterface but do have
     // revisions.
-    'entity_test'
+    'entity_test',
   ];
 
   /**
@@ -49,13 +49,14 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
       ->set('site_domains', [$current_request->getHttpHost() . $current_request->getBasePath()])
       ->set('local_task_enabled_entity_types', ['node'])
       ->save();
-    \Drupal::service('router.builder')->rebuild();
+    // Changing site domains requires services to be reconstructed.
+    $this->rebuildAll();
   }
 
   /**
    * Tests the tracking of nodes and revisions.
    */
-  public function testRevisionsTracking() {
+  public function testRevisionsTracking(): void {
     $session = $this->getSession();
     $page = $session->getPage();
     $assert_session = $this->assertSession();
@@ -69,7 +70,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 1 has been created.');
+    $assert_session->pageTextContains('Entity Usage test content Node 1 has been created.');
     /** @var \Drupal\node\NodeInterface $node1 */
     $node1 = $this->getLastEntityOfType('node', TRUE);
 
@@ -84,7 +85,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 2 has been created.');
+    $assert_session->pageTextContains('Entity Usage test content Node 2 has been created.');
     /** @var \Drupal\node\NodeInterface $node2 */
     $node2 = $this->getLastEntityOfType('node', TRUE);
     $node2_first_revision = $node2->getRevisionId();
@@ -116,7 +117,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 2 has been updated.');
+    $assert_session->pageTextContains('Entity Usage test content Node 2 has been updated.');
     $node2 = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node2->id());
 
     // We should still have the usage registered by the first revision.
@@ -147,7 +148,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 2 has been updated.');
+    $assert_session->pageTextContains('Entity Usage test content Node 2 has been updated.');
     $node2 = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node2->id());
     $node2_third_revision = $node2->getRevisionId();
 
@@ -194,7 +195,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 2 has been updated.');
+    $assert_session->pageTextContains('Entity Usage test content Node 2 has been updated.');
     $node2 = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node2->id());
     $node2_fourth_revision = $node2->getRevisionId();
     // The new usage is there.
@@ -226,7 +227,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 2 has been updated.');
+    $assert_session->pageTextContains('Entity Usage test content Node 2 has been updated.');
     $node2 = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node2->id());
     // References to N1 and N3 are only previous revisions.
     $usage = $usage_service->listSources($node1);
@@ -337,7 +338,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 4 has been created.');
+    $assert_session->pageTextContains('Entity Usage test content Node 4 has been created.');
     /** @var \Drupal\node\NodeInterface $node4 */
     $node4 = $this->getLastEntityOfType('node', TRUE);
     $num_revisions = 300;
@@ -360,7 +361,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
   /**
    * Tests the tracking of nodes with revisions and translations.
    */
-  public function testRevisionsTranslationsTracking() {
+  public function testRevisionsTranslationsTracking(): void {
     $session = $this->getSession();
     $page = $session->getPage();
     $assert_session = $this->assertSession();
@@ -410,7 +411,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 1 has been created.');
+    $assert_session->pageTextContains('Entity Usage test content Node 1 has been created.');
     /** @var \Drupal\node\NodeInterface $node1 */
     $node1 = $this->getLastEntityOfType('node', TRUE);
 
@@ -426,7 +427,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 2 has been created.');
+    $assert_session->pageTextContains('Entity Usage test content Node 2 has been created.');
     /** @var \Drupal\node\NodeInterface $node2 */
     $node2 = $this->getLastEntityOfType('node', TRUE);
 
@@ -443,7 +444,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 3 has been created.');
+    $assert_session->pageTextContains('Entity Usage test content Node 3 has been created.');
     /** @var \Drupal\node\NodeInterface $node3 */
     $node3 = $this->getLastEntityOfType('node', TRUE);
     $node3_first_revision = $node3->getRevisionId();
@@ -459,7 +460,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save (this translation)');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 3 has been updated.');
+    $assert_session->pageTextContains('Entity Usage test content Node 3 has been updated.');
     $node3 = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node3->id());
     $node3_second_revision = $node3->getRevisionId();
 
@@ -510,7 +511,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $first_row_title = $this->xpath('//table/tbody/tr[1]/td[1]')[0];
     $this->assertEquals($node3->label(), $first_row_title->getText());
     $first_row_type = $this->xpath('//table/tbody/tr[1]/td[2]')[0];
-    $this->assertEquals('Content', $first_row_type->getText());
+    $this->assertEquals('Content: Entity Usage test content', $first_row_type->getText());
     $first_row_langcode = $this->xpath('//table/tbody/tr[1]/td[3]')[0];
     $this->assertEquals('English', $first_row_langcode->getText());
     $first_row_field_label = $this->xpath('//table/tbody/tr[1]/td[4]')[0];
@@ -522,7 +523,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $first_row_title = $this->xpath('//table/tbody/tr[1]/td[1]')[0];
     $this->assertEquals($node3->label(), $first_row_title->getText());
     $first_row_type = $this->xpath('//table/tbody/tr[1]/td[2]')[0];
-    $this->assertEquals('Content', $first_row_type->getText());
+    $this->assertEquals('Content: Entity Usage test content', $first_row_type->getText());
     $first_row_langcode = $this->xpath('//table/tbody/tr[1]/td[3]')[0];
     $this->assertEquals('English', $first_row_langcode->getText());
     $first_row_field_label = $this->xpath('//table/tbody/tr[1]/td[4]')[0];
@@ -543,7 +544,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save (this translation)');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 3 has been updated.');
+    $assert_session->pageTextContains('Entity Usage test content Node 3 has been updated.');
     $node3 = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node3->id());
     $node3_third_revision = $node3->getRevisionId();
     $usage = $usage_service->listSources($node2);
@@ -605,7 +606,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save (this translation)');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 3 has been updated.');
+    $assert_session->pageTextContains('Entity Usage test content Node 3 has been updated.');
     $node3 = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node3->id());
     $node3_fourth_revision = $node3->getRevisionId();
     // Node 2 is now referenced from last revision of Node 3 in ES, and from a
@@ -692,7 +693,7 @@ class RevisionsTranslationsTest extends EntityUsageJavascriptTestBase {
     $page->pressButton('Save (this translation)');
     $session->wait(500);
     $this->saveHtmlOutput();
-    $assert_session->pageTextContains('eu_test_ct Node 3 has been updated.');
+    $assert_session->pageTextContains('Entity Usage test content Node 3 has been updated.');
     $node3 = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node3->id());
     $node3_fifth_revision = $node3->getRevisionId();
     // The usage from the translation is there.

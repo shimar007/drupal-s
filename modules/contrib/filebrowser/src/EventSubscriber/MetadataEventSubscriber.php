@@ -2,6 +2,8 @@
 
 namespace Drupal\filebrowser\EventSubscriber;
 
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Url;
@@ -24,7 +26,7 @@ class MetadataEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events['filebrowser.metadata_event'][] = ['setMetadata', 0];
     return $events;
   }
@@ -83,7 +85,7 @@ class MetadataEventSubscriber implements EventSubscriberInterface {
 
         case 'size':
           return [
-            'content' => format_size($file->fileData->size),
+            'content' => DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.2.0', fn() => ByteSizeMarkup::create($file->fileData->size), fn() => format_size($file->fileData->size)),
             'theme' => "",
           ];
 

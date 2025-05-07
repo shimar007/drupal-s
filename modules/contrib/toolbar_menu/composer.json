@@ -1,0 +1,32 @@
+{
+    "name": "drupal/toolbar_menu",
+    "type": "drupal-module",
+    "description": "Add your favorite menu (Structure > Menu) in the Drupal Toolbar.",
+    "keywords": [
+        "Drupal",
+        "Toolbar",
+        "Menu"
+    ],
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.drupal.org/project/toolbar_menu",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/toolbar_menu",
+        "source": "https://git.drupalcode.org/project/toolbar_menu"
+    },
+    "suggest": {
+        "drupal/admin_toolbar": "Integrate additional Menu Toolbar items within the Admin Toolbar and combine mutliple menus."
+    },
+    "authors": [
+        {
+            "name": "David Suissa (dydave)",
+            "homepage": "https://www.drupal.org/u/dydave",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Vincent Peltot (vpeltot)",
+            "homepage": "https://www.drupal.org/u/vpeltot",
+            "role": "Maintainer"
+        }
+    ]
+}

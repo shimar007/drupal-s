@@ -535,6 +535,7 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       $this->reportingHandlerPluginManager,
       $this->eventDispatcher,
     );
+    $this->assertInstanceOf(ResponseCspSubscriber::class, $subscriber);
   }
 
   /**
@@ -562,6 +563,7 @@ class ResponseCspSubscriberTest extends UnitTestCase {
       $libraryDependencyResolver,
       $this->nonce
     );
+    $this->assertInstanceOf(ResponseCspSubscriber::class, $subscriber);
   }
 
 }
