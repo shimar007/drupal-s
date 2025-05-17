@@ -2936,17 +2936,17 @@
         },
         {
             "name": "drupal/core",
-            "version": "10.4.6",
-            "version_normalized": "10.4.6.0",
+            "version": "10.4.7",
+            "version_normalized": "10.4.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "c04823253d7d35c731b7b6fa1a1fddb671e984eb"
+                "reference": "547fa74348dda2ecb4a3e752f88a5c40be675d64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/c04823253d7d35c731b7b6fa1a1fddb671e984eb",
-                "reference": "c04823253d7d35c731b7b6fa1a1fddb671e984eb",
+                "url": "https://api.github.com/repos/drupal/core/zipball/547fa74348dda2ecb4a3e752f88a5c40be675d64",
+                "reference": "547fa74348dda2ecb4a3e752f88a5c40be675d64",
                 "shasum": ""
             },
             "require": {
@@ -3026,7 +3026,7 @@
             "suggest": {
                 "ext-zip": "Needed to extend the plugin.manager.archiver service capability with the handling of files in the ZIP format."
             },
-            "time": "2025-04-02T21:06:44+00:00",
+            "time": "2025-05-08T04:06:41+00:00",
             "type": "drupal-core",
             "extra": {
                 "drupal-scaffold": {
@@ -3097,7 +3097,7 @@
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
             "support": {
-                "source": "https://github.com/drupal/core/tree/10.4.6"
+                "source": "https://github.com/drupal/core/tree/10.4.7"
             },
             "install-path": "../../core"
         },
@@ -8579,17 +8579,17 @@
         },
         {
             "name": "laminas/laminas-feed",
-            "version": "2.23.0",
-            "version_normalized": "2.23.0.0",
+            "version": "2.23.1",
+            "version_normalized": "2.23.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-feed.git",
-                "reference": "23807e692b3174750b426143bd93572b71b6739a"
+                "reference": "7c6755695cdca18f983d8a116bfa6a55439b1a94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-feed/zipball/23807e692b3174750b426143bd93572b71b6739a",
-                "reference": "23807e692b3174750b426143bd93572b71b6739a",
+                "url": "https://api.github.com/repos/laminas/laminas-feed/zipball/7c6755695cdca18f983d8a116bfa6a55439b1a94",
+                "reference": "7c6755695cdca18f983d8a116bfa6a55439b1a94",
                 "shasum": ""
             },
             "require": {
@@ -8624,7 +8624,7 @@
                 "laminas/laminas-validator": "Laminas\\Validator component, for validating email addresses used in Atom feeds and entries when using the Writer subcomponent",
                 "psr/http-message": "PSR-7 ^1.0.1, if you wish to use Laminas\\Feed\\Reader\\Http\\Psr7ResponseDecorator"
             },
-            "time": "2024-10-09T10:53:30+00:00",
+            "time": "2025-05-13T09:35:51+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -9591,17 +9591,17 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.25",
-            "version_normalized": "1.12.25.0",
+            "version": "1.12.26",
+            "version_normalized": "1.12.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e310849a19e02b8bfcbb63147f495d8f872dd96f"
+                "reference": "84cbf8f018e01834b9b1ac3dacf3b9780e209e53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e310849a19e02b8bfcbb63147f495d8f872dd96f",
-                "reference": "e310849a19e02b8bfcbb63147f495d8f872dd96f",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/84cbf8f018e01834b9b1ac3dacf3b9780e209e53",
+                "reference": "84cbf8f018e01834b9b1ac3dacf3b9780e209e53",
                 "shasum": ""
             },
             "require": {
@@ -9610,7 +9610,7 @@
             "conflict": {
                 "phpstan/phpstan-shim": "*"
             },
-            "time": "2025-04-27T12:20:45+00:00",
+            "time": "2025-05-14T11:08:32+00:00",
             "bin": [
                 "phpstan",
                 "phpstan.phar"
