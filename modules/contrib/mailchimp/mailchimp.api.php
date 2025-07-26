@@ -77,7 +77,7 @@ function hook_mailchimp_lists_mergevars_alter(array &$mergevars, EntityInterface
  *   The current interest groups.
  * @param \Drupal\Core\Entity\EntityInterface $entity
  *   The entity used to populate the interest groups.
- * @param string $choices
+ * @param array $choices
  *   The entity form submission data.
  *
  * @ingroup mailchimp

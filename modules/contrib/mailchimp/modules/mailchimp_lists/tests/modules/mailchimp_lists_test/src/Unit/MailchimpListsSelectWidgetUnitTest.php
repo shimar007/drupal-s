@@ -4,8 +4,8 @@ namespace Drupal\Tests\mailchimp_lists_test\Unit;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\mailchimp_lists\Plugin\Field\FieldWidget\MailchimpListsSelectWidget;
 use Drupal\Tests\UnitTestCase;
+use Drupal\mailchimp_lists\Plugin\Field\FieldWidget\MailchimpListsSelectWidget;
 
 /**
  * Ensure that the correct form values are .

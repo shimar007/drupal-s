@@ -36,6 +36,12 @@ class ModuleFilterSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Provides many enhancements to the Extend page including the use of tabs for packages.'),
       '#default_value' => $config->get('tabs'),
     ];
+    $form['modules']['descriptions_show'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Always show the description details'),
+      '#description' => $this->t('By default descriptions are hidden, this will always show them.'),
+      '#default_value' => $config->get('descriptions_show'),
+    ];
 
     $form['modules']['path'] = [
       '#type' => 'checkbox',
@@ -70,6 +76,7 @@ class ModuleFilterSettingsForm extends ConfigFormBase {
       ->set('tabs', $values['tabs'])
       ->set('enabled_filters.permissions', $values['permissions'])
       ->set('path', $values['path'])
+      ->set('descriptions_show', $values['descriptions_show'])
       ->save();
 
     parent::submitForm($form, $form_state);

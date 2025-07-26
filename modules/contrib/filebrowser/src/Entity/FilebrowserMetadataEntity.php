@@ -8,7 +8,6 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\node\Entity\Node;
 use Drupal\user\UserInterface;
 
@@ -32,6 +31,7 @@ use Drupal\user\UserInterface;
 class FilebrowserMetadataEntity extends ContentEntityBase implements FilebrowserMetadataEntityInterface {
 
   use EntityChangedTrait;
+  use Drupal\user\EntityOwnerTrait;
 
   /**
    * {@inheritdoc}
@@ -39,7 +39,7 @@ class FilebrowserMetadataEntity extends ContentEntityBase implements Filebrowser
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);
     $values += [
-      'user_id' => Drupal::currentUser()->id(),
+      'uid' => Drupal::currentUser()->id(),
     ];
   }
 
@@ -77,21 +77,21 @@ class FilebrowserMetadataEntity extends ContentEntityBase implements Filebrowser
    * {@inheritdoc}
    */
   public function getOwner() {
-    return $this->get('user_id')->entity;
+    return $this->get('uid')->entity;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getOwnerId() {
-    return $this->get('user_id')->target_id;
+    return $this->get('uid')->target_id;
   }
 
   /**
    * {@inheritdoc}
    */
   public function setOwnerId($uid) {
-    $this->set('user_id', $uid);
+    $this->set('uid', $uid);
     return $this;
   }
 
@@ -99,7 +99,7 @@ class FilebrowserMetadataEntity extends ContentEntityBase implements Filebrowser
    * {@inheritdoc}
    */
   public function setOwner(UserInterface $account) {
-    $this->set('user_id', $account->id());
+    $this->set('uid', $account->id());
     return $this;
   }
 
@@ -189,6 +189,32 @@ class FilebrowserMetadataEntity extends ContentEntityBase implements Filebrowser
 
     $fields['nid'] = BaseFieldDefinition::create('integer')
       ->setRequired(true);
+
+    $fields['uid'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Author'))
+      ->setDescription(t('The user ID of the author of this metadata entity.'))
+      ->setSetting('target_type', 'user')
+      ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId') // or use preCreate()
+      ->setTranslatable(FALSE)
+      ->setRevisionable(TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'author',
+        'weight' => 0,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => 0,
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
 
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Machine readable name'))

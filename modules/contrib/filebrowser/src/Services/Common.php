@@ -2,11 +2,14 @@
 
 namespace Drupal\filebrowser\Services;
 
-use Drupal;
+use Drupal\Core\Access\AccessManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\Core\Theme\ThemeManagerInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
@@ -47,13 +50,23 @@ class Common extends ControllerBase{
   const FILEBROWSER_GRID_CONTAINER_COLUMN_CLASS = 'filebrowser-grid-container-column';
 
   protected $storage;
+  protected $accessManager;
+  protected $currentUser;
+  protected $themeManager;
+  protected $routeMatch;
+  protected $moduleHandler;
 
   /**
    * Common constructor.
-   * @param \Drupal\filebrowser\Services\FilebrowserStorage $storage
+   * @param FilebrowserStorage $storage
    */
-  public function __construct(FilebrowserStorage $storage) {
+  public function __construct(FilebrowserStorage $storage, AccessManagerInterface $accessManager, AccountInterface $currentUser, ThemeManagerInterface $themeManager, RouteMatchInterface $routeMatch, ModuleHandlerInterface $moduleHandler) {
     $this->storage = $storage;
+    $this->accessManager = $accessManager;
+    $this->currentUser = $currentUser;
+    $this->themeManager = $themeManager;
+    $this->routeMatch = $routeMatch;
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -115,10 +128,13 @@ class Common extends ControllerBase{
    * @param NodeInterface $node Node containing the filebrowser
    * @return bool
    */
-  function canDownloadArchive(NodeInterface $node) {
+  public function canDownloadArchive(NodeInterface $node) {
     $download_archive = $node->filebrowser->downloadArchive;
-    return ($node->access('view') && $download_archive && Drupal::currentUser()
-        ->hasPermission(Common::DOWNLOAD_ARCHIVE));
+    $accessResult = $this->accessManager->checkNamedRoute(
+      'entity.node.canonical',
+      ['node' => $node->id()],
+      $this->currentUser);
+    return $accessResult && $download_archive && $this->currentUser->hasPermission(COMMON::DOWNLOAD_ARCHIVE);
   }
 
   /**
@@ -148,7 +164,7 @@ class Common extends ControllerBase{
     if ($file_type == 'dir' && $mime_type != 'folder-parent') {
       $mime_type = 'directory';
     }
-    $theme_path = Drupal::theme()->getActiveTheme()->getPath() . "/filebrowser/icons/";
+    $theme_path = $this->themeManager->getActiveTheme()->getPath() . "/filebrowser/icons/";
 
     $icons = [
       // search first in active theme
@@ -311,7 +327,7 @@ class Common extends ControllerBase{
    */
   public function userAllowedActions($node) {
     $actions = [];
-    $account = Drupal::currentUser();
+    $account = $this->currentUser;
     /** @var \Drupal\filebrowser\Filebrowser $filebrowser */
     $filebrowser = $node->filebrowser;
 
@@ -464,7 +480,7 @@ class Common extends ControllerBase{
   }
 
   /**
-   * Helper function to located the mime type in the vnd part of the
+   * Helper function to locate the mime type in the vnd part of the
    * mimetype
    * @param string $vnd_mime
    * @return string
@@ -494,7 +510,7 @@ class Common extends ControllerBase{
    * @return Node|Null
    */
   public function getNodeFromPath($route_match = NULL) {
-    $route_match = $route_match ?: Drupal::routeMatch();
+    $route_match = $route_match ?? $this->routeMatch;
     if ($node = $route_match->getParameter('node')) {
       if (!is_object($node)) {
         // The parameter is node ID.
@@ -506,8 +522,7 @@ class Common extends ControllerBase{
   }
 
   public function filebrowserPath() {
-    $module_handler = Drupal::service('module_handler');
-    return  $module_handler->getModule('filebrowser')->getPath();
+    return $this->moduleHandler->getModule('filebrowser')->getPath();
   }
 
 }

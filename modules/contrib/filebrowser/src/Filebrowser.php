@@ -94,7 +94,6 @@ class Filebrowser {
         $this->handlers = $settings['handlers'];
       }
     }
-
   }
 
 }

@@ -12,16 +12,16 @@
   display: inline-block;
 }
 
-.mailchimp-admin-oauth-settings .spinner:after {
-  content: " ";
+.mailchimp-admin-oauth-settings .spinner::after {
   display: block;
   width: 13px;
   height: 13px;
   margin: 4px;
-  border-radius: 50%;
   border: 2px solid #ccc;
-  border-color: #ccc transparent #fff transparent;
   animation: spinner 1.2s linear infinite;
+  border-radius: 50%;
+  content: " ";
+  border-color: #ccc transparent #fff transparent;
 }
 @keyframes spinner {
   0% {

@@ -47,7 +47,7 @@ class Processor {
    * @return int
    *   The number of queue items processed.
    */
-  public function process(int $batch_limit = NULL) {
+  public function process(?int $batch_limit = NULL) {
     $queue = $this->queueFactory->get(MAILCHIMP_QUEUE_CRON);
     $queue->createQueue();
     $queue_count = $queue->numberOfItems();

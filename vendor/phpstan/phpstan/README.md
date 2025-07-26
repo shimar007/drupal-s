@@ -52,7 +52,7 @@ can be checked before you run the actual line.
 &nbsp;&nbsp;&nbsp;
 <a href="https://craftcms.com/"><img src="website/src/images/sponsor/craftcms.png" alt="Craft CMS" width="283" height="64"></a>
 <br>
-<a href="https://www.worksome.com/"><img src="website/src/images/sponsor/worksome.png" alt="Worksome" width="283" height="64"></a>
+<a href="https://jobs.ticketswap.com/"><img src="website/src/images/sponsor/ticketswap.png" alt="TicketSwap" width="269" height="64"></a>
 &nbsp;&nbsp;&nbsp;
 <a href="https://www.campoint.net/"><img src="website/src/images/sponsor/campoint.png" alt="campoint AG" width="283" height="64"></a>
 <br>
@@ -60,13 +60,12 @@ can be checked before you run the actual line.
 &nbsp;&nbsp;&nbsp;
 <a href="https://inviqa.com/"><img src="website/src/images/sponsor/inviqa.png" alt="Inviqa" width="254" height="65"></a>
 <br>
-<a href="https://www.getresponse.com/"><img src="website/src/images/sponsor/getresponse.png" alt="GetResponse" width="283" height="64"></a>
-&nbsp;&nbsp;&nbsp;
 <a href="https://www.shoptet.cz/"><img src="website/src/images/sponsor/shoptet.png" alt="Shoptet" width="283" height="64"></a>
-<br>
-<a href="https://route4me.com/"><img src="website/src/images/sponsor/route4me.png" alt="Route4Me: Route Optimizer and Route Planner Software" width="283" height="64"></a>
 &nbsp;&nbsp;&nbsp;
-<a href="https://jobs.ticketswap.com/"><img src="website/src/images/sponsor/ticketswap.png" alt="TicketSwap" width="269" height="64"></a>
+<a href="https://route4me.com/"><img src="website/src/images/sponsor/route4me.png" alt="Route4Me: Route Optimizer and Route Planner Software" width="283" height="64"></a>
+<br>
+<a href="https://werkenbijbelsimpel.nl/en/about-us/"><img src="website/src/images/sponsor/belsimpel.png" alt="Belsimpel" width="284" height="64"></a>
+&nbsp;&nbsp;&nbsp;
 
 
 [**You can now sponsor my open-source work on PHPStan through GitHub Sponsors.**](https://github.com/sponsors/ondrejmirtes)

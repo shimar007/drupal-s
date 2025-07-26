@@ -5,5 +5,6 @@ services:
       - {name: event_subscriber }
   filebrowser_modified.metadata_event:
     class: Drupal\filebrowser_extra\EventSubscriber\MetadataEventSubscriber
+    arguments: ['@file_system','@date.formatter','@entity_type.manager']
     tags:
       - {name: event_subscriber }

@@ -23,7 +23,7 @@ use Drupal\Core\Url;
  *   id = "mailchimp_lists_subscription",
  *   label = @Translation("Mailchimp Subscription"),
  *   description = @Translation("Allows an entity to be subscribed to a Mailchimp audience."),
- *   default_widget = "mailchimp_lists_info",
+ *   default_widget = "mailchimp_lists_select",
  *   default_formatter = "mailchimp_lists_subscribe_default"
  * )
  */
@@ -338,6 +338,10 @@ class MailchimpListsSubscription extends FieldItemBase {
    * Gets the value from Mailchimp and falls back on the local field
    * 'interest_groups' value.
    *
+   * Interest groups presented as multi-value form elements like checkboxes will
+   * be returned as arrays, and those presented as single-value elements like
+   * radios will be returned as strings.
+   *
    * @return array
    *   The previously-selected interests for this entity.
    */
@@ -365,10 +369,17 @@ class MailchimpListsSubscription extends FieldItemBase {
 
         foreach ($group_interests->interests as $interest) {
           if (isset($member_interests->{$interest->id}) && $member_interests->{$interest->id}) {
-            $interest_groups[$group->id][$interest->id] = $interest->id;
+            if (in_array($group->type, ['radio', 'dropdown'])) {
+              $interest_groups[$group->id] = $interest->id;
+            }
+            else {
+              $interest_groups[$group->id][$interest->id] = $interest->id;
+            }
           }
           else {
-            $interest_groups[$group->id][$interest->id] = 0;
+            if (!in_array($group->type, ['radio', 'dropdown'])) {
+              $interest_groups[$group->id][$interest->id] = 0;
+            }
           }
         }
       }
@@ -425,6 +436,9 @@ class MailchimpListsSubscription extends FieldItemBase {
           if ($new_options) {
             $options = $new_options;
           }
+        }
+        else {
+          $options[$keypath] = $label;
         }
       }
       elseif (!$required || $field_definition->isRequired() || $field_definition->isComputed()) {

@@ -108,6 +108,14 @@ $settings['flysystem'] = $schemes;
 After doing so you can point your Filebrowser node to your AWS s3 bucket by using the uri: s3://
 And your dropbox by using the uri: dropbox://
 
+## ARCHIVING  - USING REMOTE FILE SYSTEMS. ##
+Archiving is not fully supported for cloud storage.
+The  archiving code relies on the availebility of realpath() function. This will fail on  cloud storage.
+Archiving is allowed for files but not for directories.
+For files, Filebrowser will first download the fie and then add it to the archive. So a drawback of this  is that it is time consuming.
+As coud cloudstorages uses prefixes instead of real directories, it is decided not to support directory archiving for reasons of simplicity.
+This might change in a later version but for now we will not support this.
+
 ## ICONS ##
  Icons provided by [Material Design Icons](https://materialdesignicons.com/) in .svg format.
 

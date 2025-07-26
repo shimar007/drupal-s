@@ -99,8 +99,8 @@ class MailchimpCampaignForm extends ContentEntityForm {
     EntityDisplayRepositoryInterface $entity_display_repository,
     CacheBackendInterface $cache,
     RendererInterface $render,
-    EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL,
-    TimeInterface $time = NULL,
+    ?EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL,
+    ?TimeInterface $time = NULL,
   ) {
     parent::__construct($entity_repository, $entity_type_bundle_info, $time);
     $this->config = $config_factory;

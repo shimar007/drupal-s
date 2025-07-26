@@ -1,12 +1,13 @@
 <?php
 
-
 namespace Drupal\filebrowser\Form;
 
-use Drupal;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\filebrowser\Services\FormHelper;
 use Drupal\node\NodeInterface;
+use Drupal\filebrowser\Services\Common;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class ActionForm.
@@ -47,20 +48,32 @@ class ActionForm extends FormBase {
    */
 
   /**
-   * @var \Drupal\filebrowser\Services\Common
+   * @var Common
    */
   protected $common;
 
   /**
-   * @var \Drupal\filebrowser\Services\FormHelper
+   * @var FormHelper
    */
-  protected $helper;
+  protected FormHelper $helper;
 
   /**
-   * @var boolean $error
+   * @var boolean
    * Set to true when no items are selected on the form
    */
   protected $error;
+
+  public function __construct(Common $common, FormHelper $helper) {
+    $this->common = $common;
+    $this->helper = $helper;
+  }
+
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('filebrowser.common'),
+      $container->get('form.helper')
+    );
+  }
 
   public function getFormId() {
     return 'base_action_form';
@@ -82,8 +95,6 @@ class ActionForm extends FormBase {
     $actions = $params['actions'];
     $this->nid = $node->id();
     $this->relativeFid = empty($params['dbFileList']['data']['fid']) ? 0 : $params['dbFileList']['data']['fid'];
-    $this->common = Drupal::service('filebrowser.common');
-    $this->helper = Drupal::service('form.helper');
 
     // Initiate the form according default filebrowser requirements
     $form = [];
@@ -125,7 +136,6 @@ class ActionForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    // \Drupal::logger('filebrowser')->notice('NORMAL ACTION FORM VALIDATE');
     // All submit button needs selected items. If noting selected generate
     // form_error
     $element = $form_state->getTriggeringElement();

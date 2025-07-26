@@ -203,7 +203,8 @@ function module_filter_theme_registry_alter(&$theme_registry): void {
  * Implements hook_preprocess_HOOK().
  */
 function module_filter_preprocess_system_modules_details(&$variables): void {
-  $display_path = \Drupal::config('module_filter.settings')->get('path');
+  $settings = \Drupal::config('module_filter.settings');
+  $display_path = $settings->get('path');
   if ($display_path) {
     foreach ($variables['modules'] as &$module) {
       // Get the module id from parents.
@@ -215,6 +216,10 @@ function module_filter_preprocess_system_modules_details(&$variables): void {
         $module['path'] = $path;
       }
     }
+  }
+
+  if ($settings->get('descriptions_show')) {
+    $variables['descriptions_show'] = 'open';
   }
 }
 

@@ -125,7 +125,6 @@ function filebrowser_schema() {
   return $schema;
 }
 
-
 /**
  * Convert file_browser_metadata_entity into blob.
  */
@@ -192,3 +191,41 @@ function filebrowser_update_9104() {
   $active_storage->write('filebrowser.settings', $source->read('filebrowser.settings'));
 }
 
+/**
+ * Add uid (user id) base field to filebrowser_metadata_entity entity.
+ */
+function filebrowser_update_9105() {
+  $entity_type_id = 'filebrowser_metadata_entity';
+  $field_name = 'uid';
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  // Get the updated field definition from the entity class.
+  $entity_type = \Drupal::entityTypeManager()->getDefinition($entity_type_id);
+  $field_definition = $entity_type->getClass()::baseFieldDefinitions($entity_type)[$field_name];
+
+  // Install the new field storage definition.
+  $update_manager->installFieldStorageDefinition(
+    $field_name,
+    $entity_type_id,
+    $entity_type->getProvider(),
+    $field_definition
+  );
+
+  \Drupal::logger('filebrowser')->notice("Installed 'user_id' field on $entity_type_id entity.");
+}
+
+/**
+ * filebrowser_update_9106(): No-op.
+ * This is a re-write.
+ */
+function filebrowser_update_9106() {
+  // Intentionally left blank.
+}
+
+/**
+ * filebrowser_update_9107(): No-op
+ * This is a re-write.
+ */
+function filebrowser_update_9107() {
+  // intentionally left blank
+}

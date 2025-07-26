@@ -9,7 +9,6 @@
   Drupal.behaviors.mailchimp_campaign = {
     attach: function (context, settings) {
       var google;
-      google.load('visualization', '1', {packages: ['corechart'], callback: drawCharts});
 
       function drawCharts() {
         var dataTable = new google.visualization.DataTable();
@@ -18,16 +17,16 @@
         dataTable.addColumn('number', Drupal.t('Unique opens'));
         dataTable.addColumn('number', Drupal.t('Clicks'));
 
-        for (var key in settings.mailchimp_campaign.stats) {
-          if (settings.mailchimp_campaign.stats.hasOwnProperty(key)) {
-            dataTable.addRow([
-              new Date(settings.mailchimp_campaign.stats[key]['timestamp']),
-              settings.mailchimp_campaign.stats[key]['emails_sent'],
-              settings.mailchimp_campaign.stats[key]['unique_opens'],
-              settings.mailchimp_campaign.stats[key]['recipients_click']
-            ]);
-          }
-        }
+        // Use Object.keys() to iterate over the stats object.
+        Object.keys(settings.mailchimp_campaign.stats).forEach(function (key) {
+          const stat = settings.mailchimp_campaign.stats[key];
+          dataTable.addRow([
+            new Date(stat['timestamp']),
+            stat['emails_sent'],
+            stat['unique_opens'],
+            stat['recipients_click']
+          ]);
+        });
 
         var options = {
           pointSize: 5,
@@ -37,6 +36,8 @@
         var chart = new google.visualization.LineChart(document.getElementById('mailchimp-campaign-chart'));
         chart.draw(dataTable, options);
       }
+
+      google.load('visualization', '1', {packages: ['corechart'], callback: drawCharts});
     }
   };
 

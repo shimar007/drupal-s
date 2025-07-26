@@ -38,15 +38,15 @@ class MailchimpAdminOauthSettingsForm extends ConfigFormBase {
   /**
    * Mailchimp OAuth Settings form constructor.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Config factory.
    * @param \Drupal\Core\State $stateService
    *   State service.
    * @param \Drupal\Core\Access\CsrfTokenGenerator $csrfService
    *   CSRF service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, State $stateService, CsrfTokenGenerator $csrfService) {
-    parent::__construct($config_factory);
+  public function __construct(ConfigFactoryInterface $configFactory, State $stateService, CsrfTokenGenerator $csrfService) {
+    parent::__construct($configFactory);
     $this->stateService = $stateService;
     $this->csrfService = $csrfService;
   }
@@ -129,8 +129,9 @@ class MailchimpAdminOauthSettingsForm extends ConfigFormBase {
     $form['#attached']['drupalSettings']['mailchimp']['middleware_url'] = $this->getMiddlewareUrl();
     $form['#attached']['drupalSettings']['mailchimp']['csrf_token'] = $this->csrfService->get("mailchimp_admin_oauth_settings");
 
-    $form['actions'] = [
-      '#type' => 'button',
+    $form['actions']['#type'] = 'actions';
+    $form['actions']['submit'] = [
+      '#type' => 'submit',
       '#value' => $button_action,
       '#ajax' => [
         'callback' => '::authenticate',

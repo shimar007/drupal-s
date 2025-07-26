@@ -15,6 +15,8 @@ class ModuleFilterJavascriptUninstallPageTest extends ModuleFilterJavascriptTest
    * Tests filtering on the module uninstall page.
    */
   public function testUninstallPageFiltering(): void {
+    // @todo unskip on https://www.drupal.org/project/drupal/issues/2895388.
+    $this->markTestSkipped();
     /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
 

@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Batch update Mailchimp lists mergevars.
@@ -15,11 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 class MailchimpListsUpdateMergevarsForm extends ConfirmFormBase {
 
   /**
-   * The current request.
+   * The request stack.
    *
-   * @var \Symfony\Component\HttpFoundation\Request
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
-  protected $request;
+  protected $requestStack;
 
   /**
    * The messenger service.
@@ -31,13 +31,13 @@ class MailchimpListsUpdateMergevarsForm extends ConfirmFormBase {
   /**
    * MailchimpListsUpdateMergevarsForm constructor.
    *
-   * @param \Symfony\Component\HttpFoundation\Request $request
-   *   The current request.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The current request stack.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
    */
-  public function __construct(Request $request, MessengerInterface $messenger) {
-    $this->request = $request;
+  public function __construct(RequestStack $request_stack, MessengerInterface $messenger) {
+    $this->requestStack = $request_stack;
     $this->messenger = $messenger;
   }
 
@@ -46,7 +46,7 @@ class MailchimpListsUpdateMergevarsForm extends ConfirmFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('request_stack')->getCurrentRequest(),
+      $container->get('request_stack'),
       $container->get('messenger')
     );
   }
@@ -90,9 +90,10 @@ class MailchimpListsUpdateMergevarsForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $entity_type = $this->request->get('entity_type');
-    $bundle = $this->request->get('bundle');
-    $field_name = $this->request->get('field_name');
+    $request = $this->requestStack->getCurrentRequest();
+    $entity_type = $request->get('entity_type');
+    $bundle = $request->get('bundle');
+    $field_name = $request->get('field_name');
 
     mailchimp_lists_update_member_merge_values($entity_type, $bundle, $field_name);
 

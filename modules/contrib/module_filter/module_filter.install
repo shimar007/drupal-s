@@ -25,7 +25,7 @@ function module_filter_uninstall(): void {
  * Implements hook_update_last_removed().
  */
 function module_filter_update_last_removed(): int {
-  return 9403;
+  return 9402;
 }
 
 /**
@@ -33,4 +33,12 @@ function module_filter_update_last_removed(): int {
  */
 function module_filter_update_9403(): void {
   \Drupal::service('module_installer')->install(['jquery_ui_autocomplete']);
+}
+
+/**
+ * Add new config key for descriptions_show.
+ */
+function module_filter_update_9404(): void {
+  $config_factory = \Drupal::configFactory();
+  $config_factory->getEditable('module_filter.settings')->set('descriptions_show', FALSE)->save();
 }

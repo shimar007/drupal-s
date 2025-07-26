@@ -8,7 +8,7 @@ dependencies:
   - 'drupal:serialization'
   - 'rest_menu_items:rest_menu_items'
 
-# Information added by Drupal.org packaging script on 2024-10-08
-version: '3.0.4'
+# Information added by Drupal.org packaging script on 2025-05-29
+version: '3.0.5'
 project: 'rest_menu_items'
-datestamp: 1728391638
+datestamp: 1748516547

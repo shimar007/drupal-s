@@ -2,6 +2,8 @@
 
 namespace Drupal\mailchimp\Form;
 
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
@@ -95,6 +97,22 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
           ':input[name="use_oauth"]' => ['checked' => FALSE],
         ],
       ],
+    ];
+
+    $refresh_label = $this->t('Refresh Audiences');
+    $form['mc_lists_refresh'] = [
+      '#type' => 'button',
+      '#button_type' => 'button',
+      '#value' => $refresh_label,
+      '#suffix' => '<div id="mc-refresh-audiences"></div>',
+      '#ajax' => [
+        'callback' => [$this, 'listsRefreshCallback'],
+        'progress' => [
+          'type' => 'throbber',
+          'message' => $this->t('Retrieving audiences.'),
+        ],
+      ],
+      '#limit_validation_errors' => [],
     ];
 
     $form['api_timeout'] = [
@@ -234,6 +252,21 @@ class MailchimpAdminSettingsForm extends ConfigFormBase {
     ];
 
     return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * AJAX callback handler for refreshing the audiences.
+   */
+  public function listsRefreshCallback(array &$form, FormStateInterface $form_state) {
+    mailchimp_get_lists([], TRUE);
+    $response = new AjaxResponse();
+
+    $response->addCommand(new ReplaceCommand(
+      '#mc-refresh-audiences',
+      '<div id="mc-refresh-audiences">' . $this->t('Audiences were updated.') . '</div>',
+    ));
+
+    return $response;
   }
 
   /**

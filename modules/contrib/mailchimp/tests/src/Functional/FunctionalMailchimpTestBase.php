@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\mailchimp\Functional;
 
-use Drupal\mailchimp_test\MailchimpConfigOverrider;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\mailchimp_test\MailchimpConfigOverrider;
 
 /**
  * Sets up Mailchimp module tests.

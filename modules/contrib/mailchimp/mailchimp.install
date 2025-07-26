@@ -19,7 +19,7 @@ function mailchimp_requirements($phase) {
     $config = \Drupal::config('mailchimp.settings');
 
     // Check for Mailchimp library.
-    if (class_exists($config->get('api_classname'))) {
+    if (!empty($config->get('api_classname')) && class_exists($config->get('api_classname'))) {
       $requirements['mailchimp']['description'] = t('The Mailchimp MCAPI wrapper library is installed correctly.');
       $requirements['mailchimp']['severity'] = REQUIREMENT_OK;
     }

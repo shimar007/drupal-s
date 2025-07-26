@@ -128,7 +128,7 @@ class MailchimpListsWebhookSettingsForm extends ConfigFormBase {
         'api' => FALSE,
       ];
 
-       // Add webhook with enabled events.
+      // Add webhook with enabled events.
       $result = mailchimp_webhook_add(
         $list->id,
         mailchimp_webhook_url(),

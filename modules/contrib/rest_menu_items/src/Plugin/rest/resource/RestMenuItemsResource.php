@@ -490,7 +490,7 @@ class RestMenuItemsResource extends ResourceBase {
    */
   protected function checkContentFields(MenuLinkInterface $menu_link, array &$newValue) {
     $plugin_definition = $menu_link->getPluginDefinition();
-    if (!empty($plugin_definition['metadata'])) {
+    if (!empty($plugin_definition['metadata']) && isset($plugin_definition['metadata']['entity_id'])) {
       $id = $plugin_definition['metadata']['entity_id'];
       $menu_link_content = $this->menuLinkContentStorage->load($id);
 
