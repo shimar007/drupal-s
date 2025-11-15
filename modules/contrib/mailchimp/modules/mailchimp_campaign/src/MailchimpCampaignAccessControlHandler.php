@@ -18,7 +18,7 @@ class MailchimpCampaignAccessControlHandler extends EntityAccessControlHandler {
   public function access(EntityInterface $entity, $operation, ?AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\mailchimp_campaign\Entity\MailchimpCampaign $entity */
 
-    // Ensure the associated list/audience still exists.
+    // Ensure the associated audience still exists.
     if (!$entity->mc_data) {
       \Drupal::messenger()->addError($this->t('Data for this campaign is missing. Were the audiences deleted? Were settings changed?'), 'error');
       return parent::access($entity, $operation, $account, $return_as_object);

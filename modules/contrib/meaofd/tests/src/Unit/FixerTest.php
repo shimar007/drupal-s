@@ -138,4 +138,32 @@ class FixerTest extends TestCase {
     $this->assertSame([self::TEST_ENTITY_TYPE_ID], $result);
   }
 
+  /**
+   * @covers ::entityTypeHasChanges
+   */
+  public function testEntityTypeHasChanges(): void {
+    $this->entityDefinitionUpdateManager
+      ->expects($this->once())
+      ->method('getChangeSummary')
+      ->willReturn([self::TEST_ENTITY_TYPE_ID => self::TEST_ENTITY_CHANGES]);
+
+    $result = $this->fixer->entityTypeHasChanges(self::TEST_ENTITY_TYPE_ID);
+    $this->assertTrue($result, 'Expected TRUE when entity type has changes.');
+
+    $this->entityDefinitionUpdateManager = $this->createMock(EntityDefinitionUpdateManagerInterface::class);
+    $this->fixer = new Fixer(
+      $this->logger,
+      $this->entityTypeManager,
+      $this->entityDefinitionUpdateManager,
+    );
+
+    $this->entityDefinitionUpdateManager
+      ->expects($this->once())
+      ->method('getChangeSummary')
+      ->willReturn(['other_entity_type' => self::TEST_ENTITY_CHANGES]);
+
+    $result = $this->fixer->entityTypeHasChanges(self::TEST_ENTITY_TYPE_ID);
+    $this->assertFalse($result, 'Expected FALSE when entity type has no changes.');
+  }
+
 }

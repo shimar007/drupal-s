@@ -39,10 +39,10 @@ function mailchimp_events_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Gets a list of all events for a given email in a given list.
+ * Gets a list of all events for a given email in a given audience.
  *
  * @param string $list_id
- *   The Mailchimp list ID the member is subscribed to.
+ *   The ID of the Mailchimp audience the member is subscribed to.
  * @param string $email
  *   The Mailchimp user email address to load an event list for.
  * @param int $count
@@ -121,10 +121,10 @@ function mailchimp_events_list_member_events($list_id, $email, $count = 10, $off
 }
 
 /**
- * Add an event for a Mailchimp list member with the given email address.
+ * Add an event for a Mailchimp audience member with the given email address.
  *
  * @param string $list_id
- *   The Mailchimp list ID the member is subscribed to.
+ *   The ID of the Mailchimp audience the member is subscribed to.
  * @param string $email
  *   The Mailchimp user email address to add an event for.
  * @param string $name

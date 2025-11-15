@@ -21,6 +21,7 @@ meaofd.fix:
     _title: 'Fix mismatched entity and/or field definitions'
   requirements:
     _permission: 'fix mismatched entity and or field definitions'
+    _custom_access: '\Drupal\meaofd\Form\MismatchedEntityAndOrFieldDefinitionsReportFixForm::accessIfEntityHasMismatchedEntityAndOrFieldDefinitions'
   options:
     parameters:
       entity_type:

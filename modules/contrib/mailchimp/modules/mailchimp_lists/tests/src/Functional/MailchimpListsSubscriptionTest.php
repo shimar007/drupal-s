@@ -3,7 +3,7 @@
 namespace Drupal\Tests\mailchimp_lists\Functional;
 
 /**
- * Tests list subscription functionality.
+ * Tests audience subscription functionality.
  *
  * @group mailchimp
  */
@@ -17,7 +17,7 @@ class MailchimpListsSubscriptionTest extends MailchimpListsTestBase {
   protected static $modules = ['mailchimp', 'mailchimp_lists', 'mailchimp_test'];
 
   /**
-   * Tests retrieval of member info for a list and email address.
+   * Tests retrieval of member info for an audience and email address.
    */
   public function testGetMemberInfo() {
     $list_id = '57afe96172';
@@ -30,7 +30,7 @@ class MailchimpListsSubscriptionTest extends MailchimpListsTestBase {
   }
 
   /**
-   * Tests the status of a member's subscription to a list.
+   * Tests the status of a member's subscription to an audience.
    */
   public function testIsSubscribed() {
     $list_id = '57afe96172';
@@ -38,11 +38,11 @@ class MailchimpListsSubscriptionTest extends MailchimpListsTestBase {
 
     $subscribed = mailchimp_is_subscribed($list_id, $email);
 
-    $this->assertTrue($subscribed, 'Tested user is subscribed to list.');
+    $this->assertTrue($subscribed, 'Tested user is subscribed to audience.');
   }
 
   /**
-   * Tests subscribing a member to a list.
+   * Tests subscribing a member to an audience.
    */
   public function testSubscribe() {
     $list_id = '57afe96172';
@@ -72,7 +72,7 @@ class MailchimpListsSubscriptionTest extends MailchimpListsTestBase {
   }
 
   /**
-   * Tests updating a list member.
+   * Tests updating an audience member.
    */
   public function testUpdateMember() {
     $list_id = '57afe96172';
@@ -84,7 +84,7 @@ class MailchimpListsSubscriptionTest extends MailchimpListsTestBase {
   }
 
   /**
-   * Tests unsubscribing a member from a list.
+   * Tests unsubscribing a member from an audience.
    */
   public function testUnsubscribe() {
     $list_id = '57afe96172';

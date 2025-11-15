@@ -3,7 +3,7 @@
 namespace Drupal\Tests\mailchimp_lists\Functional;
 
 /**
- * Tests list webhook functionality.
+ * Tests audience webhook functionality.
  *
  * @group mailchimp
  */
@@ -17,7 +17,7 @@ class MailchimpListsWebhookTest extends MailchimpListsTestBase {
   protected static $modules = ['mailchimp', 'mailchimp_lists', 'mailchimp_test'];
 
   /**
-   * Tests retrieval of webhooks for a list.
+   * Tests retrieval of webhooks for an audience.
    */
   public function testGetWebhook() {
     $list_id = '57afe96172';
@@ -34,7 +34,7 @@ class MailchimpListsWebhookTest extends MailchimpListsTestBase {
   }
 
   /**
-   * Tests adding a webhook to a list.
+   * Tests adding a webhook to an audience.
    */
   public function testAddWebhook() {
     $list_id = '57afe96172';

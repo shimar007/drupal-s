@@ -139,7 +139,7 @@ class MailchimpCampaignController extends ControllerBase {
       if (!$campaign->isInitialized()) {
         continue;
       }
-      // Ensure the associated list/audience still exists.
+      // Ensure the associated audience still exists.
       if (!isset($campaign->list) || !$campaign->list) {
         continue;
       }

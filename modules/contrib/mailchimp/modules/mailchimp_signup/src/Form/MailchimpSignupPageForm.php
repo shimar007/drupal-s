@@ -14,7 +14,7 @@ use Drupal\Core\Url;
 use Drupal\mailchimp_signup\Entity\MailchimpSignup;
 
 /**
- * Subscribe to a Mailchimp list/audience.
+ * Subscribe to a Mailchimp audience.
  */
 class MailchimpSignupPageForm extends FormBase {
 
@@ -112,6 +112,8 @@ class MailchimpSignupPageForm extends FormBase {
     $form = [];
     $settings = $this->signup->settings;
 
+    $form['#theme'] = 'mailchimp_signup_subscribe_form';
+    $form['#theme_wrappers'] = [];
     $form['#attributes'] = ['class' => ['mailchimp-signup-subscribe-form']];
 
     $form['description'] = [
@@ -294,20 +296,20 @@ class MailchimpSignupPageForm extends FormBase {
     $build_info = $form_state->getBuildInfo();
     $signup = $build_info['callback_object']->signup;
 
-    // For forms that allow subscribing to multiple lists/audiences
-    // ensure at least one list/audience has been selected.
-    // Get the enabled lists/audiences for this form.
+    // For forms that allow subscribing to multiple audiences ensure at least
+    // one audience has been selected.
+    // Get the enabled audiences for this form.
     $enabled_lists = array_filter($signup->mc_lists);
     if (count($enabled_lists) > 1) {
 
-      // Filter the selected lists out of the form values.
+      // Filter the selected audiences out of the form values.
       $selected_lists = array_filter($form_state->getValue('mailchimp_lists'),
         function ($list) {
           return $list['subscribe'];
         }
       );
 
-      // If a list has been selected, validation passes.
+      // If an audience has been selected, validation passes.
       if (!empty($selected_lists)) {
         return;
       }
@@ -331,7 +333,8 @@ class MailchimpSignupPageForm extends FormBase {
     $mailchimp_lists = $form_state->getValue('mailchimp_lists');
     $tags = $this->signup->settings['tags'] ?? NULL;
 
-    // If we only have one list we won't have checkbox values to investigate.
+    // If we only have one audience we won't have checkbox values to
+    // investigate.
     if (count(array_filter($this->signup->mc_lists)) == 1) {
       $subscribe_lists[0] = [
         'subscribe' => reset($this->signup->mc_lists),
@@ -349,7 +352,7 @@ class MailchimpSignupPageForm extends FormBase {
 
     $successes = [];
 
-    // Loop through the selected lists and try to subscribe.
+    // Loop through the selected audiences and try to subscribe.
     foreach ($subscribe_lists as $list_choices) {
       $list_id = $list_choices['subscribe'];
 

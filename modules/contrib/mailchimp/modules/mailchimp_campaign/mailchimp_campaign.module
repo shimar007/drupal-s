@@ -28,14 +28,14 @@ function mailchimp_campaign_entity_storage_load(array $entities, $entity_type) {
 
   foreach ($entities as $mc_campaign_id => $campaign) {
 
-    // Ensure the associated list still exists.
+    // Ensure the associated audience still exists.
     if (!isset($mc_campaigns[$mc_campaign_id]) || !$mc_campaigns[$mc_campaign_id]) {
       continue;
     }
 
     $campaign->mc_data = $mc_campaigns[$mc_campaign_id];
 
-    // Lists are cached separately, but we want to load them here.
+    // Audiences are cached separately, but we want to load them here.
     if (isset($campaign->mc_data->recipients->list_id) && $campaign->mc_data->recipients->list_id) {
       $campaign->list = mailchimp_get_list($campaign->mc_data->recipients->list_id);
     }
@@ -69,7 +69,7 @@ function mailchimp_campaign_theme($existing, $type, $theme, $path) {
  * @param array $template
  *   Associative array of template content indexed by section IDs.
  * @param object $recipients
- *   Associative array of template values.
+ *   Audience settings for the campaign.
  * @param object $settings
  *   Campaign settings, as decribed in Mailchimp API.
  * @param string $template_id
@@ -97,7 +97,7 @@ function mailchimp_campaign_save_campaign(array $template, $recipients, $setting
   // Allow alter of template and content used in campaign.
   \Drupal::moduleHandler()->alter('mailchimp_campaign_content', $template, $content, $campaign_id);
 
-  // Test for valid list segment, if selected.
+  // Test for valid audience segment, if selected.
   if (isset($recipients->segment_opts)) {
     if (!isset($recipients->segment_opts->saved_segment_id)
       || (mailchimp_campaign_test_list_segment($recipients->list_id, $recipients->segment_opts->saved_segment_id) === NULL
@@ -441,7 +441,7 @@ function mailchimp_campaign_get_campaigns(array $mc_campaign_ids, $reset = FALSE
 
     try {
       if (!$mcapi) {
-        throw new Exception('Cannot get list without Mailchimp API. Check API key has been entered.');
+        throw new Exception('Cannot get audience without Mailchimp API. Check API key has been entered.');
       }
     }
     catch (\Exception $e) {
@@ -481,15 +481,15 @@ function mailchimp_campaign_get_campaigns(array $mc_campaign_ids, $reset = FALSE
 }
 
 /**
- * Gets an array of list segments for a given list ID.
+ * Gets an array of segments for a given audience ID.
  *
  * @param int $list_id
- *   The list ID.
+ *   The audience ID.
  * @param string $type
  *   The segment type to get. "static" or "saved".
  *
  * @return array
- *   Array of Mailchimp list segments.
+ *   Array of Mailchimp audience segments.
  */
 function mailchimp_campaign_get_list_segments($list_id, $type) {
   /** @var \Mailchimp\MailchimpLists $mcapi */
@@ -505,7 +505,7 @@ function mailchimp_campaign_get_list_segments($list_id, $type) {
   }
   catch (\Exception $e) {
     \Drupal::messenger()->addError($e->getMessage());
-    \Drupal::logger('mailchimp_campaign')->error('An error occurred getting list segments for list ID {list_id}: {message} ', [
+    \Drupal::logger('mailchimp_campaign')->error('An error occurred getting segments for audience ID {list_id}: {message} ', [
       'list_id' => $list_id,
       'message' => $e->getMessage(),
     ]);
@@ -517,12 +517,12 @@ function mailchimp_campaign_get_list_segments($list_id, $type) {
 }
 
 /**
- * Tests a list segment, returning the number of subscribers in the segment.
+ * Returns the number of subscribers in an audience segment.
  *
  * @param string $list_id
- *   The list ID.
+ *   The audience ID.
  * @param string $list_segment_id
- *   The list segment ID.
+ *   The audience segment ID.
  * @param int $count
  *   How many records to return. Maximum allowed is 1000.
  *
@@ -538,7 +538,7 @@ function mailchimp_campaign_test_list_segment($list_id, $list_segment_id, $count
   }
   catch (\Exception $e) {
     \Drupal::messenger()->addError($e->getMessage());
-    \Drupal::logger('mailchimp_campaign')->error('An error occurred testing a list segment: {message}', [
+    \Drupal::logger('mailchimp_campaign')->error('An error occurred testing a audience segment: {message}', [
       'message' => $e->getMessage(),
     ]);
 

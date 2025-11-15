@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Batch update Mailchimp lists mergevars.
+ * Batch update Mailchimp audience mergevars.
  */
 class MailchimpListsUpdateMergevarsForm extends ConfirmFormBase {
 

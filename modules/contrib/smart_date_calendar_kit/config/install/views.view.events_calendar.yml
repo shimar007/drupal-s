@@ -6,7 +6,7 @@ dependencies:
     - node.type.event
   module:
     - add_content_by_bundle
-    - fullcalendar_view
+    - fullcalendar
     - node
     - smart_date
     - user
@@ -190,34 +190,117 @@ display:
             operator_limit_selection: false
             operator_list: {  }
       style:
-        type: fullcalendar_view_display
+        type: fullcalendar
         options:
-          default_date_source: now
-          defaultDate: ''
-          start: field_when
-          end: field_when
-          title: title
-          right_buttons: 'dayGridMonth,timeGridWeek,timeGridDay,listYear'
-          left_buttons: 'prev,next today'
-          default_view: dayGridMonth
-          firstDay: '0'
-          nav_links: 1
-          timeFormat: ''
-          allowEventOverlap: 1
-          updateAllowed: 1
-          updateConfirm: 1
-          defaultLanguage: en
-          languageSelector: 0
-          dialogWindow: 0
-          createEventLink: 0
-          openEntityInNewTab: 1
-          tax_field: ''
-          vocabularies: ''
-          color_bundle: ''
-          rrule: ''
-          duration: ''
-          bundle_type: event
-          classes: ''
+          header: "left:'dayGridMonth,timeGridWeek,timeGridDay', center:'title', right:'today prev,next'"
+          footer: ''
+          titleFormat: ''
+          titleRangeSeparator: \u2013
+          buttonText: "today:'today', month:'month', week:'week', day:'day', list:'list'"
+          buttonIcons: "prev:'left-single-arrow', next:'right-single-arrow', prevYear:'left-double-arrow', nextYear:'right-double-arrow'"
+          month_view: true
+          timegrid_view: true
+          daygrid_view: true
+          list_view: true
+          fields:
+            title: false
+            title_field: ''
+            url: false
+            url_field: ''
+            date: true
+            date_field:
+              field_when: field_when
+          event_format:
+            eventColor: '#3788d8'
+            eventDisplay: auto
+          links:
+            navLinks: true
+            navLinkDayClick: ''
+            navLinkWeekClick: ''
+            bundle_type: event
+            updateConfirm: false
+            showMessages: true
+          colors:
+            color_bundle: {  }
+            tax_field: ''
+            vocabularies: ''
+            color_taxonomies: {  }
+          month_view_settings:
+            fixedWeekCount: true
+            showNonCurrentDates: '1'
+          timegrid_view_settings:
+            allDaySlot: true
+            allDayContent: all-day
+            slotEventOverlap: true
+            timeGridEventMinHeight: ''
+          list_view_settings:
+            listDayFormat: "weekday:'long'"
+            listDayAltFormat: "month:'long', day:'numeric', year:'numeric'"
+            noEventsMessage: 'No events to display'
+          views_year:
+            listYear_buttonText: "buttonText: 'list'"
+            listYear_titleFormat: "year: 'numeric'"
+          views_month:
+            listMonth_buttonText: "buttonText: 'list'"
+            listMonth_titleFormat: "year: 'numeric', month: 'long'"
+            dayGridMonth_buttonText: "buttonText: 'month'"
+            dayGridMonth_titleFormat: "year: 'numeric', month: 'long'"
+            dayGridMonth_dayHeaderFormat: "weekday:'short'"
+          views_week:
+            listWeek_buttonText: "buttonText: 'list'"
+            listWeek_titleFormat: "year: 'numeric', month: 'short', day: 'numeric'"
+            dayGridWeek_buttonText: "buttonText: 'week'"
+            dayGridWeek_titleFormat: "year: 'numeric', month: 'short', day: 'numeric'"
+            dayGridWeek_dayHeaderFormat: "weekday:'short', month:'numeric', day:'numeric', omitCommas:true"
+            timeGridWeek_buttonText: "buttonText: 'week'"
+            timeGridWeek_titleFormat: "year: 'numeric', month: 'short', day: 'numeric'"
+            timeGridWeek_dayHeaderFormat: "weekday:'short', month:'numeric', day:'numeric', omitCommas:true"
+          views_day:
+            listDay_buttonText: "buttonText: 'list'"
+            listDay_titleFormat: "year: 'numeric', month: 'long', day: 'numeric'"
+            dayGridDay_buttonText: "buttonText: 'day'"
+            dayGridDay_titleFormat: "year: 'numeric', month: 'long', day: 'numeric'"
+            dayGridDay_dayHeaderFormat: "weekday:'long'"
+            timeGridDay_buttonText: "buttonText: 'day'"
+            timeGridDay_titleFormat: "year: 'numeric', month: 'long', day: 'numeric'"
+            timeGridDay_dayHeaderFormat: "weekday:'long'"
+          display:
+            initialView: dayGridMonth
+            firstDay: '0'
+          times:
+            weekends: true
+            hiddenDays: ''
+            dayHeaders: '1'
+          axis:
+            slotDuration: ''
+            slotLabelInterval: ''
+            slotLabelFormat: ''
+            slotMinTime: ''
+            slotMaxTime: ''
+            scrollTime: ''
+          nav:
+            initialDate: ''
+            validRange: ''
+          week:
+            weekNumbers: false
+            weekNumberCalculation: local
+            weekText: W
+          now:
+            nowIndicator: false
+            now: false
+          business:
+            businessHours: false
+            businessHours2: ''
+          style:
+            themeSystem: standard
+            height: ''
+            contentHeight: ''
+            aspectRatio: '1.35'
+            handleWindowResize: true
+            windowResizeDelay: '100'
+          google:
+            googleCalendarApiKey: ''
+            googleCalendarId: ''
       row:
         type: fields
       query:

@@ -45,7 +45,7 @@ export default class EditorAdvancedLinkUi extends Plugin {
           );
         });
         this._handleExtraFormFieldSubmit(enabledModelNames);
-        // Add groups to form view last to ensure they're not beetween fields.
+        // Add groups to form view last to ensure they're not between fields.
         this._addGroupsToFormView();
       });
   }
@@ -71,7 +71,10 @@ export default class EditorAdvancedLinkUi extends Plugin {
       // @todo Fix the display text field from jumping above or below the
       //       collapsible advanced section when linkTitle is not enabled or
       //       enabled respectively.
-      fieldParent.children.add(extraFieldView, fieldParent === linkFormView ? 1 : 0);
+      fieldParent.children.add(
+        extraFieldView,
+        fieldParent === linkFormView ? 1 : 0,
+      );
 
       // @todo Fix focus order of form fields in https://www.drupal.org/project/editor_advanced_link/issues/3519379.
       if (!options.group) {
@@ -98,17 +101,19 @@ export default class EditorAdvancedLinkUi extends Plugin {
     const { editor } = this;
     const linkFormView = editor.plugins.get('LinkUI').formView;
 
-    Object.values(this.groups).reverse().forEach((group) => {
-      if (!group.added) {
-        linkFormView.children.add(group, 2);
-        group.parent = linkFormView;
+    Object.values(this.groups)
+      .reverse()
+      .forEach((group) => {
+        if (!group.added) {
+          linkFormView.children.add(group, 2);
+          group.parent = linkFormView;
 
-        linkFormView._focusables.add(group, 2);
-        linkFormView.focusTracker.add(group.element);
+          linkFormView._focusables.add(group, 2);
+          linkFormView.focusTracker.add(group.element);
 
-        group.added = true;
-      }
-    });
+          group.added = true;
+        }
+      });
   }
 
   _getGroup(groupName) {

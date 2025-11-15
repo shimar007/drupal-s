@@ -4,7 +4,7 @@ description: 'Mismatched entity and/or field definitions module has as its main 
 package: Entity
 core_version_requirement: ^9 || ^10 || ^11
 
-# Information added by Drupal.org packaging script on 2025-01-13
-version: '1.0.0'
+# Information added by Drupal.org packaging script on 2025-09-26
+version: '1.1.0'
 project: 'meaofd'
-datestamp: 1736787279
+datestamp: 1758887325

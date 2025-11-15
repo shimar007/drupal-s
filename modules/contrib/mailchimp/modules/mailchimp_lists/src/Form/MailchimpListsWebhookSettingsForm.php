@@ -9,7 +9,7 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Configure settings for a Mailchimp list webhook.
+ * Configure settings for a Mailchimp audience webhook.
  */
 class MailchimpListsWebhookSettingsForm extends ConfigFormBase {
 

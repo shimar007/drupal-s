@@ -74,7 +74,7 @@ class MailchimpTest extends MailchimpKernelTestBase {
    * Sets a response that means that a member does not exist yet.
    *
    * MailchimpLists::getMemberInfo() is modified to throw an exception,
-   * meaning that the requested member does not exist on the requested list.
+   * meaning that the requested member does not exist on the requested audience.
    */
   protected function setMemberNotExist(): void {
     $api_class = $this->container->get('mailchimp.client_factory')->getApiClass();

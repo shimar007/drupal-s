@@ -10,7 +10,7 @@ dependencies:
  - mailchimp:mailchimp
  - drupal:options
 
-# Information added by Drupal.org packaging script on 2025-07-25
-version: '2.2.7'
+# Information added by Drupal.org packaging script on 2025-10-30
+version: '2.2.8'
 project: 'mailchimp'
-datestamp: 1753452350
+datestamp: 1761839978

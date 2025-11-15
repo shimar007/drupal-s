@@ -93,20 +93,19 @@ class Fixer {
       $this->rebuildEntityCacheDefinitions($log_events);
     }
 
-    // Get the entity definition change summary and loop through
-    // each entity type with changes and apply fixes if necessary.
+    // Fix the specified entity type if it has changes.
     try {
-      $entity_definition_change_summary = $this->getChangeSummary();
-      foreach ($entity_definition_change_summary as $entity_type_id => $change_list) {
-        if ($entity_type_id == $target_entity_type_id) {
-          $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
-          $this->entityDefinitionUpdateManager->installEntityType($entity_type);
-          $installed_or_updated_entities[] = $entity_type_id;
+      if ($this->entityTypeHasChanges($target_entity_type_id)) {
+        $entity_type = $this->entityTypeManager->getDefinition($target_entity_type_id);
+        $this->entityDefinitionUpdateManager->installEntityType($entity_type);
+        $installed_or_updated_entities[] = $target_entity_type_id;
 
-          if ($log_events) {
-            $this->logger->info('Entity type @entity_type was installed or updated.', ['@entity_type' => $entity_type_id]);
-          }
+        if ($log_events) {
+          $this->logger->info('Entity type @entity_type was installed or updated.', ['@entity_type' => $target_entity_type_id]);
         }
+      }
+      elseif ($log_events) {
+        $this->logger->info('No changes detected for entity type @entity_type. No action taken.', ['@entity_type' => $target_entity_type_id]);
       }
     }
     catch (\Exception $e) {
@@ -122,6 +121,19 @@ class Fixer {
     }
 
     return $installed_or_updated_entities;
+  }
+
+  /**
+   * Checks if a specific entity type has changes that need to be fixed.
+   *
+   * @param string $entity_type_id
+   *   The entity type ID to check for changes.
+   *
+   * @return bool
+   *   TRUE if the entity type has changes, FALSE otherwise.
+   */
+  public function entityTypeHasChanges(string $entity_type_id): bool {
+    return array_key_exists($entity_type_id, $this->getChangeSummary() ?? []);
   }
 
   /**

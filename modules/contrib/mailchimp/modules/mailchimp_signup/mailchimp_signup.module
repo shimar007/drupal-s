@@ -12,6 +12,28 @@ define('MAILCHIMP_SIGNUP_PAGE', 2);
 define('MAILCHIMP_SIGNUP_BOTH', 3);
 
 /**
+ * Implements hook_theme().
+ */
+function mailchimp_signup_theme($existing, $type, $theme, $path) {
+  return [
+    'mailchimp_signup_subscribe_form' => [
+      'render element' => 'element',
+      'template' => 'mailchimp-signup-subscribe-form',
+      'path' => \Drupal::service('extension.list.module')->getPath('mailchimp_signup') . '/templates'
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for the mailchimp_signup subscribe form template.
+ *
+ * Default template: mailchimp-signup-subscribe-form.html.twig.
+ */
+function template_preprocess_mailchimp_signup_subscribe_form(&$vars) {
+  template_preprocess_form($vars);
+}
+
+/**
  * Loads a single MailchimpSignup entity by ID.
  *
  * @param int $signup_id

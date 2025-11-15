@@ -85,8 +85,7 @@ class MailchimpSignupForm extends EntityForm {
       '#title' => 'Description',
       '#default_value' => $signup->settings['description'] ?? '',
       '#rows' => 2,
-      '#maxlength' => 500,
-      '#description' => $this->t('This description will be shown on the signup form below the title. (500 characters or less)'),
+      '#description' => $this->t('This description will be shown on the signup form below the title.'),
     ];
     $mode_defaults = [
       MAILCHIMP_SIGNUP_BLOCK => [MAILCHIMP_SIGNUP_BLOCK],
@@ -366,14 +365,14 @@ class MailchimpSignupForm extends EntityForm {
     }
 
     if ($form_state->getValue('configure_groups') || $configure_groups) {
-      // Grab a reference to the selected list - either when an AJAX
+      // Grab a reference to the selected audience - either when an AJAX
       // callback is executed or when we are in "Edit" mode.
       if (!$selected_lists = $form_state->getValue('mc_lists')) {
         $selected_lists = $signup->mc_lists;
       }
 
       if ($selected_lists && is_array($selected_lists)) {
-        // We don't want to query the API for all lists
+        // We don't want to query the API for all audiences
         // besides the one selected, so we filter them out.
         $selected_lists = array_filter($selected_lists);
 
@@ -382,7 +381,7 @@ class MailchimpSignupForm extends EntityForm {
           $groups_items = [];
         }
 
-        // Grab a reference to each list using the module built-in function.
+        // Grab a reference to each audience using the module built-in function.
         foreach (mailchimp_get_lists($selected_lists) as $list) {
           $default = [];
 
@@ -393,10 +392,10 @@ class MailchimpSignupForm extends EntityForm {
             $default = $groups_items[$list->id];
           }
 
-          // Merge the lists for each of the selected groups here and return
+          // Merge the audiences for each of the selected groups here and return
           // a renderable array for the form to display.
-          // We need to do this here, in case there is more than 1 list selected
-          // and we need to return the interest groups for all of them.
+          // We need to do this here, in case there is more than 1 audience
+          // selected and we need to return the interest groups for all of them.
           $groups = array_merge(
             $groups,
             [
@@ -443,7 +442,7 @@ class MailchimpSignupForm extends EntityForm {
 
     // This one acts as a replacement for the original return value that
     // was defined here beforehand. Simply replace the merge fields
-    // for each of the selected mailing lists.
+    // for each of the selected audiences.
     $response->addCommand(new HtmlCommand(
       '#mergefields-wrapper',
       $form['mc_lists_config']['mergefields']
@@ -453,9 +452,9 @@ class MailchimpSignupForm extends EntityForm {
     // It's required because of the following scenarion:
     // The Ajax callback mapped to the "configure_groups" checkbox is triggered
     // once the checkbox is selected, thus loading the interest groups for all
-    // of the selected mailing lists. But in case a user tries to select a
-    // mailing list afterwards, the callback will no longer execute. So we
-    // can add a new command to replace the list in that container.
+    // of the selected audiences. But in case a user tries to select an
+    // audience afterwards, the callback will no longer execute. So we
+    // can add a new command to replace the audience in that container.
     if ($form_state->getValue('configure_groups')) {
       $response->addCommand(new HtmlCommand(
         '#interest-groups-container',
@@ -530,13 +529,13 @@ class MailchimpSignupForm extends EntityForm {
   }
 
   /**
-   * Gets the mergevar options for the given lists.
+   * Gets the mergevar options for the given audiences.
    *
    * @param array $mc_lists
-   *   An array of list names.
+   *   An array of audience names.
    *
    * @return array
-   *   The mergevar options for the given lists.
+   *   The mergevar options for the given audiences.
    */
   private function getMergevarOptions(array $mc_lists) {
     $mergevar_settings = mailchimp_get_mergevars(array_filter($mc_lists));

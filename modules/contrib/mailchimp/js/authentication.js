@@ -20,13 +20,17 @@
         switch (response.message) {
           case 'pending': {
             formWrapper.classList.add('pending');
-            submitButton.setAttribute("disabled", "disabled");
+            if (submitButton) {
+              submitButton.setAttribute("disabled", "disabled");
+            }
             setTimeout(checkStatus, 3000);
             break;
           }
           case 'error': {
             formWrapper.classList.remove('pending');
-            submitButton.removeAttribute("disabled");
+            if (submitButton) {
+              submitButton.removeAttribute("disabled");
+            }
             formWrapper.classList.add('error');
             break;
           }

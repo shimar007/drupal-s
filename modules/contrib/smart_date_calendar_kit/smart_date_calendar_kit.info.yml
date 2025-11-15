@@ -1,17 +1,17 @@
 name: 'Smart Date Calendar Kit'
 type: module
-description: 'Initial configuration to show your Smart Date values in a Fullcalendar View'
-core_version_requirement: ^8 || ^9 || ^10 || ^11
+description: 'Initial configuration to show your Smart Date values in a Fullcalendar display'
+core_version_requirement: ^10 || ^11
 package: 'Field types'
 dependencies:
   - drupal:node
   - drupal:user
   - add_content_by_bundle:add_content_by_bundle
-  - fullcalendar_view:fullcalendar_view
+  - fullcalendar:fullcalendar
   - smart_date:smart_date
   - smart_date_starter_kit:smart_date_starter_kit
 
-# Information added by Drupal.org packaging script on 2024-04-20
-version: '2.1.1'
+# Information added by Drupal.org packaging script on 2024-10-12
+version: '2.2.0'
 project: 'smart_date_calendar_kit'
-datestamp: 1713610505
+datestamp: 1728736603

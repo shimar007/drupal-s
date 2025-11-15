@@ -72,7 +72,7 @@ class MailchimpSignup extends ConfigEntityBase implements MailchimpSignupInterfa
   public $title;
 
   /**
-   * The Signup Form Mailchimp Lists.
+   * The Signup Form Mailchimp Audiences.
    *
    * @var array
    */

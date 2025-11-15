@@ -7,7 +7,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 
 /**
- * Mailchimp Lists/Audiences controller.
+ * Mailchimp Audiences controller.
  */
 class MailchimpListsController extends ControllerBase {
 

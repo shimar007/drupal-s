@@ -9,7 +9,7 @@ use Drupal\mailchimp_lists\Plugin\Field\FieldFormatter\MailchimpListsFieldSubscr
 use Drupal\mailchimp_lists\Plugin\Field\FieldType\MailchimpListsSubscription;
 
 /**
- * Subscribe to a Mailchimp list/audience.
+ * Subscribe to a Mailchimp audience.
  */
 class MailchimpListsSubscribeForm extends FormBase {
 
@@ -101,7 +101,7 @@ class MailchimpListsSubscribeForm extends FormBase {
 
     $field_name = $this->fieldInstance->getFieldDefinition()->getName();
 
-    // Determine if a user is subscribed to the list.
+    // Determine if a user is subscribed to the audience.
     $is_subscribed = mailchimp_is_subscribed($mc_list->id, $email);
     $wrapper_key = 'mailchimp_' . $field_name;
     $form['wrapper_key'] = [
@@ -119,7 +119,8 @@ class MailchimpListsSubscribeForm extends FormBase {
         ],
       ],
     ];
-    // Add title and description to lists for anonymous users or if requested:
+    // Add title and description to audiences for anonymous users or if
+    // requested:
     $form[$wrapper_key]['subscribe'] = [
       '#type' => 'checkbox',
       '#title' => 'Subscribe',

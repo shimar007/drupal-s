@@ -6,7 +6,7 @@ Create and send campaigns with entities as content.
   * **Title:** An internal name to identify the campaign
   * **Subject:** Message subject
   * **Audience:** The Mailchimp audience to use
-  * **Segment:** List segment to use (optional, only appears if any exist)
+  * **Segment:** Audience segment to use (optional, only appears if any exist)
   * **From Email:** Email address for the campaign
   * **From Name:** Name to attach to the 'From Email'
   * **Template:** Mailchimp template to use
@@ -20,7 +20,7 @@ be edited.
 
 ## Using Merge Tags
 Mailchimp Templates use Merge Tags to load data from Mailchimp Merge Fields into
-the emails. You can confirm which Merge Tags a list uses from the
+the emails. You can confirm which Merge Tags an audience uses from the
 [list admin](https://admin.mailchimp.com/lists/),
 or try a [standard merge tag](https://mailchimp.com/help/all-the-merge-tags-cheat-sheet/).
 

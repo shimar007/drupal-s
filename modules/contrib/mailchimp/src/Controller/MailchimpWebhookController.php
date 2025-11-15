@@ -58,7 +58,7 @@ class MailchimpWebhookController extends ControllerBase {
 
     // Return early if the hash in the request does not match.
     $webhook_hash = $this->config('mailchimp.settings')->get('webhook_hash');
-    if (!empty($webhook_hash) && $webhook_hash !== $hash) {
+    if (!empty($webhook_hash) && !hash_equals($webhook_hash, $hash)) {
       $response = new Response(
         $return,
         Response::HTTP_FORBIDDEN,

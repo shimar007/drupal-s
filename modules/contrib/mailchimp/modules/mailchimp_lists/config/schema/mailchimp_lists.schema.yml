@@ -1,8 +1,8 @@
-# Schema for the configuration files of the mailchimp lists module.
+# Schema for the configuration files of the Mailchimp Audiences module.
 
 field.formatter.settings.mailchimp_lists_subscribe_default:
   type: mapping
-  label: 'Mailchimp lists subscribe formatter settings'
+  label: 'Mailchimp Audiences subscribe formatter settings'
   mapping:
     show_interest_groups:
       type: boolean
@@ -10,7 +10,7 @@ field.formatter.settings.mailchimp_lists_subscribe_default:
 
 field.formatter.settings.mailchimp_lists_field_subscribe:
   type: mapping
-  label: 'Mailchimp lists field subscribe formatter settings'
+  label: 'Mailchimp Audiences field subscribe formatter settings'
   mapping:
     show_interest_groups:
       type: boolean
@@ -18,7 +18,7 @@ field.formatter.settings.mailchimp_lists_field_subscribe:
 
 field.storage_settings.mailchimp_lists_subscription:
   type: mapping
-  label: 'Mailchimp lists subscription settings'
+  label: 'Mailchimp Audiences subscription settings'
   mapping:
     mc_list_id:
       type: string
@@ -32,7 +32,7 @@ field.storage_settings.mailchimp_lists_subscription:
 
 field.field_settings.mailchimp_lists_subscription:
   type: mapping
-  label: 'Mailchimp lists subscription settings'
+  label: 'Mailchimp Audiences subscription settings'
   mapping:
     subscribe_checkbox_label:
       type: label

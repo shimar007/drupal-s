@@ -2,6 +2,7 @@
 
 namespace Drupal\meaofd\Form;
 
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -146,6 +147,20 @@ class MismatchedEntityAndOrFieldDefinitionsReportFixForm extends ConfirmFormBase
     else {
       $messenger->addError(new TranslatableMarkup('An error occurred during the batch operation.'));
     }
+  }
+
+  /**
+   * Custom access callback to check if the entity type has meaofd's.
+   *
+   * @param string $entity_type
+   *   The entity type to check.
+   *
+   * @return \Drupal\Core\Access\AccessResult
+   *   The access result.
+   */
+  public function accessIfEntityHasMismatchedEntityAndOrFieldDefinitions(string $entity_type): AccessResult {
+    return AccessResult::allowedIf($this->fixer->entityTypeHasChanges($entity_type))
+      ->addCacheTags(['entity:' . $entity_type]);
   }
 
 }

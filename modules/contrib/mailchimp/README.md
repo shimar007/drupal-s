@@ -13,17 +13,17 @@ respective READMEs for more details.
 Below is a list of features that this module provides:
 
 - API integration
-- Support for an unlimited number of mailing lists
+- Support for an unlimited number of audiences (mailing lists)
 - Have anonymous sign up forms to subscribe site visitors to any combination
-  of Mailchimp lists
-- Mailchimp list subscription via entity fields, allowing subscription rules
+  of Mailchimp audiences
+- Mailchimp audience subscription via entity fields, allowing subscription rules
   to be governed by entity controls, permissions, and UI
 - Allow users to subscribe during registration by adding a field to Users
 - Map Entity field values to your Mailchimp merge fields
 - Standalone subscribe and unsubscribe forms
 - Subscriptions can be maintained via cron or in real time
 - Subscription forms can be created as pages or as blocks, with one or more
-  list subscriptions on a single form
+  audience subscriptions on a single form
 - Include merge fields & interest groups on anonymous subscription forms
 - Create & send Mailchimp Campaigns from within Drupal, using Drupal
   entities as content.
@@ -49,20 +49,20 @@ Submit bug reports and feature suggestions, or track changes in the
 ## Requirements
 
 - You need to have login access to a Mailchimp Account.
-- You need to have at least one list created in Mailchimp to use the
+- You need to have at least one audience created in Mailchimp to use the
   mailchimp_lists module.
 
 
 ## Recommended modules
 
-- mailchimp_signup: Create anonymous signup forms for your Mailchimp Lists,
-  and display them as blocks or as standalone pages. Provide multiple-list
+- mailchimp_signup: Create anonymous signup forms for your Mailchimp audiences,
+  and display them as blocks or as standalone pages. Provide multiple-audience
   subscription from a single form, include merge variables as desired, and
   optionally include Interest Group selection.
 - mailchimp_lists: Subscribe any entity with an email address to Mailchimp
-  lists by creating a mailchimp_list field, and allow anyone who can edit
+  audiences by creating a mailchimp_list field, and allow anyone who can edit
   such an entity to subscribe, unsubscribe, and update member information.
-  Also allows other entity fields to be synced to Mailchimp list Merge
+  Also allows other entity fields to be synced to Mailchimp audience Merge
   Fields. Add a Mailchimp Subscription field to your User bundle to allow
   Users to control their own subscriptions & subscribe during registration.
 - mailchimp_campaign: Create and send campaigns directly from Drupal, or

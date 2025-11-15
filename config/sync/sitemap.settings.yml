@@ -3,7 +3,7 @@ _core:
 page_title: Sitemap
 path: sitemap
 message:
-  format: plain_text
   value: ''
+  format: plain_text
 plugins: {  }
 include_css: true

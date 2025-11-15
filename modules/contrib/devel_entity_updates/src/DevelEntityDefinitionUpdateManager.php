@@ -188,7 +188,7 @@ final class DevelEntityDefinitionUpdateManager implements ContainerInjectionInte
    * @param \Drupal\Core\Field\FieldStorageDefinitionInterface|null $original_storage_definition
    *   (optional) The original field storage definition. Defaults to none.
    */
-  private function doFieldUpdate($op, FieldStorageDefinitionInterface $storage_definition = NULL, FieldStorageDefinitionInterface $original_storage_definition = NULL) {
+  private function doFieldUpdate($op, ?FieldStorageDefinitionInterface $storage_definition = NULL, ?FieldStorageDefinitionInterface $original_storage_definition = NULL) {
     switch ($op) {
       case EntityDefinitionUpdateManagerInterface::DEFINITION_CREATED:
         $this->fieldStorageDefinitionListener->onFieldStorageDefinitionCreate($storage_definition);

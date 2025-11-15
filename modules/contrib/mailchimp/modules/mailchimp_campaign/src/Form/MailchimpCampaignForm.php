@@ -195,7 +195,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
       '#description' => $this->t('Select the audience tags this campaign should be sent to.'),
     ];
     if (!empty($list_segments)) {
-      $form['list_segment_id']['#options'] = $this->buildOptionList($list_segments, '-- Entire list --');
+      $form['list_segment_id']['#options'] = $this->buildOptionList($list_segments, '-- Entire audience --');
       $form['list_segment_id']['#default_value'] = (isset($segment_id)) ? $segment_id : '';
     }
 
@@ -516,7 +516,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
    *   Form state information.
    *
    * @return \Drupal\Core\Ajax\AjaxResponse
-   *   Ajax response with the rendered list/audience segments element.
+   *   Ajax response with the rendered audience segments element.
    */
   public static function listSegmentCallback(array $form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
@@ -591,7 +591,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
   }
 
   /**
-   * Returns an options list for a given array of items.
+   * Returns an option list for a given array of items.
    *
    * @param array $list
    *   Array of item data containing 'id' and 'name' properties.
@@ -624,7 +624,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
   }
 
   /**
-   * Returns an options list of entities based on data from entity_get_info().
+   * Returns an option list of entities based on data from entity_get_info().
    *
    * Filters out entities that do not contain a title field, as they cannot
    * be used to import content into templates.
@@ -651,7 +651,7 @@ class MailchimpCampaignForm extends ContentEntityForm {
   }
 
   /**
-   * Returns an options list of entity view modes.
+   * Returns an option list of entity view modes.
    *
    * @param string $entity_type
    *   Entity type to build view mode options for.
@@ -798,9 +798,9 @@ class MailchimpCampaignForm extends ContentEntityForm {
    * Gets form elements used in the merge vars feature.
    *
    * @param array $merge_vars
-   *   Array of Mailchimp merge vars for the current list.
+   *   Array of Mailchimp merge vars for the current audience.
    * @param string $list_name
-   *   The name of the current list.
+   *   The name of the current audience.
    *
    * @return array
    *   Array of form elements used to display merge vars.

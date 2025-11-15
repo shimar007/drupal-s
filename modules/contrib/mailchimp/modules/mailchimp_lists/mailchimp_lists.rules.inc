@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Rules integration for the mailchimp lists module.
+ * Rules integration for the Mailchimp Audiences module.
  */
 
 /**
@@ -40,7 +40,7 @@ function mailchimp_lists_rules_action_info() {
 }
 
 /**
- * Action callback: Subscribe an entity to a list/audience.
+ * Action callback: Subscribe an entity to an audience.
  */
 function mailchimp_lists_rules_action_entity_subscribe($entity, $field, $subscribe) {
   $field_info = $field->info();

@@ -93,6 +93,8 @@ class MailchimpSignupSubscribeBlock extends BlockBase implements ContainerFactor
 
     $content = $this->formBuilder->getForm($form);
 
+    $content['#attributes']['class'] = ['mailchimp-signup-subscribe-form-block'];
+
     return $content;
   }
 

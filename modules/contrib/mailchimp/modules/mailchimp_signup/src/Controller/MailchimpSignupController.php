@@ -62,6 +62,15 @@ class MailchimpSignupController extends ControllerBase {
   public function page($signup_id) {
     $content = [];
 
+    $content = [
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => [
+          'mailchimp-signup-subscribe-form-page',
+        ],
+      ],
+    ];
+
     $signup = mailchimp_signup_load($signup_id);
 
     $form = new MailchimpSignupPageForm($this->messenger);
@@ -70,7 +79,7 @@ class MailchimpSignupController extends ControllerBase {
     $form->setFormID($form_id);
     $form->setSignup($signup);
 
-    $content = $this->formBuilder->getForm($form);
+    $content['form'] = $this->formBuilder->getForm($form);
 
     return $content;
   }

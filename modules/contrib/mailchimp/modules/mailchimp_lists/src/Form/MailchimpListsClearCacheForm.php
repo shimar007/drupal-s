@@ -9,7 +9,7 @@ use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Clear Mailchimp lists cache.
+ * Clear Mailchimp audience cache.
  */
 class MailchimpListsClearCacheForm extends ConfirmFormBase {
 

@@ -16,7 +16,6 @@ use Drupal\mailchimp_campaign\MailchimpCampaignInterface;
  * @ContentEntityType(
  *   id = "mailchimp_campaign",
  *   label = @Translation("Mailchimp Campaign"),
- *   fieldable = FALSE,
  *   handlers = {
  *     "access" = "Drupal\mailchimp_campaign\MailchimpCampaignAccessControlHandler",
  *     "view_builder" = "Drupal\mailchimp_campaign\Entity\MailchimpCampaignViewBuilder",

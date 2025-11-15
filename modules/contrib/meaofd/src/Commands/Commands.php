@@ -51,7 +51,7 @@ class Commands extends DrushCommands {
 
     try {
       // Use the Fixer service to fix the entity type.
-      $updated_entities = $this->fixer->fix($entity_type_id, $rebuild_cache);
+      $updated_entities = ($this->fixer->entityTypeHasChanges($entity_type_id)) ? $this->fixer->fix($entity_type_id, $rebuild_cache) : NULL;
 
       if (!empty($updated_entities)) {
         $this->output()->writeln('Entity types updated: ' . implode(', ', $updated_entities));

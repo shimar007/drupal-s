@@ -13,10 +13,10 @@ use Drupal\Core\Entity\EntityInterface;
  */
 
 /**
- * Perform an action when an email address is successfully subscribed to a list.
+ * Performs an action upon successfully subscribing to an audience.
  *
  * @param string $list_id
- *   The Mailchimp list ID.
+ *   The Mailchimp audience ID.
  * @param string $email
  *   The email address subscribed.
  * @param string $merge_vars
@@ -28,10 +28,10 @@ function hook_mailchimp_subscribe_success($list_id, $email, $merge_vars) {
 }
 
 /**
- * Perform an action when an email is successfully unsubscribed from a list.
+ * Performs an action upon successfully unsubscribing from an audience.
  *
  * @param string $list_id
- *   The Mailchimp list ID.
+ *   The Mailchimp audience ID.
  * @param string $email
  *   The email address unsubscribed.
  *
@@ -83,6 +83,21 @@ function hook_mailchimp_lists_mergevars_alter(array &$mergevars, EntityInterface
  * @ingroup mailchimp
  */
 function hook_mailchimp_lists_interest_groups_alter(array &$interests, EntityInterface $entity, array $choices) {
+}
+
+/**
+ * Alter campaign recipients and template.
+ *
+ * @param object $recipients
+ *   Audience settings for the campaign.
+ * @param array $template
+ *   Associative array of template content indexed by section ID.
+ * @param string $campaign_id
+ *   The ID of the campaign to save, if updating.
+ *
+ * @ingroup mailchimp
+ */
+function hook_mailchimp_campaign_alter(object &$recipients, array &$template, string $campaign_id) {
 }
 
 /**

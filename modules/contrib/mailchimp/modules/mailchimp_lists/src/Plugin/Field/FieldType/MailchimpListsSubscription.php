@@ -119,7 +119,7 @@ class MailchimpListsSubscription extends FieldItemBase {
       $field_definitions[$entity_type] = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions($entity_type);
     }
 
-    // Prevent Mailchimp lists/audiences that have already been assigned to a
+    // Prevent Mailchimp audiences that have already been assigned to a
     // field appearing as field options.
     foreach ($field_map as $entity_type => $fields) {
       foreach ($fields as $field_name => $field_properties) {
@@ -309,7 +309,7 @@ class MailchimpListsSubscription extends FieldItemBase {
   }
 
   /**
-   * Returns whether the entity is subscribed to the mailing list.
+   * Returns whether the entity is subscribed to the audience.
    *
    * Gets the value from Mailchimp and falls back on the local 'subscribe' value
    * from the field table.
@@ -398,18 +398,18 @@ class MailchimpListsSubscription extends FieldItemBase {
    * Get an array with all possible Drupal properties for a given entity type.
    *
    * @param string $entity_type
-   *   Name of entity whose properties to list/audience.
+   *   Name of entity whose properties to audience.
    * @param string $entity_bundle
    *   Optional bundle to limit available properties.
    * @param bool $required
    *   Set to TRUE if properties are required.
    * @param string $prefix
-   *   Optional prefix for option IDs in the options list/audience.
+   *   Optional prefix for option IDs in the options audience.
    * @param string $tree
    *   Optional name of the parent element if the options are part of a tree.
    *
    * @return array
-   *   List of properties that can be used as an #options list/audience.
+   *   List of properties that can be used as an #options audience.
    */
   private function getFieldmapOptions($entity_type, $entity_bundle = NULL, $required = FALSE, $prefix = NULL, $tree = NULL) {
     $options = [];

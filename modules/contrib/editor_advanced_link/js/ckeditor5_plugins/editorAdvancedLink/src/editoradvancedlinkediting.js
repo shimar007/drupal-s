@@ -95,7 +95,10 @@ export default class EditorAdvancedLinkEditing extends Plugin {
       (evt, args) => {
         // Custom handling is only required if an extra attribute was passed into
         // editor.execute( 'link', ... ).
-        if (Object.entries(evt.editorAdvancedAttributes).length === 0) {
+        if (
+          !evt.editorAdvancedAttributes ||
+          Object.entries(evt.editorAdvancedAttributes).length === 0
+        ) {
           return;
         }
         if (linkCommandExecuting) {
@@ -142,18 +145,17 @@ export default class EditorAdvancedLinkEditing extends Plugin {
                 modelName,
               );
 
-              for (const range of ranges) {
+              ranges.forEach((range) => {
                 if (extraAttributeValues[modelName]) {
                   writer.setAttribute(
                     modelName,
                     extraAttributeValues[modelName],
                     range,
                   );
-                }
-                else {
+                } else {
                   writer.removeAttribute(modelName, range);
                 }
-              }
+              });
             }
           });
         });
@@ -214,9 +216,9 @@ export default class EditorAdvancedLinkEditing extends Plugin {
 
             // Remove the extra attribute from specified ranges.
             // eslint-disable-next-line max-nested-callbacks
-            for (const range of ranges) {
+            ranges.forEach((range) => {
               writer.removeAttribute(modelName, range);
-            }
+            });
           });
         });
       },

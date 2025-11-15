@@ -3,7 +3,7 @@
 namespace Drupal\Tests\mailchimp_lists\Functional;
 
 /**
- * Tests core lists functionality.
+ * Tests core audience functionality.
  *
  * @group mailchimp
  */
@@ -17,7 +17,7 @@ class MailchimpListsTest extends MailchimpListsTestBase {
   protected static $modules = ['mailchimp', 'mailchimp_lists', 'mailchimp_test'];
 
   /**
-   * Tests that a list can be loaded.
+   * Tests that an audience can be loaded.
    */
   public function testGetList() {
     $list_id = '57afe96172';
@@ -29,7 +29,7 @@ class MailchimpListsTest extends MailchimpListsTestBase {
   }
 
   /**
-   * Tests retrieval of a specific set of lists.
+   * Tests retrieval of a specific set of audiences.
    */
   public function testMultiListRetrieval() {
     $list_ids = [
@@ -39,7 +39,7 @@ class MailchimpListsTest extends MailchimpListsTestBase {
 
     $lists = mailchimp_get_lists($list_ids);
 
-    $this->assertSame(count($lists), 2, 'Tested correct list count on retrieval.');
+    $this->assertSame(count($lists), 2, 'Tested correct audience count on retrieval.');
 
     $this->assertSame($lists[$list_ids[0]]->id, $list_ids[0]);
     $this->assertSame($lists[$list_ids[0]]->name, 'Test List One');
@@ -49,7 +49,7 @@ class MailchimpListsTest extends MailchimpListsTestBase {
   }
 
   /**
-   * Tests retrieval of mergevars for a set of lists.
+   * Tests retrieval of mergevars for a set of audiences.
    */
   public function testGetMergevars() {
     $list_ids = [

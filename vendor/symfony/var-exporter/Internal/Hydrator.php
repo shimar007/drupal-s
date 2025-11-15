@@ -27,19 +27,13 @@ class Hydrator
     public static array $simpleHydrators = [];
     public static array $propertyScopes = [];
 
-    public $registry;
-    public $values;
-    public $properties;
-    public $value;
-    public $wakeups;
-
-    public function __construct(?Registry $registry, ?Values $values, array $properties, $value, array $wakeups)
-    {
-        $this->registry = $registry;
-        $this->values = $values;
-        $this->properties = $properties;
-        $this->value = $value;
-        $this->wakeups = $wakeups;
+    public function __construct(
+        public readonly Registry $registry,
+        public readonly ?Values $values,
+        public readonly array $properties,
+        public readonly mixed $value,
+        public readonly array $wakeups,
+    ) {
     }
 
     public static function hydrate($objects, $values, $properties, $value, $wakeups)
@@ -73,11 +67,11 @@ class Hydrator
                 return $baseHydrator;
 
             case 'ErrorException':
-                return $baseHydrator->bindTo(null, new class() extends \ErrorException {
+                return $baseHydrator->bindTo(null, new class extends \ErrorException {
                 });
 
             case 'TypeError':
-                return $baseHydrator->bindTo(null, new class() extends \Error {
+                return $baseHydrator->bindTo(null, new class extends \Error {
                 });
 
             case 'SplObjectStorage':
@@ -86,7 +80,7 @@ class Hydrator
                         if ("\0" === $name) {
                             foreach ($values as $i => $v) {
                                 for ($j = 0; $j < \count($v); ++$j) {
-                                    $objects[$i]->attach($v[$j], $v[++$j]);
+                                    $objects[$i][$v[$j]] = $v[++$j];
                                 }
                             }
                             continue;
@@ -178,11 +172,11 @@ class Hydrator
                 return $baseHydrator;
 
             case 'ErrorException':
-                return $baseHydrator->bindTo(new \stdClass(), new class() extends \ErrorException {
+                return $baseHydrator->bindTo(new \stdClass(), new class extends \ErrorException {
                 });
 
             case 'TypeError':
-                return $baseHydrator->bindTo(new \stdClass(), new class() extends \Error {
+                return $baseHydrator->bindTo(new \stdClass(), new class extends \Error {
                 });
 
             case 'SplObjectStorage':
@@ -194,7 +188,7 @@ class Hydrator
                             continue;
                         }
                         for ($i = 0; $i < \count($value); ++$i) {
-                            $object->attach($value[$i], $value[++$i]);
+                            $object[$value[$i]] = $value[++$i];
                         }
                     }
                 };
@@ -265,10 +259,7 @@ class Hydrator
         };
     }
 
-    /**
-     * @return array
-     */
-    public static function getPropertyScopes($class)
+    public static function getPropertyScopes($class): array
     {
         $propertyScopes = [];
         $r = new \ReflectionClass($class);
