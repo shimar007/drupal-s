@@ -21,11 +21,12 @@ services:
       MYSQL_ROOT_PASSWORD: "password"
       MYSQL_PASSWORD: "password"
       MYSQL_DATABASE: "shivakumarr"
-      MYSQL_USERNAME: "shivakumarr"
+      MYSQL_USER: "shivakumarr"
     ports:
       - "3306:3306"
     volumes:
       - newPhpMySql:/var/lib/mysql
+      - ./databases/shivakumarr.sql:/docker-entrypoint-initdb.d/shivakumarr.sql
     networks:
       - php-mysql
 volumes:
